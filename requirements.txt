@@ -1,8 +1,2 @@
 # RAG Studio - Minimal Python Dependencies
-# Only the essential libraries actually used by src-tauri/python/rag_functions.py
-
-# HTTP requests library for web API calls and session management  
-requests==2.32.5
-
-# Numerical computing library for array operations and statistics
-numpy==2.3.2
+# Only the essential libraries actually used by src-tauri/python/

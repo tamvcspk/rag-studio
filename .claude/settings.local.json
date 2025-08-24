@@ -4,9 +4,17 @@
       "WebFetch(domain:pyoxidizer.readthedocs.io)",
       "WebFetch(domain:gregoryszorc.com)",
       "WebFetch(domain:gregoryszorc.com)",
-      "WebFetch(domain:docs.rs)"
+      "WebFetch(domain:docs.rs)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "mcp__angular-cli__get_best_practices",
+      "Bash(cargo check:*)",
+      "mcp__angular-cli__list_projects"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "additionalDirectories": [
+      "C:\\c\\Src\\project\\rag-studio"
+    ]
   }
 }

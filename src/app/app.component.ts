@@ -1,28 +1,44 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, signal, computed } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
+import { CommonModule } from "@angular/common";
 import { invoke } from "@tauri-apps/api/core";
 
 @Component({
   selector: "app-root",
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, CommonModule],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.scss",
 })
-export class AppComponent {
-  greetingMessage = "";
-  rustPythonMessage = "";
-  rustPythonDirectMessage = "";
-  ragSearchMessage = "";
-  pythonLibrariesMessage = "";
-  advancedTextMessage = "";
-  pythonSystemInfoMessage = "";
+export class AppComponent implements OnInit {
+  // Using signals for reactive state management
+  greetingMessage = signal("");
+  rustPythonMessage = signal("");
+  
+  // MCP server properties as signals
+  mcpStatus = signal("Unknown");
+  mcpHealthStatus = signal("");
+  mcpServiceInfo = signal("");
+
+  // Computed properties for better reactivity
+  mcpDisplayStatus = computed(() => 
+    this.mcpStatus().replace(/^"(.+)"$/, '$1')
+  );
+  
+  mcpStatusClass = computed(() => {
+    const status = this.mcpDisplayStatus();
+    if (status === 'Running') return 'status-running';
+    if (status === 'Starting') return 'status-starting';
+    if (status === 'Stopped') return 'status-stopped';
+    if (status.includes('Error')) return 'status-error';
+    return 'status-unknown';
+  });
 
   greet(event: SubmitEvent, name: string): void {
     event.preventDefault();
 
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
     invoke<string>("greet", { name }).then((text) => {
-      this.greetingMessage = text;
+      this.greetingMessage.set(text);
     });
   }
 
@@ -33,65 +49,95 @@ export class AppComponent {
 
     try {
       const result = await invoke<string>("rust_call_python", { name });
-      this.rustPythonMessage = result;
+      this.rustPythonMessage.set(result);
     } catch (error) {
-      this.rustPythonMessage = `Error: ${error}`;
+      this.rustPythonMessage.set(`Error: ${error}`);
       console.error('Rust-Python call error:', error);
     }
   }
 
-  async rustCallPythonDirect(): Promise<void> {
+
+  // MCP Server Management Methods
+
+  async getMcpStatus(): Promise<void> {
     try {
-      const result = await invoke<string>("rust_call_python_direct", { x: 15, y: 25 });
-      this.rustPythonDirectMessage = `Calculation result: ${result}`;
+      const result = await invoke<string>("get_mcp_status");
+      this.mcpStatus.set(result);
     } catch (error) {
-      this.rustPythonDirectMessage = `Error: ${error}`;
-      console.error('Rust-Python direct call error:', error);
+      this.mcpStatus.set(`Error: ${error}`);
+      console.error('MCP status error:', error);
     }
   }
 
-  async ragSearch(event: SubmitEvent, query: string): Promise<void> {
-    event.preventDefault();
+  async getMcpHealthcheck(): Promise<void> {
+    try {
+      const result = await invoke<any>("get_mcp_healthcheck");
+      this.mcpHealthStatus.set(JSON.stringify(result, null, 2));
+    } catch (error) {
+      this.mcpHealthStatus.set(`Error: ${error}`);
+      console.error('MCP healthcheck error:', error);
+    }
+  }
+
+  async getMcpServiceInfo(): Promise<void> {
+    try {
+      const result = await invoke<any>("get_mcp_service_info");
+      this.mcpServiceInfo.set(JSON.stringify(result, null, 2));
+    } catch (error) {
+      this.mcpServiceInfo.set(`Error: ${error}`);
+      console.error('MCP service info error:', error);
+    }
+  }
+
+  async startMcpServer(): Promise<void> {
+    try {
+      const result = await invoke<string>("start_mcp_server");
+      console.log('MCP server start result:', result);
+      // Refresh status after starting
+      await this.getMcpStatus();
+      await this.getMcpHealthcheck();
+    } catch (error) {
+      console.error('MCP server start error:', error);
+      await this.getMcpStatus(); // Refresh status even on error
+    }
+  }
+
+  async stopMcpServer(): Promise<void> {
+    try {
+      const result = await invoke<string>("stop_mcp_server");
+      console.log('MCP server stop result:', result);
+      // Refresh status after stopping
+      await this.getMcpStatus();
+      this.mcpHealthStatus.set(""); // Clear health status when stopped
+    } catch (error) {
+      console.error('MCP server stop error:', error);
+      await this.getMcpStatus(); // Refresh status even on error
+    }
+  }
+
+  // Initialize MCP status on component load
+  async ngOnInit(): Promise<void> {
+    await this.getMcpStatus();
+    await this.getMcpServiceInfo();
     
+    // Try to get healthcheck - it might fail if server is not running
     try {
-      const result = await invoke<string>("rust_call_rag_search", { query });
-      this.ragSearchMessage = `RAG Search Results:\n${result}`;
+      await this.getMcpHealthcheck();
     } catch (error) {
-      this.ragSearchMessage = `Error: ${error}`;
-      console.error('RAG search error:', error);
+      // Ignore healthcheck error on init - server might not be running yet
+      console.log('Initial healthcheck failed (expected if server not running):', error);
     }
+
+    // Set up periodic status updates
+    setInterval(async () => {
+      await this.getMcpStatus();
+      try {
+        await this.getMcpHealthcheck();
+      } catch (error) {
+        // Ignore periodic healthcheck errors
+        this.mcpHealthStatus.set("Server not running or unhealthy");
+      }
+    }, 5000); // Update every 5 seconds
   }
 
-  // PyOxidizer POC methods
-  async testPythonLibraries(): Promise<void> {
-    try {
-      const result = await invoke<string>("test_python_libraries");
-      this.pythonLibrariesMessage = `Library Test Results:\n${result}`;
-    } catch (error) {
-      this.pythonLibrariesMessage = `Error: ${error}`;
-      console.error('Python libraries test error:', error);
-    }
-  }
-
-  async advancedTextProcessing(event: SubmitEvent, text: string): Promise<void> {
-    event.preventDefault();
-    
-    try {
-      const result = await invoke<string>("advanced_python_text_processing", { text });
-      this.advancedTextMessage = `Advanced Text Processing Results:\n${result}`;
-    } catch (error) {
-      this.advancedTextMessage = `Error: ${error}`;
-      console.error('Advanced text processing error:', error);
-    }
-  }
-
-  async getPythonSystemInfo(): Promise<void> {
-    try {
-      const result = await invoke<string>("get_python_system_info");
-      this.pythonSystemInfoMessage = `Python System Information:\n${result}`;
-    } catch (error) {
-      this.pythonSystemInfoMessage = `Error: ${error}`;
-      console.error('Python system info error:', error);
-    }
-  }
 }

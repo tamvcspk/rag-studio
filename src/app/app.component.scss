@@ -110,3 +110,108 @@ button {
     background-color: #0f0f0f69;
   }
 }
+
+// MCP Dashboard Styles
+.mcp-status-section {
+  margin: 2em 0;
+  padding: 1.5em;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  background-color: #fafafa;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mcp-status-header {
+  margin-bottom: 1em;
+  
+  h4 {
+    margin: 0;
+    font-size: 1.5em;
+  }
+}
+
+.mcp-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5em;
+  margin-top: 1.5em;
+}
+
+.mcp-card {
+  background-color: white;
+  padding: 1.2em;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  h5 {
+    margin: 0 0 1em 0;
+    color: #333;
+    font-size: 1.1em;
+  }
+
+  pre {
+    background-color: #f8f8f8;
+    padding: 1em;
+    border-radius: 6px;
+    font-size: 0.85em;
+    line-height: 1.4;
+    overflow-x: auto;
+    margin: 0;
+  }
+}
+
+// Status indicator styles
+.status-running {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.status-starting {
+  color: #ffc107;
+  font-weight: bold;
+}
+
+.status-stopped {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.status-error {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.status-unknown {
+  color: #6c757d;
+  font-weight: bold;
+}
+
+// Button spacing for MCP controls
+.row button {
+  margin: 0 0.25em;
+}
+
+// Dark mode adjustments for MCP dashboard
+@media (prefers-color-scheme: dark) {
+  .mcp-status-section {
+    background-color: #1a1a1a;
+    border-color: #444;
+  }
+
+  .mcp-card {
+    background-color: #2a2a2a;
+    border-color: #555;
+    
+    h5 {
+      color: #f6f6f6;
+    }
+
+    pre {
+      background-color: #1e1e1e;
+      color: #f6f6f6;
+    }
+  }
+}
