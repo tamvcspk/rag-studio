@@ -1,56 +1,121 @@
-<main class="container">
-  <h1>RAG Studio</h1>
-
-  <div class="row">
-    <a href="https://tauri.app" target="_blank">
-      <img src="/assets/tauri.svg" class="logo tauri" alt="Tauri logo" />
-    </a>
-    <a href="https://angular.io" target="_blank">
-      <img src="/assets/angular.svg" class="logo angular" alt="Angular logo" />
-    </a>
-  </div>
-
-  <form class="row" (submit)="greet($event, greetInput.value)">
-    <input #greetInput id="greet-input" placeholder="Enter a name..." />
-    <button type="submit">Greet</button>
-  </form>
-  <p>{{ greetingMessage() }}</p>
-
-  <form class="row" (submit)="rustCallPython($event, rustCallInput.value)">
-    <input #rustCallInput id="rust-call-input" placeholder="Enter name for Python greeting..." />
-    <button type="submit">Python Greeting</button>
-  </form>
-  <p>{{ rustPythonMessage() }}</p>
-
-  <hr>
-  <h3>🚀 MCP Server Dashboard</h3>
-  
-  <div class="mcp-status-section">
-    <div class="mcp-status-header">
-      <h4>Status: <span [class]="mcpStatusClass()">{{ mcpDisplayStatus() }}</span></h4>
-    </div>
-    
-    <div class="row">
-      <button type="button" (click)="startMcpServer()" [disabled]="mcpDisplayStatus() === 'Running'">Start MCP Server</button>
-      <button type="button" (click)="stopMcpServer()" [disabled]="mcpDisplayStatus() === 'Stopped'">Stop MCP Server</button>
-      <button type="button" (click)="getMcpStatus()">Refresh Status</button>
-      <button type="button" (click)="getMcpHealthcheck()" [disabled]="mcpDisplayStatus() !== 'Running'">Healthcheck</button>
-    </div>
-
-    <div class="mcp-info-grid">
-      <div class="mcp-card">
-        <h5>🎯 Service Information</h5>
-        <pre>{{ mcpServiceInfo() || 'Loading...' }}</pre>
-      </div>
-      
-      @if (mcpHealthStatus()) {
-        <div class="mcp-card">
-          <h5>💚 Health Status</h5>
-          <pre>{{ mcpHealthStatus() }}</pre>
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-2">
+            <i class="pi pi-database text-blue-600 text-2xl"></i>
+            <h1 class="text-xl font-semibold text-gray-900">RAG Studio</h1>
+          </div>
+          <div class="hidden sm:block">
+            <span class="text-sm text-gray-500">Personal RAG & MCP Server</span>
+          </div>
         </div>
-      }
+        
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-2">
+            <i class="pi pi-shield text-green-600"></i>
+            <span class="text-sm text-green-600">Local First</span>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </header>
 
-  <router-outlet />
-</main>
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <p-tabs value="dashboard" [(activeIndex)]="activeTab">
+      <p-tablist>
+        <p-tab value="dashboard">
+          <div class="flex items-center space-x-2">
+            <i class="pi pi-chart-line"></i>
+            <span>Dashboard</span>
+          </div>
+        </p-tab>
+        <p-tab value="tools">
+          <div class="flex items-center space-x-2">
+            <i class="pi pi-wrench"></i>
+            <span>Tools</span>
+          </div>
+        </p-tab>
+        <p-tab value="knowledge-bases">
+          <div class="flex items-center space-x-2">
+            <i class="pi pi-book"></i>
+            <span>Knowledge Bases</span>
+          </div>
+        </p-tab>
+        <p-tab value="pipelines">
+          <div class="flex items-center space-x-2">
+            <i class="pi pi-sitemap"></i>
+            <span>Pipelines</span>
+          </div>
+        </p-tab>
+        <p-tab value="settings">
+          <div class="flex items-center space-x-2">
+            <i class="pi pi-cog"></i>
+            <span>Settings</span>
+          </div>
+        </p-tab>
+      </p-tablist>
+
+      <p-tabpanels>
+        <p-tabpanel value="dashboard">
+          <div class="space-y-6">
+            <app-dashboard></app-dashboard>
+          </div>
+        </p-tabpanel>
+
+        <p-tabpanel value="tools">
+          <div class="space-y-6">
+            <div>
+              <h2 class="text-2xl font-semibold text-gray-900 mb-2">Dynamic MCP Tools</h2>
+              <p class="text-gray-600 mb-6">
+                Create and manage dynamic tools that are exposed via MCP to external AI models and IDEs.
+              </p>
+              <app-tools-manager></app-tools-manager>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <p-tabpanel value="knowledge-bases">
+          <div class="space-y-6">
+            <div>
+              <h2 class="text-2xl font-semibold text-gray-900 mb-2">Knowledge Bases</h2>
+              <p class="text-gray-600 mb-6">
+                Manage your knowledge bases with versioning, indexing, and import/export capabilities.
+              </p>
+              <app-knowledge-base-manager></app-knowledge-base-manager>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <p-tabpanel value="pipelines">
+          <div class="space-y-6">
+            <div>
+              <h2 class="text-2xl font-semibold text-gray-900 mb-2">Pipeline Designer</h2>
+              <p class="text-gray-600 mb-6">
+                Design and run ingest/index pipelines using prebuilt operations with scheduling support.
+              </p>
+              <app-pipeline-designer></app-pipeline-designer>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <p-tabpanel value="settings">
+          <div class="space-y-6">
+            <div>
+              <h2 class="text-2xl font-semibold text-gray-900 mb-2">Settings</h2>
+              <p class="text-gray-600 mb-6">
+                Configure global settings, security policies, and workspace preferences.
+              </p>
+              <app-settings></app-settings>
+            </div>
+          </div>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </div>
+</div>
+
+<router-outlet />

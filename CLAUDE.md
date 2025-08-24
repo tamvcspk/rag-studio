@@ -12,7 +12,7 @@ This is a hybrid Tauri application with two main components:
 
 ### Frontend (Angular)
 - Located in `src/` directory
-- Angular 20+ with Material UI components
+- Angular 20+ with PrimeNG components
 - Served on port 1420 during development
 - Uses SCSS for styling
 
@@ -43,7 +43,7 @@ This is a hybrid Tauri application with two main components:
 ## Key Technologies
 
 - **Tauri v2**: Desktop application framework
-- **Angular 20+**: Frontend framework with Material UI
+- **Angular 20+**: Frontend framework with PrimeNG
 - **Rust**: Backend language for performance-critical operations
 - **PyO3**: Python integration for AI/ML components
 - **SQLite**: Database for metadata and registry
@@ -137,7 +137,7 @@ The Rust backend includes comprehensive tests:
 
 ### Angular Frontend Guidelines
 
-- Use Angular Material UI components consistently throughout the application
+- Use PrimeNG components consistently throughout the application
 - Follow Angular standalone component patterns (Angular 20+)
 - Use SCSS for styling with consistent naming conventions
 - Implement responsive layouts that work across different screen sizes

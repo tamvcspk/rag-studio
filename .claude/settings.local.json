@@ -9,7 +9,10 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "mcp__angular-cli__get_best_practices",
       "Bash(cargo check:*)",
-      "mcp__angular-cli__list_projects"
+      "mcp__angular-cli__list_projects",
+      "WebFetch(domain:primeng.org)",
+      "WebFetch(domain:www.primefaces.org)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": [],

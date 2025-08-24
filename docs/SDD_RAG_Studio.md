@@ -79,7 +79,7 @@ The app is portable (single executable/folder), starts with one click, and suppo
 ### 3.2 Technology Stack Integration
 
 * **Framework:** Tauri for desktop portability, one-click start, tray icon (`tauri-plugin-system-tray`); headless via hidden WebView; tauri-plugin-python for PyO3 integration.
-* **Frontend:** Angular; diagramming/designer via Angular ecosystem (e.g., Angular CDK DragDrop + `ngx-graph`/`ngx-flowchart`), component library **Angular Material** (accessibility).
+* **Frontend:** Angular; diagramming/designer via Angular ecosystem (e.g., Angular CDK DragDrop + `ngx-graph`/`ngx-flowchart`), component library **PrimeNG** (comprehensive UI components with accessibility).
 * **Backend:** Rust 1.80+ with Axum (async server, migrated from FastAPI), Tokio (concurrency/orchestration), PyO3 (Python embedding for AI); bundled via tauri-plugin-python.
 * **Database:** SQLite with Diesel (Rust ORM for Tool, KB Pack, Pipeline, etc.).
 * **RAG:** Sentence-Transformers (e.g., `all-MiniLM-L6-v2`) for embed/rerank (Python via PyO3); FAISS for vectors (Python via PyO3); custom Rust BM25 (e.g., using tantivy crate) for lexical.
@@ -158,7 +158,7 @@ Settings: {
 
 ### 5.2 FR-2 — KB Management
 
-* **Wizard:** **Angular Material Stepper** to select template, set version.
+* **Wizard:** **PrimeNG Stepper** to select template, set version.
 * **Versioning:** DB support for rollback/delta (re-embed changed chunks via PyO3).
 * **Import/Export:** ZIP handler with manifest validation.
 
@@ -197,7 +197,7 @@ Settings: {
 ### 5.8 FR-8 to FR-11 — Observability, UX, Config, Error Handling
 
 * **Logs:** Rust `tracing` + redaction.
-* **Dashboard:** Angular charts (e.g., `ngx-charts`/ECharts) for P50/P95 latency, hit rate, recall@k.
+* **Dashboard:** PrimeNG Charts for P50/P95 latency, hit rate, recall@k.
 * **Errors:** Transactional rollback; pipeline resume.
 * **UX:** Wizards, search/filter; **undo/redo via a history service (e.g., NgRx store snapshotting)**.
 
@@ -215,10 +215,10 @@ Settings: {
 ## 6. User Interface Design
 
 * **Layout:** Sidebar (Tools/KBs/Pipelines/Flows); main panel for editors/logs.
-* **Wizards:** **Angular Material Stepper** for guided flows.
+* **Wizards:** **PrimeNG Stepper** for guided flows.
 * **Pipeline Designer:** Angular canvas with drag-and-drop nodes; side panel parameter editors; YAML sync view.
 * **Tray Menu:** “Open UI”, “Status”, “Stop”.
-* **Accessibility:** **Angular Material + CDK a11y** (ARIA/keyboard/screen-reader compliance).
+* **Accessibility:** **PrimeNG accessibility features** (ARIA/keyboard/screen-reader compliance).
 
 ---
 

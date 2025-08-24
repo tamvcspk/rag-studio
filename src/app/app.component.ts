@@ -2,14 +2,27 @@ import { Component, OnInit, signal, computed } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { invoke } from "@tauri-apps/api/core";
+import { TabsModule } from 'primeng/tabs';
+import { DashboardComponent } from './components/dashboard.component';
+import { ToolsManagerComponent } from './components/tools-manager.component';
+import { KnowledgeBaseManagerComponent } from './components/knowledge-base-manager.component';
+import { PipelineDesignerComponent } from './components/pipeline-designer.component';
+import { SettingsComponent } from './components/settings.component';
 
 @Component({
   selector: "app-root",
-  imports: [RouterOutlet, CommonModule],
+  imports: [
+    RouterOutlet, CommonModule, TabsModule, 
+    DashboardComponent, ToolsManagerComponent, KnowledgeBaseManagerComponent,
+    PipelineDesignerComponent, SettingsComponent
+  ],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.scss",
 })
 export class AppComponent implements OnInit {
+  // Active tab for navigation
+  activeTab = 0;
+  
   // Using signals for reactive state management
   greetingMessage = signal("");
   rustPythonMessage = signal("");
