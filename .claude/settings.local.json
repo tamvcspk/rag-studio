@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:pyoxidizer.readthedocs.io)",
+      "WebFetch(domain:gregoryszorc.com)",
+      "WebFetch(domain:gregoryszorc.com)",
+      "WebFetch(domain:docs.rs)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

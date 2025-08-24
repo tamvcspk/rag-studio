@@ -1,0 +1,60 @@
+<main class="container">
+  <h1>Welcome to Tauri + Angular!</h1>
+
+  <div class="row">
+    <a href="https://tauri.app" target="_blank">
+      <img src="/assets/tauri.svg" class="logo tauri" alt="Tauri logo" />
+    </a>
+    <a href="https://angular.io" target="_blank">
+      <img src="/assets/angular.svg" class="logo angular" alt="Angular logo" />
+    </a>
+  </div>
+  <p>Click on the logos to learn more about the frameworks</p>
+
+  <form class="row" (submit)="greet($event, greetInput.value)">
+    <input #greetInput id="greet-input" placeholder="Enter a name..." />
+    <button type="submit">Greet (Rust)</button>
+  </form>
+  <p>{{ greetingMessage }}</p>
+
+  <hr>
+  <h3>Rust Core → Python Integration (Pure PyO3)</h3>
+  
+  <form class="row" (submit)="rustCallPython($event, rustCallInput.value)">
+    <input #rustCallInput id="rust-call-input" placeholder="Enter name for Rust→Python call..." />
+    <button type="submit">Rust Call Python</button>
+  </form>
+  <p>{{ rustPythonMessage }}</p>
+
+  <div class="row">
+    <button type="button" (click)="rustCallPythonDirect()">Rust Calculate Python (15, 25)</button>
+  </div>
+  <p>{{ rustPythonDirectMessage }}</p>
+
+  <form class="row" (submit)="ragSearch($event, ragSearchInput.value)">
+    <input #ragSearchInput id="rag-search-input" placeholder="Enter search query for RAG..." />
+    <button type="submit">RAG Search (Python)</button>
+  </form>
+  <pre>{{ ragSearchMessage }}</pre>
+
+  <hr>
+  <h3>PyOxidizer POC - Enhanced Python Libraries</h3>
+  
+  <div class="row">
+    <button type="button" (click)="testPythonLibraries()">Test Embedded Python Libraries</button>
+  </div>
+  <pre>{{ pythonLibrariesMessage }}</pre>
+
+  <form class="row" (submit)="advancedTextProcessing($event, advancedTextInput.value)">
+    <input #advancedTextInput id="advanced-text-input" placeholder="Enter text for advanced processing..." />
+    <button type="submit">Advanced Text Processing</button>
+  </form>
+  <pre>{{ advancedTextMessage }}</pre>
+
+  <div class="row">
+    <button type="button" (click)="getPythonSystemInfo()">Get Python System Info</button>
+  </div>
+  <pre>{{ pythonSystemInfoMessage }}</pre>
+
+  <router-outlet />
+</main>

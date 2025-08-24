@@ -1,0 +1,8 @@
+# RAG Studio - Development Dependencies
+# Minimal set for development, testing, and PyOxidizer embedding
+
+# Core runtime dependencies (embedded in final executable)
+-r requirements.txt
+
+# PyOxidizer for Python embedding and portable deployment
+pyoxidizer==0.24.0
