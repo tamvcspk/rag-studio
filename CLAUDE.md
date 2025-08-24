@@ -123,3 +123,51 @@ The Rust backend includes comprehensive tests:
 - Python integration tests in `src-tauri/src/lib.rs:81-138`
 - Run tests with `cargo test` from the `src-tauri/` directory
 - Tests verify Python context initialization, system info, and library functionality
+
+## Development Guidelines
+
+### General Guidelines
+
+- Only use absolute positioning when necessary. Opt for responsive and well-structured layouts using CSS Grid and Flexbox
+- Refactor code as you go to keep the codebase clean and maintainable
+- Keep file sizes small and organize helper functions and components in their own files
+- Follow the established Angular and Rust project structure conventions
+- Maintain separation of concerns between frontend (Angular) and backend (Rust/Python)
+- Always handle errors gracefully with proper error propagation from Python through Rust to Angular
+
+### Angular Frontend Guidelines
+
+- Use Angular Material UI components consistently throughout the application
+- Follow Angular standalone component patterns (Angular 20+)
+- Use SCSS for styling with consistent naming conventions
+- Implement responsive layouts that work across different screen sizes
+- Keep components focused and use services for business logic
+- Use TypeScript strictly with proper type definitions
+- Follow Angular best practices for dependency injection and lifecycle management
+
+### Rust Backend Guidelines
+
+- Use `OnceLock` for thread-safe lazy initialization of shared resources
+- Cache Python modules to avoid repeated compilation overhead
+- Always use `Python::with_gil()` for Python operations in PyO3 integration
+- Convert Python results to JSON strings for consistent data exchange
+- Implement comprehensive error handling with proper error propagation
+- Use Tokio async runtime efficiently for concurrent operations
+- Follow Rust ownership and borrowing principles strictly
+
+### Security Guidelines
+
+- Never log or expose sensitive data, especially in air-gapped mode
+- Implement proper input validation for all user inputs
+- Follow the principle of least privilege for filesystem and network access
+- Ensure all citations are included in RAG responses for transparency
+- Validate all data exchanges between frontend, Rust backend, and Python components
+
+### Performance Guidelines
+
+- Cache frequently accessed data appropriately
+- Use lazy loading for heavy operations
+- Implement efficient vector search with proper indexing
+- Minimize Python-Rust boundary crossings where possible
+- Use appropriate data structures for different use cases (SQLite for metadata, file-based for large data)
+- Profile and optimize critical paths in the RAG pipeline
