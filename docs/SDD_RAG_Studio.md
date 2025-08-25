@@ -79,7 +79,7 @@ The app is portable (single executable/folder), starts with one click, and suppo
 ### 3.2 Technology Stack Integration
 
 * **Framework:** Tauri for desktop portability, one-click start, tray icon (`tauri-plugin-system-tray`); headless via hidden WebView; tauri-plugin-python for PyO3 integration.
-* **Frontend:** Angular; diagramming/designer via Angular ecosystem (e.g., Angular CDK DragDrop + `ngx-graph`/`ngx-flowchart`), component library **PrimeNG** (comprehensive UI components with accessibility).
+* **Frontend:** Angular 20; diagramming/designer via Angular CDK (DragDrop, Overlay, Dialog) + custom canvas components, **Lucide Icons** for consistent iconography, **Radix-inspired design system** for UI consistency.
 * **Backend:** Rust 1.80+ with Axum (async server, migrated from FastAPI), Tokio (concurrency/orchestration), PyO3 (Python embedding for AI); bundled via tauri-plugin-python.
 * **Database:** SQLite with Diesel (Rust ORM for Tool, KB Pack, Pipeline, etc.).
 * **RAG:** Sentence-Transformers (e.g., `all-MiniLM-L6-v2`) for embed/rerank (Python via PyO3); FAISS for vectors (Python via PyO3); custom Rust BM25 (e.g., using tantivy crate) for lexical.
@@ -158,7 +158,7 @@ Settings: {
 
 ### 5.2 FR-2 — KB Management
 
-* **Wizard:** **PrimeNG Stepper** to select template, set version.
+* **Wizard:** Angular Material Stepper with custom templates for KB creation.
 * **Versioning:** DB support for rollback/delta (re-embed changed chunks via PyO3).
 * **Import/Export:** ZIP handler with manifest validation.
 
@@ -197,7 +197,7 @@ Settings: {
 ### 5.8 FR-8 to FR-11 — Observability, UX, Config, Error Handling
 
 * **Logs:** Rust `tracing` + redaction.
-* **Dashboard:** PrimeNG Charts for P50/P95 latency, hit rate, recall@k.
+* **Dashboard:** Angular charts (e.g., `ng2-charts` with Chart.js) for P50/P95 latency, hit rate, recall@k.
 * **Errors:** Transactional rollback; pipeline resume.
 * **UX:** Wizards, search/filter; **undo/redo via a history service (e.g., NgRx store snapshotting)**.
 
@@ -214,11 +214,225 @@ Settings: {
 
 ## 6. User Interface Design
 
-* **Layout:** Sidebar (Tools/KBs/Pipelines/Flows); main panel for editors/logs.
-* **Wizards:** **PrimeNG Stepper** for guided flows.
-* **Pipeline Designer:** Angular canvas with drag-and-drop nodes; side panel parameter editors; YAML sync view.
-* **Tray Menu:** “Open UI”, “Status”, “Stop”.
-* **Accessibility:** **PrimeNG accessibility features** (ARIA/keyboard/screen-reader compliance).
+### 6.1 Overall UI Architecture
+
+* **Framework:** Angular 20 with standalone components
+* **Design System:** Radix-inspired design tokens and component patterns
+* **Icon System:** Lucide Icons (3,300+ icons, MIT license, tree-shakeable)
+* **Layout:** Responsive grid system with Tauri WebView optimization
+* **Theme:** Light/dark mode support with CSS custom properties
+
+### 6.2 Component Architecture
+
+#### 6.2.1 Atomic Components (Base UI Elements)
+
+**Primitives**
+- RagButton (variants: solid/outline/ghost/soft)
+- RagBadge (status indicators)
+- RagSpinner
+- RagSkeleton
+- RagProgress
+- RagTooltip
+- RagIcon (wrapper for icon system)
+- RagCheckbox/Radio/Switch
+- RagInput/TextArea/Select
+
+**Feedback**
+- RagAlert
+- RagToast
+- RagStatusIndicator
+
+#### 6.2.2 Semantic Components (Domain-Aware)
+
+**Data Display**
+- RagCard
+- RagStatCard
+- RagCodeBlock
+- RagKeyValue
+- RagMetricDisplay
+- RagTimestamp
+
+**Forms**
+- RagFormField (label + input + error)
+- RagSearchInput
+- RagVersionInput
+- RagCronInput
+
+**Navigation**
+- RagTabs
+- RagBreadcrumb
+- RagSidebarItem
+
+**Overlays**
+- RagDialog
+- RagDropdown
+- RagContextMenu
+
+#### 6.2.3 Composite Components (Feature-Rich)
+
+**Domain-Specific**
+- ToolCard
+- KnowledgeBaseCard
+- PipelineCard
+- PipelineFlowVisualization
+- McpEndpointStatus
+- QueryPerformanceMetrics
+- StorageUsageIndicator
+- ScheduleViewer
+- LogViewer
+
+**Wizards**
+- CreateToolWizard
+- CreateKBWizard
+- PipelineDesigner (drag-drop canvas)
+
+**Complex UI**
+- ErrorBoundaryCard
+- LoadingStateWrapper
+- EmptyStatePanel
+- CitationRenderer
+
+### 6.3 Icon Integration Strategy
+
+```typescript
+// Lucide Angular Module
+import { LucideAngularModule, Database, Search, FileText, ... } from 'lucide-angular';
+
+// Icon mapping for domain concepts
+export const DOMAIN_ICONS = {
+  tool: 'wrench',
+  knowledgeBase: 'book-open',
+  pipeline: 'workflow',
+  flow: 'git-branch',
+  schedule: 'calendar',
+  mcp: 'server',
+  embed: 'cpu',
+  index: 'database',
+  search: 'search',
+  answer: 'message-square',
+  citation: 'quote',
+  version: 'git-commit',
+  error: 'alert-circle',
+  success: 'check-circle',
+  warning: 'alert-triangle',
+  info: 'info',
+  settings: 'settings',
+  import: 'upload',
+  export: 'download',
+  delete: 'trash-2',
+  edit: 'edit',
+  pause: 'pause',
+  play: 'play',
+  refresh: 'refresh-cw',
+  filter: 'filter',
+  sort: 'arrow-up-down'
+};
+```
+
+### 6.4 Route Structure and Pages
+
+```typescript
+const routes: Routes = [
+  {
+    path: '',
+    component: MainLayoutComponent,
+    children: [
+      // Dashboard Module
+      {
+        path: 'dashboard',
+        component: DashboardPage,
+        data: { title: 'Dashboard', icon: 'layout-dashboard' }
+      },
+      
+      // Tools Module
+      {
+        path: 'tools',
+        loadChildren: () => import('./tools/tools.module').then(m => m.ToolsModule),
+        data: { title: 'Tools', icon: 'wrench' }
+      },
+      
+      // Knowledge Bases Module
+      {
+        path: 'knowledge-bases',
+        loadChildren: () => import('./kb/kb.module').then(m => m.KnowledgeBasesModule),
+        data: { title: 'Knowledge Bases', icon: 'book-open' }
+      },
+      
+      // Pipelines Module
+      {
+        path: 'pipelines',
+        loadChildren: () => import('./pipelines/pipelines.module').then(m => m.PipelinesModule),
+        data: { title: 'Pipelines', icon: 'workflow' }
+      },
+      
+      // Flows Module
+      {
+        path: 'flows',
+        loadChildren: () => import('./flows/flows.module').then(m => m.FlowsModule),
+        data: { title: 'Flows', icon: 'git-branch' }
+      },
+      
+      // Settings Module
+      {
+        path: 'settings',
+        loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule),
+        data: { title: 'Settings', icon: 'settings' }
+      },
+      
+      // System Module
+      {
+        path: 'system',
+        children: [
+          { path: 'logs', component: SystemLogsPage },
+          { path: 'metrics', component: MetricsPage },
+          { path: 'activity', component: ActivityMonitorPage }
+        ]
+      }
+    ]
+  },
+  
+  // Fullscreen Routes (no layout)
+  {
+    path: 'designer',
+    component: PipelineDesignerFullscreenPage,
+    data: { fullscreen: true }
+  }
+];
+
+// Module-specific routes
+// Tools Module Routes
+const toolRoutes: Routes = [
+  { path: '', component: ToolsListPage },
+  { path: 'create', component: CreateToolPage },
+  { path: ':id', component: ToolDetailPage },
+  { path: ':id/edit', component: EditToolPage },
+  { path: ':id/logs', component: ToolLogsPage },
+  { path: ':id/permissions', component: ToolPermissionsPage }
+];
+
+// Knowledge Bases Module Routes
+const kbRoutes: Routes = [
+  { path: '', component: KnowledgeBasesListPage },
+  { path: 'create', component: CreateKBWizardPage },
+  { path: 'import', component: ImportKBPage },
+  { path: ':id', component: KBDetailPage },
+  { path: ':id/versions', component: KBVersionsPage },
+  { path: ':id/index', component: KBIndexPage },
+  { path: ':id/export', component: ExportKBPage }
+];
+
+// Pipelines Module Routes
+const pipelineRoutes: Routes = [
+  { path: '', component: PipelinesListPage },
+  { path: 'designer', component: PipelineDesignerPage },
+  { path: 'templates', component: PipelineTemplatesPage },
+  { path: ':id', component: PipelineDetailPage },
+  { path: ':id/edit', component: EditPipelinePage },
+  { path: ':id/runs', component: PipelineRunsPage },
+  { path: ':id/runs/:runId', component: PipelineRunDetailPage },
+  { path: ':id/schedule', component: PipelineSchedulePage }
+];
+```
 
 ---
 
