@@ -1,0 +1,22 @@
+<rag-card>
+  <div class="recent-activity">
+    <h2 class="recent-activity__title">Recent Activity</h2>
+    
+    <div class="activity-list">
+      @for (activity of activities(); track activity.id) {
+        <div class="activity-item">
+          <span class="activity-item__timestamp">{{ activity.timestamp }}</span>
+          <rag-badge [variant]="getBadgeVariant(activity.level)" [color]="getBadgeColor(activity.level)">
+            {{ activity.level.toUpperCase() }}
+          </rag-badge>
+          <span class="activity-item__message">{{ activity.message }}</span>
+        </div>
+      } @empty {
+        <div class="activity-list__empty">
+          <lucide-angular name="activity" class="w-8 h-8 text-gray-400" />
+          <p>No recent activity</p>
+        </div>
+      }
+    </div>
+  </div>
+</rag-card>

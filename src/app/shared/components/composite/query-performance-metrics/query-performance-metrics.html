@@ -1,0 +1,36 @@
+<rag-card>
+  <div class="performance-metrics">
+    <div class="performance-metrics__header">
+      <div>
+        <h2 class="performance-metrics__title">Query Performance</h2>
+        <p class="performance-metrics__subtitle">{{ metrics().period }}</p>
+      </div>
+      <rag-button 
+        variant="soft" 
+        size="2" 
+        [disabled]="isRefreshing()"
+        (click)="refresh()">
+        <lucide-angular 
+          name="refresh-cw" 
+          [class.animate-spin]="isRefreshing()" 
+          class="w-4 h-4" />
+        Refresh
+      </rag-button>
+    </div>
+    
+    <div class="performance-metrics__grid">
+      <div class="metric-item">
+        <div class="metric-item__label">P50 Latency</div>
+        <div class="metric-item__value">{{ metrics().p50Latency }}</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-item__label">P95 Latency</div>
+        <div class="metric-item__value">{{ metrics().p95Latency }}</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-item__label">Hit Rate</div>
+        <div class="metric-item__value">{{ metrics().hitRate }}</div>
+      </div>
+    </div>
+  </div>
+</rag-card>

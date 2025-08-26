@@ -1,0 +1,38 @@
+<div class="mcp-server-status">
+  <div class="mcp-server-status__header">
+    <div class="mcp-server-status__info">
+      <lucide-angular 
+        [name]="getStatusIcon(serverInfo().status)" 
+        class="w-5 h-5"
+        [class.text-green-600]="serverInfo().status === 'active'"
+        [class.text-red-600]="serverInfo().status === 'error'"
+        [class.text-gray-400]="serverInfo().status === 'inactive'" />
+      <div>
+        <h3 class="mcp-server-status__title">MCP Server</h3>
+        <p class="mcp-server-status__subtitle">Model Context Protocol</p>
+      </div>
+    </div>
+    <rag-badge [variant]="getBadgeVariant(serverInfo().status)" [color]="getBadgeColor(serverInfo().status)">
+      {{ serverInfo().status.toUpperCase() }}
+    </rag-badge>
+  </div>
+  
+  <div class="mcp-server-status__details">
+    <div class="detail-item">
+      <span class="detail-item__label">Port</span>
+      <span class="detail-item__value">{{ serverInfo().port }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-item__label">Uptime</span>
+      <span class="detail-item__value">{{ serverInfo().uptime }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-item__label">Connections</span>
+      <span class="detail-item__value">{{ serverInfo().activeConnections }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-item__label">Version</span>
+      <span class="detail-item__value">{{ serverInfo().version }}</span>
+    </div>
+  </div>
+</div>

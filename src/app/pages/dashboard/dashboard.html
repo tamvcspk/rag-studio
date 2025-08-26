@@ -1,1 +1,52 @@
-<span>Dashboard page - Coming soon</span>
+<div class="dashboard-page">
+  <!-- System Alert -->
+  @if (showMaintenanceAlert()) {
+    <rag-alert 
+      variant="warning" 
+      title="Scheduled Maintenance"
+      [closable]="true"
+      (onClose)="dismissMaintenanceAlert()">
+      System will undergo maintenance at 2:00 AM. Background jobs will be paused.
+    </rag-alert>
+  }
+
+  <!-- Stats Overview -->
+  <section class="dashboard-section">
+    <rag-dashboard-stats-grid />
+  </section>
+
+  <!-- MCP Server Status (Compact) -->
+  <section class="dashboard-section">
+    <rag-mcp-server-status />
+  </section>
+
+  <!-- Performance Metrics -->
+  <section class="dashboard-section">
+    <rag-query-performance-metrics />
+  </section>
+
+  <!-- Loading State Example -->
+  @if (isLoading()) {
+    <section class="dashboard-section">
+      <rag-card class="loading-example">
+        <div class="loading-overlay">
+          <div class="loading-content">
+            <lucide-angular name="loader-2" class="animate-spin w-8 h-8" />
+            <p>Loading metrics...</p>
+          </div>
+        </div>
+        <h2 class="loading-example__title">Resource Usage</h2>
+        <div class="loading-skeleton">
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line skeleton-line--80"></div>
+          <div class="skeleton-line skeleton-line--60"></div>
+        </div>
+      </rag-card>
+    </section>
+  }
+
+  <!-- Recent Activity -->
+  <section class="dashboard-section">
+    <rag-recent-activity-log />
+  </section>
+</div>
