@@ -37,5 +37,5 @@ export class RagButton {
     this.isInteractionDisabled() ? 'rt-disabled' : '',
     this.loading() ? 'rt-loading' : '',
     this.fullWidth() ? 'rt-full-width' : ''
-  ].filter(Boolean).join(' ')
+  ].filter(Boolean).join(' '));
 }
