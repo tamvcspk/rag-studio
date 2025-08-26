@@ -1,0 +1,11 @@
+<button
+  [class]="buttonClasses()"
+  [type]="type()"
+  [disabled]="disabled() || loading()"
+  (click)="handleClick($event)"
+>
+  <ng-container *ngIf="loading()">
+    <span class="rt-button-spinner"></span>
+  </ng-container>
+  <ng-content></ng-content>
+</button>

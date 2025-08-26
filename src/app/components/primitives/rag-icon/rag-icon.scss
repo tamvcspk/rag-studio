@@ -1,0 +1,39 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rag-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+  flex-shrink: 0;
+}
+
+// Size variants
+.rag-icon--xs {
+  width: 12px;
+  height: 12px;
+}
+
+.rag-icon--sm {
+  width: 16px;
+  height: 16px;
+}
+
+.rag-icon--md {
+  width: 20px;
+  height: 20px;
+}
+
+.rag-icon--lg {
+  width: 24px;
+  height: 24px;
+}
+
+.rag-icon--xl {
+  width: 32px;
+  height: 32px;
+}

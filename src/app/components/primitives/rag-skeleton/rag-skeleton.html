@@ -1,0 +1,6 @@
+@for (_ of skeletonArray(); track $index) {
+  <div
+    [class]="skeletonClasses()"
+    [ngStyle]="skeletonStyles()"
+  />
+}

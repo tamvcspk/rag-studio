@@ -1,0 +1,12 @@
+<div
+  [class]="progressClasses()"
+  role="progressbar"
+  [attr.aria-valuenow]="indeterminate() ? null : value()"
+  [attr.aria-valuemin]="0"
+  [attr.aria-valuemax]="max()"
+>
+  <div
+    class="rt-ProgressIndicator"
+    [ngStyle]="indicatorStyles()"
+  />
+</div>

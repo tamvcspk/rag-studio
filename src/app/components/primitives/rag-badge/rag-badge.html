@@ -1,0 +1,9 @@
+<span [class]="badgeClasses()">
+  @if (dot()) {
+    <span class="status-indicator"></span>
+  }
+  @if (icon() && !dot()) {
+    <rag-icon [name]="icon()!" size="xs" />
+  }
+  <ng-content></ng-content>
+</span>

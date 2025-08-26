@@ -1,0 +1,134 @@
+:host {
+  display: inline-flex;
+}
+
+.rt-radio-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3, 12px);
+  cursor: pointer;
+  
+  &.rt-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.rt-radio-container {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.rt-Radio {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--gray-6, hsl(0, 0%, 88.7%));
+  border-radius: 50%;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+
+  &:hover:not(:disabled) {
+    border-color: var(--gray-7, hsl(0, 0%, 85.8%));
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--gray-1, hsl(0, 0%, 99.0%)), 0 0 0 4px var(--blue-9, hsl(206, 100%, 50.0%));
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: var(--gray-2, hsl(0, 0%, 97.3%));
+  }
+
+  &.rt-checked {
+    background-color: white;
+    border-color: var(--blue-9, hsl(206, 100%, 50.0%));
+    border-width: 6px;
+
+    &.rt-color-green {
+      border-color: var(--green-9, hsl(151, 55.0%, 41.5%));
+    }
+
+    &.rt-color-red {
+      border-color: var(--red-9, hsl(358, 75.0%, 59.0%));
+    }
+  }
+}
+
+// Size variants
+.rt-Radio.rt-size-sm {
+  width: 16px;
+  height: 16px;
+
+  &.rt-checked {
+    border-width: 5px;
+  }
+}
+
+.rt-Radio.rt-size-md {
+  width: 20px;
+  height: 20px;
+
+  &.rt-checked {
+    border-width: 6px;
+  }
+}
+
+.rt-Radio.rt-size-lg {
+  width: 24px;
+  height: 24px;
+
+  &.rt-checked {
+    border-width: 7px;
+  }
+}
+
+.rt-radio-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.rt-radio-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--blue-9, hsl(206, 100%, 50.0%));
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.15s;
+}
+
+.rt-Radio.rt-checked + .rt-radio-indicator .rt-radio-dot {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.rt-radio-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 4px);
+}
+
+.rt-radio-label {
+  font-size: var(--font-size-2, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-2, 20px);
+  color: var(--gray-12, hsl(0, 0%, 9.0%));
+}
+
+.rt-radio-description {
+  font-size: var(--font-size-1, 12px);
+  line-height: var(--line-height-2, 20px);
+  color: var(--gray-10, hsl(0, 0%, 52.3%));
+}

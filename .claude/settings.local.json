@@ -12,7 +12,9 @@
       "mcp__angular-cli__list_projects",
       "WebFetch(domain:primeng.org)",
       "WebFetch(domain:www.primefaces.org)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(ng generate component:*)",
+      "Read(/C:\\c\\Src\\project/**)"
     ],
     "deny": [],
     "ask": [],

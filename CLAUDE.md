@@ -165,19 +165,109 @@ The Rust backend includes comprehensive tests:
 
 ### Angular Frontend Guidelines
 
-- Use Radix-inspired design system components consistently throughout the application
-- Follow Angular standalone component patterns (Angular 20+)
+**IMPORTANT: This project uses Angular 20 (latest as of August 2025). Always use Angular 20 syntax and features.**
+
+#### Core Angular 20 Principles
+- **Standalone Architecture**: All components, directives, and pipes use `standalone: true` by default
+- **Modern Reactivity**: Use `signal()`, `computed()`, and `effect()` instead of RxJS BehaviorSubject where possible
+- **Signal-based Inputs/Outputs**: Use `input()`, `input.required()`, and `output()` instead of `@Input()` and `@Output()`
+- **Control Flow Syntax**: Use `@if`, `@for`, `@switch` instead of `*ngIf`, `*ngFor`, `*ngSwitch`
+- **Zoneless Change Detection**: Enabled with `provideZonelessChangeDetection()` for better performance
+
+#### Project Setup Requirements
+- TypeScript 5.5+ and Node.js 20.11.1+ required
+- Bootstrap with `bootstrapApplication(AppComponent, {providers: []})` instead of `bootstrapModule`
+- Use Vite and esbuild as default build tools via Angular CLI
+- Enable zoneless change detection where Zone.js isn't required
+
+#### Component Development
+```typescript
+// Modern Angular 20 component example
+import { Component, input, output, signal, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    @if (visible()) {
+      <div [class]="containerClasses()">
+        @for (item of items(); track item.id) {
+          <div>{{ item.name }}</div>
+        } @empty {
+          <div>No items available</div>
+        }
+      </div>
+    }
+  `
+})
+export class ExampleComponent {
+  // Signal-based inputs with proper typing
+  readonly items = input.required<Item[]>();
+  readonly size = input<'sm' | 'md' | 'lg'>('md');
+  readonly disabled = input(false, { transform: Boolean });
+  
+  // Signal-based outputs
+  readonly itemClick = output<Item>();
+  
+  // Internal signals for state
+  private readonly visible = signal(true);
+  
+  // Computed values for derived state
+  readonly containerClasses = computed(() => [
+    'container',
+    `size-${this.size()}`,
+    this.disabled() ? 'disabled' : ''
+  ].filter(Boolean).join(' '));
+}
+```
+
+#### Template Syntax
+- **Control Flow**: Use `@if (condition) { }`, `@for (item of items; track item.id) { }`, `@switch (value) { }`
+- **Deferred Loading**: Use `@defer (on viewport) { } @placeholder { } @loading { } @error { }`
+- **Self-Closing Tags**: Supported (`<my-comp />`)
+- **Signal Calls**: Always call signals as functions in templates: `{{ mySignal() }}`
+
+#### Forms and Validation
+- Use signal-based form controls with improved typed forms
+- Integrate signals with form state management
+- Leverage `toSignal()` and `toObservable()` for RxJS interop
+
+#### Performance Optimization
+- **Signals**: Use `signal()`, `computed()`, `effect()` for fine-grained reactivity
+- **Zoneless**: Avoid Zone.js dependencies where possible
+- **Lazy Loading**: Use `@defer` blocks for performance-critical components
+- **Tree Shaking**: Import only needed modules/components
+
+#### Design System Integration
+- Use Radix-inspired design system components consistently
 - Use Lucide Icons for all iconography (3,300+ icons, tree-shakeable)
 - Implement atomic, semantic, and composite component architecture:
   - Atomic: RagButton, RagBadge, RagSpinner, RagIcon, etc.
   - Semantic: RagCard, RagFormField, RagSearchInput, etc.
   - Composite: ToolCard, PipelineDesigner, CreateToolWizard, etc.
 - Use SCSS with CSS custom properties for theming (light/dark mode support)
-- Implement responsive layouts that work across different screen sizes
-- Keep components focused and use services for business logic
-- Use TypeScript strictly with proper type definitions
-- Follow Angular best practices for dependency injection and lifecycle management
-- Use Angular CDK for advanced UI patterns (DragDrop, Overlay, Dialog)
+- Implement responsive layouts using CSS Grid and Flexbox
+
+#### Migration from Older Angular Versions
+- Replace `@Input()` with `input()` or `input.required()`
+- Replace `@Output()` with `output()`
+- Replace `*ngIf/*ngFor/*ngSwitch` with `@if/@for/@switch`
+- Replace `BehaviorSubject` with `signal()` where appropriate
+- Use `TestBed.inject()` instead of deprecated `TestBed.get()`
+- Remove `InjectFlags` usage, use object options: `{optional: true, skipSelf: true}`
+
+#### Breaking Changes to Avoid
+- No HammerJS support (removed in Angular 21)
+- No `ng-reflect-*` attributes by default
+- `ApplicationRef.tick()` throws errors instead of catching them
+- TypeScript <5.5 not supported
+
+#### Testing and Debugging
+- Use `provideCheckNoChangesConfig()` for zoneless debugging
+- Deep integration with Chrome DevTools for performance profiling
+- Test signal-based components with modern testing patterns
 
 ### Rust Backend Guidelines
 

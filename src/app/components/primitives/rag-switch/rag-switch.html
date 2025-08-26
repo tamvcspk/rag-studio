@@ -1,0 +1,30 @@
+<label [class]="wrapperClasses()">
+  <div class="rt-switch-container">
+    <input
+      type="checkbox"
+      [class]="switchClasses()"
+      [checked]="checked"
+      [disabled]="disabled()"
+      (change)="handleChange($event)"
+      (blur)="handleBlur()"
+    />
+    <div class="rt-switch-track">
+      <div class="rt-switch-thumb"></div>
+    </div>
+  </div>
+  
+  @if (label() || description()) {
+    <div class="rt-switch-content">
+      @if (label()) {
+        <div class="rt-switch-label">{{ label() }}</div>
+      }
+      @if (description()) {
+        <div class="rt-switch-description">{{ description() }}</div>
+      }
+    </div>
+  }
+  
+  @if (!label() && !description()) {
+    <ng-content></ng-content>
+  }
+</label>

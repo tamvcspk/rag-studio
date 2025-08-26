@@ -1,0 +1,14 @@
+<div class="rt-tooltip-trigger">
+  <ng-content></ng-content>
+  
+  @if (content() && isVisible) {
+    <div 
+      [class]="tooltipClasses()"
+      role="tooltip"
+      [attr.aria-hidden]="!isVisible"
+    >
+      <div class="rt-tooltip-arrow"></div>
+      <div class="rt-tooltip-content">{{ content() }}</div>
+    </div>
+  }
+</div>

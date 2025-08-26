@@ -1,0 +1,140 @@
+:host {
+  display: inline-flex;
+}
+
+.rt-Badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+  padding: 0 var(--space-2, 8px);
+  height: 20px;
+  font-size: var(--font-size-1, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1;
+  border-radius: var(--radius-2, 4px);
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+// Size variants
+.rt-Badge.rt-size-sm {
+  height: 16px;
+  padding: 0 var(--space-1, 4px);
+  font-size: 10px;
+  gap: 2px;
+}
+
+.rt-Badge.rt-size-md {
+  height: 20px;
+  padding: 0 var(--space-2, 8px);
+  font-size: var(--font-size-1, 12px);
+  gap: var(--space-1, 4px);
+}
+
+// Variant styles
+.rt-Badge.rt-variant-solid {
+  background-color: var(--gray-9, hsl(0, 0%, 56.1%));
+  color: white;
+
+  &.rt-color-blue {
+    background-color: var(--blue-9, hsl(206, 100%, 50.0%));
+    color: white;
+  }
+
+  &.rt-color-green {
+    background-color: var(--green-9, hsl(151, 55.0%, 41.5%));
+    color: white;
+  }
+
+  &.rt-color-amber {
+    background-color: var(--amber-9, hsl(39, 100%, 57.0%));
+    color: white;
+  }
+
+  &.rt-color-red {
+    background-color: var(--red-9, hsl(358, 75.0%, 59.0%));
+    color: white;
+  }
+}
+
+.rt-Badge.rt-variant-soft {
+  background-color: var(--gray-3, hsl(0, 0%, 95.1%));
+  color: var(--gray-11, hsl(0, 0%, 43.5%));
+
+  &.rt-color-blue {
+    background-color: hsl(206, 100%, 95%);
+    color: var(--blue-9, hsl(206, 100%, 50.0%));
+  }
+
+  &.rt-color-green {
+    background-color: hsl(151, 55%, 95%);
+    color: var(--green-9, hsl(151, 55.0%, 41.5%));
+  }
+
+  &.rt-color-amber {
+    background-color: hsl(39, 100%, 95%);
+    color: var(--amber-9, hsl(39, 100%, 57.0%));
+  }
+
+  &.rt-color-red {
+    background-color: hsl(358, 75%, 95%);
+    color: var(--red-9, hsl(358, 75.0%, 59.0%));
+  }
+}
+
+.rt-Badge.rt-variant-outline {
+  background-color: transparent;
+  border: 1px solid var(--gray-6, hsl(0, 0%, 88.7%));
+  color: var(--gray-11, hsl(0, 0%, 43.5%));
+
+  &.rt-color-blue {
+    border-color: var(--blue-9, hsl(206, 100%, 50.0%));
+    color: var(--blue-9, hsl(206, 100%, 50.0%));
+  }
+
+  &.rt-color-green {
+    border-color: var(--green-9, hsl(151, 55.0%, 41.5%));
+    color: var(--green-9, hsl(151, 55.0%, 41.5%));
+  }
+
+  &.rt-color-amber {
+    border-color: var(--amber-9, hsl(39, 100%, 57.0%));
+    color: var(--amber-9, hsl(39, 100%, 57.0%));
+  }
+
+  &.rt-color-red {
+    border-color: var(--red-9, hsl(358, 75.0%, 59.0%));
+    color: var(--red-9, hsl(358, 75.0%, 59.0%));
+  }
+}
+
+// Status indicator dot
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  background-color: currentColor;
+}
+
+// Special dot badge
+.rt-badge-dot {
+  .status-indicator {
+    background-color: var(--green-9, hsl(151, 55.0%, 41.5%));
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+  }
+
+  &.rt-color-amber .status-indicator {
+    background-color: var(--amber-9, hsl(39, 100%, 57.0%));
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+  }
+
+  &.rt-color-red .status-indicator {
+    background-color: var(--red-9, hsl(358, 75.0%, 59.0%));
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+  }
+
+  &.rt-color-gray .status-indicator {
+    background-color: var(--gray-9, hsl(0, 0%, 56.1%));
+  }
+}

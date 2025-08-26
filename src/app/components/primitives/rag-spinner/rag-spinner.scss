@@ -1,0 +1,33 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rt-Spinner {
+  display: inline-block;
+  border: 2px solid var(--gray-4, hsl(0, 0%, 93.0%));
+  border-top-color: var(--blue-9, hsl(206, 100%, 50.0%));
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+.rt-Spinner.rt-size-1 {
+  width: 16px;
+  height: 16px;
+}
+
+.rt-Spinner.rt-size-2 {
+  width: 24px;
+  height: 24px;
+}
+
+.rt-Spinner.rt-size-3 {
+  width: 32px;
+  height: 32px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

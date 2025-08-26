@@ -1,0 +1,115 @@
+:host {
+  display: inline-block;
+}
+
+.rt-Button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2, 8px);
+  padding: 0 var(--space-3, 12px);
+  height: 32px;
+  font-size: var(--font-size-2, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1;
+  border-radius: var(--radius-3, 6px);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  outline: none;
+  position: relative;
+  font-family: inherit;
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--gray-1, #fcfcfc), 0 0 0 4px var(--blue-9, hsl(206, 100%, 50.0%));
+  }
+
+  &.rt-disabled,
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.rt-loading {
+    color: transparent;
+    cursor: not-allowed;
+  }
+
+  &.rt-full-width {
+    width: 100%;
+  }
+}
+
+// Variant styles
+.rt-Button.rt-variant-solid {
+  background-color: var(--gray-12, hsl(0, 0%, 9.0%));
+  color: white;
+
+  &:hover:not(:disabled):not(.rt-disabled):not(.rt-loading) {
+    background-color: var(--gray-11, hsl(0, 0%, 43.5%));
+  }
+}
+
+.rt-Button.rt-variant-soft {
+  background-color: var(--gray-3, hsl(0, 0%, 95.1%));
+  color: var(--gray-11, hsl(0, 0%, 43.5%));
+
+  &:hover:not(:disabled):not(.rt-disabled):not(.rt-loading) {
+    background-color: var(--gray-4, hsl(0, 0%, 93.0%));
+  }
+}
+
+.rt-Button.rt-variant-outline {
+  background-color: transparent;
+  border: 1px solid var(--gray-6, hsl(0, 0%, 88.7%));
+  color: var(--gray-11, hsl(0, 0%, 43.5%));
+
+  &:hover:not(:disabled):not(.rt-disabled):not(.rt-loading) {
+    background-color: var(--gray-2, hsl(0, 0%, 97.3%));
+  }
+}
+
+.rt-Button.rt-variant-ghost {
+  background-color: transparent;
+  color: var(--gray-11, hsl(0, 0%, 43.5%));
+
+  &:hover:not(:disabled):not(.rt-disabled):not(.rt-loading) {
+    background-color: var(--gray-3, hsl(0, 0%, 95.1%));
+  }
+}
+
+// Size styles
+.rt-Button.rt-size-1 {
+  height: 24px;
+  padding: 0 var(--space-2, 8px);
+  font-size: var(--font-size-1, 12px);
+}
+
+.rt-Button.rt-size-2 {
+  height: 32px;
+  padding: 0 var(--space-3, 12px);
+  font-size: var(--font-size-2, 14px);
+}
+
+.rt-Button.rt-size-3 {
+  height: 40px;
+  padding: 0 var(--space-4, 16px);
+  font-size: var(--font-size-3, 16px);
+}
+
+// Loading spinner
+.rt-button-spinner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
