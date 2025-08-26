@@ -36,7 +36,6 @@ export class RagSelect<T = any> implements ControlValueAccessor {
   readonly value = input<T | null>(null);
   
   // Modern Angular 20: Use output() instead of EventEmitter
-  readonly onSelectionChange = output<T | null>();
   readonly valueChange = output<T | null>();
   readonly onSearch = output<string>();
 
@@ -122,7 +121,6 @@ export class RagSelect<T = any> implements ControlValueAccessor {
     this.searchTerm = '';
     
     this.onChange(this.selectedValue);
-    this.onSelectionChange.emit(this.selectedValue);
     this.valueChange.emit(this.selectedValue);
   }
 
@@ -130,7 +128,6 @@ export class RagSelect<T = any> implements ControlValueAccessor {
     event.stopPropagation();
     this.selectedValue = null;
     this.onChange(this.selectedValue);
-    this.onSelectionChange.emit(this.selectedValue);
     this.valueChange.emit(this.selectedValue);
   }
 
