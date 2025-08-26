@@ -1,0 +1,174 @@
+:host {
+  display: block;
+}
+
+.rag-code-block {
+  background: var(--gray-1, #fafafa);
+  border: 1px solid var(--gray-4, #d1d5db);
+  border-radius: var(--radius-3, 6px);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-2, 8px) var(--space-3, 12px);
+    background: var(--gray-2, #f9fafb);
+    border-bottom: 1px solid var(--gray-4, #d1d5db);
+  }
+
+  &__title-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 8px);
+  }
+
+  &__title {
+    font-size: var(--font-size-2, 14px);
+    font-weight: var(--font-weight-medium, 500);
+    color: var(--gray-12, #1f2937);
+  }
+
+  &__language {
+    font-size: var(--font-size-1, 12px);
+    color: var(--gray-10, #6b7280);
+    background: var(--gray-3, #f3f4f6);
+    padding: var(--space-1, 4px) var(--space-2, 8px);
+    border-radius: var(--radius-2, 4px);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__copy-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-1, 4px);
+    background: transparent;
+    border: 1px solid var(--gray-6, #d1d5db);
+    border-radius: var(--radius-2, 4px);
+    color: var(--gray-11, #4b5563);
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: var(--gray-3, #f3f4f6);
+      border-color: var(--gray-7, #9ca3af);
+    }
+
+    &:active {
+      background: var(--gray-4, #e5e7eb);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--blue-9, #0ea5e9);
+      outline-offset: 2px;
+    }
+  }
+
+  &__content {
+    position: relative;
+    overflow: auto;
+  }
+
+  &__pre {
+    margin: 0;
+    padding: var(--space-3, 12px);
+    overflow: visible;
+    background: transparent;
+    white-space: pre;
+    word-wrap: normal;
+    tab-size: 2;
+  }
+
+  &__code {
+    font-family: inherit;
+    font-size: var(--font-size-2, 14px);
+    line-height: var(--line-height-3, 24px);
+    color: var(--gray-12, #1f2937);
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  &--with-line-numbers {
+    .rag-code-block__pre {
+      padding-left: var(--space-12, 3rem);
+    }
+  }
+
+  &__line-numbers {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: var(--space-3, 12px) 0;
+    background: var(--gray-2, #f9fafb);
+    border-right: 1px solid var(--gray-4, #d1d5db);
+    width: var(--space-12, 3rem);
+    user-select: none;
+    pointer-events: none;
+  }
+
+  &__line-number {
+    display: block;
+    font-size: var(--font-size-2, 14px);
+    line-height: var(--line-height-3, 24px);
+    color: var(--gray-9, #9ca3af);
+    text-align: right;
+    padding-right: var(--space-2, 8px);
+  }
+}
+
+/* Syntax highlighting could be added here with CSS variables */
+.rag-code-block__code {
+  .keyword { color: var(--syntax-keyword, #d73a49); }
+  .string { color: var(--syntax-string, #032f62); }
+  .comment { color: var(--syntax-comment, #6a737d); }
+  .number { color: var(--syntax-number, #005cc5); }
+  .function { color: var(--syntax-function, #6f42c1); }
+}
+
+@media (prefers-color-scheme: dark) {
+  .rag-code-block {
+    background: var(--gray-2, #1f2937);
+    border-color: var(--gray-7, #374151);
+
+    &__header {
+      background: var(--gray-3, #111827);
+      border-bottom-color: var(--gray-7, #374151);
+    }
+
+    &__title {
+      color: var(--gray-1, #f9fafb);
+    }
+
+    &__language {
+      background: var(--gray-7, #374151);
+      color: var(--gray-3, #d1d5db);
+    }
+
+    &__copy-button {
+      border-color: var(--gray-7, #374151);
+      color: var(--gray-3, #d1d5db);
+
+      &:hover {
+        background: var(--gray-7, #374151);
+        border-color: var(--gray-6, #4b5563);
+      }
+    }
+
+    &__code {
+      color: var(--gray-1, #f9fafb);
+    }
+
+    &__line-numbers {
+      background: var(--gray-3, #111827);
+      border-right-color: var(--gray-7, #374151);
+    }
+
+    &__line-number {
+      color: var(--gray-9, #6b7280);
+    }
+  }
+}

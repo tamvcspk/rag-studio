@@ -1,0 +1,65 @@
+:host {
+  display: inline-block;
+}
+
+.rag-timestamp {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+  font-size: var(--font-size-2, 14px);
+  color: var(--gray-10, #6b7280);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+
+  &--with-icon {
+    gap: var(--space-2, 8px);
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    color: var(--gray-9, #9ca3af);
+  }
+
+  &__text {
+    font-size: inherit;
+    color: inherit;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+}
+
+// Variants for different contexts
+.rag-timestamp {
+  &.rag-timestamp--muted {
+    color: var(--gray-9, #9ca3af);
+    font-size: var(--font-size-1, 12px);
+  }
+
+  &.rag-timestamp--emphasized {
+    color: var(--gray-12, #1f2937);
+    font-weight: var(--font-weight-medium, 500);
+  }
+
+  &.rag-timestamp--compact {
+    font-size: var(--font-size-1, 12px);
+    gap: var(--space-1, 4px);
+
+    .rag-timestamp__icon {
+      width: 10px;
+      height: 10px;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .rag-timestamp {
+    color: var(--gray-9, #9ca3af);
+
+    &__icon {
+      color: var(--gray-10, #6b7280);
+    }
+
+    &.rag-timestamp--emphasized {
+      color: var(--gray-1, #f9fafb);
+    }
+  }
+}

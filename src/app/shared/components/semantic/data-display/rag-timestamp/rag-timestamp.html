@@ -1,0 +1,8 @@
+<span [class]="containerClasses()" [title]="absoluteTime()">
+  @if (showIcon()) {
+    <lucide-icon name="clock" size="12" class="rag-timestamp__icon" />
+  }
+  <time [dateTime]="parsedDate().toISOString()" class="rag-timestamp__text">
+    {{ displayText() }}
+  </time>
+</span>

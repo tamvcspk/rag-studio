@@ -1,10 +1,81 @@
 
 // Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
+
+// Radix-inspired design system CSS custom properties
+:root {
+  // Gray scale
+  --gray-1: hsl(0, 0%, 99.0%);
+  --gray-2: hsl(0, 0%, 97.3%);
+  --gray-3: hsl(0, 0%, 95.1%);
+  --gray-4: hsl(0, 0%, 93.0%);
+  --gray-5: hsl(0, 0%, 90.9%);
+  --gray-6: hsl(0, 0%, 88.7%);
+  --gray-7: hsl(0, 0%, 85.8%);
+  --gray-8: hsl(0, 0%, 78.0%);
+  --gray-9: hsl(0, 0%, 56.1%);
+  --gray-10: hsl(0, 0%, 52.3%);
+  --gray-11: hsl(0, 0%, 43.5%);
+  --gray-12: hsl(0, 0%, 9.0%);
+  
+  // Semantic colors
+  --blue-9: hsl(206, 100%, 50.0%);
+  --green-9: hsl(151, 55.0%, 41.5%);
+  --amber-9: hsl(39, 100%, 57.0%);
+  --red-9: hsl(358, 75.0%, 59.0%);
+  
+  // Border radius
+  --radius-1: 3px;
+  --radius-2: 4px;
+  --radius-3: 6px;
+  --radius-4: 8px;
+  --radius-5: 12px;
+  
+  // Spacing scale
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+  --space-9: 64px;
+  
+  // Typography scale
+  --font-size-1: 12px;
+  --font-size-2: 14px;
+  --font-size-3: 16px;
+  --font-size-4: 18px;
+  --font-size-5: 20px;
+  --font-size-6: 24px;
+  --font-size-7: 28px;
+  --font-size-8: 35px;
+  --font-size-9: 60px;
+  
+  --line-height-1: 16px;
+  --line-height-2: 20px;
+  --line-height-3: 24px;
+  --line-height-4: 26px;
+  --line-height-5: 28px;
+  --line-height-6: 30px;
+  --line-height-7: 36px;
+  --line-height-8: 40px;
+  --line-height-9: 60px;
+  
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  // Box shadows
+  --shadow-1: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-2: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-3: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-4: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-5: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-6: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
 
 html {
   @include mat.theme((
@@ -17,23 +88,276 @@ html {
   ));
 }
 
-body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
+// Reset and base styles
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-/* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-size: var(--font-size-2);
+  line-height: var(--line-height-2);
+  color: var(--gray-12);
+  background-color: var(--gray-2);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  height: 100%;
+}
+
+html, body {
+  height: 100%;
+}
+
+// Radix-inspired utility classes
+
+// Layout
+.rt-Container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 var(--space-4);
+  max-width: 1440px;
+}
+
+.rt-Flex {
+  display: flex;
+}
+
+.rt-Grid {
+  display: grid;
+}
+
+.rt-BaseCard {
+  background: white;
+  border-radius: var(--radius-4);
+  box-shadow: var(--shadow-2);
+  overflow: hidden;
+}
+
+// Typography
+.rt-Heading {
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+}
+
+.rt-Text {
+  font-size: var(--font-size-2);
+  line-height: var(--line-height-2);
+}
+
+// Button styles
+.rt-Button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+  height: 32px;
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  border-radius: var(--radius-3);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  outline: none;
+  position: relative;
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--gray-1), 0 0 0 4px var(--blue-9);
+  }
+
+  &.rt-variant-solid {
+    background-color: var(--gray-12);
+    color: white;
+
+    &:hover {
+      background-color: var(--gray-11);
+    }
+  }
+
+  &.rt-variant-soft {
+    background-color: var(--gray-3);
+    color: var(--gray-11);
+
+    &:hover {
+      background-color: var(--gray-4);
+    }
+  }
+
+  &.rt-variant-outline {
+    background-color: transparent;
+    border: 1px solid var(--gray-6);
+    color: var(--gray-11);
+
+    &:hover {
+      background-color: var(--gray-2);
+    }
+  }
+
+  &.rt-variant-ghost {
+    background-color: transparent;
+    color: var(--gray-11);
+
+    &:hover {
+      background-color: var(--gray-3);
+    }
+  }
+
+  &.rt-size-1 {
+    height: 24px;
+    padding: 0 var(--space-2);
+    font-size: var(--font-size-1);
+  }
+
+  &.rt-size-2 {
+    height: 32px;
+    padding: 0 var(--space-3);
+    font-size: var(--font-size-2);
+  }
+
+  &.rt-size-3 {
+    height: 40px;
+    padding: 0 var(--space-4);
+    font-size: var(--font-size-3);
+  }
+}
+
+// Badge styles
+.rt-Badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-2);
+  height: 20px;
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  border-radius: var(--radius-2);
+  white-space: nowrap;
+
+  &.rt-variant-solid {
+    background-color: var(--gray-9);
+    color: white;
+  }
+
+  &.rt-variant-soft {
+    background-color: var(--gray-3);
+    color: var(--gray-11);
+  }
+
+  &.rt-variant-outline {
+    background-color: transparent;
+    border: 1px solid var(--gray-6);
+    color: var(--gray-11);
+  }
+
+  &.rt-color-green {
+    background-color: var(--green-9);
+    color: white;
+  }
+
+  &.rt-color-amber {
+    background-color: var(--amber-9);
+    color: white;
+  }
+
+  &.rt-color-red {
+    background-color: var(--red-9);
+    color: white;
+  }
+
+  &.rt-color-blue {
+    background-color: var(--blue-9);
+    color: white;
+  }
+}
+
+// Tabs styles
+.rt-Tabs {
+  width: 100%;
+}
+
+.rt-TabsList {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background-color: var(--gray-3);
+  border-radius: var(--radius-4);
+  margin-bottom: var(--space-5);
+}
+
+.rt-TabsTrigger {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: none;
+  border: none;
+  border-radius: var(--radius-3);
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-medium);
+  color: var(--gray-11);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--gray-12);
+  }
+
+  &.rt-active {
+    background-color: white;
+    color: var(--gray-12);
+    box-shadow: var(--shadow-1);
+  }
+}
+
+.rt-TabsContent {
+  display: block;
+
+  &.rt-active {
+    display: block;
+  }
+}
+
+// Utility classes
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-5 { gap: var(--space-5); }
+.gap-6 { gap: var(--space-6); }
+
+.p-1 { padding: var(--space-1); }
+.p-2 { padding: var(--space-2); }
+.p-3 { padding: var(--space-3); }
+.p-4 { padding: var(--space-4); }
+.p-5 { padding: var(--space-5); }
+.p-6 { padding: var(--space-6); }
+
+.mb-1 { margin-bottom: var(--space-1); }
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-5 { margin-bottom: var(--space-5); }
+.mb-6 { margin-bottom: var(--space-6); }
+
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.flex-wrap { flex-wrap: wrap; }
+
+.text-sm { font-size: var(--font-size-1); }
+.text-muted { color: var(--gray-10); }
+
+// Responsive
+@media (max-width: 768px) {
+  .hide-mobile { display: none; }
+  .rt-TabsList { flex-direction: column; }
+}

@@ -1,0 +1,318 @@
+// RagDialog - Semantic Overlay Component
+.rt-Dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  z-index: 50;
+  
+  // Hide by default
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95);
+  transition: all 0.15s ease-out;
+
+  // Show when open
+  &.rt-open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+    
+    .rt-DialogContent {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+  }
+
+  &.rt-animating {
+    .rt-DialogContent {
+      transition: all 0.15s ease-out;
+    }
+  }
+
+  // Size variants
+  &.rt-size-sm .rt-DialogContent {
+    width: 90vw;
+    max-width: 400px;
+  }
+
+  &.rt-size-md .rt-DialogContent {
+    width: 90vw;
+    max-width: 500px;
+  }
+
+  &.rt-size-lg .rt-DialogContent {
+    width: 90vw;
+    max-width: 700px;
+  }
+
+  &.rt-size-xl .rt-DialogContent {
+    width: 90vw;
+    max-width: 900px;
+  }
+
+  &.rt-size-full .rt-DialogContent {
+    width: 95vw;
+    height: 95vh;
+    max-width: none;
+    max-height: none;
+  }
+
+  // Backdrop filter for modern browsers
+  @supports (backdrop-filter: blur(4px)) {
+    backdrop-filter: blur(4px);
+  }
+}
+
+.rt-DialogOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: overlayShow 0.15s ease-out;
+}
+
+.rt-DialogContent {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  background-color: white;
+  border-radius: var(--radius-5);
+  box-shadow: var(--shadow-6);
+  max-height: 85vh;
+  opacity: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: contentShow 0.15s ease-out;
+
+  // Size-specific styles
+  &.rt-size-sm {
+    padding: var(--space-4);
+  }
+
+  &.rt-size-md {
+    padding: var(--space-5);
+  }
+
+  &.rt-size-lg {
+    padding: var(--space-6);
+  }
+
+  &.rt-size-xl {
+    padding: var(--space-6);
+  }
+
+  &.rt-size-full {
+    padding: var(--space-6);
+    border-radius: var(--radius-3);
+  }
+}
+
+.rt-DialogHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  gap: var(--space-4);
+}
+
+.rt-DialogTitle {
+  font-size: var(--font-size-5);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-5);
+  color: var(--gray-12);
+  margin: 0;
+  flex: 1;
+}
+
+.rt-DialogDescription {
+  color: var(--gray-11);
+  font-size: var(--font-size-2);
+  line-height: var(--line-height-3);
+  margin: 0 0 var(--space-5) 0;
+}
+
+.rt-DialogCloseButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  border-radius: var(--radius-2);
+  color: var(--gray-10);
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  outline: none;
+
+  &:hover {
+    background-color: var(--gray-4);
+    color: var(--gray-12);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--blue-9);
+  }
+
+  lucide-angular {
+    flex-shrink: 0;
+  }
+}
+
+.rt-DialogBody {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: var(--space-4);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.rt-DialogFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: auto;
+  
+  &:empty {
+    display: none;
+  }
+}
+
+// Animations
+@keyframes overlayShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+// Responsive behavior
+@media (max-width: 768px) {
+  .rt-Dialog {
+    &.rt-size-sm .rt-DialogContent,
+    &.rt-size-md .rt-DialogContent,
+    &.rt-size-lg .rt-DialogContent,
+    &.rt-size-xl .rt-DialogContent {
+      width: 95vw;
+      max-width: none;
+      top: 10%;
+      bottom: 10%;
+      left: 2.5%;
+      right: 2.5%;
+      height: auto;
+      max-height: 80vh;
+      transform: none;
+    }
+
+    &.rt-size-full .rt-DialogContent {
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 0;
+      transform: none;
+    }
+  }
+
+  .rt-DialogContent {
+    padding: var(--space-4);
+  }
+
+  .rt-DialogHeader {
+    margin-bottom: var(--space-3);
+  }
+
+  .rt-DialogTitle {
+    font-size: var(--font-size-4);
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .rt-DialogContent {
+    background-color: var(--gray-dark-1);
+    border: 1px solid var(--gray-dark-4);
+  }
+
+  .rt-DialogTitle {
+    color: var(--gray-dark-12);
+  }
+
+  .rt-DialogDescription {
+    color: var(--gray-dark-11);
+  }
+
+  .rt-DialogCloseButton {
+    color: var(--gray-dark-10);
+
+    &:hover {
+      background-color: var(--gray-dark-4);
+      color: var(--gray-dark-12);
+    }
+  }
+}
+
+// Focus management
+.rt-Dialog[open] {
+  .rt-DialogContent {
+    // Ensure dialog content can receive focus
+    outline: none;
+  }
+
+  // Focus trap styles
+  .rt-DialogCloseButton {
+    // Ensure close button is focusable
+    &:focus-visible {
+      box-shadow: 0 0 0 2px var(--blue-9);
+    }
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .rt-DialogContent {
+    border: 2px solid;
+  }
+
+  .rt-DialogCloseButton {
+    border: 1px solid;
+    
+    &:hover {
+      background-color: Highlight;
+      color: HighlightText;
+    }
+  }
+}

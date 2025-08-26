@@ -1,0 +1,37 @@
+<div [class]="blockClasses()">
+  @if (title() || showCopy()) {
+    <div class="rag-code-block__header">
+      @if (title()) {
+        <div class="rag-code-block__title-group">
+          <span class="rag-code-block__title">{{ title() }}</span>
+          @if (language()) {
+            <span class="rag-code-block__language">{{ language() }}</span>
+          }
+        </div>
+      }
+      
+      @if (showCopy()) {
+        <button 
+          class="rag-code-block__copy-button" 
+          type="button"
+          (click)="copyToClipboard()"
+          [attr.aria-label]="copied() ? 'Copied!' : 'Copy code'"
+          [title]="copied() ? 'Copied!' : 'Copy code'">
+          <lucide-icon [name]="copyButtonIcon()" size="14" />
+        </button>
+      }
+    </div>
+  }
+  
+  <div class="rag-code-block__content" [ngStyle]="blockStyles()">
+    <pre class="rag-code-block__pre"><code class="rag-code-block__code">{{ code() }}</code></pre>
+    
+    @if (showLineNumbers()) {
+      <div class="rag-code-block__line-numbers" aria-hidden="true">
+        @for (line of codeLines(); track $index) {
+          <span class="rag-code-block__line-number">{{ $index + 1 }}</span>
+        }
+      </div>
+    }
+  </div>
+</div>

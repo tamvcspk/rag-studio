@@ -1,0 +1,327 @@
+// RagContextMenu - Semantic Overlay Component
+.rt-ContextMenu {
+  position: fixed;
+  z-index: 100;
+  min-width: 200px;
+  max-width: 300px;
+  background-color: white;
+  border: 1px solid var(--gray-6);
+  border-radius: var(--radius-4);
+  box-shadow: var(--shadow-5);
+  padding: var(--space-1);
+  animation: contextMenuShow 0.15s ease-out;
+  user-select: none;
+
+  // Size variants
+  &.rt-size-sm {
+    min-width: 150px;
+    padding: var(--space-1);
+  }
+
+  &.rt-size-md {
+    min-width: 200px;
+    padding: var(--space-1);
+  }
+
+  &.rt-size-lg {
+    min-width: 250px;
+    padding: var(--space-2);
+  }
+
+  &.rt-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.rt-ContextMenuItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  color: var(--gray-11);
+  border-radius: var(--radius-2);
+  cursor: pointer;
+  transition: all 0.15s;
+  outline: none;
+  font-size: var(--font-size-2);
+
+  &:hover:not(.rt-disabled) {
+    background-color: var(--gray-3);
+    color: var(--gray-12);
+  }
+
+  &.rt-focused {
+    background-color: var(--blue-3);
+    color: var(--blue-11);
+  }
+
+  &.rt-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: var(--gray-9);
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  &.rt-has-submenu {
+    &:hover {
+      .rt-ContextMenuSubmenu {
+        display: block;
+      }
+    }
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--blue-9);
+  }
+}
+
+.rt-ContextMenuItemContent {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-width: 0;
+}
+
+.rt-ContextMenuItemIcon {
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.rt-ContextMenuItemLabel {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: var(--font-weight-medium);
+}
+
+.rt-ContextMenuItemShortcut {
+  flex-shrink: 0;
+  font-size: var(--font-size-1);
+  color: var(--gray-10);
+  font-family: monospace;
+  background-color: var(--gray-3);
+  padding: 2px var(--space-1);
+  border-radius: var(--radius-1);
+}
+
+.rt-ContextMenuItemSubmenuArrow {
+  flex-shrink: 0;
+  color: var(--gray-10);
+  margin-left: auto;
+}
+
+.rt-ContextMenuSubmenu {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  margin-left: var(--space-1);
+  min-width: 180px;
+  background-color: white;
+  border: 1px solid var(--gray-6);
+  border-radius: var(--radius-4);
+  box-shadow: var(--shadow-4);
+  padding: var(--space-1);
+  z-index: 101;
+  animation: submenuShow 0.12s ease-out;
+
+  // Adjust position if submenu would go off screen
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+    border: 4px solid transparent;
+    border-right-color: var(--gray-6);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+    border: 3px solid transparent;
+    border-right-color: white;
+    margin-right: -1px;
+  }
+}
+
+.rt-ContextMenuSeparator {
+  height: 1px;
+  background-color: var(--gray-4);
+  margin: var(--space-1) 0;
+}
+
+.rt-ContextMenuEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  color: var(--gray-10);
+  font-size: var(--font-size-2);
+  font-style: italic;
+}
+
+// Animations
+@keyframes contextMenuShow {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes submenuShow {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Viewport boundary adjustments
+.rt-ContextMenu {
+  // Ensure menu stays within viewport bounds
+  max-height: calc(100vh - 20px);
+  overflow-y: auto;
+}
+
+// Prevent submenu from going off-screen
+.rt-ContextMenuSubmenu {
+  // Check if submenu would go beyond right edge
+  @supports (right: max(0px, 100vw - 200px)) {
+    &[data-align="left"] {
+      left: auto;
+      right: 100%;
+      margin-left: 0;
+      margin-right: var(--space-1);
+
+      &::before {
+        left: 100%;
+        right: auto;
+        border-right-color: transparent;
+        border-left-color: var(--gray-6);
+      }
+
+      &::after {
+        left: 100%;
+        right: auto;
+        border-right-color: transparent;
+        border-left-color: white;
+        margin-left: -1px;
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .rt-ContextMenu,
+  .rt-ContextMenuSubmenu {
+    background-color: var(--gray-dark-1);
+    border-color: var(--gray-dark-6);
+  }
+
+  .rt-ContextMenuItem {
+    color: var(--gray-dark-11);
+
+    &:hover:not(.rt-disabled) {
+      background-color: var(--gray-dark-3);
+      color: var(--gray-dark-12);
+    }
+
+    &.rt-focused {
+      background-color: var(--blue-dark-3);
+      color: var(--blue-dark-11);
+    }
+
+    &.rt-disabled {
+      color: var(--gray-dark-9);
+    }
+  }
+
+  .rt-ContextMenuItemShortcut {
+    color: var(--gray-dark-10);
+    background-color: var(--gray-dark-3);
+  }
+
+  .rt-ContextMenuItemSubmenuArrow {
+    color: var(--gray-dark-10);
+  }
+
+  .rt-ContextMenuSeparator {
+    background-color: var(--gray-dark-4);
+  }
+
+  .rt-ContextMenuEmpty {
+    color: var(--gray-dark-10);
+  }
+
+  .rt-ContextMenuSubmenu {
+    &::before {
+      border-right-color: var(--gray-dark-6);
+    }
+
+    &::after {
+      border-right-color: var(--gray-dark-1);
+    }
+
+    &[data-align="left"] {
+      &::before {
+        border-left-color: var(--gray-dark-6);
+      }
+
+      &::after {
+        border-left-color: var(--gray-dark-1);
+      }
+    }
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .rt-ContextMenu,
+  .rt-ContextMenuSubmenu {
+    border-width: 2px;
+  }
+
+  .rt-ContextMenuItem {
+    &:hover:not(.rt-disabled) {
+      background-color: Highlight;
+      color: HighlightText;
+    }
+
+    &.rt-focused {
+      background-color: Highlight;
+      color: HighlightText;
+      outline: 2px solid HighlightText;
+    }
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .rt-ContextMenu,
+  .rt-ContextMenuSubmenu {
+    animation: none;
+  }
+
+  .rt-ContextMenuItem {
+    transition: none;
+  }
+}

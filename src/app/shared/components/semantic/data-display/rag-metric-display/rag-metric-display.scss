@@ -1,0 +1,203 @@
+:host {
+  display: block;
+}
+
+.rag-metric-display {
+  background: white;
+  border: 1px solid var(--gray-4, #d1d5db);
+  border-radius: var(--radius-3, 6px);
+  padding: var(--space-4, 16px);
+  font-size: var(--font-size-2, 14px);
+
+  &--compact {
+    padding: var(--space-3, 12px);
+    
+    .rag-metric-display__value {
+      font-size: var(--font-size-5, 20px);
+      margin-bottom: var(--space-1, 4px);
+    }
+  }
+
+  &--detailed {
+    .rag-metric-display__value {
+      margin-bottom: var(--space-3, 12px);
+    }
+  }
+
+  &--good {
+    border-left: 4px solid var(--green-9, #10b981);
+    
+    .rag-metric-display__status-icon {
+      color: var(--green-9, #10b981);
+    }
+  }
+
+  &--warning {
+    border-left: 4px solid var(--amber-9, #f59e0b);
+    
+    .rag-metric-display__status-icon {
+      color: var(--amber-9, #f59e0b);
+    }
+  }
+
+  &--critical {
+    border-left: 4px solid var(--red-9, #ef4444);
+    
+    .rag-metric-display__status-icon {
+      color: var(--red-9, #ef4444);
+    }
+  }
+
+  &--neutral {
+    border-left: 4px solid var(--gray-6, #d1d5db);
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-2, 8px);
+  }
+
+  &__label {
+    font-size: var(--font-size-1, 12px);
+    font-weight: var(--font-weight-medium, 500);
+    color: var(--gray-10, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+  }
+
+  &__status-icon {
+    flex-shrink: 0;
+  }
+
+  &__value {
+    font-size: var(--font-size-6, 24px);
+    font-weight: var(--font-weight-semibold, 600);
+    line-height: 1.2;
+    color: var(--gray-12, #1f2937);
+    margin-bottom: var(--space-2, 8px);
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+  }
+
+  &__thresholds {
+    display: flex;
+    gap: var(--space-3, 12px);
+    margin-bottom: var(--space-3, 12px);
+    padding-top: var(--space-3, 12px);
+    border-top: 1px solid var(--gray-3, #f3f4f6);
+  }
+
+  &__threshold {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1, 4px);
+    flex: 1;
+
+    &--good {
+      .rag-metric-display__threshold-label {
+        color: var(--green-9, #10b981);
+      }
+    }
+
+    &--warning {
+      .rag-metric-display__threshold-label {
+        color: var(--amber-9, #f59e0b);
+      }
+    }
+  }
+
+  &__threshold-label {
+    font-size: var(--font-size-1, 12px);
+    font-weight: var(--font-weight-medium, 500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__threshold-value {
+    font-size: var(--font-size-1, 12px);
+    color: var(--gray-11, #4b5563);
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+  }
+
+  &__progress {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2, 8px);
+  }
+
+  &__progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--gray-3, #f3f4f6);
+    border-radius: var(--radius-1, 3px);
+    overflow: hidden;
+  }
+
+  &__progress-fill {
+    height: 100%;
+    background: var(--blue-9, #0ea5e9);
+    border-radius: inherit;
+    transition: width 0.3s ease;
+  }
+
+  .rag-metric-display--good & {
+    &__progress-fill {
+      background: var(--green-9, #10b981);
+    }
+  }
+
+  .rag-metric-display--warning & {
+    &__progress-fill {
+      background: var(--amber-9, #f59e0b);
+    }
+  }
+
+  .rag-metric-display--critical & {
+    &__progress-fill {
+      background: var(--red-9, #ef4444);
+    }
+  }
+
+  &__progress-text {
+    font-size: var(--font-size-1, 12px);
+    color: var(--gray-10, #6b7280);
+    text-align: center;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .rag-metric-display {
+    background: var(--gray-2, #111827);
+    border-color: var(--gray-7, #374151);
+
+    &__label {
+      color: var(--gray-9, #9ca3af);
+    }
+
+    &__value {
+      color: var(--gray-1, #f9fafb);
+    }
+
+    &__thresholds {
+      border-top-color: var(--gray-7, #374151);
+    }
+
+    &__threshold-value {
+      color: var(--gray-3, #d1d5db);
+    }
+
+    &__progress-bar {
+      background: var(--gray-7, #374151);
+    }
+
+    &__progress-text {
+      color: var(--gray-9, #6b7280);
+    }
+  }
+}

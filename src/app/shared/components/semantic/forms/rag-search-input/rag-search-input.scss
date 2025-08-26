@@ -1,0 +1,56 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.rag-search-input {
+  position: relative;
+  width: 100%;
+
+  // Override base input styles for search-specific styling
+  :deep(.rt-TextFieldInput[type="search"]) {
+    padding-left: var(--space-8, 48px); // Space for search icon
+    
+    // Hide browser search input specific styling
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button,
+    &::-webkit-search-results-button,
+    &::-webkit-search-results-decoration {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+  }
+
+  // Search icon styling
+  :deep(.rt-input-left-icon) {
+    color: var(--gray-9, hsl(0, 0%, 56.1%));
+  }
+
+  // Clear button styling when visible
+  :deep(.rt-input-right-icon) {
+    color: var(--gray-9, hsl(0, 0%, 56.1%));
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.15s ease;
+
+    &:hover {
+      color: var(--gray-11, hsl(0, 0%, 43.5%));
+    }
+  }
+
+  // Show clear button when input has value and is focused/hovered
+  &:hover,
+  &:focus-within {
+    :deep(.rt-input-right-icon) {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  // Disabled state
+  :deep(.rt-TextField.rt-disabled) {
+    .rt-input-left-icon {
+      color: var(--gray-8, hsl(0, 0%, 78.0%));
+    }
+  }
+}

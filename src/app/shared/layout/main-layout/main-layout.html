@@ -1,0 +1,68 @@
+<!-- Header -->
+<header class="app-header">
+  <div class="rt-Container">
+    <div class="rt-Flex items-center justify-between header-content">
+      <div class="rt-Flex items-center gap-4">
+        <div class="rt-Flex items-center gap-2">
+          <lucide-angular [img]="Database" class="app-logo-icon" />
+          <h1 class="rt-Heading app-title">RAG Studio</h1>
+        </div>
+        <span class="rt-Text text-muted app-subtitle hide-mobile">Personal RAG & MCP Server</span>
+      </div>
+      <div class="rt-Flex items-center gap-3">
+        <div class="rt-Badge rt-variant-soft rt-color-green">
+          <span [class]="'status-indicator ' + mcpStatusClass()"></span>
+          <span>{{ mcpStatusText() }}</span>
+        </div>
+        <button class="rt-Button rt-variant-ghost rt-size-2" aria-label="Settings">
+          <lucide-angular [img]="Settings" class="button-icon" />
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="app-main">
+  <div class="rt-Container">
+    <div class="rt-Tabs">
+      <!-- Tab List (Navigation) -->
+      <div class="rt-TabsList" role="tablist">
+        @for (navItem of navItems; track navItem.path) {
+          <a 
+            [routerLink]="navItem.path"
+            routerLinkActive="rt-active"
+            class="rt-TabsTrigger"
+            role="tab">
+            @switch (navItem.icon) {
+              @case ('layout-dashboard') {
+                <lucide-angular [img]="LayoutDashboard" class="nav-icon" />
+              }
+              @case ('wrench') {
+                <lucide-angular [img]="Wrench" class="nav-icon" />
+              }
+              @case ('book-open') {
+                <lucide-angular [img]="BookOpen" class="nav-icon" />
+              }
+              @case ('workflow') {
+                <lucide-angular [img]="Workflow" class="nav-icon" />
+              }
+              @case ('git-branch') {
+                <lucide-angular [img]="GitBranch" class="nav-icon" />
+              }
+              @case ('settings') {
+                <lucide-angular [img]="Settings" class="nav-icon" />
+              }
+            }
+            <span>{{ navItem.title }}</span>
+          </a>
+        }
+      </div>
+
+      <!-- Tab Content (Router Outlet) -->
+      <div class="rt-TabsContent rt-active" role="tabpanel">
+        <router-outlet />
+      </div>
+    </div>
+  </div>
+</main>

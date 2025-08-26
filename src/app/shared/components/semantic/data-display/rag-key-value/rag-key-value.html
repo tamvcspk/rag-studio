@@ -1,0 +1,23 @@
+<div [class]="containerClasses()">
+  <div class="rag-key-value__key">
+    @if (data().icon) {
+      <lucide-icon [name]="data().icon" size="14" class="rag-key-value__icon" />
+    }
+    <span>{{ data().key }}</span>
+  </div>
+  
+  <div class="rag-key-value__value">
+    <span [title]="truncate() ? displayValue() : undefined">{{ displayValue() }}</span>
+    
+    @if (data().copyable) {
+      <button 
+        class="rag-key-value__copy-button" 
+        type="button"
+        (click)="copyValue()"
+        title="Copy value"
+        aria-label="Copy value">
+        <lucide-icon name="copy" size="12" />
+      </button>
+    }
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<div [class]="containerClasses()">
+  <textarea
+    [class]="textareaClasses()"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [readonly]="readonly()"
+    [attr.maxlength]="maxlength()"
+    [rows]="autoResize() ? minRows() : rows()"
+    [value]="value"
+    [ngStyle]="textareaStyles()"
+    (input)="handleInput($event)"
+    (focus)="handleFocus($event)"
+    (blur)="handleBlur($event)">
+  </textarea></div>

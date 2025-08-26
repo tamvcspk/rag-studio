@@ -1,0 +1,50 @@
+<nav [class]="breadcrumbClasses()" role="navigation" aria-label="Breadcrumb">
+  <ol class="rt-BreadcrumbList">
+    @for (item of displayItems(); track $index; let isLast = $last) {
+      <li class="rt-BreadcrumbListItem">
+        @if (item.url && !item.disabled && !item.current && !isLast) {
+          <a
+            [routerLink]="item.url"
+            [class]="getItemClasses(item, isLast)"
+            (click)="onItemClick(item)"
+            [attr.aria-current]="item.current || isLast ? 'page' : null"
+          >
+            @if (item.icon) {
+              <lucide-angular
+                [name]="item.icon"
+                size="16"
+              ></lucide-angular>
+            }
+            <span>{{ item.label }}</span>
+          </a>
+        } @else {
+          <span
+            [class]="getItemClasses(item, isLast)"
+            [attr.aria-current]="item.current || isLast ? 'page' : null"
+          >
+            @if (item.icon) {
+              <lucide-angular
+                [name]="item.icon"
+                size="16"
+              ></lucide-angular>
+            }
+            <span>{{ item.label }}</span>
+          </span>
+        }
+
+        @if (!isLast) {
+          <lucide-angular
+            [name]="separator()"
+            size="14"
+            class="rt-BreadcrumbSeparator"
+            aria-hidden="true"
+          ></lucide-angular>
+        }
+      </li>
+    } @empty {
+      <li class="rt-BreadcrumbEmpty">
+        <span>No navigation path</span>
+      </li>
+    }
+  </ol>
+</nav>

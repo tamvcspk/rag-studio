@@ -1,0 +1,55 @@
+:host {
+  display: block;
+}
+
+.rag-card {
+  background: white;
+  border-radius: var(--radius-4, 8px);
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+
+  &--default {
+    box-shadow: var(--shadow-2, 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1));
+  }
+
+  &--elevated {
+    box-shadow: var(--shadow-4, 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1));
+  }
+
+  &--outlined {
+    border-color: var(--gray-6, #e5e7eb);
+    box-shadow: none;
+  }
+
+  &--padded {
+    padding: var(--space-4, 16px);
+  }
+
+  &--interactive {
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: var(--shadow-3, 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1));
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--blue-9, #0ea5e9);
+      outline-offset: 2px;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .rag-card {
+    background: var(--gray-1, #fafafa);
+    
+    &--outlined {
+      border-color: var(--gray-7, #d1d5db);
+    }
+  }
+}

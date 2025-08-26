@@ -1,0 +1,85 @@
+@if (url() && !disabled()) {
+  <a
+    [routerLink]="url()"
+    [class]="itemClasses()"
+    [attr.aria-current]="active() ? 'page' : null"
+    [attr.aria-disabled]="disabled()"
+    (click)="onItemClick($event)"
+    role="menuitem"
+  >
+    <div class="rt-SidebarItemContent">
+      <div class="rt-SidebarItemMain">
+        @if (icon()) {
+          <lucide-angular
+            [name]="icon()!"
+            size="16"
+            class="rt-SidebarItemIcon"
+          ></lucide-angular>
+        }
+        
+        <span class="rt-SidebarItemLabel">{{ label() }}</span>
+        
+        @if (badge() !== null) {
+          <span [class]="badgeClasses()">{{ badge() }}</span>
+        }
+      </div>
+      
+      @if (collapsible() && hasChildren()) {
+        <button
+          class="rt-SidebarItemToggle"
+          [attr.aria-expanded]="!collapsed()"
+          [attr.aria-label]="collapsed() ? 'Expand ' + label() : 'Collapse ' + label()"
+          (click)="onToggleClick($event)"
+          type="button"
+        >
+          <lucide-angular
+            [name]="collapsed() ? 'chevron-right' : 'chevron-down'"
+            size="14"
+          ></lucide-angular>
+        </button>
+      }
+    </div>
+  </a>
+} @else {
+  <div
+    [class]="itemClasses()"
+    [attr.aria-disabled]="disabled()"
+    (click)="onItemClick($event)"
+    role="menuitem"
+    [attr.tabindex]="disabled() ? -1 : 0"
+  >
+    <div class="rt-SidebarItemContent">
+      <div class="rt-SidebarItemMain">
+        @if (icon()) {
+          <lucide-angular
+            [name]="icon()!"
+            size="16"
+            class="rt-SidebarItemIcon"
+          ></lucide-angular>
+        }
+        
+        <span class="rt-SidebarItemLabel">{{ label() }}</span>
+        
+        @if (badge() !== null) {
+          <span [class]="badgeClasses()">{{ badge() }}</span>
+        }
+      </div>
+      
+      @if (collapsible() && hasChildren()) {
+        <button
+          class="rt-SidebarItemToggle"
+          [attr.aria-expanded]="!collapsed()"
+          [attr.aria-label]="collapsed() ? 'Expand ' + label() : 'Collapse ' + label()"
+          [disabled]="disabled()"
+          (click)="onToggleClick($event)"
+          type="button"
+        >
+          <lucide-angular
+            [name]="collapsed() ? 'chevron-right' : 'chevron-down'"
+            size="14"
+          ></lucide-angular>
+        </button>
+      }
+    </div>
+  </div>
+}

@@ -1,0 +1,25 @@
+<div class="rt-Tabs">
+  <div [class]="tabsListClasses()" role="tablist">
+    @for (tab of tabs(); track tab.id) {
+      <button
+        [class]="getTabClasses(tab)"
+        role="tab"
+        [attr.aria-selected]="isTabActive(tab.id)"
+        [attr.aria-disabled]="tab.disabled"
+        [disabled]="tab.disabled || disabled()"
+        (click)="onTabClick(tab.id)"
+      >
+        @if (tab.icon) {
+          <lucide-angular
+            [name]="tab.icon"
+            size="16"
+          ></lucide-angular>
+        }
+        <span>{{ tab.label }}</span>
+      </button>
+    } @empty {
+      <div class="rt-TabsEmpty">No tabs available</div>
+    }
+  </div>
+  <ng-content></ng-content>
+</div>

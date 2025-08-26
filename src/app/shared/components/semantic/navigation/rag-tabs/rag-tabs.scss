@@ -1,0 +1,134 @@
+// RagTabs - Semantic Navigation Component
+.rt-Tabs {
+  width: 100%;
+}
+
+.rt-TabsList {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background-color: var(--gray-3);
+  border-radius: var(--radius-4);
+  margin-bottom: var(--space-5);
+
+  // Size variants
+  &.rt-size-sm {
+    padding: var(--space-1);
+    gap: var(--space-1);
+  }
+
+  &.rt-size-md {
+    padding: var(--space-1);
+    gap: var(--space-1);
+  }
+
+  &.rt-size-lg {
+    padding: var(--space-2);
+    gap: var(--space-2);
+  }
+
+  // Variant styles
+  &.rt-variant-pills {
+    background-color: transparent;
+    gap: var(--space-2);
+
+    .rt-TabsTrigger {
+      border-radius: var(--radius-5);
+    }
+  }
+
+  &.rt-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.rt-TabsTrigger {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: none;
+  border: none;
+  border-radius: var(--radius-3);
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-medium);
+  color: var(--gray-11);
+  cursor: pointer;
+  transition: all 0.15s;
+  outline: none;
+  position: relative;
+
+  &:hover:not(.rt-disabled) {
+    color: var(--gray-12);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--blue-9);
+  }
+
+  &.rt-active {
+    background-color: white;
+    color: var(--gray-12);
+    box-shadow: var(--shadow-1);
+  }
+
+  &.rt-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: var(--gray-9);
+  }
+
+  // Icon styling
+  lucide-angular {
+    flex-shrink: 0;
+  }
+
+  span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.rt-TabsEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  color: var(--gray-10);
+  font-size: var(--font-size-2);
+}
+
+// Responsive behavior
+@media (max-width: 768px) {
+  .rt-TabsList {
+    flex-direction: column;
+  }
+
+  .rt-TabsTrigger {
+    justify-content: flex-start;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .rt-TabsList {
+    background-color: var(--gray-dark-3);
+  }
+
+  .rt-TabsTrigger {
+    color: var(--gray-dark-11);
+
+    &:hover:not(.rt-disabled) {
+      color: var(--gray-dark-12);
+    }
+
+    &.rt-active {
+      background-color: var(--gray-dark-1);
+      color: var(--gray-dark-12);
+    }
+  }
+}

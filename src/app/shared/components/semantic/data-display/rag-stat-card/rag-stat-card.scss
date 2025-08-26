@@ -1,0 +1,114 @@
+:host {
+  display: block;
+}
+
+.rag-stat-card {
+  background: white;
+  border-radius: var(--radius-4, 8px);
+  box-shadow: var(--shadow-2, 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1));
+  border: 1px solid var(--gray-3, #f3f4f6);
+  overflow: hidden;
+
+  &--default {
+    padding: var(--space-4, 16px);
+  }
+
+  &--minimal {
+    padding: var(--space-3, 12px);
+    background: transparent;
+    box-shadow: none;
+    border: none;
+  }
+
+  &--sm {
+    .rag-stat-card__value {
+      font-size: var(--font-size-5, 20px);
+      line-height: var(--line-height-5, 28px);
+    }
+  }
+
+  &--md {
+    .rag-stat-card__value {
+      font-size: var(--font-size-7, 28px);
+      line-height: var(--line-height-7, 36px);
+    }
+  }
+
+  &--lg {
+    padding: var(--space-5, 24px);
+    
+    .rag-stat-card__value {
+      font-size: var(--font-size-8, 35px);
+      line-height: var(--line-height-8, 40px);
+    }
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-3, 12px);
+  }
+
+  &__label {
+    font-size: var(--font-size-1, 12px);
+    line-height: var(--line-height-1, 16px);
+    font-weight: var(--font-weight-medium, 500);
+    color: var(--gray-10, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__icon {
+    width: 16px;
+    height: 16px;
+    color: var(--gray-9, #9ca3af);
+    flex-shrink: 0;
+  }
+
+  &__value {
+    font-weight: var(--font-weight-semibold, 600);
+    line-height: 1;
+    margin-bottom: var(--space-2, 8px);
+    color: var(--gray-12, #1f2937);
+  }
+
+  &__change {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1, 4px);
+    font-size: var(--font-size-1, 12px);
+    font-weight: var(--font-weight-medium, 500);
+
+    &--up {
+      color: var(--green-9, #10b981);
+    }
+
+    &--down {
+      color: var(--red-9, #ef4444);
+    }
+
+    &--neutral {
+      color: var(--gray-9, #9ca3af);
+    }
+
+    lucide-icon {
+      flex-shrink: 0;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .rag-stat-card {
+    background: var(--gray-1, #fafafa);
+    border-color: var(--gray-6, #d1d5db);
+
+    &--minimal {
+      background: transparent;
+    }
+
+    &__value {
+      color: var(--gray-12, #1f2937);
+    }
+  }
+}

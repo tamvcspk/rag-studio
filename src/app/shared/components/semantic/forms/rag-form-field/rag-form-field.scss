@@ -1,0 +1,112 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.rag-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+  width: 100%;
+
+  &--disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  &--error {
+    .rag-form-field__input {
+      :deep(input),
+      :deep(textarea),
+      :deep(select),
+      :deep(.rt-TextFieldInput),
+      :deep(.rt-TextArea),
+      :deep(.rt-SelectTrigger) {
+        border-color: var(--red-9, hsl(358, 75.0%, 59.0%));
+
+        &:focus {
+          border-color: var(--red-9, hsl(358, 75.0%, 59.0%));
+          box-shadow: 0 0 0 1px var(--red-9, hsl(358, 75.0%, 59.0%));
+        }
+      }
+    }
+  }
+}
+
+.rag-form-field__label {
+  font-size: var(--font-size-2, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--gray-12, hsl(0, 0%, 9.0%));
+  line-height: var(--line-height-2, 20px);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+
+  &--required {
+    .rag-form-field__required {
+      color: var(--red-9, hsl(358, 75.0%, 59.0%));
+    }
+  }
+}
+
+.rag-form-field__required {
+  color: var(--red-9, hsl(358, 75.0%, 59.0%));
+  margin-left: var(--space-1, 4px);
+}
+
+.rag-form-field__description {
+  font-size: var(--font-size-1, 12px);
+  color: var(--gray-10, hsl(0, 0%, 52.3%));
+  line-height: var(--line-height-2, 20px);
+  margin-top: calc(var(--space-1, 4px) * -1);
+}
+
+.rag-form-field__input {
+  position: relative;
+}
+
+.rag-form-field__error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 8px);
+  font-size: var(--font-size-1, 12px);
+  color: var(--red-9, hsl(358, 75.0%, 59.0%));
+  line-height: var(--line-height-2, 20px);
+
+  lucide-icon {
+    flex-shrink: 0;
+  }
+}
+
+// Size variants
+.rag-form-field--sm {
+  gap: var(--space-1, 4px);
+
+  .rag-form-field__label {
+    font-size: var(--font-size-1, 12px);
+  }
+
+  .rag-form-field__description {
+    font-size: 11px;
+  }
+
+  .rag-form-field__error {
+    font-size: 11px;
+  }
+}
+
+.rag-form-field--lg {
+  gap: var(--space-3, 12px);
+
+  .rag-form-field__label {
+    font-size: var(--font-size-3, 16px);
+  }
+
+  .rag-form-field__description {
+    font-size: var(--font-size-2, 14px);
+  }
+
+  .rag-form-field__error {
+    font-size: var(--font-size-2, 14px);
+  }
+}
