@@ -12,8 +12,8 @@ import { RagIcon } from '../rag-icon/rag-icon';
 export class RagBadge {
   // Modern Angular 20: Use input() with proper typing
   readonly variant = input<'solid' | 'soft' | 'outline'>('soft');
-  readonly color = input<'gray' | 'blue' | 'green' | 'amber' | 'red'>('gray');
-  readonly size = input<'sm' | 'md'>('md');
+  readonly color = input<'gray' | 'blue' | 'green' | 'amber' | 'red' | 'orange' | 'purple'>('gray');
+  readonly size = input<'xs' | 'sm' | 'md' | 'lg' | 'xl'>('md');
   readonly icon = input<string>();
   readonly dot = input(false);
 

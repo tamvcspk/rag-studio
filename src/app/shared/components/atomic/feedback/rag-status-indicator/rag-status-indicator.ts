@@ -12,7 +12,7 @@ import { RagIcon } from '../../primitives';
 export class RagStatusIndicator {
   // Modern Angular 20: Use input() with proper typing
   readonly status = input<'idle' | 'loading' | 'success' | 'error' | 'warning'>('idle');
-  readonly size = input<'xs' | 'sm' | 'md' | 'lg'>('md');
+  readonly size = input<'xs' | 'sm' | 'md' | 'lg' | 'xl'>('md');
   readonly showIcon = input(true);
   readonly showLabel = input(false);
   readonly label = input<string>();

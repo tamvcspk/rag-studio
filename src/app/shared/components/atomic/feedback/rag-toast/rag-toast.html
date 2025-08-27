@@ -30,7 +30,7 @@
         @for (action of actions(); track action.label) {
           <rag-button
             [variant]="action.variant || 'ghost'"
-            size="1"
+            size="xs"
             (onClick)="handleAction(action)"
           >
             {{ action.label }}

@@ -2,79 +2,274 @@
 // Include theming for Angular Material with `mat.theme()`.
 @use '@angular/material' as mat;
 
-// Radix-inspired design system CSS custom properties
+// Design System CSS Custom Properties
+// Generated from design tokens - see src/app/shared/tokens/
 :root {
-  // Gray scale
-  --gray-1: hsl(0, 0%, 99.0%);
-  --gray-2: hsl(0, 0%, 97.3%);
-  --gray-3: hsl(0, 0%, 95.1%);
-  --gray-4: hsl(0, 0%, 93.0%);
-  --gray-5: hsl(0, 0%, 90.9%);
-  --gray-6: hsl(0, 0%, 88.7%);
-  --gray-7: hsl(0, 0%, 85.8%);
-  --gray-8: hsl(0, 0%, 78.0%);
-  --gray-9: hsl(0, 0%, 56.1%);
-  --gray-10: hsl(0, 0%, 52.3%);
-  --gray-11: hsl(0, 0%, 43.5%);
-  --gray-12: hsl(0, 0%, 9.0%);
+  /* ===== PRIMITIVE TOKENS ===== */
+  /* Size scale */
+  --size-xs: xs;
+  --size-sm: sm;
+  --size-md: md;
+  --size-lg: lg;
+  --size-xl: xl;
+
+  /* Color palettes */
+  --color-gray-50: hsl(0, 0%, 99.0%);
+  --color-gray-100: hsl(0, 0%, 97.3%);
+  --color-gray-200: hsl(0, 0%, 95.1%);
+  --color-gray-300: hsl(0, 0%, 93.0%);
+  --color-gray-400: hsl(0, 0%, 90.9%);
+  --color-gray-500: hsl(0, 0%, 88.7%);
+  --color-gray-600: hsl(0, 0%, 85.8%);
+  --color-gray-700: hsl(0, 0%, 78.0%);
+  --color-gray-800: hsl(0, 0%, 56.1%);
+  --color-gray-900: hsl(0, 0%, 52.3%);
+  --color-gray-950: hsl(0, 0%, 43.5%);
+  --color-gray-1000: hsl(0, 0%, 9.0%);
+  --color-blue-50: hsl(206, 100%, 97.0%);
+  --color-blue-100: hsl(205, 100%, 94.0%);
+  --color-blue-200: hsl(206, 100%, 90.0%);
+  --color-blue-300: hsl(206, 98%, 84.0%);
+  --color-blue-400: hsl(206, 93%, 73.0%);
+  --color-blue-500: hsl(206, 100%, 50.0%);
+  --color-blue-600: hsl(208, 100%, 47.0%);
+  --color-blue-700: hsl(211, 100%, 43.0%);
+  --color-blue-800: hsl(214, 100%, 37.0%);
+  --color-blue-900: hsl(217, 91%, 31.0%);
+  --color-blue-950: hsl(221, 83%, 23.0%);
+  --color-blue-1000: hsl(224, 76%, 16.0%);
+  --color-green-50: hsl(136, 50%, 98.9%);
+  --color-green-100: hsl(138, 62%, 96.9%);
+  --color-green-200: hsl(139, 55%, 94.5%);
+  --color-green-300: hsl(140, 48%, 91.0%);
+  --color-green-400: hsl(141, 43%, 86.0%);
+  --color-green-500: hsl(143, 40%, 79.0%);
+  --color-green-600: hsl(146, 38%, 69.0%);
+  --color-green-700: hsl(151, 40%, 54.0%);
+  --color-green-800: hsl(151, 55%, 41.5%);
+  --color-green-900: hsl(152, 57%, 37.6%);
+  --color-green-950: hsl(153, 67%, 28.5%);
+  --color-green-1000: hsl(155, 40%, 14.0%);
+  --color-red-50: hsl(359, 100%, 99.4%);
+  --color-red-100: hsl(359, 100%, 98.6%);
+  --color-red-200: hsl(360, 100%, 97.0%);
+  --color-red-300: hsl(360, 91%, 95.0%);
+  --color-red-400: hsl(360, 83%, 91.0%);
+  --color-red-500: hsl(360, 77%, 85.0%);
+  --color-red-600: hsl(359, 75%, 75.0%);
+  --color-red-700: hsl(358, 75%, 59.0%);
+  --color-red-800: hsl(358, 69%, 55.0%);
+  --color-red-900: hsl(358, 65%, 48.0%);
+  --color-red-950: hsl(354, 50%, 14.6%);
+  --color-red-1000: hsl(353, 23%, 10.0%);
+  --color-amber-50: hsl(39, 70%, 97.0%);
+  --color-amber-100: hsl(40, 85%, 95.0%);
+  --color-amber-200: hsl(40, 84%, 90.0%);
+  --color-amber-300: hsl(40, 84%, 83.0%);
+  --color-amber-400: hsl(41, 84%, 78.0%);
+  --color-amber-500: hsl(41, 88%, 75.0%);
+  --color-amber-600: hsl(39, 85%, 67.0%);
+  --color-amber-700: hsl(39, 100%, 57.0%);
+  --color-amber-800: hsl(35, 91%, 51.0%);
+  --color-amber-900: hsl(32, 89%, 47.0%);
+  --color-amber-950: hsl(15, 25%, 15.0%);
+  --color-amber-1000: hsl(20, 14%, 9.0%);
+  --color-orange-50: hsl(24, 100%, 97.0%);
+  --color-orange-100: hsl(24, 100%, 95.0%);
+  --color-orange-200: hsl(24, 100%, 92.0%);
+  --color-orange-300: hsl(24, 100%, 86.0%);
+  --color-orange-400: hsl(24, 100%, 78.0%);
+  --color-orange-500: hsl(25, 95%, 71.0%);
+  --color-orange-600: hsl(25, 90%, 60.0%);
+  --color-orange-700: hsl(25, 100%, 54.0%);
+  --color-orange-800: hsl(25, 100%, 47.0%);
+  --color-orange-900: hsl(25, 100%, 37.0%);
+  --color-orange-950: hsl(15, 25%, 15.0%);
+  --color-orange-1000: hsl(15, 20%, 10.0%);
+  --color-purple-50: hsl(280, 100%, 99.0%);
+  --color-purple-100: hsl(279, 75%, 97.0%);
+  --color-purple-200: hsl(280, 56%, 93.0%);
+  --color-purple-300: hsl(280, 50%, 88.0%);
+  --color-purple-400: hsl(281, 47%, 82.0%);
+  --color-purple-500: hsl(282, 44%, 75.0%);
+  --color-purple-600: hsl(283, 42%, 67.0%);
+  --color-purple-700: hsl(285, 45%, 58.0%);
+  --color-purple-800: hsl(288, 56%, 52.0%);
+  --color-purple-900: hsl(292, 62%, 46.0%);
+  --color-purple-950: hsl(303, 45%, 15.0%);
+  --color-purple-1000: hsl(300, 26%, 9.0%);
+  --color-white: hsl(0, 0%, 100%);
+  --color-black: hsl(0, 0%, 0%);
+  --color-transparent: transparent;
+
+  /* Spacing scale */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+
+  /* Border radius scale */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* Typography scale */
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --line-height-xs: 16px;
+  --line-height-sm: 16px;
+  --line-height-md: 20px;
+  --line-height-lg: 24px;
+  --line-height-xl: 28px;
+
+  /* Shadow scale */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+  /* ===== SEMANTIC TOKENS ===== */
+  /* Background colors */
+  --bg-default: hsl(0, 0%, 100%);
+  --bg-subtle: hsl(0, 0%, 99.0%);
+  --bg-muted: hsl(0, 0%, 97.3%);
+
+  /* Border colors */
+  --border-default: hsl(0, 0%, 93.0%);
+  --border-subtle: hsl(0, 0%, 95.1%);
+  --border-muted: hsl(0, 0%, 90.9%);
+
+  /* Text colors */
+  --text-default: hsl(0, 0%, 9.0%);
+  --text-subtle: hsl(0, 0%, 43.5%);
+  --text-muted: hsl(0, 0%, 78.0%);
+  --text-disabled: hsl(0, 0%, 88.7%);
+  --text-inverse: hsl(0, 0%, 100%);
+
+  /* ===== COMPONENT TOKENS ===== */
+  /* Button sizes */
+  --button-xs-height: 24px;
+  --button-xs-padding: 0 4px;
+  --button-xs-font-size: 11px;
+  --button-xs-border-radius: 2px;
+  --button-sm-height: 28px;
+  --button-sm-padding: 0 8px;
+  --button-sm-font-size: 12px;
+  --button-sm-border-radius: 4px;
+  --button-md-height: 32px;
+  --button-md-padding: 0 12px;
+  --button-md-font-size: 14px;
+  --button-md-border-radius: 6px;
+  --button-lg-height: 40px;
+  --button-lg-padding: 0 16px;
+  --button-lg-font-size: 16px;
+  --button-lg-border-radius: 6px;
+  --button-xl-height: 48px;
+  --button-xl-padding: 0 24px;
+  --button-xl-font-size: 18px;
+  --button-xl-border-radius: 8px;
+
+  /* Badge sizes */
+  --badge-xs-height: 16px;
+  --badge-xs-padding: 0 4px;
+  --badge-xs-font-size: 11px;
+  --badge-xs-border-radius: 2px;
+  --badge-sm-height: 20px;
+  --badge-sm-padding: 0 4px;
+  --badge-sm-font-size: 11px;
+  --badge-sm-border-radius: 4px;
+  --badge-md-height: 24px;
+  --badge-md-padding: 0 8px;
+  --badge-md-font-size: 12px;
+  --badge-md-border-radius: 4px;
+  --badge-lg-height: 28px;
+  --badge-lg-padding: 0 12px;
+  --badge-lg-font-size: 14px;
+  --badge-lg-border-radius: 6px;
+  --badge-xl-height: 32px;
+  --badge-xl-padding: 0 16px;
+  --badge-xl-font-size: 14px;
+  --badge-xl-border-radius: 6px;
+
+  /* Input sizes */
+  --input-xs-height: 24px;
+  --input-xs-padding: 0 4px;
+  --input-xs-font-size: 11px;
+  --input-xs-border-radius: 2px;
+  --input-sm-height: 28px;
+  --input-sm-padding: 0 8px;
+  --input-sm-font-size: 12px;
+  --input-sm-border-radius: 4px;
+  --input-md-height: 32px;
+  --input-md-padding: 0 12px;
+  --input-md-font-size: 14px;
+  --input-md-border-radius: 6px;
+  --input-lg-height: 40px;
+  --input-lg-padding: 0 16px;
+  --input-lg-font-size: 16px;
+  --input-lg-border-radius: 6px;
+  --input-xl-height: 48px;
+  --input-xl-padding: 0 24px;
+  --input-xl-font-size: 18px;
+  --input-xl-border-radius: 8px;
+
+  /* Status indicator sizes */
+  --status-xs-icon-size: 12px;
+  --status-xs-dot-size: 6px;
+  --status-sm-icon-size: 14px;
+  --status-sm-dot-size: 8px;
+  --status-md-icon-size: 16px;
+  --status-md-dot-size: 10px;
+  --status-lg-icon-size: 20px;
+  --status-lg-dot-size: 12px;
+  --status-xl-icon-size: 24px;
+  --status-xl-dot-size: 14px;
   
-  // Semantic colors
-  --blue-9: hsl(206, 100%, 50.0%);
-  --green-9: hsl(151, 55.0%, 41.5%);
-  --amber-9: hsl(39, 100%, 57.0%);
-  --red-9: hsl(358, 75.0%, 59.0%);
-  
-  // Border radius
-  --radius-1: 3px;
-  --radius-2: 4px;
-  --radius-3: 6px;
-  --radius-4: 8px;
-  --radius-5: 12px;
-  
-  // Spacing scale
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 40px;
-  --space-8: 48px;
-  --space-9: 64px;
-  
-  // Typography scale
-  --font-size-1: 12px;
-  --font-size-2: 14px;
-  --font-size-3: 16px;
-  --font-size-4: 18px;
-  --font-size-5: 20px;
-  --font-size-6: 24px;
-  --font-size-7: 28px;
-  --font-size-8: 35px;
-  --font-size-9: 60px;
-  
-  --line-height-1: 16px;
-  --line-height-2: 20px;
-  --line-height-3: 24px;
-  --line-height-4: 26px;
-  --line-height-5: 28px;
-  --line-height-6: 30px;
-  --line-height-7: 36px;
-  --line-height-8: 40px;
-  --line-height-9: 60px;
-  
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  
-  // Box shadows
-  --shadow-1: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-2: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-  --shadow-3: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --shadow-4: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  --shadow-5: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  --shadow-6: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  // Legacy compatibility - keep existing variables for gradual migration
+  --gray-1: var(--color-gray-50);
+  --gray-2: var(--color-gray-100);
+  --gray-3: var(--color-gray-200);
+  --gray-4: var(--color-gray-300);
+  --gray-5: var(--color-gray-400);
+  --gray-6: var(--color-gray-500);
+  --gray-7: var(--color-gray-600);
+  --gray-8: var(--color-gray-700);
+  --gray-9: var(--color-gray-800);
+  --gray-10: var(--color-gray-900);
+  --gray-11: var(--color-gray-950);
+  --gray-12: var(--color-gray-1000);
+  --blue-9: var(--color-blue-500);
+  --green-9: var(--color-green-800);
+  --amber-9: var(--color-amber-700);
+  --red-9: var(--color-red-700);
+  --space-1: var(--spacing-xs);
+  --space-2: var(--spacing-sm);
+  --space-3: var(--spacing-md);
+  --space-4: var(--spacing-lg);
+  --space-5: var(--spacing-xl);
+  --radius-1: var(--radius-xs);
+  --radius-2: var(--radius-sm);
+  --radius-3: var(--radius-md);
+  --radius-4: var(--radius-lg);
+  --radius-5: var(--radius-xl);
+  --font-size-1: var(--font-size-xs);
+  --font-size-2: var(--font-size-sm);
+  --font-size-3: var(--font-size-md);
+  --line-height-1: var(--line-height-xs);
+  --line-height-2: var(--line-height-sm);
+  --line-height-3: var(--line-height-md);
+  --shadow-1: var(--shadow-xs);
+  --shadow-2: var(--shadow-sm);
+  --shadow-3: var(--shadow-md);
+  --shadow-4: var(--shadow-lg);
+  --shadow-5: var(--shadow-xl);
 }
 
 html {
@@ -153,77 +348,91 @@ html, body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
-  padding: 0 var(--space-3);
-  height: 32px;
-  font-size: var(--font-size-2);
-  font-weight: var(--font-weight-medium);
-  line-height: 1;
-  border-radius: var(--radius-3);
+  gap: var(--spacing-sm);
   border: none;
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
   outline: none;
   position: relative;
+  font-weight: 500;
+  line-height: 1;
 
   &:focus-visible {
-    box-shadow: 0 0 0 2px var(--gray-1), 0 0 0 4px var(--blue-9);
+    box-shadow: 0 0 0 2px var(--bg-default), 0 0 0 4px var(--color-blue-500);
   }
 
   &.rt-variant-solid {
-    background-color: var(--gray-12);
-    color: white;
+    background-color: var(--text-default);
+    color: var(--text-inverse);
 
     &:hover {
-      background-color: var(--gray-11);
+      background-color: var(--text-subtle);
     }
   }
 
   &.rt-variant-soft {
-    background-color: var(--gray-3);
-    color: var(--gray-11);
+    background-color: var(--bg-muted);
+    color: var(--text-default);
 
     &:hover {
-      background-color: var(--gray-4);
+      background-color: var(--color-gray-300);
     }
   }
 
   &.rt-variant-outline {
-    background-color: transparent;
-    border: 1px solid var(--gray-6);
-    color: var(--gray-11);
+    background-color: var(--bg-default);
+    border: 1px solid var(--border-default);
+    color: var(--text-default);
 
     &:hover {
-      background-color: var(--gray-2);
+      background-color: var(--bg-subtle);
     }
   }
 
   &.rt-variant-ghost {
     background-color: transparent;
-    color: var(--gray-11);
+    color: var(--text-default);
 
     &:hover {
-      background-color: var(--gray-3);
+      background-color: var(--bg-muted);
     }
   }
 
-  &.rt-size-1 {
-    height: 24px;
-    padding: 0 var(--space-2);
-    font-size: var(--font-size-1);
+  // New size system using design tokens
+  &.rt-size-xs {
+    height: var(--button-xs-height);
+    padding: var(--button-xs-padding);
+    font-size: var(--button-xs-font-size);
+    border-radius: var(--button-xs-border-radius);
   }
 
-  &.rt-size-2 {
-    height: 32px;
-    padding: 0 var(--space-3);
-    font-size: var(--font-size-2);
+  &.rt-size-sm {
+    height: var(--button-sm-height);
+    padding: var(--button-sm-padding);
+    font-size: var(--button-sm-font-size);
+    border-radius: var(--button-sm-border-radius);
   }
 
-  &.rt-size-3 {
-    height: 40px;
-    padding: 0 var(--space-4);
-    font-size: var(--font-size-3);
+  &.rt-size-md {
+    height: var(--button-md-height);
+    padding: var(--button-md-padding);
+    font-size: var(--button-md-font-size);
+    border-radius: var(--button-md-border-radius);
+  }
+
+  &.rt-size-lg {
+    height: var(--button-lg-height);
+    padding: var(--button-lg-padding);
+    font-size: var(--button-lg-font-size);
+    border-radius: var(--button-lg-border-radius);
+  }
+
+  &.rt-size-xl {
+    height: var(--button-xl-height);
+    padding: var(--button-xl-padding);
+    font-size: var(--button-xl-font-size);
+    border-radius: var(--button-xl-border-radius);
   }
 }
 
@@ -231,49 +440,92 @@ html, body {
 .rt-Badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
-  padding: 0 var(--space-2);
-  height: 20px;
-  font-size: var(--font-size-1);
-  font-weight: var(--font-weight-medium);
+  gap: var(--spacing-xs);
+  font-weight: 500;
   line-height: 1;
-  border-radius: var(--radius-2);
   white-space: nowrap;
 
   &.rt-variant-solid {
-    background-color: var(--gray-9);
-    color: white;
+    background-color: var(--color-gray-800);
+    color: var(--text-inverse);
   }
 
   &.rt-variant-soft {
-    background-color: var(--gray-3);
-    color: var(--gray-11);
+    background-color: var(--bg-muted);
+    color: var(--text-default);
   }
 
   &.rt-variant-outline {
-    background-color: transparent;
-    border: 1px solid var(--gray-6);
-    color: var(--gray-11);
+    background-color: var(--bg-default);
+    border: 1px solid var(--border-default);
+    color: var(--text-default);
   }
 
+  // Color variants using new token system
   &.rt-color-green {
-    background-color: var(--green-9);
-    color: white;
+    background-color: var(--color-green-800);
+    color: var(--text-inverse);
   }
 
   &.rt-color-amber {
-    background-color: var(--amber-9);
-    color: white;
+    background-color: var(--color-amber-700);
+    color: var(--text-inverse);
   }
 
   &.rt-color-red {
-    background-color: var(--red-9);
-    color: white;
+    background-color: var(--color-red-700);
+    color: var(--text-inverse);
   }
 
   &.rt-color-blue {
-    background-color: var(--blue-9);
-    color: white;
+    background-color: var(--color-blue-500);
+    color: var(--text-inverse);
+  }
+
+  &.rt-color-orange {
+    background-color: var(--color-orange-700);
+    color: var(--text-inverse);
+  }
+
+  &.rt-color-purple {
+    background-color: var(--color-purple-800);
+    color: var(--text-inverse);
+  }
+
+  // New size system using design tokens
+  &.rt-size-xs {
+    height: var(--badge-xs-height);
+    padding: var(--badge-xs-padding);
+    font-size: var(--badge-xs-font-size);
+    border-radius: var(--badge-xs-border-radius);
+  }
+
+  &.rt-size-sm {
+    height: var(--badge-sm-height);
+    padding: var(--badge-sm-padding);
+    font-size: var(--badge-sm-font-size);
+    border-radius: var(--badge-sm-border-radius);
+  }
+
+  &.rt-size-md {
+    height: var(--badge-md-height);
+    padding: var(--badge-md-padding);
+    font-size: var(--badge-md-font-size);
+    border-radius: var(--badge-md-border-radius);
+  }
+
+  &.rt-size-lg {
+    height: var(--badge-lg-height);
+    padding: var(--badge-lg-padding);
+    font-size: var(--badge-lg-font-size);
+    border-radius: var(--badge-lg-border-radius);
+  }
+
+  &.rt-size-xl {
+    height: var(--badge-xl-height);
+    padding: var(--badge-xl-padding);
+    font-size: var(--badge-xl-font-size);
+    border-radius: var(--badge-xl-border-radius);
   }
 }
 

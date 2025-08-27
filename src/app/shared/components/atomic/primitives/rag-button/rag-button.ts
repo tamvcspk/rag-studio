@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 export class RagButton {
   // Modern Angular 20: Use input() with proper typing
   readonly variant = input<'solid' | 'outline' | 'ghost' | 'soft'>('solid');
-  readonly size = input<'1' | '2' | '3'>('2');
+  readonly size = input<'xs' | 'sm' | 'md' | 'lg' | 'xl'>('md');
   readonly disabled = input(false);
   readonly loading = input(false);
   readonly type = input<'button' | 'submit' | 'reset'>('button');
