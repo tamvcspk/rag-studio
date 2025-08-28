@@ -1,1 +1,171 @@
-<span>Tools page - Coming soon</span>
+<div class="tools-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-info">
+        <div class="title-section">
+          <lucide-angular [img]="Wrench" size="24" class="page-icon"></lucide-angular>
+          <h1 class="page-title">Dynamic MCP Tools</h1>
+        </div>
+        <p class="page-description">
+          Create and manage tools exposed via Model Context Protocol
+        </p>
+      </div>
+      
+      <rag-button 
+        variant="solid" 
+        size="md"
+        (click)="onCreateTool()">
+        <lucide-angular [img]="Plus" size="16"></lucide-angular>
+        Create Tool
+      </rag-button>
+    </div>
+    
+    <!-- Statistics -->
+    <div class="stats-overview">
+      <div class="stat-item">
+        <span class="stat-value">{{ toolStats().total }}</span>
+        <span class="stat-label">Total Tools</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ toolStats().active }}</span>
+        <span class="stat-label">Active</span>
+        <rag-badge variant="solid" color="green" size="sm">{{ toolStats().active }}</rag-badge>
+      </div>
+      @if (toolStats().error > 0) {
+        <div class="stat-item">
+          <span class="stat-value">{{ toolStats().error }}</span>
+          <span class="stat-label">Errors</span>
+          <rag-badge variant="solid" color="red" size="sm">{{ toolStats().error }}</rag-badge>
+        </div>
+      }
+      @if (toolStats().inactive > 0) {
+        <div class="stat-item">
+          <span class="stat-value">{{ toolStats().inactive }}</span>
+          <span class="stat-label">Inactive</span>
+          <rag-badge variant="soft" color="gray" size="sm">{{ toolStats().inactive }}</rag-badge>
+        </div>
+      }
+      @if (toolStats().pending > 0) {
+        <div class="stat-item">
+          <span class="stat-value">{{ toolStats().pending }}</span>
+          <span class="stat-label">Pending</span>
+          <rag-badge variant="solid" color="amber" size="sm">{{ toolStats().pending }}</rag-badge>
+        </div>
+      }
+    </div>
+  </div>
+  
+  <!-- Filters and Search -->
+  <div class="filters-section">
+    <div class="search-container">
+      <rag-search-input
+        placeholder="Search tools by name, endpoint, or description..."
+        [ngModel]="searchQuery()"
+        (ngModelChange)="onSearchChange($event)"
+        class="search-input">
+      </rag-search-input>
+    </div>
+    
+    <div class="filter-container">
+      <lucide-angular [img]="Filter" size="16" class="filter-icon"></lucide-angular>
+      <rag-select
+        [options]="statusFilterOptions"
+        [ngModel]="statusFilter()"
+        (ngModelChange)="onStatusFilterChange($event)"
+        placeholder="Filter by status"
+        class="status-filter">
+      </rag-select>
+    </div>
+  </div>
+  
+  <!-- Tools Grid -->
+  <div class="tools-content">
+    @if (filteredTools().length === 0 && searchQuery() === '' && statusFilter() === 'ALL') {
+      <!-- Empty state - no tools created yet -->
+      <div class="empty-state">
+        <lucide-angular [img]="Wrench" size="48" class="empty-icon"></lucide-angular>
+        <h3 class="empty-title">No tools created yet</h3>
+        <p class="empty-description">
+          Create your first dynamic MCP tool to get started with RAG-powered integrations
+        </p>
+        <rag-button 
+          variant="solid" 
+          size="md"
+          (click)="onCreateTool()">
+          <lucide-angular [img]="Plus" size="16"></lucide-angular>
+          Create Your First Tool
+        </rag-button>
+      </div>
+    } @else if (filteredTools().length === 0) {
+      <!-- No results for current filters -->
+      <div class="no-results">
+        <lucide-angular [img]="Search" size="48" class="no-results-icon"></lucide-angular>
+        <h3 class="no-results-title">No tools found</h3>
+        <p class="no-results-description">
+          Try adjusting your search or filter criteria
+        </p>
+        <div class="no-results-actions">
+          <rag-button 
+            variant="outline" 
+            size="sm"
+            (click)="searchQuery.set(''); statusFilter.set('ALL')">
+            Clear Filters
+          </rag-button>
+        </div>
+      </div>
+    } @else {
+      <!-- Tools Grid -->
+      <div class="tools-grid">
+        @for (tool of filteredTools(); track tool.id) {
+          <app-tool-card
+            [tool]="tool"
+            [loading]="isLoading()"
+            (onActivate)="onToolActivate($event)"
+            (onDeactivate)="onToolDeactivate($event)"
+            (onEdit)="onToolEdit($event)"
+            (onDelete)="onToolDelete($event)"
+            (onRetry)="onToolRetry($event)"
+            (onViewLogs)="onToolViewLogs($event)">
+          </app-tool-card>
+        } @empty {
+          <div class="no-tools-message">
+            <p>No tools available</p>
+          </div>
+        }
+      </div>
+      
+      <!-- Results Summary -->
+      <div class="results-summary">
+        <p class="results-text">
+          Showing {{ filteredTools().length }} of {{ toolStats().total }} tools
+          @if (searchQuery() || statusFilter() !== 'ALL') {
+            <span class="filter-indication">
+              @if (searchQuery()) {
+                · Filtered by: "{{ searchQuery() }}"
+              }
+              @if (statusFilter() !== 'ALL') {
+                · Status: {{ statusFilter() }}
+              }
+            </span>
+          }
+        </p>
+      </div>
+    }
+  </div>
+
+  <!-- Create Tool Wizard -->
+  <app-create-tool-wizard
+    (onClose)="onToastClose()"
+    (onSubmit)="onToolSubmit($event)">
+  </app-create-tool-wizard>
+
+  <!-- Toast Notifications -->
+  @if (showToast()) {
+    <rag-toast
+      [variant]="toastType()"
+      [message]="toastMessage()"
+      (onDismiss)="onToastClose()">
+    </rag-toast>
+  }
+</div>

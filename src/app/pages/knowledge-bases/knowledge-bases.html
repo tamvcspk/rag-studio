@@ -1,1 +1,101 @@
-<span>Knowledge Bases page - Coming soon</span>
+<div class="knowledge-bases-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">Knowledge Bases</h1>
+        <p class="page-subtitle">Versioned content repositories for RAG retrieval</p>
+      </div>
+      
+      <div class="action-buttons">
+        <rag-button 
+          variant="outline" 
+          (click)="onImportKB()"
+          class="import-button">
+          <lucide-angular [img]="iconComponents.Upload" [size]="16"></lucide-angular>
+          Import KB
+        </rag-button>
+        
+        <rag-button 
+          variant="solid" 
+          (click)="openCreateWizard()"
+          class="create-button">
+          <lucide-angular [img]="iconComponents.Plus" [size]="16"></lucide-angular>
+          Create KB
+        </rag-button>
+      </div>
+    </div>
+
+    <!-- Search and Filters -->
+    @if (!isEmpty()) {
+      <div class="filters-section">
+        <div class="search-filter">
+          <rag-search-input
+            placeholder="Search knowledge bases..."
+            (search)="onSearchChange($event)"
+            class="kb-search">
+          </rag-search-input>
+        </div>
+
+        <div class="status-filter">
+          <rag-select (change)="onFilterChange($event)">
+            @for (option of filterOptions(); track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </rag-select>
+        </div>
+      </div>
+
+      <div class="results-summary">
+        @if (filteredCount() !== totalCount()) {
+          <span>Showing {{ filteredCount() }} of {{ totalCount() }} knowledge bases</span>
+        } @else {
+          <span>{{ totalCount() }} knowledge bases</span>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Content -->
+  <div class="page-content">
+    @if (isEmpty()) {
+      <!-- Empty State -->
+      <app-empty-state-panel
+        [icon]="iconComponents.BookOpen"
+        title="No knowledge bases yet"
+        description="Knowledge bases store and index your content for RAG retrieval. Create your first one to get started."
+        actionLabel="Create Knowledge Base"
+        (action)="openCreateWizard()">
+      </app-empty-state-panel>
+    } @else if (hasResults()) {
+      <!-- Knowledge Base Grid -->
+      <div class="kb-grid">
+        @for (kb of knowledgeBases$(); track kb.id) {
+          <app-knowledge-base-card
+            [knowledgeBase]="kb"
+            [class]="kb.status"
+            (reindex)="onReindexKB($event)"
+            (export)="onExportKB($event)"
+            (delete)="onDeleteKB($event)"
+            (pause)="onPauseKB($event)"
+            (cancel)="onCancelKB($event)">
+          </app-knowledge-base-card>
+        }
+      </div>
+    } @else {
+      <!-- No Results State -->
+      <app-empty-state-panel
+        [icon]="iconComponents.BookOpen"
+        title="No matching knowledge bases"
+        description="Try adjusting your search or filter criteria."
+        [showAction]="false">
+      </app-empty-state-panel>
+    }
+  </div>
+
+  <!-- Create Wizard -->
+  <app-create-kb-wizard
+    #createWizard
+    (create)="onCreateKB($event)">
+  </app-create-kb-wizard>
+</div>

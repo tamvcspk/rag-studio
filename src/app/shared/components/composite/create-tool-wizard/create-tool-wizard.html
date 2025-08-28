@@ -1,0 +1,170 @@
+<rag-dialog 
+  [open]="isOpen()" 
+  (close)="close()"
+  size="lg"
+  class="create-tool-wizard">
+  
+  <div class="wizard-header">
+    <h2 class="wizard-title">Create Dynamic MCP Tool</h2>
+    <p class="wizard-description">
+      Create a new tool that will be exposed via MCP to external AI models
+    </p>
+  </div>
+
+  <form [formGroup]="toolForm" (ngSubmit)="onFormSubmit()" class="wizard-form">
+    <!-- Tool Identity Section -->
+    <div class="form-section">
+      <h3 class="section-title">Tool Identity</h3>
+      
+      <div class="form-row">
+        <rag-form-field 
+          label="Tool Name" 
+          [required]="true"
+          [error]="toolForm.get('name')?.invalid && toolForm.get('name')?.touched ? 'Tool name is required (min 3 characters)' : ''">
+          <rag-input
+            formControlName="name"
+            placeholder="e.g., Angular Documentation"
+            class="full-width">
+          </rag-input>
+        </rag-form-field>
+
+        <rag-form-field 
+          label="Endpoint" 
+          [required]="true"
+          hint="Format: tool.{product}.{operation}"
+          [error]="toolForm.get('endpoint')?.invalid && toolForm.get('endpoint')?.touched ? 'Valid endpoint format required (e.g., tool.angular.search)' : ''">
+          <rag-input
+            formControlName="endpoint"
+            placeholder="e.g., tool.angular.search"
+            class="full-width">
+          </rag-input>
+        </rag-form-field>
+      </div>
+    </div>
+
+    <!-- Description Section -->
+    <div class="form-section">
+      <rag-form-field 
+        label="Description" 
+        [required]="true"
+        [error]="toolForm.get('description')?.invalid && toolForm.get('description')?.touched ? 'Description is required (min 10 characters)' : ''">
+        <rag-textarea
+          formControlName="description"
+          placeholder="Describe what this tool does..."
+          [rows]="3"
+          class="full-width">
+        </rag-textarea>
+      </rag-form-field>
+    </div>
+
+    <!-- Configuration Section -->
+    <div class="form-section">
+      <h3 class="section-title">Configuration</h3>
+      
+      <rag-form-field 
+        label="Base Operation" 
+        [required]="true">
+        <rag-select
+          formControlName="baseOperation"
+          [options]="baseOperations"
+          class="full-width">
+        </rag-select>
+      </rag-form-field>
+
+      <rag-form-field 
+        label="Knowledge Base" 
+        [required]="true"
+        [error]="toolForm.get('knowledgeBaseId')?.invalid && toolForm.get('knowledgeBaseId')?.touched ? 'Please select a knowledge base' : ''">
+        <rag-select
+          formControlName="knowledgeBaseId"
+          [options]="knowledgeBaseOptions"
+          placeholder="Select a knowledge base"
+          class="full-width">
+        </rag-select>
+      </rag-form-field>
+    </div>
+
+    <!-- Performance Tuning Section -->
+    <div class="form-section">
+      <h3 class="section-title">Performance Tuning</h3>
+      
+      <div class="form-row">
+        <rag-form-field 
+          label="Top-K (retrieval)" 
+          hint="Number of initial candidates to retrieve"
+          [error]="toolForm.get('topK')?.invalid && toolForm.get('topK')?.touched ? 'Must be between 1 and 1000' : ''">
+          <rag-input
+            formControlName="topK"
+            type="number"
+            min="1"
+            max="1000"
+            class="full-width">
+          </rag-input>
+        </rag-form-field>
+
+        <rag-form-field 
+          label="Top-N (rerank)" 
+          hint="Number of final results after reranking"
+          [error]="toolForm.get('topN')?.invalid && toolForm.get('topN')?.touched ? 'Must be between 1 and 50' : ''">
+          <rag-input
+            formControlName="topN"
+            type="number"
+            min="1"
+            max="50"
+            class="full-width">
+          </rag-input>
+        </rag-form-field>
+      </div>
+    </div>
+
+    <!-- Preview Section -->
+    @if (toolForm.get('name')?.value && toolForm.get('endpoint')?.value) {
+      <div class="form-section">
+        <h3 class="section-title">Preview</h3>
+        <div class="tool-preview">
+          <div class="preview-item">
+            <strong>Endpoint:</strong> 
+            <code>{{ toolForm.get('endpoint')?.value }}</code>
+          </div>
+          @if (getSelectedKnowledgeBase()) {
+            <div class="preview-item">
+              <strong>Knowledge Base:</strong> 
+              {{ getSelectedKnowledgeBase()!.displayName }}
+            </div>
+          }
+          <div class="preview-item">
+            <strong>Operation Type:</strong> 
+            {{ toolForm.get('baseOperation')?.value }}
+          </div>
+          <div class="preview-item">
+            <strong>Performance:</strong> 
+            Top-K: {{ toolForm.get('topK')?.value }}, Top-N: {{ toolForm.get('topN')?.value }}
+          </div>
+        </div>
+      </div>
+    }
+  </form>
+
+  <!-- Actions -->
+  <div class="wizard-actions">
+    <rag-button 
+      variant="outline" 
+      size="md"
+      type="button"
+      (click)="close()"
+      [disabled]="isSubmitting()">
+      Cancel
+    </rag-button>
+    
+    <rag-button 
+      variant="solid" 
+      size="md"
+      type="submit"
+      form="toolForm"
+      [disabled]="toolForm.invalid || isSubmitting()"
+      [loading]="isSubmitting()"
+      (click)="onFormSubmit()">
+      Create Tool
+    </rag-button>
+  </div>
+</rag-dialog>

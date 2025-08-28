@@ -1,0 +1,148 @@
+<rag-card class="knowledge-base-card">
+  <!-- Header -->
+  <div class="card-header">
+    <div class="title-section">
+      <lucide-angular 
+        [img]="statusConfig().icon.component" 
+        [size]="20"
+        [style.color]="statusConfig().icon.color">
+      </lucide-angular>
+      <div class="title-info">
+        <h3 class="title">{{ knowledgeBase().name }}</h3>
+        <p class="subtitle">
+          {{ knowledgeBase().product }}@{{ knowledgeBase().version }} • 
+          {{ knowledgeBase().contentSource | titlecase }}
+        </p>
+      </div>
+    </div>
+    
+    <rag-badge 
+      [variant]="statusConfig().badge.variant"
+      [color]="statusConfig().badge.color"
+      class="status-badge">
+      @if (statusConfig().badge.icon && isIndexing()) {
+        <lucide-angular 
+          [img]="statusConfig().badge.icon" 
+          [size]="12"
+          class="animate-spin">
+        </lucide-angular>
+      }
+      {{ knowledgeBase().status | uppercase }}
+    </rag-badge>
+  </div>
+
+  <!-- Description -->
+  @if (knowledgeBase().description) {
+    <p class="description">{{ knowledgeBase().description }}</p>
+  }
+
+  <!-- Progress Bar (only for indexing) -->
+  @if (isIndexing() && knowledgeBase().progressPercentage) {
+    <div class="progress-section">
+      <div class="progress-header">
+        <span class="progress-label">Indexing progress</span>
+        <span class="progress-percentage">{{ knowledgeBase().progressPercentage }}%</span>
+      </div>
+      <rag-progress [value]="knowledgeBase().progressPercentage || 0"></rag-progress>
+    </div>
+  }
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-item">
+      <span class="stat-label">Size</span>
+      <span class="stat-value">{{ knowledgeBase().size }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Chunks</span>
+      <span class="stat-value">
+        @if (isIndexing() && knowledgeBase().progressPercentage) {
+          {{ formatNumber(knowledgeBase().chunks) }}/{{ formatNumber(Math.round(knowledgeBase().chunks / (knowledgeBase().progressPercentage! / 100))) }}
+        } @else {
+          {{ formatNumber(knowledgeBase().chunks) }}
+        }
+      </span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">
+        @if (isIndexing()) {
+          {{ knowledgeBase().documentsCount ? 'Documents' : 'Vectors' }}
+        } @else {
+          Vectors
+        }
+      </span>
+      <span class="stat-value">
+        @if (isIndexing() && knowledgeBase().documentsCount) {
+          {{ formatNumber(knowledgeBase().documentsCount || 0) }}
+        } @else {
+          {{ formatNumber(knowledgeBase().vectors) }}
+        }
+      </span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">
+        @if (isIndexing() && knowledgeBase().estimatedTimeRemaining) {
+          Est. Time
+        } @else {
+          BM25 Terms
+        }
+      </span>
+      <span class="stat-value">
+        @if (isIndexing() && knowledgeBase().estimatedTimeRemaining) {
+          {{ knowledgeBase().estimatedTimeRemaining }}
+        } @else {
+          {{ formatNumber(knowledgeBase().bm25Terms) }}
+        }
+      </span>
+    </div>
+  </div>
+
+  <!-- Metadata badges -->
+  <div class="metadata-badges">
+    <rag-badge variant="outline">Semver: {{ knowledgeBase().semverRange }}</rag-badge>
+    <rag-badge variant="outline">Model: {{ knowledgeBase().embeddingModel }}</rag-badge>
+    @if (knowledgeBase().lastIndexedAt) {
+      <rag-badge variant="outline">Updated: {{ getRelativeTime(knowledgeBase().lastIndexedAt!) }}</rag-badge>
+    }
+  </div>
+
+  <!-- Action buttons -->
+  @if (showActions()) {
+    <div class="action-buttons">
+      @if (isIndexed()) {
+        <rag-button variant="outline" size="sm" (click)="onReindex()">
+          <lucide-angular [img]="iconComponents.RefreshCw" [size]="14"></lucide-angular>
+          Reindex
+        </rag-button>
+        <rag-button variant="ghost" size="sm" (click)="onExport()">
+          <lucide-angular [img]="iconComponents.Download" [size]="14"></lucide-angular>
+          Export
+        </rag-button>
+        <rag-button variant="ghost" size="sm" class="danger-button" (click)="onDelete()">
+          <lucide-angular [img]="iconComponents.Trash2" [size]="14"></lucide-angular>
+          Delete
+        </rag-button>
+      } @else if (isIndexing()) {
+        <rag-button variant="outline" size="sm" (click)="onPause()">
+          <lucide-angular [img]="iconComponents.Pause" [size]="14"></lucide-angular>
+          Pause
+        </rag-button>
+        <rag-button variant="ghost" size="sm" class="danger-button" (click)="onCancel()">
+          <lucide-angular [img]="iconComponents.X" [size]="14"></lucide-angular>
+          Cancel
+        </rag-button>
+      } @else if (isFailed()) {
+        <rag-button variant="solid" size="sm" (click)="onReindex()">
+          <lucide-angular [img]="iconComponents.RefreshCw" [size]="14"></lucide-angular>
+          Retry
+        </rag-button>
+        <rag-button variant="outline" size="sm">
+          View Logs
+        </rag-button>
+        <rag-button variant="ghost" size="sm" class="danger-button" (click)="onDelete()">
+          Remove
+        </rag-button>
+      }
+    </div>
+  }
+</rag-card>

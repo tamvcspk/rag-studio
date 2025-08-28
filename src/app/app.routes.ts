@@ -1,7 +1,7 @@
 import { Routes } from "@angular/router";
 import { Dashboard } from "./pages/dashboard/dashboard";
 import { Tools } from "./pages/tools/tools";
-import { KnowledgeBases } from "./pages/knowledge-bases/knowledge-bases";
+import { KnowledgeBasesPageComponent } from "./pages/knowledge-bases/knowledge-bases";
 import { Pipelines } from "./pages/pipelines/pipelines";
 import { Flows } from "./pages/flows/flows";
 import { Settings } from "./pages/settings/settings";
@@ -29,7 +29,7 @@ export const routes: Routes = [
       },
       {
         path: 'knowledge-bases',
-        component: KnowledgeBases,
+        component: KnowledgeBasesPageComponent,
         data: { title: 'Knowledge Bases', icon: 'book-open' }
       },
       {

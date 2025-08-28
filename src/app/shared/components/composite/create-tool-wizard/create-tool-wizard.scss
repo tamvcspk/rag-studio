@@ -1,0 +1,124 @@
+.create-tool-wizard {
+  .wizard-header {
+    margin-bottom: var(--space-6);
+    text-align: center;
+    
+    .wizard-title {
+      font-size: var(--font-size-5);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-2);
+      color: var(--gray-12);
+    }
+    
+    .wizard-description {
+      color: var(--gray-10);
+      font-size: var(--font-size-2);
+      line-height: var(--line-height-3);
+    }
+  }
+  
+  .wizard-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+  
+  .form-section {
+    .section-title {
+      font-size: var(--font-size-3);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-3);
+      color: var(--gray-12);
+      border-bottom: 1px solid var(--gray-4);
+      padding-bottom: var(--space-2);
+    }
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  // Preview section styling
+  .tool-preview {
+    background: var(--gray-1);
+    border: 1px solid var(--gray-4);
+    border-radius: var(--radius-3);
+    padding: var(--space-4);
+    
+    .preview-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-2);
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      strong {
+        font-weight: var(--font-weight-medium);
+        color: var(--gray-11);
+        min-width: 140px;
+      }
+      
+      code {
+        background: var(--gray-3);
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-2);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-1);
+        color: var(--gray-12);
+      }
+    }
+  }
+  
+  .wizard-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--gray-4);
+  }
+}
+
+// Responsive design
+@media (max-width: 640px) {
+  .create-tool-wizard .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .create-tool-wizard .wizard-actions {
+    flex-direction: column-reverse;
+    
+    app-rag-button {
+      width: 100%;
+    }
+  }
+}
+
+// Form field overrides for better layout
+:host ::ng-deep {
+  .form-section app-rag-form-field {
+    margin-bottom: var(--space-4);
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  // Ensure form controls fill available space
+  .full-width app-rag-input,
+  .full-width app-rag-textarea,
+  .full-width app-rag-select {
+    width: 100%;
+  }
+}

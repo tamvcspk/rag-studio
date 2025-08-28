@@ -1,0 +1,251 @@
+// CSS Custom Properties for Runtime Theming
+// Auto-generated from design-tokens.ts - DO NOT EDIT MANUALLY
+// Run "npm run generate:tokens" to regenerate
+
+:root {
+  /* ===== PRIMITIVE TOKENS ===== */
+  /* Size scale */
+  --size-xs: xs;
+  --size-sm: sm;
+  --size-md: md;
+  --size-lg: lg;
+  --size-xl: xl;
+
+  /* Color palettes */
+  --color-gray-50: hsl(0, 0%, 99.0%);
+  --color-gray-100: hsl(0, 0%, 97.3%);
+  --color-gray-200: hsl(0, 0%, 95.1%);
+  --color-gray-300: hsl(0, 0%, 93.0%);
+  --color-gray-400: hsl(0, 0%, 90.9%);
+  --color-gray-500: hsl(0, 0%, 88.7%);
+  --color-gray-600: hsl(0, 0%, 85.8%);
+  --color-gray-700: hsl(0, 0%, 78.0%);
+  --color-gray-800: hsl(0, 0%, 56.1%);
+  --color-gray-900: hsl(0, 0%, 52.3%);
+  --color-gray-950: hsl(0, 0%, 43.5%);
+  --color-gray-1000: hsl(0, 0%, 9.0%);
+  --color-blue-50: hsl(206, 100%, 97.0%);
+  --color-blue-100: hsl(205, 100%, 94.0%);
+  --color-blue-200: hsl(206, 100%, 90.0%);
+  --color-blue-300: hsl(206, 98%, 84.0%);
+  --color-blue-400: hsl(206, 93%, 73.0%);
+  --color-blue-500: hsl(206, 100%, 50.0%);
+  --color-blue-600: hsl(208, 100%, 47.0%);
+  --color-blue-700: hsl(211, 100%, 43.0%);
+  --color-blue-800: hsl(214, 100%, 37.0%);
+  --color-blue-900: hsl(217, 91%, 31.0%);
+  --color-blue-950: hsl(221, 83%, 23.0%);
+  --color-blue-1000: hsl(224, 76%, 16.0%);
+  --color-green-50: hsl(136, 50%, 98.9%);
+  --color-green-100: hsl(138, 62%, 96.9%);
+  --color-green-200: hsl(139, 55%, 94.5%);
+  --color-green-300: hsl(140, 48%, 91.0%);
+  --color-green-400: hsl(141, 43%, 86.0%);
+  --color-green-500: hsl(143, 40%, 79.0%);
+  --color-green-600: hsl(146, 38%, 69.0%);
+  --color-green-700: hsl(151, 40%, 54.0%);
+  --color-green-800: hsl(151, 55%, 41.5%);
+  --color-green-900: hsl(152, 57%, 37.6%);
+  --color-green-950: hsl(153, 67%, 28.5%);
+  --color-green-1000: hsl(155, 40%, 14.0%);
+  --color-red-50: hsl(359, 100%, 99.4%);
+  --color-red-100: hsl(359, 100%, 98.6%);
+  --color-red-200: hsl(360, 100%, 97.0%);
+  --color-red-300: hsl(360, 91%, 95.0%);
+  --color-red-400: hsl(360, 83%, 91.0%);
+  --color-red-500: hsl(360, 77%, 85.0%);
+  --color-red-600: hsl(359, 75%, 75.0%);
+  --color-red-700: hsl(358, 75%, 59.0%);
+  --color-red-800: hsl(358, 69%, 55.0%);
+  --color-red-900: hsl(358, 65%, 48.0%);
+  --color-red-950: hsl(354, 50%, 14.6%);
+  --color-red-1000: hsl(353, 23%, 10.0%);
+  --color-amber-50: hsl(39, 70%, 97.0%);
+  --color-amber-100: hsl(40, 85%, 95.0%);
+  --color-amber-200: hsl(40, 84%, 90.0%);
+  --color-amber-300: hsl(40, 84%, 83.0%);
+  --color-amber-400: hsl(41, 84%, 78.0%);
+  --color-amber-500: hsl(41, 88%, 75.0%);
+  --color-amber-600: hsl(39, 85%, 67.0%);
+  --color-amber-700: hsl(39, 100%, 57.0%);
+  --color-amber-800: hsl(35, 91%, 51.0%);
+  --color-amber-900: hsl(32, 89%, 47.0%);
+  --color-amber-950: hsl(15, 25%, 15.0%);
+  --color-amber-1000: hsl(20, 14%, 9.0%);
+  --color-orange-50: hsl(24, 100%, 97.0%);
+  --color-orange-100: hsl(24, 100%, 95.0%);
+  --color-orange-200: hsl(24, 100%, 92.0%);
+  --color-orange-300: hsl(24, 100%, 86.0%);
+  --color-orange-400: hsl(24, 100%, 78.0%);
+  --color-orange-500: hsl(25, 95%, 71.0%);
+  --color-orange-600: hsl(25, 90%, 60.0%);
+  --color-orange-700: hsl(25, 100%, 54.0%);
+  --color-orange-800: hsl(25, 100%, 47.0%);
+  --color-orange-900: hsl(25, 100%, 37.0%);
+  --color-orange-950: hsl(15, 25%, 15.0%);
+  --color-orange-1000: hsl(15, 20%, 10.0%);
+  --color-purple-50: hsl(280, 100%, 99.0%);
+  --color-purple-100: hsl(279, 75%, 97.0%);
+  --color-purple-200: hsl(280, 56%, 93.0%);
+  --color-purple-300: hsl(280, 50%, 88.0%);
+  --color-purple-400: hsl(281, 47%, 82.0%);
+  --color-purple-500: hsl(282, 44%, 75.0%);
+  --color-purple-600: hsl(283, 42%, 67.0%);
+  --color-purple-700: hsl(285, 45%, 58.0%);
+  --color-purple-800: hsl(288, 56%, 52.0%);
+  --color-purple-900: hsl(292, 62%, 46.0%);
+  --color-purple-950: hsl(303, 45%, 15.0%);
+  --color-purple-1000: hsl(300, 26%, 9.0%);
+  --color-white: hsl(0, 0%, 100%);
+  --color-black: hsl(0, 0%, 0%);
+  --color-transparent: transparent;
+
+  /* Spacing scale */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+
+  /* Border radius scale */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* Typography scale */
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --line-height-xs: 16px;
+  --line-height-sm: 16px;
+  --line-height-md: 20px;
+  --line-height-lg: 24px;
+  --line-height-xl: 28px;
+
+  /* Shadow scale */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+  /* ===== SEMANTIC TOKENS ===== */
+  /* Background colors */
+  --bg-default: hsl(0, 0%, 100%);
+  --bg-subtle: hsl(0, 0%, 99.0%);
+  --bg-muted: hsl(0, 0%, 97.3%);
+
+  /* Border colors */
+  --border-default: hsl(0, 0%, 93.0%);
+  --border-subtle: hsl(0, 0%, 95.1%);
+  --border-muted: hsl(0, 0%, 90.9%);
+
+  /* Text colors */
+  --text-default: hsl(0, 0%, 9.0%);
+  --text-subtle: hsl(0, 0%, 43.5%);
+  --text-muted: hsl(0, 0%, 78.0%);
+  --text-disabled: hsl(0, 0%, 88.7%);
+  --text-inverse: hsl(0, 0%, 100%);
+
+  /* ===== COMPONENT TOKENS ===== */
+  /* Button sizes */
+  --button-xs-height: 24px;
+  --button-xs-padding: 0 4px;
+  --button-xs-font-size: 11px;
+  --button-xs-border-radius: 2px;
+  --button-sm-height: 28px;
+  --button-sm-padding: 0 8px;
+  --button-sm-font-size: 12px;
+  --button-sm-border-radius: 4px;
+  --button-md-height: 32px;
+  --button-md-padding: 0 12px;
+  --button-md-font-size: 14px;
+  --button-md-border-radius: 6px;
+  --button-lg-height: 40px;
+  --button-lg-padding: 0 16px;
+  --button-lg-font-size: 16px;
+  --button-lg-border-radius: 6px;
+  --button-xl-height: 48px;
+  --button-xl-padding: 0 24px;
+  --button-xl-font-size: 18px;
+  --button-xl-border-radius: 8px;
+
+  /* Badge sizes */
+  --badge-xs-height: 16px;
+  --badge-xs-padding: 0 4px;
+  --badge-xs-font-size: 11px;
+  --badge-xs-border-radius: 2px;
+  --badge-sm-height: 20px;
+  --badge-sm-padding: 0 4px;
+  --badge-sm-font-size: 11px;
+  --badge-sm-border-radius: 4px;
+  --badge-md-height: 24px;
+  --badge-md-padding: 0 8px;
+  --badge-md-font-size: 12px;
+  --badge-md-border-radius: 4px;
+  --badge-lg-height: 28px;
+  --badge-lg-padding: 0 12px;
+  --badge-lg-font-size: 14px;
+  --badge-lg-border-radius: 6px;
+  --badge-xl-height: 32px;
+  --badge-xl-padding: 0 16px;
+  --badge-xl-font-size: 14px;
+  --badge-xl-border-radius: 6px;
+
+  /* Input sizes */
+  --input-xs-height: 24px;
+  --input-xs-padding: 0 4px;
+  --input-xs-font-size: 11px;
+  --input-xs-border-radius: 2px;
+  --input-sm-height: 28px;
+  --input-sm-padding: 0 8px;
+  --input-sm-font-size: 12px;
+  --input-sm-border-radius: 4px;
+  --input-md-height: 32px;
+  --input-md-padding: 0 12px;
+  --input-md-font-size: 14px;
+  --input-md-border-radius: 6px;
+  --input-lg-height: 40px;
+  --input-lg-padding: 0 16px;
+  --input-lg-font-size: 16px;
+  --input-lg-border-radius: 6px;
+  --input-xl-height: 48px;
+  --input-xl-padding: 0 24px;
+  --input-xl-font-size: 18px;
+  --input-xl-border-radius: 8px;
+
+  /* Status indicator sizes */
+  --status-xs-icon-size: 12px;
+  --status-xs-dot-size: 6px;
+  --status-sm-icon-size: 14px;
+  --status-sm-dot-size: 8px;
+  --status-md-icon-size: 16px;
+  --status-md-dot-size: 10px;
+  --status-lg-icon-size: 20px;
+  --status-lg-dot-size: 12px;
+  --status-xl-icon-size: 24px;
+  --status-xl-dot-size: 14px;
+
+  /* Legacy compatibility - for gradual migration */
+  --gray-1: hsl(0, 0%, 99.0%);
+  --gray-2: hsl(0, 0%, 97.3%);
+  --gray-3: hsl(0, 0%, 95.1%);
+  --gray-4: hsl(0, 0%, 93.0%);
+  --gray-5: hsl(0, 0%, 90.9%);
+  --gray-6: hsl(0, 0%, 88.7%);
+  --gray-7: hsl(0, 0%, 85.8%);
+  --gray-8: hsl(0, 0%, 78.0%);
+  --gray-9: hsl(0, 0%, 56.1%);
+  --gray-10: hsl(0, 0%, 52.3%);
+  --gray-11: hsl(0, 0%, 43.5%);
+  --gray-12: hsl(0, 0%, 9.0%);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+}

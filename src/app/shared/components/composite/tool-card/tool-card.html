@@ -1,0 +1,155 @@
+@if (tool().status === 'ERROR') {
+  <div class="error-card">
+    <div class="tool-card-header">
+      <div class="tool-info">
+        <lucide-angular 
+          [img]="AlertCircle" 
+          size="20" 
+          class="tool-icon error">
+        </lucide-angular>
+        <div class="tool-details">
+          <h3 class="tool-name">{{ tool().name }}</h3>
+          <code class="tool-endpoint">{{ tool().endpoint }}</code>
+        </div>
+      </div>
+      <rag-badge 
+        [variant]="getStatusBadgeVariant()"
+        [color]="getStatusBadgeColor()"
+        class="status-badge">
+        {{ getStatusBadgeText() }}
+      </rag-badge>
+    </div>
+
+    @if (tool().errorMessage) {
+      <rag-alert variant="error" class="error-alert">
+        <lucide-angular [img]="AlertCircle" size="14"></lucide-angular>
+        <div>
+          <strong>Registration Failed:</strong> {{ tool().errorMessage }}
+        </div>
+      </rag-alert>
+    }
+
+    <div class="tool-actions">
+      <rag-button 
+        variant="solid" 
+        size="sm"
+        (click)="handleAction('retry')">
+        <lucide-angular [img]="RefreshCw" size="14"></lucide-angular>
+        Retry Registration
+      </rag-button>
+      
+      <rag-button 
+        variant="outline" 
+        size="sm"
+        (click)="handleAction('logs')">
+        <lucide-angular [img]="FileText" size="14"></lucide-angular>
+        View Logs
+      </rag-button>
+
+      <rag-button 
+        variant="ghost" 
+        size="sm"
+        class="delete-button"
+        (click)="handleAction('delete')">
+        <lucide-angular [img]="Trash2" size="14"></lucide-angular>
+        Remove
+      </rag-button>
+    </div>
+  </div>
+} @else {
+  <rag-card class="tool-card">
+    <div class="tool-card-header">
+      <div class="tool-info">
+        <lucide-angular 
+          [img]="getStatusIcon()" 
+          size="20" 
+          [class]="'tool-icon ' + tool().baseOperation">
+        </lucide-angular>
+        <div class="tool-details">
+          <h3 class="tool-name">{{ tool().name }}</h3>
+          <code class="tool-endpoint">{{ tool().endpoint }}</code>
+        </div>
+      </div>
+      <rag-badge 
+        [variant]="getStatusBadgeVariant()"
+        [color]="getStatusBadgeColor()"
+        class="status-badge">
+        {{ getStatusBadgeText() }}
+      </rag-badge>
+    </div>
+
+    <p class="tool-description">{{ tool().description }}</p>
+
+    <div class="tool-metadata">
+      <rag-badge variant="outline" size="sm">
+        KB: {{ tool().knowledgeBase.name }}@{{ tool().knowledgeBase.version }}
+      </rag-badge>
+      <rag-badge variant="outline" size="sm">
+        Type: {{ tool().baseOperation }}
+      </rag-badge>
+      @if (tool().baseOperation === 'rag.search') {
+        <rag-badge variant="outline" size="sm">
+          Top-K: {{ tool().config.topK }}
+        </rag-badge>
+      }
+      @if (tool().baseOperation === 'rag.answer') {
+        <rag-badge variant="outline" size="sm">
+          Top-N: {{ tool().config.topN }}
+        </rag-badge>
+      }
+    </div>
+
+    @if (tool().usage) {
+      <div class="tool-usage">
+        <span class="usage-metric">
+          <strong>{{ tool().usage!.totalCalls }}</strong> calls
+        </span>
+        <span class="usage-metric">
+          <strong>{{ tool().usage!.avgLatency }}ms</strong> avg latency
+        </span>
+        @if (tool().lastUsed) {
+          <span class="usage-metric">
+            Last used: <strong>{{ tool().lastUsed }}</strong>
+          </span>
+        }
+      </div>
+    }
+
+    <div class="tool-actions">
+      @if (tool().status === 'ACTIVE') {
+        <rag-button 
+          variant="outline" 
+          size="sm"
+          (click)="handleAction('deactivate')">
+          <lucide-angular [img]="Pause" size="14"></lucide-angular>
+          Deactivate
+        </rag-button>
+      } @else {
+        <rag-button 
+          variant="outline" 
+          size="sm"
+          (click)="handleAction('activate')">
+          <lucide-angular [img]="Play" size="14"></lucide-angular>
+          Activate
+        </rag-button>
+      }
+
+      <rag-button 
+        variant="ghost" 
+        size="sm"
+        (click)="handleAction('edit')">
+        <lucide-angular [img]="Edit" size="14"></lucide-angular>
+        Edit
+      </rag-button>
+
+      <rag-button 
+        variant="ghost" 
+        size="sm"
+        class="delete-button"
+        (click)="handleAction('delete')">
+        <lucide-angular [img]="Trash2" size="14"></lucide-angular>
+        Delete
+      </rag-button>
+    </div>
+  </rag-card>
+}

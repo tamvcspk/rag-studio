@@ -1,0 +1,73 @@
+@use '../../../tokens/_design-tokens.generated.scss' as *;
+
+.create-kb-wizard {
+  .wizard-form {
+    display: flex;
+    flex-direction: column;
+    gap: $space-6;
+    
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      gap: $space-4;
+      
+      .section-title {
+        margin: 0;
+        font-size: $font-size-4;
+        font-weight: $font-weight-semibold;
+        color: $gray-12;
+        border-bottom: 1px solid $gray-4;
+        padding-bottom: $space-2;
+      }
+      
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: $space-4;
+        
+        @media (max-width: 640px) {
+          grid-template-columns: 1fr;
+          gap: $space-3;
+        }
+      }
+    }
+    
+    .model-description {
+      margin-top: $space-2;
+      padding: $space-3;
+      background-color: $gray-2;
+      border-radius: $radius-3;
+      border: 1px solid $gray-4;
+      
+      .description-text {
+        margin: 0;
+        font-size: $font-size-2;
+        color: $gray-11;
+        line-height: $line-height-3;
+      }
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: $space-3;
+      padding-top: $space-4;
+      border-top: 1px solid $gray-4;
+      
+      @media (max-width: 480px) {
+        flex-direction: column;
+        gap: $space-2;
+      }
+    }
+  }
+}
+
+// Dialog specific overrides
+:host ::ng-deep {
+  rag-dialog .dialog-content {
+    max-width: 600px;
+    width: 90vw;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+}

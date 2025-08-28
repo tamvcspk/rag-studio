@@ -1,0 +1,171 @@
+@use '../../../tokens/_design-tokens.generated.scss' as *;
+
+.knowledge-base-card {
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: $space-3;
+
+    .title-section {
+      display: flex;
+      align-items: center;
+      gap: $space-3;
+      flex: 1;
+
+      .title-info {
+        flex: 1;
+
+        .title {
+          margin: 0 0 $space-1 0;
+          font-size: $font-size-3;
+          font-weight: $font-weight-semibold;
+          color: $gray-12;
+        }
+
+        .subtitle {
+          margin: 0;
+          font-size: $font-size-2;
+          color: $gray-10;
+        }
+      }
+    }
+
+    .status-badge {
+      flex-shrink: 0;
+    }
+  }
+
+  .description {
+    margin: 0 0 $space-3 0;
+    color: $gray-10;
+    font-size: $font-size-2;
+    line-height: $line-height-3;
+  }
+
+  .progress-section {
+    margin-bottom: $space-4;
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: $space-2;
+
+      .progress-label {
+        font-size: $font-size-2;
+        color: $gray-11;
+      }
+
+      .progress-percentage {
+        font-size: $font-size-2;
+        font-weight: $font-weight-medium;
+        color: $gray-11;
+      }
+    }
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $space-3;
+    margin-bottom: $space-4;
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: $space-1;
+
+      .stat-label {
+        font-size: $font-size-1;
+        color: $gray-10;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+      }
+
+      .stat-value {
+        font-weight: $font-weight-medium;
+        font-size: $font-size-2;
+        color: $gray-12;
+      }
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .metadata-badges {
+    display: flex;
+    gap: $space-2;
+    flex-wrap: wrap;
+    margin-bottom: $space-4;
+
+    @media (max-width: 640px) {
+      flex-direction: column;
+      gap: $space-1;
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: $space-2;
+    flex-wrap: wrap;
+
+    .danger-button {
+      color: $red-9;
+
+      &:hover {
+        color: $red-10;
+        background-color: rgba(239, 68, 68, 0.05);
+      }
+    }
+
+    @media (max-width: 640px) {
+      flex-direction: column;
+      gap: $space-2;
+    }
+  }
+
+  // Animation for spinning loader
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Error state styling for failed KBs
+:host.failed {
+  .knowledge-base-card {
+    border-color: $red-6;
+    background-color: rgba(239, 68, 68, 0.02);
+
+    .title {
+      color: $red-11;
+    }
+  }
+}
+
+// Indexing state styling
+:host.indexing {
+  .knowledge-base-card {
+    border-color: $amber-6;
+    background-color: rgba(245, 158, 11, 0.02);
+  }
+}
+
+// Success state styling for indexed KBs
+:host.indexed {
+  .knowledge-base-card {
+    border-color: $green-6;
+    background-color: rgba(34, 197, 94, 0.02);
+  }
+}

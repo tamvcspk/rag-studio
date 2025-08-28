@@ -14,7 +14,10 @@
       "WebFetch(domain:www.primefaces.org)",
       "WebSearch",
       "Bash(ng generate component:*)",
-      "Read(/C:\\c\\Src\\project/**)"
+      "Read(/C:\\c\\Src\\project/**)",
+      "Bash(npm run build:*)",
+      "Bash(ng generate service:*)",
+      "Bash(npm run generate:tokens:*)"
     ],
     "deny": [],
     "ask": [],
