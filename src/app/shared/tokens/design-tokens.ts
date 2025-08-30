@@ -4,7 +4,20 @@
  * 1. Primitive tokens - raw values with no context
  * 2. Semantic tokens - contextual naming that maps to primitives
  * 3. Component tokens - component-specific values that map to semantic
+ * 
+ * This system generates CSS variables with --rag- prefix for use in components.
+ * Components use CSS variables as placeholders, while this preset system
+ * injects the actual values at runtime.
  */
+
+// CSS Variable prefix for the design system
+export const CSS_VAR_PREFIX = 'rag';
+
+// Helper function to generate CSS variable name
+export const cssVar = (path: string) => `--${CSS_VAR_PREFIX}-${path.replace(/\./g, '-')}`;
+
+// Helper function to get CSS variable value
+export const cssVarValue = (path: string) => `var(${cssVar(path)})`;
 
 // ===== PRIMITIVE TOKENS =====
 // These are raw values with no context - the foundation of the design system
@@ -414,8 +427,90 @@ export const ComponentTokens = {
   }
 } as const;
 
+// ===== PRESET SYSTEM =====
+// Complete preset that combines all token layers for CSS variable generation
+
+export const RagStudioPreset = {
+  primitive: PrimitiveTokens,
+  semantic: SemanticTokens,
+  component: ComponentTokens
+} as const;
+
+// ===== UTILITY FUNCTIONS =====
+
+// Function to flatten token object into dot notation paths
+export function flattenTokens(obj: any, prefix = ''): Record<string, string> {
+  const flattened: Record<string, string> = {};
+  
+  for (const [key, value] of Object.entries(obj)) {
+    const path = prefix ? `${prefix}.${key}` : key;
+    
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.assign(flattened, flattenTokens(value, path));
+    } else {
+      flattened[path] = String(value);
+    }
+  }
+  
+  return flattened;
+}
+
+// Function to generate CSS variables from tokens
+export function generateCSSVariables(tokens: any = RagStudioPreset): string {
+  const flattened = flattenTokens(tokens);
+  
+  return Object.entries(flattened)
+    .map(([path, value]) => `  ${cssVar(path)}: ${value};`)
+    .join('\n');
+}
+
+// Function to get token value by path (similar to PrimeNG's $dt function)
+export function $dt(path: string): { value: string; cssVar: string } {
+  const flattened = flattenTokens(RagStudioPreset);
+  const value = flattened[path];
+  
+  if (!value) {
+    console.warn(`Design token not found: ${path}`);
+    return { value: '', cssVar: cssVar(path) };
+  }
+  
+  return {
+    value,
+    cssVar: cssVar(path)
+  };
+}
+
+// Function to inject CSS variables into DOM (for runtime usage)
+export function injectDesignTokens(
+  tokens: any = RagStudioPreset,
+  selector = ':root',
+  layer?: string
+): void {
+  if (typeof document === 'undefined') return;
+  
+  const cssContent = generateCSSVariables(tokens);
+  const styleContent = layer 
+    ? `@layer ${layer} {\n${selector} {\n${cssContent}\n}\n}`
+    : `${selector} {\n${cssContent}\n}`;
+  
+  const styleId = `${CSS_VAR_PREFIX}-design-tokens`;
+  let styleElement = document.getElementById(styleId) as HTMLStyleElement;
+  
+  if (!styleElement) {
+    styleElement = document.createElement('style');
+    styleElement.id = styleId;
+    document.head.appendChild(styleElement);
+  }
+  
+  styleElement.textContent = styleContent;
+}
+
 // Type definitions for the token system
 export type Size = typeof PrimitiveTokens.size[keyof typeof PrimitiveTokens.size];
 export type ColorName = 'gray' | 'blue' | 'green' | 'red' | 'amber' | 'orange' | 'purple';
 export type ColorScale = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950 | 1000;
 export type Color = `${ColorName}.${ColorScale}`;
+
+// Additional types for better type safety
+export type TokenPath = keyof ReturnType<typeof flattenTokens>;
+export type TokenValue = string;

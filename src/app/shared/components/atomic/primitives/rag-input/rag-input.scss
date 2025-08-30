@@ -16,116 +16,119 @@
 
 .rt-TextFieldInput {
   width: 100%;
-  padding: var(--space-2, 8px) var(--space-3, 12px);
-  font-size: var(--font-size-2, 14px);
-  line-height: var(--line-height-2, 20px);
-  color: var(--gray-12, hsl(0, 0%, 9.0%));
-  background-color: white;
-  border: 1px solid var(--gray-6, hsl(0, 0%, 88.7%));
-  border-radius: var(--radius-3, 6px);
+  padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+  font-size: var(--rag-primitive-fontSize-md);
+  line-height: var(--rag-primitive-lineHeight-md);
+  color: var(--rag-semantic-color-text-default);
+  background-color: var(--rag-semantic-color-background-default);
+  border: 1px solid var(--rag-semantic-color-border-default);
+  border-radius: var(--rag-primitive-radius-md);
   outline: none;
   transition: all 0.15s;
   font-family: inherit;
 
   &:hover:not(:disabled):not(:focus) {
-    border-color: var(--gray-7, hsl(0, 0%, 85.8%));
+    border-color: var(--rag-semantic-color-border-muted);
   }
 
   &:focus {
-    border-color: var(--blue-9, hsl(206, 100%, 50.0%));
-    box-shadow: 0 0 0 1px var(--blue-9, hsl(206, 100%, 50.0%));
+    border-color: var(--rag-semantic-color-primary-500);
+    box-shadow: 0 0 0 1px var(--rag-semantic-color-primary-500);
   }
 
   &::placeholder {
-    color: var(--gray-9, hsl(0, 0%, 56.1%));
+    color: var(--rag-semantic-color-text-muted);
   }
 
   &:disabled {
-    background-color: var(--gray-2, hsl(0, 0%, 97.3%));
-    color: var(--gray-9, hsl(0, 0%, 56.1%));
+    background-color: var(--rag-semantic-color-background-subtle);
+    color: var(--rag-semantic-color-text-disabled);
     cursor: not-allowed;
 
     &::placeholder {
-      color: var(--gray-8, hsl(0, 0%, 78.0%));
+      color: var(--rag-semantic-color-text-disabled);
     }
   }
 
   &:read-only {
-    background-color: var(--gray-1, hsl(0, 0%, 99.0%));
+    background-color: var(--rag-primitive-color-gray-50);
   }
 
   &.rt-error {
-    border-color: var(--red-9, hsl(358, 75.0%, 59.0%));
+    border-color: var(--rag-semantic-color-error-700);
 
     &:focus {
-      border-color: var(--red-9, hsl(358, 75.0%, 59.0%));
-      box-shadow: 0 0 0 1px var(--red-9, hsl(358, 75.0%, 59.0%));
+      border-color: var(--rag-semantic-color-error-700);
+      box-shadow: 0 0 0 1px var(--rag-semantic-color-error-700);
     }
   }
 
   &.rt-has-left-icon {
-    padding-left: var(--space-8, 48px);
+    padding-left: 48px;
   }
 
   &.rt-has-right-icon {
-    padding-right: var(--space-8, 48px);
+    padding-right: 48px;
   }
 }
 
 // Size variants
 .rt-TextFieldInput.rt-size-sm {
   height: 32px;
-  padding: var(--space-1, 4px) var(--space-2, 8px);
-  font-size: var(--font-size-1, 12px);
+  padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+  font-size: var(--rag-primitive-fontSize-sm);
+  border-radius: var(--rag-primitive-radius-sm);
 
   &.rt-has-left-icon {
-    padding-left: var(--space-7, 40px);
+    padding-left: 40px;
   }
 
   &.rt-has-right-icon {
-    padding-right: var(--space-7, 40px);
+    padding-right: 40px;
   }
 }
 
 .rt-TextFieldInput.rt-size-md {
   height: 36px;
-  padding: var(--space-2, 8px) var(--space-3, 12px);
-  font-size: var(--font-size-2, 14px);
+  padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+  font-size: var(--rag-primitive-fontSize-md);
+  border-radius: var(--rag-primitive-radius-md);
 }
 
 .rt-TextFieldInput.rt-size-lg {
   height: 44px;
-  padding: var(--space-3, 12px) var(--space-4, 16px);
-  font-size: var(--font-size-3, 16px);
+  padding: var(--rag-primitive-spacing-md) var(--rag-primitive-spacing-lg);
+  font-size: var(--rag-primitive-fontSize-lg);
+  border-radius: var(--rag-primitive-radius-md);
 
   &.rt-has-left-icon {
-    padding-left: var(--space-9, 64px);
+    padding-left: 64px;
   }
 
   &.rt-has-right-icon {
-    padding-right: var(--space-9, 64px);
+    padding-right: 64px;
   }
 }
 
 // Icon positioning
 .rt-input-left-icon {
   position: absolute;
-  left: var(--space-3, 12px);
+  left: var(--rag-primitive-spacing-md);
   z-index: 1;
-  color: var(--gray-9, hsl(0, 0%, 56.1%));
+  color: var(--rag-semantic-color-text-muted);
   pointer-events: none;
 }
 
 .rt-input-right-icon {
   position: absolute;
-  right: var(--space-3, 12px);
+  right: var(--rag-primitive-spacing-md);
   z-index: 1;
-  color: var(--gray-9, hsl(0, 0%, 56.1%));
+  color: var(--rag-semantic-color-text-muted);
   cursor: pointer;
   transition: color 0.15s;
 
   &:hover {
-    color: var(--gray-11, hsl(0, 0%, 43.5%));
+    color: var(--rag-semantic-color-text-subtle);
   }
 }
 
@@ -133,7 +136,7 @@
 .rt-TextField.rt-disabled {
   .rt-input-left-icon,
   .rt-input-right-icon {
-    color: var(--gray-8, hsl(0, 0%, 78.0%));
+    color: var(--rag-semantic-color-text-disabled);
   }
 
   .rt-input-right-icon {

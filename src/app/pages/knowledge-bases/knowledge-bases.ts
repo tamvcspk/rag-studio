@@ -33,7 +33,7 @@ type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
   templateUrl: './knowledge-bases.html',
   styleUrl: './knowledge-bases.scss'
 })
-export class KnowledgeBasesPageComponent implements OnInit {
+export class KnowledgeBases implements OnInit {
   @ViewChild(CreateKBWizardComponent) createWizard!: CreateKBWizardComponent;
 
   private allKnowledgeBases = signal<KnowledgeBase[]>([]);

@@ -5,35 +5,35 @@
 
 .rt-TabsList {
   display: flex;
-  gap: var(--space-1);
-  padding: var(--space-1);
-  background-color: var(--gray-3);
-  border-radius: var(--radius-4);
-  margin-bottom: var(--space-5);
+  gap: var(--rag-primitive-spacing-xs);
+  padding: var(--rag-primitive-spacing-xs);
+  background-color: var(--rag-semantic-color-background-muted);
+  border-radius: var(--rag-primitive-radius-lg);
+  margin-bottom: var(--rag-primitive-spacing-xl);
 
   // Size variants
   &.rt-size-sm {
-    padding: var(--space-1);
-    gap: var(--space-1);
+    padding: var(--rag-primitive-spacing-xs);
+    gap: var(--rag-primitive-spacing-xs);
   }
 
   &.rt-size-md {
-    padding: var(--space-1);
-    gap: var(--space-1);
+    padding: var(--rag-primitive-spacing-xs);
+    gap: var(--rag-primitive-spacing-xs);
   }
 
   &.rt-size-lg {
-    padding: var(--space-2);
-    gap: var(--space-2);
+    padding: var(--rag-primitive-spacing-sm);
+    gap: var(--rag-primitive-spacing-sm);
   }
 
   // Variant styles
   &.rt-variant-pills {
     background-color: transparent;
-    gap: var(--space-2);
+    gap: var(--rag-primitive-spacing-sm);
 
     .rt-TabsTrigger {
-      border-radius: var(--radius-5);
+      border-radius: var(--rag-primitive-radius-xl);
     }
   }
 
@@ -48,37 +48,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
+  gap: var(--rag-primitive-spacing-sm);
+  padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
   background: none;
   border: none;
-  border-radius: var(--radius-3);
-  font-size: var(--font-size-2);
-  font-weight: var(--font-weight-medium);
-  color: var(--gray-11);
+  border-radius: var(--rag-primitive-radius-md);
+  font-size: var(--rag-primitive-fontSize-sm);
+  font-weight: 500;
+  color: var(--rag-semantic-color-text-subtle);
   cursor: pointer;
   transition: all 0.15s;
   outline: none;
   position: relative;
 
   &:hover:not(.rt-disabled) {
-    color: var(--gray-12);
+    color: var(--rag-semantic-color-text-default);
   }
 
   &:focus-visible {
-    box-shadow: 0 0 0 2px var(--blue-9);
+    box-shadow: 0 0 0 2px var(--rag-semantic-color-primary-700);
   }
 
   &.rt-active {
-    background-color: white;
-    color: var(--gray-12);
-    box-shadow: var(--shadow-1);
+    background-color: var(--rag-semantic-color-background-default);
+    color: var(--rag-semantic-color-text-default);
+    box-shadow: var(--rag-primitive-shadow-xs);
   }
 
   &.rt-disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    color: var(--gray-9);
+    color: var(--rag-semantic-color-text-disabled);
   }
 
   // Icon styling
@@ -97,9 +97,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-4);
-  color: var(--gray-10);
-  font-size: var(--font-size-2);
+  padding: var(--rag-primitive-spacing-lg);
+  color: var(--rag-semantic-color-text-muted);
+  font-size: var(--rag-primitive-fontSize-sm);
 }
 
 // Responsive behavior
@@ -116,19 +116,19 @@
 // Dark mode support
 @media (prefers-color-scheme: dark) {
   .rt-TabsList {
-    background-color: var(--gray-dark-3);
+    background-color: var(--rag-semantic-color-background-muted);
   }
 
   .rt-TabsTrigger {
-    color: var(--gray-dark-11);
+    color: var(--rag-semantic-color-text-subtle);
 
     &:hover:not(.rt-disabled) {
-      color: var(--gray-dark-12);
+      color: var(--rag-semantic-color-text-default);
     }
 
     &.rt-active {
-      background-color: var(--gray-dark-1);
-      color: var(--gray-dark-12);
+      background-color: var(--rag-semantic-color-background-default);
+      color: var(--rag-semantic-color-text-default);
     }
   }
 }

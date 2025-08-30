@@ -3,18 +3,18 @@
 }
 
 .rag-stat-card {
-  background: white;
-  border-radius: var(--radius-4, 8px);
-  box-shadow: var(--shadow-2, 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1));
-  border: 1px solid var(--gray-3, #f3f4f6);
+  background: var(--rag-semantic-color-background-default);
+  border-radius: var(--rag-primitive-radius-lg);
+  box-shadow: var(--rag-primitive-shadow-sm);
+  border: 1px solid var(--rag-semantic-color-background-muted);
   overflow: hidden;
 
   &--default {
-    padding: var(--space-4, 16px);
+    padding: var(--rag-primitive-spacing-lg);
   }
 
   &--minimal {
-    padding: var(--space-3, 12px);
+    padding: var(--rag-primitive-spacing-md);
     background: transparent;
     box-shadow: none;
     border: none;
@@ -22,24 +22,24 @@
 
   &--sm {
     .rag-stat-card__value {
-      font-size: var(--font-size-5, 20px);
-      line-height: var(--line-height-5, 28px);
+      font-size: var(--rag-primitive-fontSize-xl);
+      line-height: var(--rag-primitive-lineHeight-xl);
     }
   }
 
   &--md {
     .rag-stat-card__value {
-      font-size: var(--font-size-7, 28px);
-      line-height: var(--line-height-7, 36px);
+      font-size: 28px;
+      line-height: 36px;
     }
   }
 
   &--lg {
-    padding: var(--space-5, 24px);
+    padding: var(--rag-primitive-spacing-xl);
     
     .rag-stat-card__value {
-      font-size: var(--font-size-8, 35px);
-      line-height: var(--line-height-8, 40px);
+      font-size: 35px;
+      line-height: 40px;
     }
   }
 
@@ -47,14 +47,14 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: var(--space-3, 12px);
+    margin-bottom: var(--rag-primitive-spacing-md);
   }
 
   &__label {
-    font-size: var(--font-size-1, 12px);
-    line-height: var(--line-height-1, 16px);
-    font-weight: var(--font-weight-medium, 500);
-    color: var(--gray-10, #6b7280);
+    font-size: var(--rag-primitive-fontSize-sm);
+    line-height: var(--rag-primitive-lineHeight-sm);
+    font-weight: 500;
+    color: var(--rag-semantic-color-text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -62,34 +62,34 @@
   &__icon {
     width: 16px;
     height: 16px;
-    color: var(--gray-9, #9ca3af);
+    color: var(--rag-primitive-color-gray-800);
     flex-shrink: 0;
   }
 
   &__value {
-    font-weight: var(--font-weight-semibold, 600);
+    font-weight: 600;
     line-height: 1;
-    margin-bottom: var(--space-2, 8px);
-    color: var(--gray-12, #1f2937);
+    margin-bottom: var(--rag-primitive-spacing-sm);
+    color: var(--rag-semantic-color-text-default);
   }
 
   &__change {
     display: flex;
     align-items: center;
-    gap: var(--space-1, 4px);
-    font-size: var(--font-size-1, 12px);
-    font-weight: var(--font-weight-medium, 500);
+    gap: var(--rag-primitive-spacing-xs);
+    font-size: var(--rag-primitive-fontSize-sm);
+    font-weight: 500;
 
     &--up {
-      color: var(--green-9, #10b981);
+      color: var(--rag-semantic-color-success-700);
     }
 
     &--down {
-      color: var(--red-9, #ef4444);
+      color: var(--rag-semantic-color-error-700);
     }
 
     &--neutral {
-      color: var(--gray-9, #9ca3af);
+      color: var(--rag-primitive-color-gray-800);
     }
 
     lucide-icon {
@@ -100,15 +100,15 @@
 
 @media (prefers-color-scheme: dark) {
   .rag-stat-card {
-    background: var(--gray-1, #fafafa);
-    border-color: var(--gray-6, #d1d5db);
+    background: var(--rag-primitive-color-gray-950);
+    border-color: var(--rag-primitive-color-gray-800);
 
     &--minimal {
       background: transparent;
     }
 
     &__value {
-      color: var(--gray-12, #1f2937);
+      color: var(--rag-primitive-color-white);
     }
   }
 }

@@ -1,0 +1,271 @@
+// Design Tokens SCSS Variables  
+// Auto-generated from design-tokens.ts - DO NOT EDIT MANUALLY
+// Run "npm run generate:tokens" to regenerate
+//
+// This file provides both SCSS variables and CSS custom properties (CSS variables)
+// for the RAG Studio design system. Components should use CSS variables for runtime flexibility.
+
+// ===== CSS CUSTOM PROPERTIES (CSS Variables) =====
+// These are injected at runtime by the design token system
+
+:root {
+  // Primitive tokens - Colors
+  --rag-primitive-color-white: hsl(0, 0%, 100%);
+  --rag-primitive-color-black: hsl(0, 0%, 0%);
+  --rag-primitive-color-transparent: transparent;
+  
+  // Gray scale
+  --rag-primitive-color-gray-50: hsl(0, 0%, 99.0%);
+  --rag-primitive-color-gray-100: hsl(0, 0%, 97.3%);
+  --rag-primitive-color-gray-200: hsl(0, 0%, 95.1%);
+  --rag-primitive-color-gray-300: hsl(0, 0%, 93.0%);
+  --rag-primitive-color-gray-400: hsl(0, 0%, 90.9%);
+  --rag-primitive-color-gray-500: hsl(0, 0%, 88.7%);
+  --rag-primitive-color-gray-600: hsl(0, 0%, 85.8%);
+  --rag-primitive-color-gray-700: hsl(0, 0%, 78.0%);
+  --rag-primitive-color-gray-800: hsl(0, 0%, 56.1%);
+  --rag-primitive-color-gray-900: hsl(0, 0%, 52.3%);
+  --rag-primitive-color-gray-950: hsl(0, 0%, 43.5%);
+  --rag-primitive-color-gray-1000: hsl(0, 0%, 9.0%);
+
+  // Blue scale  
+  --rag-primitive-color-blue-50: hsl(206, 100%, 97.0%);
+  --rag-primitive-color-blue-100: hsl(205, 100%, 94.0%);
+  --rag-primitive-color-blue-200: hsl(206, 100%, 90.0%);
+  --rag-primitive-color-blue-300: hsl(206, 98%, 84.0%);
+  --rag-primitive-color-blue-400: hsl(206, 93%, 73.0%);
+  --rag-primitive-color-blue-500: hsl(206, 100%, 50.0%);
+  --rag-primitive-color-blue-600: hsl(208, 100%, 47.0%);
+  --rag-primitive-color-blue-700: hsl(211, 100%, 43.0%);
+  --rag-primitive-color-blue-800: hsl(214, 100%, 37.0%);
+  --rag-primitive-color-blue-900: hsl(217, 91%, 31.0%);
+  --rag-primitive-color-blue-950: hsl(221, 83%, 23.0%);
+  --rag-primitive-color-blue-1000: hsl(224, 76%, 16.0%);
+
+  // Green scale
+  --rag-primitive-color-green-50: hsl(136, 50%, 98.9%);
+  --rag-primitive-color-green-100: hsl(138, 62%, 96.9%);
+  --rag-primitive-color-green-200: hsl(139, 55%, 94.5%);
+  --rag-primitive-color-green-300: hsl(140, 48%, 91.0%);
+  --rag-primitive-color-green-400: hsl(141, 43%, 86.0%);
+  --rag-primitive-color-green-500: hsl(143, 40%, 79.0%);
+  --rag-primitive-color-green-600: hsl(146, 38%, 69.0%);
+  --rag-primitive-color-green-700: hsl(151, 40%, 54.0%);
+  --rag-primitive-color-green-800: hsl(151, 55%, 41.5%);
+  --rag-primitive-color-green-900: hsl(152, 57%, 37.6%);
+  --rag-primitive-color-green-950: hsl(153, 67%, 28.5%);
+  --rag-primitive-color-green-1000: hsl(155, 40%, 14.0%);
+
+  // Red scale
+  --rag-primitive-color-red-50: hsl(359, 100%, 99.4%);
+  --rag-primitive-color-red-100: hsl(359, 100%, 98.6%);
+  --rag-primitive-color-red-200: hsl(360, 100%, 97.0%);
+  --rag-primitive-color-red-300: hsl(360, 91%, 95.0%);
+  --rag-primitive-color-red-400: hsl(360, 83%, 91.0%);
+  --rag-primitive-color-red-500: hsl(360, 77%, 85.0%);
+  --rag-primitive-color-red-600: hsl(359, 75%, 75.0%);
+  --rag-primitive-color-red-700: hsl(358, 75%, 59.0%);
+  --rag-primitive-color-red-800: hsl(358, 69%, 55.0%);
+  --rag-primitive-color-red-900: hsl(358, 65%, 48.0%);
+  --rag-primitive-color-red-950: hsl(354, 50%, 14.6%);
+  --rag-primitive-color-red-1000: hsl(353, 23%, 10.0%);
+
+  // Amber scale
+  --rag-primitive-color-amber-50: hsl(39, 70%, 97.0%);
+  --rag-primitive-color-amber-100: hsl(40, 85%, 95.0%);
+  --rag-primitive-color-amber-200: hsl(40, 84%, 90.0%);
+  --rag-primitive-color-amber-300: hsl(40, 84%, 83.0%);
+  --rag-primitive-color-amber-400: hsl(41, 84%, 78.0%);
+  --rag-primitive-color-amber-500: hsl(41, 88%, 75.0%);
+  --rag-primitive-color-amber-600: hsl(39, 85%, 67.0%);
+  --rag-primitive-color-amber-700: hsl(39, 100%, 57.0%);
+  --rag-primitive-color-amber-800: hsl(35, 91%, 51.0%);
+  --rag-primitive-color-amber-900: hsl(32, 89%, 47.0%);
+  --rag-primitive-color-amber-950: hsl(15, 25%, 15.0%);
+  --rag-primitive-color-amber-1000: hsl(20, 14%, 9.0%);
+
+  // Orange scale
+  --rag-primitive-color-orange-50: hsl(24, 100%, 97.0%);
+  --rag-primitive-color-orange-100: hsl(24, 100%, 95.0%);
+  --rag-primitive-color-orange-200: hsl(24, 100%, 92.0%);
+  --rag-primitive-color-orange-300: hsl(24, 100%, 86.0%);
+  --rag-primitive-color-orange-400: hsl(24, 100%, 78.0%);
+  --rag-primitive-color-orange-500: hsl(25, 95%, 71.0%);
+  --rag-primitive-color-orange-600: hsl(25, 90%, 60.0%);
+  --rag-primitive-color-orange-700: hsl(25, 100%, 54.0%);
+  --rag-primitive-color-orange-800: hsl(25, 100%, 47.0%);
+  --rag-primitive-color-orange-900: hsl(25, 100%, 37.0%);
+  --rag-primitive-color-orange-950: hsl(15, 25%, 15.0%);
+  --rag-primitive-color-orange-1000: hsl(15, 20%, 10.0%);
+
+  // Purple scale
+  --rag-primitive-color-purple-50: hsl(280, 100%, 99.0%);
+  --rag-primitive-color-purple-100: hsl(279, 75%, 97.0%);
+  --rag-primitive-color-purple-200: hsl(280, 56%, 93.0%);
+  --rag-primitive-color-purple-300: hsl(280, 50%, 88.0%);
+  --rag-primitive-color-purple-400: hsl(281, 47%, 82.0%);
+  --rag-primitive-color-purple-500: hsl(282, 44%, 75.0%);
+  --rag-primitive-color-purple-600: hsl(283, 42%, 67.0%);
+  --rag-primitive-color-purple-700: hsl(285, 45%, 58.0%);
+  --rag-primitive-color-purple-800: hsl(288, 56%, 52.0%);
+  --rag-primitive-color-purple-900: hsl(292, 62%, 46.0%);
+  --rag-primitive-color-purple-950: hsl(303, 45%, 15.0%);
+  --rag-primitive-color-purple-1000: hsl(300, 26%, 9.0%);
+
+  // Size scale
+  --rag-primitive-size-xs: xs;
+  --rag-primitive-size-sm: sm;
+  --rag-primitive-size-md: md;
+  --rag-primitive-size-lg: lg;
+  --rag-primitive-size-xl: xl;
+
+  // Spacing scale  
+  --rag-primitive-spacing-xs: 4px;
+  --rag-primitive-spacing-sm: 8px;
+  --rag-primitive-spacing-md: 12px;
+  --rag-primitive-spacing-lg: 16px;
+  --rag-primitive-spacing-xl: 24px;
+
+  // Border radius scale
+  --rag-primitive-radius-xs: 2px;
+  --rag-primitive-radius-sm: 4px;
+  --rag-primitive-radius-md: 6px;
+  --rag-primitive-radius-lg: 8px;
+  --rag-primitive-radius-xl: 12px;
+
+  // Typography scale
+  --rag-primitive-fontSize-xs: 11px;
+  --rag-primitive-fontSize-sm: 12px;
+  --rag-primitive-fontSize-md: 14px;
+  --rag-primitive-fontSize-lg: 16px;
+  --rag-primitive-fontSize-xl: 18px;
+
+  --rag-primitive-lineHeight-xs: 16px;
+  --rag-primitive-lineHeight-sm: 16px;
+  --rag-primitive-lineHeight-md: 20px;
+  --rag-primitive-lineHeight-lg: 24px;
+  --rag-primitive-lineHeight-xl: 28px;
+
+  // Box shadow scale
+  --rag-primitive-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --rag-primitive-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --rag-primitive-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --rag-primitive-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --rag-primitive-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+  // Semantic tokens
+  --rag-semantic-color-background-default: var(--rag-primitive-color-white);
+  --rag-semantic-color-background-subtle: var(--rag-primitive-color-gray-50);
+  --rag-semantic-color-background-muted: var(--rag-primitive-color-gray-100);
+  
+  --rag-semantic-color-border-default: var(--rag-primitive-color-gray-300);
+  --rag-semantic-color-border-subtle: var(--rag-primitive-color-gray-200);
+  --rag-semantic-color-border-muted: var(--rag-primitive-color-gray-400);
+  
+  --rag-semantic-color-text-default: var(--rag-primitive-color-gray-1000);
+  --rag-semantic-color-text-subtle: var(--rag-primitive-color-gray-950);
+  --rag-semantic-color-text-muted: var(--rag-primitive-color-gray-700);
+  --rag-semantic-color-text-disabled: var(--rag-primitive-color-gray-500);
+  --rag-semantic-color-text-inverse: var(--rag-primitive-color-white);
+
+  // Primary colors (blue)
+  --rag-semantic-color-primary-50: var(--rag-primitive-color-blue-50);
+  --rag-semantic-color-primary-100: var(--rag-primitive-color-blue-100);
+  --rag-semantic-color-primary-200: var(--rag-primitive-color-blue-200);
+  --rag-semantic-color-primary-300: var(--rag-primitive-color-blue-300);
+  --rag-semantic-color-primary-400: var(--rag-primitive-color-blue-400);
+  --rag-semantic-color-primary-500: var(--rag-primitive-color-blue-500);
+  --rag-semantic-color-primary-600: var(--rag-primitive-color-blue-600);
+  --rag-semantic-color-primary-700: var(--rag-primitive-color-blue-700);
+  --rag-semantic-color-primary-800: var(--rag-primitive-color-blue-800);
+  --rag-semantic-color-primary-900: var(--rag-primitive-color-blue-900);
+  --rag-semantic-color-primary-950: var(--rag-primitive-color-blue-950);
+  --rag-semantic-color-primary-1000: var(--rag-primitive-color-blue-1000);
+
+  // Success colors (green)  
+  --rag-semantic-color-success-50: var(--rag-primitive-color-green-50);
+  --rag-semantic-color-success-100: var(--rag-primitive-color-green-100);
+  --rag-semantic-color-success-200: var(--rag-primitive-color-green-200);
+  --rag-semantic-color-success-300: var(--rag-primitive-color-green-300);
+  --rag-semantic-color-success-400: var(--rag-primitive-color-green-400);
+  --rag-semantic-color-success-500: var(--rag-primitive-color-green-500);
+  --rag-semantic-color-success-600: var(--rag-primitive-color-green-600);
+  --rag-semantic-color-success-700: var(--rag-primitive-color-green-700);
+  --rag-semantic-color-success-800: var(--rag-primitive-color-green-800);
+  --rag-semantic-color-success-900: var(--rag-primitive-color-green-900);
+  --rag-semantic-color-success-950: var(--rag-primitive-color-green-950);
+  --rag-semantic-color-success-1000: var(--rag-primitive-color-green-1000);
+
+  // Warning colors (amber)
+  --rag-semantic-color-warning-50: var(--rag-primitive-color-amber-50);
+  --rag-semantic-color-warning-100: var(--rag-primitive-color-amber-100);
+  --rag-semantic-color-warning-200: var(--rag-primitive-color-amber-200);
+  --rag-semantic-color-warning-300: var(--rag-primitive-color-amber-300);
+  --rag-semantic-color-warning-400: var(--rag-primitive-color-amber-400);
+  --rag-semantic-color-warning-500: var(--rag-primitive-color-amber-500);
+  --rag-semantic-color-warning-600: var(--rag-primitive-color-amber-600);
+  --rag-semantic-color-warning-700: var(--rag-primitive-color-amber-700);
+  --rag-semantic-color-warning-800: var(--rag-primitive-color-amber-800);
+  --rag-semantic-color-warning-900: var(--rag-primitive-color-amber-900);
+  --rag-semantic-color-warning-950: var(--rag-primitive-color-amber-950);
+  --rag-semantic-color-warning-1000: var(--rag-primitive-color-amber-1000);
+
+  // Error/Danger colors (red)
+  --rag-semantic-color-error-50: var(--rag-primitive-color-red-50);
+  --rag-semantic-color-error-100: var(--rag-primitive-color-red-100);
+  --rag-semantic-color-error-200: var(--rag-primitive-color-red-200);
+  --rag-semantic-color-error-300: var(--rag-primitive-color-red-300);
+  --rag-semantic-color-error-400: var(--rag-primitive-color-red-400);
+  --rag-semantic-color-error-500: var(--rag-primitive-color-red-500);
+  --rag-semantic-color-error-600: var(--rag-primitive-color-red-600);
+  --rag-semantic-color-error-700: var(--rag-primitive-color-red-700);
+  --rag-semantic-color-error-800: var(--rag-primitive-color-red-800);
+  --rag-semantic-color-error-900: var(--rag-primitive-color-red-900);
+  --rag-semantic-color-error-950: var(--rag-primitive-color-red-950);
+  --rag-semantic-color-error-1000: var(--rag-primitive-color-red-1000);
+
+  --rag-semantic-color-danger-50: var(--rag-primitive-color-red-50);
+  --rag-semantic-color-danger-100: var(--rag-primitive-color-red-100);
+  --rag-semantic-color-danger-200: var(--rag-primitive-color-red-200);
+  --rag-semantic-color-danger-300: var(--rag-primitive-color-red-300);
+  --rag-semantic-color-danger-400: var(--rag-primitive-color-red-400);
+  --rag-semantic-color-danger-500: var(--rag-primitive-color-red-500);
+  --rag-semantic-color-danger-600: var(--rag-primitive-color-red-600);
+  --rag-semantic-color-danger-700: var(--rag-primitive-color-red-700);
+  --rag-semantic-color-danger-800: var(--rag-primitive-color-red-800);
+  --rag-semantic-color-danger-900: var(--rag-primitive-color-red-900);
+  --rag-semantic-color-danger-950: var(--rag-primitive-color-red-950);
+  --rag-semantic-color-danger-1000: var(--rag-primitive-color-red-1000);
+
+  // Info colors (blue)
+  --rag-semantic-color-info-50: var(--rag-primitive-color-blue-50);
+  --rag-semantic-color-info-100: var(--rag-primitive-color-blue-100);
+  --rag-semantic-color-info-200: var(--rag-primitive-color-blue-200);
+  --rag-semantic-color-info-300: var(--rag-primitive-color-blue-300);
+  --rag-semantic-color-info-400: var(--rag-primitive-color-blue-400);
+  --rag-semantic-color-info-500: var(--rag-primitive-color-blue-500);
+  --rag-semantic-color-info-600: var(--rag-primitive-color-blue-600);
+  --rag-semantic-color-info-700: var(--rag-primitive-color-blue-700);
+  --rag-semantic-color-info-800: var(--rag-primitive-color-blue-800);
+  --rag-semantic-color-info-900: var(--rag-primitive-color-blue-900);
+  --rag-semantic-color-info-950: var(--rag-primitive-color-blue-950);
+  --rag-semantic-color-info-1000: var(--rag-primitive-color-blue-1000);
+
+  // Component tokens - Button
+  --rag-component-button-solid-background: var(--rag-semantic-color-text-default);
+  --rag-component-button-solid-color: var(--rag-semantic-color-text-inverse);
+  --rag-component-button-solid-border: none;
+
+  --rag-component-button-outline-background: var(--rag-semantic-color-background-default);
+  --rag-component-button-outline-color: var(--rag-semantic-color-text-default);
+  --rag-component-button-outline-border: 1px solid var(--rag-semantic-color-border-default);
+
+  --rag-component-button-ghost-background: transparent;
+  --rag-component-button-ghost-color: var(--rag-semantic-color-text-default);
+  --rag-component-button-ghost-border: none;
+
+  --rag-component-button-soft-background: var(--rag-semantic-color-background-muted);
+  --rag-component-button-soft-color: var(--rag-semantic-color-text-default);
+  --rag-component-button-soft-border: none;
+}
+

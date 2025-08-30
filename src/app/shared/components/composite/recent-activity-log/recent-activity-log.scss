@@ -3,7 +3,7 @@
     font-size: 1.125rem;
     font-weight: 600;
     margin: 0 0 1rem 0;
-    color: var(--gray-12, #1a1a1a);
+    color: var(--rag-semantic-color-text-default);
   }
 }
 
@@ -18,7 +18,7 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    color: var(--gray-10, #6b7280);
+    color: var(--rag-semantic-color-text-muted);
     
     p {
       margin: 0.5rem 0 0 0;
@@ -36,14 +36,14 @@
   &__timestamp {
     font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
     font-size: 0.75rem;
-    color: var(--gray-10, #6b7280);
+    color: var(--rag-semantic-color-text-muted);
     min-width: 4rem;
     flex-shrink: 0;
   }
 
   &__message {
     font-size: 0.875rem;
-    color: var(--gray-12, #1a1a1a);
+    color: var(--rag-semantic-color-text-default);
     flex: 1;
     line-height: 1.4;
   }

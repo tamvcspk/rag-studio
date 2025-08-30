@@ -6,23 +6,23 @@
 
 .rt-Spinner {
   display: inline-block;
-  border: 2px solid var(--gray-4, hsl(0, 0%, 93.0%));
-  border-top-color: var(--blue-9, hsl(206, 100%, 50.0%));
+  border: 2px solid var(--rag-primitive-color-gray-300);
+  border-top-color: var(--rag-semantic-color-primary-500);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
 
-.rt-Spinner.rt-size-1 {
+.rt-Spinner.rt-size-sm {
   width: 16px;
   height: 16px;
 }
 
-.rt-Spinner.rt-size-2 {
+.rt-Spinner.rt-size-md {
   width: 24px;
   height: 24px;
 }
 
-.rt-Spinner.rt-size-3 {
+.rt-Spinner.rt-size-lg {
   width: 32px;
   height: 32px;
 }

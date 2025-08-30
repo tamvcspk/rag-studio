@@ -5,18 +5,18 @@
 .rag-timestamp {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1, 4px);
-  font-size: var(--font-size-2, 14px);
-  color: var(--gray-10, #6b7280);
+  gap: var(--rag-primitive-spacing-xs);
+  font-size: var(--rag-primitive-fontSize-md);
+  color: var(--rag-semantic-color-text-muted);
   font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
 
   &--with-icon {
-    gap: var(--space-2, 8px);
+    gap: var(--rag-primitive-spacing-sm);
   }
 
   &__icon {
     flex-shrink: 0;
-    color: var(--gray-9, #9ca3af);
+    color: var(--rag-primitive-color-gray-800);
   }
 
   &__text {
@@ -30,18 +30,18 @@
 // Variants for different contexts
 .rag-timestamp {
   &.rag-timestamp--muted {
-    color: var(--gray-9, #9ca3af);
-    font-size: var(--font-size-1, 12px);
+    color: var(--rag-primitive-color-gray-800);
+    font-size: var(--rag-primitive-fontSize-sm);
   }
 
   &.rag-timestamp--emphasized {
-    color: var(--gray-12, #1f2937);
-    font-weight: var(--font-weight-medium, 500);
+    color: var(--rag-semantic-color-text-default);
+    font-weight: 500;
   }
 
   &.rag-timestamp--compact {
-    font-size: var(--font-size-1, 12px);
-    gap: var(--space-1, 4px);
+    font-size: var(--rag-primitive-fontSize-sm);
+    gap: var(--rag-primitive-spacing-xs);
 
     .rag-timestamp__icon {
       width: 10px;
@@ -52,14 +52,14 @@
 
 @media (prefers-color-scheme: dark) {
   .rag-timestamp {
-    color: var(--gray-9, #9ca3af);
+    color: var(--rag-primitive-color-gray-700);
 
     &__icon {
-      color: var(--gray-10, #6b7280);
+      color: var(--rag-primitive-color-gray-600);
     }
 
     &.rag-timestamp--emphasized {
-      color: var(--gray-1, #f9fafb);
+      color: var(--rag-primitive-color-white);
     }
   }
 }

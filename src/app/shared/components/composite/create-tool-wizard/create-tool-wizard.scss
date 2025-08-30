@@ -1,43 +1,43 @@
 .create-tool-wizard {
   .wizard-header {
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--rag-primitive-spacing-xl);
     text-align: center;
     
     .wizard-title {
-      font-size: var(--font-size-5);
-      font-weight: var(--font-weight-semibold);
-      margin-bottom: var(--space-2);
-      color: var(--gray-12);
+      font-size: var(--rag-primitive-fontSize-lg);
+      font-weight: 600;
+      margin-bottom: var(--rag-primitive-spacing-sm);
+      color: var(--rag-semantic-color-text-default);
     }
     
     .wizard-description {
-      color: var(--gray-10);
-      font-size: var(--font-size-2);
-      line-height: var(--line-height-3);
+      color: var(--rag-semantic-color-text-muted);
+      font-size: var(--rag-primitive-fontSize-sm);
+      line-height: var(--rag-primitive-lineHeight-md);
     }
   }
   
   .wizard-form {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
+    gap: var(--rag-primitive-spacing-xl);
   }
   
   .form-section {
     .section-title {
-      font-size: var(--font-size-3);
-      font-weight: var(--font-weight-semibold);
-      margin-bottom: var(--space-3);
-      color: var(--gray-12);
-      border-bottom: 1px solid var(--gray-4);
-      padding-bottom: var(--space-2);
+      font-size: var(--rag-primitive-fontSize-md);
+      font-weight: 600;
+      margin-bottom: var(--rag-primitive-spacing-md);
+      color: var(--rag-semantic-color-text-default);
+      border-bottom: 1px solid var(--rag-semantic-color-border-default);
+      padding-bottom: var(--rag-primitive-spacing-sm);
     }
   }
   
   .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-4);
+    gap: var(--rag-primitive-spacing-lg);
   }
   
   .full-width {
@@ -46,34 +46,34 @@
   
   // Preview section styling
   .tool-preview {
-    background: var(--gray-1);
-    border: 1px solid var(--gray-4);
-    border-radius: var(--radius-3);
-    padding: var(--space-4);
+    background: var(--rag-semantic-color-background-subtle);
+    border: 1px solid var(--rag-semantic-color-border-default);
+    border-radius: var(--rag-primitive-radius-md);
+    padding: var(--rag-primitive-spacing-lg);
     
     .preview-item {
       display: flex;
       align-items: center;
-      gap: var(--space-2);
-      margin-bottom: var(--space-2);
+      gap: var(--rag-primitive-spacing-sm);
+      margin-bottom: var(--rag-primitive-spacing-sm);
       
       &:last-child {
         margin-bottom: 0;
       }
       
       strong {
-        font-weight: var(--font-weight-medium);
-        color: var(--gray-11);
+        font-weight: 500;
+        color: var(--rag-semantic-color-text-subtle);
         min-width: 140px;
       }
       
       code {
-        background: var(--gray-3);
-        padding: var(--space-1) var(--space-2);
-        border-radius: var(--radius-2);
-        font-family: var(--font-mono);
-        font-size: var(--font-size-1);
-        color: var(--gray-12);
+        background: var(--rag-semantic-color-background-muted);
+        padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+        border-radius: var(--rag-primitive-radius-sm);
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+        font-size: var(--rag-primitive-fontSize-xs);
+        color: var(--rag-semantic-color-text-default);
       }
     }
   }
@@ -81,10 +81,10 @@
   .wizard-actions {
     display: flex;
     justify-content: flex-end;
-    gap: var(--space-3);
-    margin-top: var(--space-6);
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--gray-4);
+    gap: var(--rag-primitive-spacing-md);
+    margin-top: var(--rag-primitive-spacing-xl);
+    padding-top: var(--rag-primitive-spacing-lg);
+    border-top: 1px solid var(--rag-semantic-color-border-default);
   }
 }
 
@@ -108,7 +108,7 @@
 // Form field overrides for better layout
 :host ::ng-deep {
   .form-section app-rag-form-field {
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--rag-primitive-spacing-lg);
     
     &:last-child {
       margin-bottom: 0;

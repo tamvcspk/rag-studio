@@ -1,7 +1,7 @@
 // Main Layout Styles
 .app-header {
-  background-color: white;
-  border-bottom: 1px solid var(--gray-4, #e0e0e0);
+  background-color: var(--rag-semantic-color-background-default);
+  border-bottom: 1px solid var(--rag-semantic-color-border-default);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -14,22 +14,22 @@
 .app-logo-icon {
   width: 24px;
   height: 24px;
-  color: var(--blue-9, #0066cc);
+  color: var(--rag-semantic-color-primary-500);
 }
 
 .app-title {
-  font-size: var(--font-size-5, 20px);
+  font-size: var(--rag-primitive-fontSize-xl);
   margin: 0;
 }
 
 .app-subtitle {
-  font-size: var(--font-size-2, 14px);
-  color: var(--gray-10, #666);
+  font-size: var(--rag-primitive-fontSize-md);
+  color: var(--rag-semantic-color-text-muted);
 }
 
 .app-main {
   min-height: calc(100vh - 64px);
-  padding: var(--space-5, 24px) 0;
+  padding: var(--rag-primitive-spacing-xl) 0;
 }
 
 .nav-icon {
@@ -49,16 +49,16 @@
   display: inline-block;
 
   &.status-active {
-    background-color: var(--green-9, #00aa00);
+    background-color: var(--rag-semantic-color-success-700);
     box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
   }
 
   &.status-inactive {
-    background-color: var(--gray-9, #888);
+    background-color: var(--rag-primitive-color-gray-800);
   }
 
   &.status-error {
-    background-color: var(--red-9, #cc0000);
+    background-color: var(--rag-semantic-color-error-700);
     box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
   }
 }

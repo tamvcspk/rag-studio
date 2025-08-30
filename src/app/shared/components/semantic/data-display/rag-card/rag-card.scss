@@ -3,33 +3,33 @@
 }
 
 .rag-card {
-  background: white;
-  border-radius: var(--radius-4, 8px);
-  border: 1px solid transparent;
+  background: var(--rag-semantic-color-background-default);
+  border-radius: var(--rag-primitive-radius-lg);
+  border: 1px solid var(--rag-primitive-color-transparent);
   transition: all 0.15s ease;
 
   &--default {
-    box-shadow: var(--shadow-2, 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1));
+    box-shadow: var(--rag-primitive-shadow-sm);
   }
 
   &--elevated {
-    box-shadow: var(--shadow-4, 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1));
+    box-shadow: var(--rag-primitive-shadow-lg);
   }
 
   &--outlined {
-    border-color: var(--gray-6, #e5e7eb);
+    border-color: var(--rag-semantic-color-border-default);
     box-shadow: none;
   }
 
   &--padded {
-    padding: var(--space-4, 16px);
+    padding: var(--rag-primitive-spacing-lg);
   }
 
   &--interactive {
     cursor: pointer;
 
     &:hover {
-      box-shadow: var(--shadow-3, 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1));
+      box-shadow: var(--rag-primitive-shadow-md);
       transform: translateY(-1px);
     }
 
@@ -38,7 +38,7 @@
     }
 
     &:focus-visible {
-      outline: 2px solid var(--blue-9, #0ea5e9);
+      outline: 2px solid var(--rag-semantic-color-primary-500);
       outline-offset: 2px;
     }
   }
@@ -46,10 +46,10 @@
 
 @media (prefers-color-scheme: dark) {
   .rag-card {
-    background: var(--gray-1, #fafafa);
+    background: var(--rag-semantic-color-background-subtle);
     
     &--outlined {
-      border-color: var(--gray-7, #d1d5db);
+      border-color: var(--rag-semantic-color-border-muted);
     }
   }
 }

@@ -1,5 +1,3 @@
-@use '../../shared/tokens/_design-tokens.generated.scss' as *;
-
 .knowledge-bases-page {
   display: flex;
   flex-direction: column;
@@ -8,35 +6,35 @@
   .page-header {
     display: flex;
     flex-direction: column;
-    gap: $space-5;
-    margin-bottom: $space-6;
+    gap: var(--rag-primitive-spacing-xl);
+    margin-bottom: 32px;
     
     .header-content {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: $space-4;
+      gap: var(--rag-primitive-spacing-lg);
       
       .title-section {
         flex: 1;
         
         .page-title {
-          margin: 0 0 $space-1 0;
-          font-size: $font-size-6;
-          font-weight: $font-weight-semibold;
-          color: $gray-12;
+          margin: 0 0 var(--rag-primitive-spacing-xs) 0;
+          font-size: 24px;
+          font-weight: 600;
+          color: var(--rag-semantic-color-text-default);
         }
         
         .page-subtitle {
           margin: 0;
-          font-size: $font-size-3;
-          color: $gray-10;
+          font-size: var(--rag-primitive-fontSize-lg);
+          color: var(--rag-semantic-color-text-subtle);
         }
       }
       
       .action-buttons {
         display: flex;
-        gap: $space-3;
+        gap: var(--rag-primitive-spacing-md);
         flex-shrink: 0;
         
         @media (max-width: 640px) {
@@ -48,13 +46,13 @@
       @media (max-width: 768px) {
         flex-direction: column;
         align-items: stretch;
-        gap: $space-4;
+        gap: var(--rag-primitive-spacing-lg);
       }
     }
     
     .filters-section {
       display: flex;
-      gap: $space-4;
+      gap: var(--rag-primitive-spacing-lg);
       align-items: center;
       
       .search-filter {
@@ -70,7 +68,7 @@
       @media (max-width: 640px) {
         flex-direction: column;
         align-items: stretch;
-        gap: $space-3;
+        gap: var(--rag-primitive-spacing-md);
         
         .search-filter {
           max-width: none;
@@ -83,10 +81,10 @@
     }
     
     .results-summary {
-      font-size: $font-size-2;
-      color: $gray-10;
-      padding: $space-3 0;
-      border-top: 1px solid $gray-4;
+      font-size: var(--rag-primitive-fontSize-sm);
+      color: var(--rag-semantic-color-text-subtle);
+      padding: var(--rag-primitive-spacing-md) 0;
+      border-top: 1px solid var(--rag-semantic-color-border-default);
     }
   }
   
@@ -96,11 +94,11 @@
     .kb-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-      gap: $space-4;
+      gap: var(--rag-primitive-spacing-lg);
       
       @media (max-width: 480px) {
         grid-template-columns: 1fr;
-        gap: $space-3;
+        gap: var(--rag-primitive-spacing-md);
       }
       
       // Auto-adjust grid based on content
@@ -118,17 +116,17 @@
 // Global styles for better responsive behavior
 @media (max-width: 768px) {
   .knowledge-bases-page {
-    padding: $space-4;
+    padding: var(--rag-primitive-spacing-lg);
   }
 }
 
 @media (max-width: 480px) {
   .knowledge-bases-page {
-    padding: $space-3;
+    padding: var(--rag-primitive-spacing-md);
     
     .page-header {
-      margin-bottom: $space-4;
-      gap: $space-3;
+      margin-bottom: var(--rag-primitive-spacing-lg);
+      gap: var(--rag-primitive-spacing-md);
     }
   }
 }
@@ -144,11 +142,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: $space-3;
+    gap: var(--rag-primitive-spacing-md);
     
     .loading-text {
-      color: $gray-10;
-      font-size: $font-size-2;
+      color: var(--rag-semantic-color-text-subtle);
+      font-size: var(--rag-primitive-fontSize-sm);
     }
   }
 }

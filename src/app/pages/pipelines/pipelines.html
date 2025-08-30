@@ -1,1 +1,62 @@
-<span>Pipelines page - Coming soon</span>
+<div class="pipelines-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">Processing Pipelines</h1>
+        <p class="page-description">Automated workflows for data ingestion and indexing</p>
+      </div>
+      <div class="header-actions">
+        <rag-button 
+          variant="solid" 
+          size="md" 
+          (onClick)="onCreatePipeline()">
+          <lucide-icon [img]="PlusIcon"></lucide-icon>
+          Design Pipeline
+        </rag-button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="page-content">
+    @if (isLoading()) {
+      <!-- Loading State -->
+      <div class="loading-state">
+        <div class="loading-card">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-description"></div>
+          <div class="skeleton-content"></div>
+        </div>
+        <div class="loading-card">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-description"></div>
+          <div class="skeleton-content"></div>
+        </div>
+      </div>
+    } @else if (isEmpty()) {
+      <!-- Empty State -->
+      <app-empty-state-panel
+        title="No pipelines created yet"
+        description="Pipelines automate data ingestion, processing, and indexing workflows"
+        [icon]="WorkflowIcon"
+        actionLabel="Create Your First Pipeline"
+        (action)="onCreatePipeline()">
+      </app-empty-state-panel>
+    } @else {
+      <!-- Pipelines Grid -->
+      <div class="pipelines-grid">
+        @for (pipeline of pipelines(); track pipeline.id) {
+          <rag-pipeline-card
+            [pipeline]="pipeline"
+            (onPause)="onPipelinePause($event)"
+            (onPlay)="onPipelinePlay($event)"
+            (onEdit)="onPipelineEdit($event)"
+            (onSchedule)="onPipelineSchedule($event)"
+            (onRunNow)="onPipelineRunNow($event)">
+          </rag-pipeline-card>
+        }
+      </div>
+    }
+  </main>
+</div>

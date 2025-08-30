@@ -17,7 +17,9 @@
       "Read(/C:\\c\\Src\\project/**)",
       "Bash(npm run build:*)",
       "Bash(ng generate service:*)",
-      "Bash(npm run generate:tokens:*)"
+      "Bash(npm run generate:tokens:*)",
+      "Bash(move:*)",
+      "Bash(ng generate module:*)"
     ],
     "deny": [],
     "ask": [],

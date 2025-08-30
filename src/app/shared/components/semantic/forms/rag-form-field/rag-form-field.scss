@@ -6,7 +6,7 @@
 .rag-form-field {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2, 8px);
+  gap: var(--rag-primitive-spacing-sm);
   width: 100%;
 
   &--disabled {
@@ -22,11 +22,11 @@
       :deep(.rt-TextFieldInput),
       :deep(.rt-TextArea),
       :deep(.rt-SelectTrigger) {
-        border-color: var(--red-9, hsl(358, 75.0%, 59.0%));
+        border-color: var(--rag-semantic-color-error-700);
 
         &:focus {
-          border-color: var(--red-9, hsl(358, 75.0%, 59.0%));
-          box-shadow: 0 0 0 1px var(--red-9, hsl(358, 75.0%, 59.0%));
+          border-color: var(--rag-semantic-color-error-700);
+          box-shadow: 0 0 0 1px var(--rag-semantic-color-error-700);
         }
       }
     }
@@ -34,31 +34,31 @@
 }
 
 .rag-form-field__label {
-  font-size: var(--font-size-2, 14px);
-  font-weight: var(--font-weight-medium, 500);
-  color: var(--gray-12, hsl(0, 0%, 9.0%));
-  line-height: var(--line-height-2, 20px);
+  font-size: var(--rag-primitive-fontSize-md);
+  font-weight: 500;
+  color: var(--rag-semantic-color-text-default);
+  line-height: var(--rag-primitive-lineHeight-md);
   display: flex;
   align-items: center;
-  gap: var(--space-1, 4px);
+  gap: var(--rag-primitive-spacing-xs);
 
   &--required {
     .rag-form-field__required {
-      color: var(--red-9, hsl(358, 75.0%, 59.0%));
+      color: var(--rag-semantic-color-error-700);
     }
   }
 }
 
 .rag-form-field__required {
-  color: var(--red-9, hsl(358, 75.0%, 59.0%));
-  margin-left: var(--space-1, 4px);
+  color: var(--rag-semantic-color-error-700);
+  margin-left: var(--rag-primitive-spacing-xs);
 }
 
 .rag-form-field__description {
-  font-size: var(--font-size-1, 12px);
-  color: var(--gray-10, hsl(0, 0%, 52.3%));
-  line-height: var(--line-height-2, 20px);
-  margin-top: calc(var(--space-1, 4px) * -1);
+  font-size: var(--rag-primitive-fontSize-sm);
+  color: var(--rag-semantic-color-text-muted);
+  line-height: var(--rag-primitive-lineHeight-md);
+  margin-top: calc(var(--rag-primitive-spacing-xs) * -1);
 }
 
 .rag-form-field__input {
@@ -68,10 +68,10 @@
 .rag-form-field__error {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 8px);
-  font-size: var(--font-size-1, 12px);
-  color: var(--red-9, hsl(358, 75.0%, 59.0%));
-  line-height: var(--line-height-2, 20px);
+  gap: var(--rag-primitive-spacing-sm);
+  font-size: var(--rag-primitive-fontSize-sm);
+  color: var(--rag-semantic-color-error-700);
+  line-height: var(--rag-primitive-lineHeight-md);
 
   lucide-icon {
     flex-shrink: 0;
@@ -80,33 +80,33 @@
 
 // Size variants
 .rag-form-field--sm {
-  gap: var(--space-1, 4px);
+  gap: var(--rag-primitive-spacing-xs);
 
   .rag-form-field__label {
-    font-size: var(--font-size-1, 12px);
+    font-size: var(--rag-primitive-fontSize-sm);
   }
 
   .rag-form-field__description {
-    font-size: 11px;
+    font-size: var(--rag-primitive-fontSize-xs);
   }
 
   .rag-form-field__error {
-    font-size: 11px;
+    font-size: var(--rag-primitive-fontSize-xs);
   }
 }
 
 .rag-form-field--lg {
-  gap: var(--space-3, 12px);
+  gap: var(--rag-primitive-spacing-md);
 
   .rag-form-field__label {
-    font-size: var(--font-size-3, 16px);
+    font-size: var(--rag-primitive-fontSize-lg);
   }
 
   .rag-form-field__description {
-    font-size: var(--font-size-2, 14px);
+    font-size: var(--rag-primitive-fontSize-md);
   }
 
   .rag-form-field__error {
-    font-size: var(--font-size-2, 14px);
+    font-size: var(--rag-primitive-fontSize-md);
   }
 }

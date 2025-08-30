@@ -8,7 +8,7 @@
 
   &__controls {
     display: flex;
-    gap: var(--space-3, 12px);
+    gap: var(--rag-primitive-spacing-md);
     align-items: flex-start;
     width: 100%;
   }
@@ -33,44 +33,44 @@
   &__latest-indicator {
     display: flex;
     align-items: center;
-    gap: var(--space-2, 8px);
-    padding: var(--space-2, 8px) var(--space-3, 12px);
-    background-color: var(--gray-2, hsl(0, 0%, 97.3%));
-    border: 1px solid var(--gray-4, hsl(0, 0%, 93.0%));
-    border-radius: var(--radius-3, 6px);
-    color: var(--gray-11, hsl(0, 0%, 43.5%));
-    font-size: var(--font-size-2, 14px);
+    gap: var(--rag-primitive-spacing-sm);
+    padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+    background-color: var(--rag-semantic-color-background-muted);
+    border: 1px solid var(--rag-semantic-color-border-default);
+    border-radius: var(--rag-primitive-radius-md);
+    color: var(--rag-semantic-color-text-subtle);
+    font-size: var(--rag-primitive-fontSize-md);
 
     lucide-icon {
-      color: var(--blue-9, hsl(206, 100%, 50.0%));
+      color: var(--rag-semantic-color-primary-500);
       flex-shrink: 0;
     }
 
     span {
-      font-size: var(--font-size-2, 14px);
-      line-height: var(--line-height-2, 20px);
+      font-size: var(--rag-primitive-fontSize-md);
+      line-height: var(--rag-primitive-lineHeight-md);
     }
   }
 
   &__validation {
     display: flex;
     align-items: center;
-    gap: var(--space-2, 8px);
-    margin-top: var(--space-2, 8px);
-    padding: var(--space-2, 8px) var(--space-3, 12px);
-    background-color: #fef2f2;
-    border: 1px solid #fecaca;
-    border-radius: var(--radius-3, 6px);
-    color: var(--red-9, hsl(358, 75.0%, 59.0%));
-    font-size: var(--font-size-1, 12px);
+    gap: var(--rag-primitive-spacing-sm);
+    margin-top: var(--rag-primitive-spacing-sm);
+    padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+    background-color: var(--rag-semantic-color-error-100);
+    border: 1px solid var(--rag-semantic-color-error-300);
+    border-radius: var(--rag-primitive-radius-md);
+    color: var(--rag-semantic-color-error-700);
+    font-size: var(--rag-primitive-fontSize-sm);
 
     lucide-icon {
       flex-shrink: 0;
-      color: var(--red-9, hsl(358, 75.0%, 59.0%));
+      color: var(--rag-semantic-color-error-700);
     }
 
     span {
-      line-height: var(--line-height-2, 20px);
+      line-height: var(--rag-primitive-lineHeight-md);
     }
   }
 }
@@ -110,10 +110,10 @@
 
   .rag-version-input__latest-indicator {
     padding: var(--space-1, 4px) var(--space-2, 8px);
-    font-size: var(--font-size-1, 12px);
+    font-size: var(--rag-primitive-fontSize-xs, 12px);
 
     span {
-      font-size: var(--font-size-1, 12px);
+      font-size: var(--rag-primitive-fontSize-xs, 12px);
     }
   }
 
@@ -133,14 +133,14 @@
 
   .rag-version-input__latest-indicator {
     padding: var(--space-3, 12px) var(--space-4, 16px);
-    font-size: var(--font-size-3, 16px);
+    font-size: var(--rag-primitive-fontSize-lg, 16px);
 
     span {
-      font-size: var(--font-size-3, 16px);
+      font-size: var(--rag-primitive-fontSize-lg, 16px);
     }
   }
 
   .rag-version-input__validation {
-    font-size: var(--font-size-2, 14px);
+    font-size: var(--rag-primitive-fontSize-md, 14px);
   }
 }

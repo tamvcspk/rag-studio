@@ -1,62 +1,60 @@
-@use '../../../tokens/_design-tokens.generated.scss' as *;
-
 .create-kb-wizard {
   .wizard-form {
     display: flex;
     flex-direction: column;
-    gap: $space-6;
+    gap: var(--rag-primitive-spacing-xl);
     
     .form-section {
       display: flex;
       flex-direction: column;
-      gap: $space-4;
+      gap: var(--rag-primitive-spacing-lg);
       
       .section-title {
         margin: 0;
-        font-size: $font-size-4;
-        font-weight: $font-weight-semibold;
-        color: $gray-12;
-        border-bottom: 1px solid $gray-4;
-        padding-bottom: $space-2;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--rag-semantic-color-text-default);
+        border-bottom: 1px solid var(--rag-semantic-color-border-default);
+        padding-bottom: var(--rag-primitive-spacing-sm);
       }
       
       .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: $space-4;
+        gap: var(--rag-primitive-spacing-lg);
         
         @media (max-width: 640px) {
           grid-template-columns: 1fr;
-          gap: $space-3;
+          gap: var(--rag-primitive-spacing-md);
         }
       }
     }
     
     .model-description {
-      margin-top: $space-2;
-      padding: $space-3;
-      background-color: $gray-2;
-      border-radius: $radius-3;
-      border: 1px solid $gray-4;
+      margin-top: var(--rag-primitive-spacing-sm);
+      padding: var(--rag-primitive-spacing-md);
+      background-color: var(--rag-semantic-color-background-muted);
+      border-radius: var(--rag-primitive-radius-md);
+      border: 1px solid var(--rag-semantic-color-border-default);
       
       .description-text {
         margin: 0;
-        font-size: $font-size-2;
-        color: $gray-11;
-        line-height: $line-height-3;
+        font-size: var(--rag-primitive-fontSize-sm);
+        color: var(--rag-semantic-color-text-subtle);
+        line-height: var(--rag-primitive-lineHeight-md);
       }
     }
     
     .form-actions {
       display: flex;
       justify-content: flex-end;
-      gap: $space-3;
-      padding-top: $space-4;
-      border-top: 1px solid $gray-4;
+      gap: var(--rag-primitive-spacing-md);
+      padding-top: var(--rag-primitive-spacing-lg);
+      border-top: 1px solid var(--rag-semantic-color-border-default);
       
       @media (max-width: 480px) {
         flex-direction: column;
-        gap: $space-2;
+        gap: var(--rag-primitive-spacing-sm);
       }
     }
   }

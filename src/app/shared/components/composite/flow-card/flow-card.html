@@ -1,0 +1,136 @@
+<rag-card>
+  <div class="flow-card">
+    <div class="flow-card-header">
+      <div class="flow-info">
+        <div class="flow-icon">
+          <lucide-angular [name]="'git-branch'" [size]="20"></lucide-angular>
+        </div>
+        <div class="flow-details">
+          <h3 class="flow-title">{{ flow().name }}</h3>
+          <p class="flow-description">{{ flow().description }}</p>
+        </div>
+      </div>
+      <div class="flow-status">
+        <rag-badge 
+          [variant]="'solid'" 
+          [color]="getStatusColor()"
+          class="status-badge">
+          <lucide-angular [name]="getStatusIcon()" [size]="12"></lucide-angular>
+          <span>{{ flow().status | titlecase }}</span>
+        </rag-badge>
+      </div>
+    </div>
+
+    <div class="flow-parts-preview">
+      <div class="parts-flow">
+        @for (part of flow().parts; track part.id; let isLast = $last) {
+          <div class="flow-part">
+            <rag-badge [variant]="'soft'">{{ part.kind }}</rag-badge>
+            <span class="part-name">{{ part.name }}</span>
+          </div>
+          @if (!isLast) {
+            <lucide-angular 
+              [name]="'arrow-right'" 
+              [size]="16" 
+              class="flow-arrow">
+            </lucide-angular>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="flow-tags" *ngIf="flow().tags.length > 0">
+      @for (tag of flow().tags; track tag) {
+        <rag-badge [variant]="'outline'" size="sm">{{ tag }}</rag-badge>
+      }
+    </div>
+
+    <div class="flow-stats">
+      <div class="stat-item">
+        <span class="stat-label">Executions</span>
+        <span class="stat-value">{{ flow().executionCount }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Success Rate</span>
+        <span class="stat-value">{{ flow().successRate | percent }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Avg Duration</span>
+        <span class="stat-value">{{ formatDuration(flow().avgExecutionTime) }}</span>
+      </div>
+      <div class="stat-item" *ngIf="flow().lastExecutedAt">
+        <span class="stat-label">Last Run</span>
+        <span class="stat-value">{{ flow().lastExecutedAt | date:'short' }}</span>
+      </div>
+    </div>
+
+    <div class="flow-actions">
+      <div class="primary-actions">
+        @switch (flow().status) {
+          @case ('active') {
+            <rag-button 
+              [variant]="'outline'" 
+              [size]="'sm'"
+              (click)="onPauseClick()">
+              <lucide-angular [name]="'pause'" [size]="14"></lucide-angular>
+              Pause
+            </rag-button>
+          }
+          @case ('paused') {
+            <rag-button 
+              [variant]="'outline'" 
+              [size]="'sm'"
+              (click)="onResumeClick()">
+              <lucide-angular [name]="'play'" [size]="14"></lucide-angular>
+              Resume
+            </rag-button>
+          }
+          @default {
+            <rag-button 
+              [variant]="'outline'" 
+              [size]="'sm'"
+              (click)="onExecuteClick()">
+              <lucide-angular [name]="'play'" [size]="14"></lucide-angular>
+              Execute
+            </rag-button>
+          }
+        }
+        
+        <rag-button 
+          [variant]="'ghost'" 
+          [size]="'sm'"
+          (click)="onEditClick()">
+          <lucide-angular [name]="'edit'" [size]="14"></lucide-angular>
+          Edit
+        </rag-button>
+      </div>
+      
+      <div class="secondary-actions">
+        <rag-button 
+          [variant]="'ghost'" 
+          [size]="'sm'"
+          (click)="onDuplicateClick()">
+          <lucide-angular [name]="'copy'" [size]="14"></lucide-angular>
+          Duplicate
+        </rag-button>
+        
+        <rag-button 
+          [variant]="'ghost'" 
+          [size]="'sm'"
+          (click)="onExportClick()">
+          <lucide-angular [name]="'download'" [size]="14"></lucide-angular>
+          Export
+        </rag-button>
+        
+        <rag-button 
+          [variant]="'ghost'" 
+          [size]="'sm'"
+          class="delete-button"
+          (click)="onDeleteClick()">
+          <lucide-angular [name]="'trash-2'" [size]="14"></lucide-angular>
+          Delete
+        </rag-button>
+      </div>
+    </div>
+  </div>
+</rag-card>

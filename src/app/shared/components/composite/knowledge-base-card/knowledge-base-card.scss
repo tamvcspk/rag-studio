@@ -1,32 +1,30 @@
-@use '../../../tokens/_design-tokens.generated.scss' as *;
-
 .knowledge-base-card {
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: $space-3;
+    margin-bottom: var(--rag-primitive-spacing-md);
 
     .title-section {
       display: flex;
       align-items: center;
-      gap: $space-3;
+      gap: var(--rag-primitive-spacing-md);
       flex: 1;
 
       .title-info {
         flex: 1;
 
         .title {
-          margin: 0 0 $space-1 0;
-          font-size: $font-size-3;
-          font-weight: $font-weight-semibold;
-          color: $gray-12;
+          margin: 0 0 var(--rag-primitive-spacing-xs) 0;
+          font-size: var(--rag-primitive-fontSize-lg);
+          font-weight: 600;
+          color: var(--rag-semantic-color-text-default);
         }
 
         .subtitle {
           margin: 0;
-          font-size: $font-size-2;
-          color: $gray-10;
+          font-size: var(--rag-primitive-fontSize-sm);
+          color: var(--rag-semantic-color-text-subtle);
         }
       }
     }
@@ -37,30 +35,30 @@
   }
 
   .description {
-    margin: 0 0 $space-3 0;
-    color: $gray-10;
-    font-size: $font-size-2;
-    line-height: $line-height-3;
+    margin: 0 0 var(--rag-primitive-spacing-md) 0;
+    color: var(--rag-semantic-color-text-subtle);
+    font-size: var(--rag-primitive-fontSize-sm);
+    line-height: var(--rag-primitive-lineHeight-md);
   }
 
   .progress-section {
-    margin-bottom: $space-4;
+    margin-bottom: var(--rag-primitive-spacing-lg);
 
     .progress-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: $space-2;
+      margin-bottom: var(--rag-primitive-spacing-sm);
 
       .progress-label {
-        font-size: $font-size-2;
-        color: $gray-11;
+        font-size: var(--rag-primitive-fontSize-sm);
+        color: var(--rag-semantic-color-text-subtle);
       }
 
       .progress-percentage {
-        font-size: $font-size-2;
-        font-weight: $font-weight-medium;
-        color: $gray-11;
+        font-size: var(--rag-primitive-fontSize-sm);
+        font-weight: 500;
+        color: var(--rag-semantic-color-text-subtle);
       }
     }
   }
@@ -68,25 +66,25 @@
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: $space-3;
-    margin-bottom: $space-4;
+    gap: var(--rag-primitive-spacing-md);
+    margin-bottom: var(--rag-primitive-spacing-lg);
 
     .stat-item {
       display: flex;
       flex-direction: column;
-      gap: $space-1;
+      gap: var(--rag-primitive-spacing-xs);
 
       .stat-label {
-        font-size: $font-size-1;
-        color: $gray-10;
+        font-size: var(--rag-primitive-fontSize-xs);
+        color: var(--rag-semantic-color-text-subtle);
         text-transform: uppercase;
         letter-spacing: 0.025em;
       }
 
       .stat-value {
-        font-weight: $font-weight-medium;
-        font-size: $font-size-2;
-        color: $gray-12;
+        font-weight: 500;
+        font-size: var(--rag-primitive-fontSize-sm);
+        color: var(--rag-semantic-color-text-default);
       }
     }
 
@@ -97,33 +95,33 @@
 
   .metadata-badges {
     display: flex;
-    gap: $space-2;
+    gap: var(--rag-primitive-spacing-sm);
     flex-wrap: wrap;
-    margin-bottom: $space-4;
+    margin-bottom: var(--rag-primitive-spacing-lg);
 
     @media (max-width: 640px) {
       flex-direction: column;
-      gap: $space-1;
+      gap: var(--rag-primitive-spacing-xs);
     }
   }
 
   .action-buttons {
     display: flex;
-    gap: $space-2;
+    gap: var(--rag-primitive-spacing-sm);
     flex-wrap: wrap;
 
     .danger-button {
-      color: $red-9;
+      color: var(--rag-semantic-color-error-800);
 
       &:hover {
-        color: $red-10;
+        color: var(--rag-semantic-color-error-900);
         background-color: rgba(239, 68, 68, 0.05);
       }
     }
 
     @media (max-width: 640px) {
       flex-direction: column;
-      gap: $space-2;
+      gap: var(--rag-primitive-spacing-sm);
     }
   }
 
@@ -145,11 +143,11 @@
 // Error state styling for failed KBs
 :host.failed {
   .knowledge-base-card {
-    border-color: $red-6;
+    border-color: var(--rag-semantic-color-error-600);
     background-color: rgba(239, 68, 68, 0.02);
 
     .title {
-      color: $red-11;
+      color: var(--rag-semantic-color-error-950);
     }
   }
 }
@@ -157,7 +155,7 @@
 // Indexing state styling
 :host.indexing {
   .knowledge-base-card {
-    border-color: $amber-6;
+    border-color: var(--rag-semantic-color-warning-600);
     background-color: rgba(245, 158, 11, 0.02);
   }
 }
@@ -165,7 +163,7 @@
 // Success state styling for indexed KBs
 :host.indexed {
   .knowledge-base-card {
-    border-color: $green-6;
+    border-color: var(--rag-semantic-color-success-600);
     background-color: rgba(34, 197, 94, 0.02);
   }
 }

@@ -2,26 +2,26 @@
 .rt-Breadcrumb {
   display: flex;
   align-items: center;
-  color: var(--gray-10);
+  color: var(--rag-semantic-color-text-muted);
 
   // Size variants
   &.rt-size-sm {
-    font-size: var(--font-size-1);
+    font-size: var(--rag-primitive-fontSize-xs);
   }
 
   &.rt-size-md {
-    font-size: var(--font-size-2);
+    font-size: var(--rag-primitive-fontSize-sm);
   }
 
   &.rt-size-lg {
-    font-size: var(--font-size-3);
+    font-size: var(--rag-primitive-fontSize-md);
   }
 }
 
 .rt-BreadcrumbList {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--rag-primitive-spacing-sm);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -31,40 +31,40 @@
 .rt-BreadcrumbListItem {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--rag-primitive-spacing-sm);
 }
 
 .rt-BreadcrumbItem {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--rag-primitive-spacing-xs);
   color: inherit;
   text-decoration: none;
   transition: color 0.15s;
-  border-radius: var(--radius-2);
-  padding: var(--space-1) 0;
+  border-radius: var(--rag-primitive-radius-sm);
+  padding: var(--rag-primitive-spacing-xs) 0;
 
   &.rt-link {
-    color: var(--gray-11);
+    color: var(--rag-semantic-color-text-subtle);
     cursor: pointer;
 
     &:hover {
-      color: var(--blue-9);
+      color: var(--rag-semantic-color-primary-700);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--blue-9);
+      outline: 2px solid var(--rag-semantic-color-primary-700);
       outline-offset: 2px;
     }
   }
 
   &.rt-current {
-    color: var(--gray-12);
-    font-weight: var(--font-weight-medium);
+    color: var(--rag-semantic-color-text-default);
+    font-weight: 500;
   }
 
   &.rt-disabled {
-    color: var(--gray-9);
+    color: var(--rag-semantic-color-text-disabled);
     cursor: not-allowed;
   }
 
@@ -88,23 +88,23 @@
 
 .rt-BreadcrumbSeparator {
   flex-shrink: 0;
-  color: var(--gray-8);
+  color: var(--rag-semantic-color-text-disabled);
   opacity: 0.7;
 }
 
 .rt-BreadcrumbEmpty {
-  color: var(--gray-10);
+  color: var(--rag-semantic-color-text-muted);
   font-style: italic;
 }
 
 // Responsive behavior
 @media (max-width: 768px) {
   .rt-BreadcrumbList {
-    gap: var(--space-1);
+    gap: var(--rag-primitive-spacing-xs);
   }
 
   .rt-BreadcrumbListItem {
-    gap: var(--space-1);
+    gap: var(--rag-primitive-spacing-xs);
   }
 
   // Hide middle items on very small screens
@@ -115,7 +115,7 @@
   // Add ellipsis indicator
   .rt-BreadcrumbList::before {
     content: "...";
-    color: var(--gray-9);
+    color: var(--rag-semantic-color-text-disabled);
     order: 1;
   }
 }
@@ -123,28 +123,28 @@
 // Dark mode support
 @media (prefers-color-scheme: dark) {
   .rt-Breadcrumb {
-    color: var(--gray-dark-10);
+    color: var(--rag-semantic-color-text-muted);
   }
 
   .rt-BreadcrumbItem {
     &.rt-link {
-      color: var(--gray-dark-11);
+      color: var(--rag-semantic-color-text-subtle);
 
       &:hover {
-        color: var(--blue-dark-9);
+        color: var(--rag-semantic-color-primary-700);
       }
     }
 
     &.rt-current {
-      color: var(--gray-dark-12);
+      color: var(--rag-semantic-color-text-default);
     }
 
     &.rt-disabled {
-      color: var(--gray-dark-9);
+      color: var(--rag-semantic-color-text-disabled);
     }
   }
 
   .rt-BreadcrumbSeparator {
-    color: var(--gray-dark-8);
+    color: var(--rag-semantic-color-text-disabled);
   }
 }

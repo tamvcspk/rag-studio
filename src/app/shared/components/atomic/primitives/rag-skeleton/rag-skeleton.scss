@@ -3,11 +3,11 @@
 }
 
 .rt-Skeleton {
-  background: linear-gradient(90deg, var(--gray-3, hsl(0, 0%, 95.1%)) 25%, var(--gray-4, hsl(0, 0%, 93.0%)) 50%, var(--gray-3, hsl(0, 0%, 95.1%)) 75%);
+  background: linear-gradient(90deg, var(--rag-semantic-color-background-muted) 25%, var(--rag-semantic-color-border-default) 50%, var(--rag-semantic-color-background-muted) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: var(--radius-2, 4px);
-  margin-bottom: var(--space-2, 8px);
+  border-radius: var(--rag-primitive-radius-sm);
+  margin-bottom: var(--rag-primitive-spacing-sm);
 }
 
 .rt-Skeleton:last-child {
@@ -16,25 +16,25 @@
 
 // Variant styles
 .rt-Skeleton.rt-text {
-  height: var(--line-height-2, 20px);
+  height: var(--rag-primitive-lineHeight-sm);
   width: 100%;
 }
 
 .rt-Skeleton.rt-heading {
-  height: var(--line-height-5, 28px);
+  height: var(--rag-primitive-lineHeight-xl);
   width: 60%;
 }
 
 .rt-Skeleton.rt-button {
   height: 32px;
   width: 100px;
-  border-radius: var(--radius-3, 6px);
+  border-radius: var(--rag-primitive-radius-md);
 }
 
 .rt-Skeleton.rt-card {
   height: 120px;
   width: 100%;
-  border-radius: var(--radius-4, 8px);
+  border-radius: var(--rag-primitive-radius-lg);
 }
 
 .rt-Skeleton.rt-circle {

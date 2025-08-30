@@ -88,9 +88,9 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0.95);
-  background-color: white;
-  border-radius: var(--radius-5);
-  box-shadow: var(--shadow-6);
+  background-color: var(--rag-semantic-color-background-default);
+  border-radius: var(--rag-primitive-radius-xl);
+  box-shadow: var(--rag-primitive-shadow-xl);
   max-height: 85vh;
   opacity: 0;
   overflow: hidden;
@@ -100,24 +100,24 @@
 
   // Size-specific styles
   &.rt-size-sm {
-    padding: var(--space-4);
+    padding: var(--rag-primitive-spacing-lg);
   }
 
   &.rt-size-md {
-    padding: var(--space-5);
+    padding: var(--rag-primitive-spacing-xl);
   }
 
   &.rt-size-lg {
-    padding: var(--space-6);
+    padding: var(--rag-primitive-spacing-xl);
   }
 
   &.rt-size-xl {
-    padding: var(--space-6);
+    padding: var(--rag-primitive-spacing-xl);
   }
 
   &.rt-size-full {
-    padding: var(--space-6);
-    border-radius: var(--radius-3);
+    padding: var(--rag-primitive-spacing-xl);
+    border-radius: var(--rag-primitive-radius-md);
   }
 }
 
@@ -125,24 +125,24 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: var(--space-4);
-  gap: var(--space-4);
+  margin-bottom: var(--rag-primitive-spacing-lg);
+  gap: var(--rag-primitive-spacing-lg);
 }
 
 .rt-DialogTitle {
-  font-size: var(--font-size-5);
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--line-height-5);
-  color: var(--gray-12);
+  font-size: var(--rag-primitive-fontSize-xl);
+  font-weight: 600;
+  line-height: var(--rag-primitive-lineHeight-xl);
+  color: var(--rag-semantic-color-text-default);
   margin: 0;
   flex: 1;
 }
 
 .rt-DialogDescription {
-  color: var(--gray-11);
-  font-size: var(--font-size-2);
-  line-height: var(--line-height-3);
-  margin: 0 0 var(--space-5) 0;
+  color: var(--rag-semantic-color-text-subtle);
+  font-size: var(--rag-primitive-fontSize-sm);
+  line-height: var(--rag-primitive-lineHeight-md);
+  margin: 0 0 var(--rag-primitive-spacing-xl) 0;
 }
 
 .rt-DialogCloseButton {
@@ -153,20 +153,20 @@
   height: 24px;
   border: none;
   background: none;
-  border-radius: var(--radius-2);
-  color: var(--gray-10);
+  border-radius: var(--rag-primitive-radius-sm);
+  color: var(--rag-semantic-color-text-muted);
   cursor: pointer;
   transition: all 0.15s;
   flex-shrink: 0;
   outline: none;
 
   &:hover {
-    background-color: var(--gray-4);
-    color: var(--gray-12);
+    background-color: var(--rag-semantic-color-background-muted);
+    color: var(--rag-semantic-color-text-default);
   }
 
   &:focus-visible {
-    box-shadow: 0 0 0 2px var(--blue-9);
+    box-shadow: 0 0 0 2px var(--rag-semantic-color-primary-700);
   }
 
   lucide-angular {
@@ -177,7 +177,7 @@
 .rt-DialogBody {
   flex: 1;
   overflow-y: auto;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--rag-primitive-spacing-lg);
 
   &:last-child {
     margin-bottom: 0;
@@ -188,7 +188,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--space-3);
+  gap: var(--rag-primitive-spacing-md);
   margin-top: auto;
   
   &:empty {
@@ -248,39 +248,39 @@
   }
 
   .rt-DialogContent {
-    padding: var(--space-4);
+    padding: var(--rag-primitive-spacing-lg);
   }
 
   .rt-DialogHeader {
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--rag-primitive-spacing-md);
   }
 
   .rt-DialogTitle {
-    font-size: var(--font-size-4);
+    font-size: var(--rag-primitive-fontSize-lg);
   }
 }
 
 // Dark mode support
 @media (prefers-color-scheme: dark) {
   .rt-DialogContent {
-    background-color: var(--gray-dark-1);
-    border: 1px solid var(--gray-dark-4);
+    background-color: var(--rag-semantic-color-background-default);
+    border: 1px solid var(--rag-semantic-color-border-subtle);
   }
 
   .rt-DialogTitle {
-    color: var(--gray-dark-12);
+    color: var(--rag-semantic-color-text-default);
   }
 
   .rt-DialogDescription {
-    color: var(--gray-dark-11);
+    color: var(--rag-semantic-color-text-subtle);
   }
 
   .rt-DialogCloseButton {
-    color: var(--gray-dark-10);
+    color: var(--rag-semantic-color-text-muted);
 
     &:hover {
-      background-color: var(--gray-dark-4);
-      color: var(--gray-dark-12);
+      background-color: var(--rag-semantic-color-background-muted);
+      color: var(--rag-semantic-color-text-default);
     }
   }
 }
@@ -296,7 +296,7 @@
   .rt-DialogCloseButton {
     // Ensure close button is focusable
     &:focus-visible {
-      box-shadow: 0 0 0 2px var(--blue-9);
+      box-shadow: 0 0 0 2px var(--rag-semantic-color-primary-700);
     }
   }
 }

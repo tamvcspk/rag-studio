@@ -31,6 +31,7 @@ export class RagInput implements ControlValueAccessor {
   readonly value = input<string>('');
   
   // Modern Angular 20: Use output() instead of EventEmitter
+  readonly valueChange = output<string>();
   readonly onFocus = output<FocusEvent>();
   readonly onBlur = output<FocusEvent>();
   readonly onRightIconClick = output<void>();
@@ -63,6 +64,7 @@ export class RagInput implements ControlValueAccessor {
     const target = event.target as HTMLInputElement;
     this.internalValue.set(target.value);
     this.onChange(target.value);
+    this.valueChange.emit(target.value);
   }
 
   handleFocus(event: FocusEvent): void {

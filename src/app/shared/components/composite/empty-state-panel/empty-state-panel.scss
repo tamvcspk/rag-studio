@@ -1,57 +1,55 @@
-@use '../../../tokens/_design-tokens.generated.scss' as *;
-
 .empty-state-panel {
   .empty-state-content {
     text-align: center;
-    padding: $space-8 $space-6;
+    padding: 48px var(--rag-primitive-spacing-xl);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: $space-4;
+    gap: var(--rag-primitive-spacing-lg);
 
     .icon-container {
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: $space-2;
+      margin-bottom: var(--rag-primitive-spacing-sm);
 
       .empty-state-icon {
-        color: $gray-9;
+        color: var(--rag-semantic-color-text-muted);
       }
     }
 
     .empty-state-title {
       margin: 0;
-      font-size: $font-size-5;
-      font-weight: $font-weight-semibold;
-      color: $gray-12;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--rag-semantic-color-text-default);
     }
 
     .empty-state-description {
       margin: 0;
-      font-size: $font-size-3;
-      color: $gray-10;
-      line-height: $line-height-5;
+      font-size: var(--rag-primitive-fontSize-lg);
+      color: var(--rag-semantic-color-text-subtle);
+      line-height: var(--rag-primitive-lineHeight-xl);
       max-width: 400px;
     }
 
     .action-button {
-      margin-top: $space-2;
+      margin-top: var(--rag-primitive-spacing-sm);
     }
   }
 
   // Responsive adjustments
   @media (max-width: 640px) {
     .empty-state-content {
-      padding: $space-6 $space-4;
-      gap: $space-3;
+      padding: var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-lg);
+      gap: var(--rag-primitive-spacing-md);
 
       .empty-state-title {
-        font-size: $font-size-4;
+        font-size: 18px;
       }
 
       .empty-state-description {
-        font-size: $font-size-2;
+        font-size: var(--rag-primitive-fontSize-sm);
       }
     }
   }

@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 })
 export class RagSpinner {
   // Modern Angular 20: Use input() with proper typing
-  readonly size = input<'1' | '2' | '3'>('2');
+  readonly size = input<'sm' | 'md' | 'lg'>('md');
   readonly color = input<string>();
 
   // Modern Angular 20: Use computed for derived state

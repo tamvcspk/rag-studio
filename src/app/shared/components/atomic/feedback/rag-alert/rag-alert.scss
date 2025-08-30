@@ -1,6 +1,6 @@
 :host {
   display: block;
-  margin-bottom: var(--space-3, 12px);
+  margin-bottom: var(--rag-primitive-spacing-md);
 }
 
 :host:last-child {
@@ -8,19 +8,19 @@
 }
 
 .rt-Alert {
-  padding: var(--space-3, 12px) var(--space-4, 16px);
-  border-radius: var(--radius-3, 6px);
+  padding: var(--rag-primitive-spacing-md) var(--rag-primitive-spacing-lg);
+  border-radius: var(--rag-primitive-radius-md);
   border: 1px solid;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--space-3, 12px);
+  gap: var(--rag-primitive-spacing-md);
 }
 
 .rt-alert-content {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-3, 12px);
+  gap: var(--rag-primitive-spacing-md);
   flex: 1;
 }
 
@@ -34,12 +34,12 @@
 }
 
 .rt-alert-title {
-  font-weight: var(--font-weight-semibold, 600);
-  margin-bottom: var(--space-1, 4px);
+  font-weight: 600;
+  margin-bottom: var(--rag-primitive-spacing-xs);
 }
 
 .rt-alert-message {
-  line-height: var(--line-height-3, 24px);
+  line-height: var(--rag-primitive-lineHeight-lg);
 }
 
 .rt-alert-close {
@@ -48,41 +48,41 @@
 
 // Variant styles
 .rt-Alert.rt-variant-info {
-  background-color: #eff6ff;
-  border-color: #bfdbfe;
-  color: #1e40af;
+  background-color: var(--rag-semantic-color-info-50);
+  border-color: var(--rag-semantic-color-info-200);
+  color: var(--rag-semantic-color-info-800);
 
   .rt-alert-icon {
-    color: #3b82f6;
+    color: var(--rag-semantic-color-info-600);
   }
 }
 
 .rt-Alert.rt-variant-success {
-  background-color: #f0fdf4;
-  border-color: #bbf7d0;
-  color: #166534;
+  background-color: var(--rag-semantic-color-success-50);
+  border-color: var(--rag-semantic-color-success-200);
+  color: var(--rag-semantic-color-success-800);
 
   .rt-alert-icon {
-    color: #22c55e;
+    color: var(--rag-semantic-color-success-600);
   }
 }
 
 .rt-Alert.rt-variant-warning {
-  background-color: #fffbeb;
-  border-color: #fed7aa;
-  color: #92400e;
+  background-color: var(--rag-semantic-color-warning-50);
+  border-color: var(--rag-semantic-color-warning-200);
+  color: var(--rag-semantic-color-warning-800);
 
   .rt-alert-icon {
-    color: #f59e0b;
+    color: var(--rag-semantic-color-warning-600);
   }
 }
 
 .rt-Alert.rt-variant-error {
-  background-color: #fef2f2;
-  border-color: #fecaca;
-  color: #991b1b;
+  background-color: var(--rag-semantic-color-error-50);
+  border-color: var(--rag-semantic-color-error-200);
+  color: var(--rag-semantic-color-error-800);
 
   .rt-alert-icon {
-    color: #ef4444;
+    color: var(--rag-semantic-color-error-600);
   }
 }

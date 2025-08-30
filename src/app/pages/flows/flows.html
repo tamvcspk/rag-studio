@@ -1,1 +1,192 @@
-<span>Flows page - Coming soon</span>
+<div class="flows-page">
+  <!-- Error Alert -->
+  @if (error()) {
+    <rag-alert 
+      [variant]="'error'" 
+      [closable]="true"
+      (onClose)="dismissError()"
+      class="error-alert">
+      {{ error() }}
+    </rag-alert>
+  }
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-info">
+        <div class="page-icon">
+          <lucide-angular [name]="'git-branch'" [size]="32"></lucide-angular>
+        </div>
+        <div class="page-details">
+          <h1>Complete Flows</h1>
+          <p>End-to-end RAG processes combining tools, knowledge bases, and pipelines</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <rag-button 
+          [variant]="'outline'" 
+          [size]="'md'"
+          (click)="openDesigner()">
+          <lucide-angular [name]="'layout'" [size]="16"></lucide-angular>
+          Flow Designer
+        </rag-button>
+        <rag-button 
+          [variant]="'solid'" 
+          [size]="'md'"
+          (click)="openCreateWizard()">
+          <lucide-angular [name]="'plus'" [size]="16"></lucide-angular>
+          Create Flow
+        </rag-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="filters-section">
+    <div class="search-controls">
+      <div class="search-input">
+        <rag-input
+          [value]="searchQuery()"
+          [placeholder]="'Search flows by name, description, or tags...'"
+          (valueChange)="onSearchChange($event)">
+          <lucide-angular [name]="'search'" [size]="16" slot="prefix"></lucide-angular>
+        </rag-input>
+      </div>
+      
+      <div class="filter-controls">
+        <rag-select
+          [value]="statusFilter()"
+          [placeholder]="'Filter by status'"
+          (valueChange)="onStatusFilterChange($event)">
+          @for (option of statusOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </rag-select>
+      </div>
+    </div>
+
+    <div class="results-summary">
+      @if (loading()) {
+        <span class="loading-text">Loading flows...</span>
+      } @else {
+        <span class="results-count">
+          {{ filteredFlows().length }} 
+          {{ filteredFlows().length === 1 ? 'flow' : 'flows' }}
+          @if (flows().length !== filteredFlows().length) {
+            of {{ flows().length }} total
+          }
+        </span>
+        
+        @if (statusFilter() !== 'all') {
+          <rag-badge [variant]="'soft'" [color]="getStatusBadgeColor(statusFilter())">
+            {{ statusFilter() | titlecase }}
+          </rag-badge>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- Flows Content -->
+  <div class="flows-content">
+    @if (loading()) {
+      <!-- Loading State -->
+      <div class="loading-state">
+        <div class="loading-grid">
+          @for (item of [1,2,3,4]; track item) {
+            <div class="loading-card">
+              <div class="loading-skeleton"></div>
+            </div>
+          }
+        </div>
+      </div>
+    } @else if (filteredFlows().length === 0) {
+      <!-- Empty State -->
+      @if (flows().length === 0) {
+        <!-- No flows at all -->
+        <app-empty-state-panel
+          [icon]="'git-branch'"
+          [title]="'No flows created yet'"
+          [description]="'Flows combine multiple components into complete RAG processes. Create your first flow to get started.'"
+          [actionLabel]="'Create Your First Flow'"
+          (action)="openCreateWizard()">
+        </app-empty-state-panel>
+      } @else {
+        <!-- No results for current filters -->
+        <app-empty-state-panel
+          [icon]="'filter-x'"
+          [title]="'No flows match your filters'"
+          [description]="'Try adjusting your search query or status filter to find flows.'"
+          [actionLabel]="'Clear Filters'"
+          (action)="clearFilters()">
+        </app-empty-state-panel>
+      }
+    } @else {
+      <!-- Flows Grid -->
+      <div class="flows-grid">
+        @for (flow of filteredFlows(); track flow.id) {
+          <app-flow-card
+            [flow]="flow"
+            (onEdit)="onFlowEdit($event)"
+            (onDelete)="onFlowDelete($event)"
+            (onExecute)="onFlowExecute($event)"
+            (onPause)="onFlowPause($event)"
+            (onResume)="onFlowResume($event)"
+            (onDuplicate)="onFlowDuplicate($event)"
+            (onExport)="onFlowExport($event)">
+          </app-flow-card>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Quick Stats -->
+  @if (flows().length > 0 && !loading()) {
+    <div class="quick-stats">
+      <div class="stat-item">
+        <lucide-angular [name]="'play-circle'" [size]="16"></lucide-angular>
+        <span class="stat-value">{{ activeFlowsCount() }}</span>
+        <span class="stat-label">Active</span>
+      </div>
+      <div class="stat-item">
+        <lucide-angular [name]="'pause-circle'" [size]="16"></lucide-angular>
+        <span class="stat-value">{{ pausedFlowsCount() }}</span>
+        <span class="stat-label">Paused</span>
+      </div>
+      <div class="stat-item">
+        <lucide-angular [name]="'file-edit'" [size]="16"></lucide-angular>
+        <span class="stat-value">{{ draftFlowsCount() }}</span>
+        <span class="stat-label">Drafts</span>
+      </div>
+      <div class="stat-item">
+        <lucide-angular [name]="'x-circle'" [size]="16"></lucide-angular>
+        <span class="stat-value">{{ errorFlowsCount() }}</span>
+        <span class="stat-label">Errors</span>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Create Flow Wizard Modal -->
+@if (showCreateWizard()) {
+  <div class="modal-overlay" (click)="closeCreateWizard()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <app-create-flow-wizard
+        (onFlowCreated)="onFlowCreated($event)"
+        (onCancel)="onWizardCancel()">
+      </app-create-flow-wizard>
+    </div>
+  </div>
+}
+
+<!-- Flow Designer Modal -->
+@if (showDesigner()) {
+  <div class="modal-overlay" (click)="closeDesigner()">
+    <div class="modal-content designer-modal" (click)="$event.stopPropagation()">
+      <app-flow-designer
+        [flow]="selectedFlow() || undefined"
+        (onSave)="onFlowSaved($event)"
+        (onCancel)="onDesignerCancel()">
+      </app-flow-designer>
+    </div>
+  </div>
+}
