@@ -1,22 +1,22 @@
 import { Component, input, output, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
+import { RagIcon } from '../../../atomic/primitives/rag-icon/rag-icon';
 
 export interface TabItem {
   id: string;
   label: string;
-  icon?: string;
+  icon?: any; // Icon component, not string
   disabled?: boolean;
 }
 
 @Component({
   selector: 'rag-tabs',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, RagIcon],
   templateUrl: './rag-tabs.html',
   styleUrl: './rag-tabs.scss'
 })
-export class RagTabsComponent {
+export class RagTabs {
   readonly tabs = input.required<TabItem[]>();
   readonly activeTab = input<string | null>(null);
   readonly size = input<'sm' | 'md' | 'lg'>('md');

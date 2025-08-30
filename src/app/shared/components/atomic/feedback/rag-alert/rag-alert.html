@@ -1,6 +1,6 @@
 <div [class]="alertClasses()">
   <div class="rt-alert-content">
-    <rag-icon [name]="displayIcon()" size="sm" class="rt-alert-icon" />
+    <rag-icon [img]="displayIcon()" size="sm" class="rt-alert-icon" />
     <div class="rt-alert-body">
       @if (title()) {
         <div class="rt-alert-title">{{ title() }}</div>
@@ -18,7 +18,7 @@
       (onClick)="handleClose()"
       aria-label="Close alert"
     >
-      <rag-icon name="x" size="xs" />
+      <rag-icon [img]="XIcon" size="xs" />
     </rag-button>
   }
 </div>

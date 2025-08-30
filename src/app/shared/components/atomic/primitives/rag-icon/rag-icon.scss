@@ -12,28 +12,57 @@
   flex-shrink: 0;
 }
 
-// Size variants
+// Size variants using archetype system
 .rag-icon--xs {
-  width: 12px;
-  height: 12px;
+  width: var(--rag-semantic-component-icon-size-xs);
+  height: var(--rag-semantic-component-icon-size-xs);
 }
 
 .rag-icon--sm {
-  width: 16px;
-  height: 16px;
+  width: var(--rag-semantic-component-icon-size-sm);
+  height: var(--rag-semantic-component-icon-size-sm);
 }
 
 .rag-icon--md {
-  width: 20px;
-  height: 20px;
+  width: var(--rag-semantic-component-icon-size-md);
+  height: var(--rag-semantic-component-icon-size-md);
 }
 
 .rag-icon--lg {
-  width: 24px;
-  height: 24px;
+  width: var(--rag-semantic-component-icon-size-lg);
+  height: var(--rag-semantic-component-icon-size-lg);
 }
 
 .rag-icon--xl {
-  width: 32px;
-  height: 32px;
+  width: var(--rag-semantic-component-icon-size-xl);
+  height: var(--rag-semantic-component-icon-size-xl);
+}
+
+// Color variants using archetype system
+.rag-icon--default {
+  color: var(--rag-semantic-component-icon-color-default);
+}
+
+.rag-icon--subtle {
+  color: var(--rag-semantic-component-icon-color-subtle);
+}
+
+.rag-icon--muted {
+  color: var(--rag-semantic-component-icon-color-muted);
+}
+
+.rag-icon--primary {
+  color: var(--rag-semantic-component-icon-color-primary);
+}
+
+.rag-icon--success {
+  color: var(--rag-semantic-component-icon-color-success);
+}
+
+.rag-icon--warning {
+  color: var(--rag-semantic-component-icon-color-warning);
+}
+
+.rag-icon--danger {
+  color: var(--rag-semantic-component-icon-color-danger);
 }

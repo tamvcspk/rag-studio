@@ -1,5 +1,6 @@
 import { Component, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Info, CheckCircle, AlertTriangle, XCircle, X } from 'lucide-angular';
 import { RagButton, RagIcon } from '../../primitives';
 
 @Component({
@@ -14,7 +15,7 @@ export class RagAlert {
   readonly variant = input<'info' | 'success' | 'warning' | 'error'>('info');
   readonly title = input<string>();
   readonly closable = input(false);
-  readonly icon = input<string>();
+  readonly icon = input<any>();
   
   // Modern Angular 20: Use output() instead of EventEmitter
   readonly onClose = output<void>();
@@ -27,15 +28,18 @@ export class RagAlert {
 
   readonly defaultIcon = computed(() => {
     switch (this.variant()) {
-      case 'info': return 'info';
-      case 'success': return 'check-circle';
-      case 'warning': return 'alert-triangle';
-      case 'error': return 'x-circle';
-      default: return 'info';
+      case 'info': return Info;
+      case 'success': return CheckCircle;
+      case 'warning': return AlertTriangle;
+      case 'error': return XCircle;
+      default: return Info;
     }
   });
 
   readonly displayIcon = computed(() => this.icon() || this.defaultIcon());
+
+  // Icon constants
+  readonly XIcon = X;
 
   handleClose(): void {
     this.onClose.emit();

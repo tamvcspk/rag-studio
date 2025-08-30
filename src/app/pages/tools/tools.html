@@ -4,7 +4,7 @@
     <div class="header-content">
       <div class="header-info">
         <div class="title-section">
-          <lucide-angular [img]="Wrench" size="24" class="page-icon"></lucide-angular>
+          <rag-icon [img]="WrenchIcon" size="lg" class="page-icon" />
           <h1 class="page-title">Dynamic MCP Tools</h1>
         </div>
         <p class="page-description">
@@ -16,7 +16,7 @@
         variant="solid" 
         size="md"
         (click)="onCreateTool()">
-        <lucide-angular [img]="Plus" size="16"></lucide-angular>
+        <rag-icon [img]="PlusIcon" size="sm" />
         Create Tool
       </rag-button>
     </div>
@@ -68,7 +68,7 @@
     </div>
     
     <div class="filter-container">
-      <lucide-angular [img]="Filter" size="16" class="filter-icon"></lucide-angular>
+      <rag-icon [img]="FilterIcon" size="sm" class="filter-icon" />
       <rag-select
         [options]="statusFilterOptions"
         [ngModel]="statusFilter()"
@@ -84,7 +84,7 @@
     @if (filteredTools().length === 0 && searchQuery() === '' && statusFilter() === 'ALL') {
       <!-- Empty state - no tools created yet -->
       <div class="empty-state">
-        <lucide-angular [img]="Wrench" size="48" class="empty-icon"></lucide-angular>
+        <rag-icon [img]="WrenchIcon" size="xl" class="empty-icon" />
         <h3 class="empty-title">No tools created yet</h3>
         <p class="empty-description">
           Create your first dynamic MCP tool to get started with RAG-powered integrations
@@ -93,14 +93,14 @@
           variant="solid" 
           size="md"
           (click)="onCreateTool()">
-          <lucide-angular [img]="Plus" size="16"></lucide-angular>
+          <rag-icon [img]="PlusIcon" size="sm" />
           Create Your First Tool
         </rag-button>
       </div>
     } @else if (filteredTools().length === 0) {
       <!-- No results for current filters -->
       <div class="no-results">
-        <lucide-angular [img]="Search" size="48" class="no-results-icon"></lucide-angular>
+        <rag-icon [img]="SearchIcon" size="xl" class="no-results-icon" />
         <h3 class="no-results-title">No tools found</h3>
         <p class="no-results-description">
           Try adjusting your search or filter criteria

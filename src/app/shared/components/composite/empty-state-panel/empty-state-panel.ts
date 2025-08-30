@@ -1,8 +1,8 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
+import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
 
-type LucideIcon = any; // Type for Lucide icons
+type IconComponent = any; // Type for icon components
 import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 
@@ -11,7 +11,7 @@ import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
   standalone: true,
   imports: [
     CommonModule,
-    LucideAngularModule,
+    RagIcon,
     RagCard,
     RagButton
   ],
@@ -19,7 +19,7 @@ import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
   styleUrl: './empty-state-panel.scss'
 })
 export class EmptyStatePanelComponent {
-  readonly icon = input.required<LucideIcon>();
+  readonly icon = input.required<IconComponent>();
   readonly title = input.required<string>();
   readonly description = input<string>();
   readonly actionLabel = input<string>();

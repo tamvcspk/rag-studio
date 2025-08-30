@@ -11,16 +11,16 @@
       [color]="getBadgeColor(pipeline().status)"
       class="pipeline-card__status">
       @if (pipeline().status === 'running') {
-        <lucide-icon [img]="CheckCircleIcon" class="status-icon active"></lucide-icon>
+        <rag-icon [img]="CheckCircleIcon" class="status-icon active"></rag-icon>
         RUNNING
       } @else if (pipeline().status === 'scheduled') {
-        <lucide-icon [img]="ClockIcon" class="status-icon"></lucide-icon>
+        <rag-icon [img]="ClockIcon" class="status-icon"></rag-icon>
         SCHEDULED
       } @else if (pipeline().status === 'error') {
-        <lucide-icon [img]="ClockIcon" class="status-icon error"></lucide-icon>
+        <rag-icon [img]="ClockIcon" class="status-icon error"></rag-icon>
         ERROR
       } @else {
-        <lucide-icon [img]="ClockIcon" class="status-icon"></lucide-icon>
+        <rag-icon [img]="ClockIcon" class="status-icon"></rag-icon>
         {{ pipeline().status | titlecase }}
       }
     </rag-badge>
@@ -79,7 +79,7 @@
         variant="outline" 
         size="sm" 
         (onClick)="onPauseClick()">
-        <lucide-icon [img]="PauseIcon"></lucide-icon>
+        <rag-icon [img]="PauseIcon"></rag-icon>
         Pause
       </rag-button>
     } @else {
@@ -87,7 +87,7 @@
         variant="outline" 
         size="sm" 
         (onClick)="onPlayClick()">
-        <lucide-icon [img]="PlayIcon"></lucide-icon>
+        <rag-icon [img]="PlayIcon"></rag-icon>
         Run Now
       </rag-button>
     }
@@ -96,7 +96,7 @@
       variant="ghost" 
       size="sm" 
       (onClick)="onEditClick()">
-      <lucide-icon [img]="EditIcon"></lucide-icon>
+      <rag-icon [img]="EditIcon"></rag-icon>
       Edit
     </rag-button>
 
@@ -105,7 +105,7 @@
         variant="ghost" 
         size="sm" 
         (onClick)="onScheduleClick()">
-        <lucide-icon [img]="CalendarIcon"></lucide-icon>
+        <rag-icon [img]="CalendarIcon"></rag-icon>
         Schedule
       </rag-button>
     }

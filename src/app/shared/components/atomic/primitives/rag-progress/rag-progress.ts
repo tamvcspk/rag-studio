@@ -13,14 +13,15 @@ export class RagProgress {
   readonly value = input(0);
   readonly max = input(100);
   readonly size = input<'sm' | 'md' | 'lg'>('md');
-  readonly color = input<'blue' | 'green' | 'amber' | 'red'>('blue');
+  readonly variant = input<'primary' | 'success' | 'warning' | 'danger'>('primary');
   readonly indeterminate = input(false);
+  readonly showLabel = input(false);
 
   // Modern Angular 20: Use computed for derived state
   readonly progressClasses = computed(() => [
     'rt-Progress',
     `rt-size-${this.size()}`,
-    `rt-color-${this.color()}`,
+    `rt-variant-${this.variant()}`,
     this.indeterminate() ? 'rt-indeterminate' : ''
   ].filter(Boolean).join(' '));
 
@@ -32,4 +33,9 @@ export class RagProgress {
   readonly indicatorStyles = computed(() => ({
     width: `${this.progressPercentage()}%`
   }));
+
+  readonly labelText = computed(() => {
+    if (!this.showLabel() || this.indeterminate()) return '';
+    return `${Math.round(this.progressPercentage())}%`;
+  });
 }

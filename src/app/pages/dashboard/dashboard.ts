@@ -6,7 +6,8 @@ import { RecentActivityLog } from '../../shared/components/composite/recent-acti
 import { McpServerStatus } from '../../shared/components/composite/mcp-server-status/mcp-server-status';
 import { RagAlert } from '../../shared/components/atomic/feedback/rag-alert/rag-alert';
 import { RagCard } from '../../shared/components/semantic/data-display/rag-card/rag-card';
-import { LucideAngularModule } from 'lucide-angular';
+import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
+import { Loader2 } from 'lucide-angular';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +19,7 @@ import { LucideAngularModule } from 'lucide-angular';
     McpServerStatus,
     RagAlert,
     RagCard,
-    LucideAngularModule
+    RagIcon
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
@@ -26,6 +27,9 @@ import { LucideAngularModule } from 'lucide-angular';
 export class Dashboard implements OnInit {
   readonly showMaintenanceAlert = signal(true);
   readonly isLoading = signal(false);
+
+  // Icon components
+  readonly Loader2Icon = Loader2;
 
   ngOnInit(): void {
     // Simulate initial loading

@@ -6,7 +6,6 @@
 .rt-Progress {
   position: relative;
   width: 100%;
-  background-color: var(--rag-semantic-color-background-muted);
   border-radius: var(--rag-primitive-radius-sm);
   overflow: hidden;
 }
@@ -25,26 +24,41 @@
 
 .rt-ProgressIndicator {
   height: 100%;
-  background-color: var(--rag-semantic-color-primary-500);
   transition: width 0.3s ease;
   border-radius: inherit;
 }
 
-// Color variants
-.rt-Progress.rt-color-blue .rt-ProgressIndicator {
-  background-color: var(--rag-semantic-color-primary-500);
+// Variant styles using archetype system
+.rt-Progress.rt-variant-primary {
+  background: var(--rag-semantic-component-progress-primary-background);
+
+  .rt-ProgressIndicator {
+    background: var(--rag-semantic-component-progress-primary-fill);
+  }
 }
 
-.rt-Progress.rt-color-green .rt-ProgressIndicator {
-  background-color: var(--rag-semantic-color-success-800);
+.rt-Progress.rt-variant-success {
+  background: var(--rag-semantic-component-progress-success-background);
+
+  .rt-ProgressIndicator {
+    background: var(--rag-semantic-component-progress-success-fill);
+  }
 }
 
-.rt-Progress.rt-color-amber .rt-ProgressIndicator {
-  background-color: var(--rag-semantic-color-warning-700);
+.rt-Progress.rt-variant-warning {
+  background: var(--rag-semantic-component-progress-warning-background);
+
+  .rt-ProgressIndicator {
+    background: var(--rag-semantic-component-progress-warning-fill);
+  }
 }
 
-.rt-Progress.rt-color-red .rt-ProgressIndicator {
-  background-color: var(--rag-semantic-color-error-700);
+.rt-Progress.rt-variant-danger {
+  background: var(--rag-semantic-component-progress-danger-background);
+
+  .rt-ProgressIndicator {
+    background: var(--rag-semantic-component-progress-danger-fill);
+  }
 }
 
 // Indeterminate animation

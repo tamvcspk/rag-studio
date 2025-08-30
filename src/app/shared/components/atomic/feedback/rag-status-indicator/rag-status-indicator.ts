@@ -1,5 +1,6 @@
 import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Circle, Loader, CheckCircle, XCircle, AlertTriangle } from 'lucide-angular';
 import { RagIcon } from '../../primitives';
 
 @Component({
@@ -28,12 +29,12 @@ export class RagStatusIndicator {
 
   readonly statusIcon = computed(() => {
     switch (this.status()) {
-      case 'idle': return 'circle';
-      case 'loading': return 'loader';
-      case 'success': return 'check-circle';
-      case 'error': return 'x-circle';
-      case 'warning': return 'alert-triangle';
-      default: return 'circle';
+      case 'idle': return Circle;
+      case 'loading': return Loader;
+      case 'success': return CheckCircle;
+      case 'error': return XCircle;
+      case 'warning': return AlertTriangle;
+      default: return Circle;
     }
   });
 

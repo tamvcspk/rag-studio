@@ -40,7 +40,7 @@
     font-size: var(--rag-primitive-fontSize-sm);
     line-height: var(--rag-primitive-lineHeight-md);
 
-    lucide-icon {
+    rag-icon {
       flex-shrink: 0;
       color: var(--rag-semantic-color-info-600);
     }
@@ -56,16 +56,16 @@
     align-items: center;
     gap: var(--rag-primitive-spacing-sm);
     padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
-    background-color: var(--rag-semantic-color-error-100);
-    border: 1px solid var(--rag-semantic-color-error-300);
+    background-color: var(--rag-semantic-color-danger-100);
+    border: 1px solid var(--rag-semantic-color-danger-300);
     border-radius: var(--rag-primitive-radius-md);
-    color: var(--rag-semantic-color-error-700);
+    color: var(--rag-semantic-color-danger-700);
     font-size: var(--rag-primitive-fontSize-sm);
     line-height: var(--rag-primitive-lineHeight-md);
 
-    lucide-icon {
+    rag-icon {
       flex-shrink: 0;
-      color: var(--rag-semantic-color-error-700);
+      color: var(--rag-semantic-color-danger-700);
     }
   }
 
@@ -87,9 +87,9 @@
     font-weight: 500;
     color: var(--rag-semantic-color-text-subtle);
 
-    lucide-icon {
+    rag-icon {
       flex-shrink: 0;
-      color: var(--rag-primitive-color-gray-800);
+      color: var(--rag-semantic-color-text-subtle);
     }
   }
 

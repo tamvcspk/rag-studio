@@ -1,0 +1,128 @@
+// RagTabNavigation - Navigation-specific tab component
+// Optimized for app navigation, using design token archetypes
+
+.rt-TabNav {
+  width: 100%;
+}
+
+.rt-TabNavList {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  list-style: none;
+
+  // Primary variant (default) - with border and background
+  &.rt-variant-primary {
+    background: var(--rag-semantic-component-tabs-container-background);
+    border-radius: var(--rag-semantic-component-tabs-container-borderRadius);
+    padding: var(--rag-semantic-component-tabs-container-padding);
+    gap: var(--rag-semantic-component-tabs-container-gap);
+  }
+
+  // Secondary variant - border bottom only
+  &.rt-variant-secondary {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--rag-semantic-color-border-subtle);
+    border-radius: 0;
+    padding: 0;
+    gap: var(--rag-primitive-spacing-sm);
+  }
+
+  // Minimal variant - clean, no background or borders
+  &.rt-variant-minimal {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    gap: var(--rag-primitive-spacing-md);
+  }
+
+  &.rt-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.rt-TabNavItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rag-primitive-spacing-sm);
+  outline: none;
+  position: relative;
+  white-space: nowrap;
+
+  // Base tab trigger styles
+  background: var(--rag-semantic-component-tabs-trigger-default-background);
+  color: var(--rag-semantic-component-tabs-trigger-default-color);
+  padding: var(--rag-semantic-component-tabs-trigger-default-padding);
+  border-radius: var(--rag-semantic-component-tabs-trigger-default-borderRadius);
+  font-size: var(--rag-semantic-component-tabs-trigger-default-fontSize);
+  font-weight: var(--rag-semantic-component-tabs-trigger-default-fontWeight);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  // Hover state
+  &:hover:not(.rt-disabled):not(.rt-active) {
+    color: var(--rag-semantic-component-tabs-trigger-hover-color);
+  }
+
+  // Active state
+  &.rt-active {
+    background: var(--rag-semantic-component-tabs-trigger-active-background);
+    color: var(--rag-semantic-component-tabs-trigger-active-color);
+    box-shadow: var(--rag-semantic-component-tabs-trigger-active-boxShadow);
+  }
+
+  // Disabled state
+  &.rt-disabled {
+    opacity: var(--rag-semantic-component-tabs-trigger-disabled-opacity);
+    cursor: var(--rag-semantic-component-tabs-trigger-disabled-cursor);
+    pointer-events: none;
+  }
+
+  // Focus state
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--rag-semantic-color-background-default), 0 0 0 4px var(--rag-semantic-color-primary-500);
+  }
+
+  // Icon styling
+  rag-icon {
+    flex-shrink: 0;
+    opacity: 0.8;
+  }
+
+  &.rt-active rag-icon {
+    opacity: 1;
+  }
+
+  // Label styling
+  &__label {
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: 1.2;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .rt-TabNavList {
+    &.rt-variant-primary,
+    &.rt-variant-secondary {
+      padding: var(--rag-primitive-spacing-xs);
+      gap: var(--rag-primitive-spacing-xs);
+    }
+  }
+
+  .rt-TabNavItem {
+    padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+    font-size: var(--rag-primitive-fontSize-xs);
+
+    &__label {
+      display: none; // Hide labels on mobile, show icons only
+    }
+  }
+}

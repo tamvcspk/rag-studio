@@ -1,7 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Plus, Workflow } from 'lucide-angular';
+import { Plus, Workflow } from 'lucide-angular';
 import { RagButton } from '../../shared/components/atomic/primitives/rag-button/rag-button';
+import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
 import { EmptyStatePanelComponent } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
 import { PipelineCard, type Pipeline } from '../../shared/components/composite/pipeline-card/pipeline-card';
 
@@ -10,8 +11,8 @@ import { PipelineCard, type Pipeline } from '../../shared/components/composite/p
   standalone: true,
   imports: [
     CommonModule,
-    LucideAngularModule,
     RagButton,
+    RagIcon,
     EmptyStatePanelComponent,
     PipelineCard
   ],

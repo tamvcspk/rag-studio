@@ -1,13 +1,27 @@
 import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
-import { LucideAngularModule, Database, LayoutDashboard, Wrench, BookOpen, Workflow, GitBranch, Settings, Server, AlertCircle } from 'lucide-angular';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { RagIcon, RagButton, RagBadge } from '../../components/atomic';
+import { RagTabNavigation, type TabNavItem } from '../../components/semantic/navigation/rag-tab-navigation/rag-tab-navigation';
 import { filter } from 'rxjs';
+import { 
+  LayoutDashboardIcon,
+  WrenchIcon,
+  BookOpenIcon,
+  WorkflowIcon,
+  GitBranchIcon,
+  SettingsIcon,
+  ServerIcon,
+  ServerOffIcon,
+  AlertCircleIcon,
+  Database,
+  Settings
+} from 'lucide-angular';
 
 interface NavItem {
   path: string;
   title: string;
-  icon: string;
+  icon: any; // Lucide icon component
 }
 
 @Component({
@@ -16,51 +30,80 @@ interface NavItem {
   imports: [
     CommonModule,
     RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
-    LucideAngularModule
+    RagIcon,
+    RagButton,
+    RagBadge,
+    RagTabNavigation
   ],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss'
 })
 export class MainLayoutComponent {
-  readonly Database = Database;
-  readonly LayoutDashboard = LayoutDashboard;
-  readonly Wrench = Wrench;
-  readonly BookOpen = BookOpen;
-  readonly Workflow = Workflow;
-  readonly GitBranch = GitBranch;
-  readonly Settings = Settings;
-  readonly Server = Server;
-  readonly AlertCircle = AlertCircle;
-
   readonly navItems: NavItem[] = [
-    { path: '/dashboard', title: 'Dashboard', icon: 'layout-dashboard' },
-    { path: '/tools', title: 'Tools', icon: 'wrench' },
-    { path: '/knowledge-bases', title: 'Knowledge Bases', icon: 'book-open' },
-    { path: '/pipelines', title: 'Pipelines', icon: 'workflow' },
-    { path: '/flows', title: 'Flows', icon: 'git-branch' },
-    { path: '/settings', title: 'Settings', icon: 'settings' }
+    { path: '/dashboard', title: 'Dashboard', icon: LayoutDashboardIcon },
+    { path: '/tools', title: 'Tools', icon: WrenchIcon },
+    { path: '/knowledge-bases', title: 'Knowledge Bases', icon: BookOpenIcon },
+    { path: '/pipelines', title: 'Pipelines', icon: WorkflowIcon },
+    { path: '/flows', title: 'Flows', icon: GitBranchIcon },
+    { path: '/settings', title: 'Settings', icon: SettingsIcon }
   ];
 
+  // Icon constants
+  readonly DatabaseIcon = Database;
+  readonly SettingsIcon = Settings;
+
   private readonly mcpStatus = signal<'active' | 'inactive' | 'error'>('active');
+  private readonly currentRoute = signal<string>('');
+
+  // Convert nav items to tab nav items for RagTabNavigation component
+  readonly tabItems = computed<TabNavItem[]>(() => 
+    this.navItems.map(item => ({
+      id: item.path,
+      label: item.title,
+      icon: item.icon,
+      routerLink: item.path,
+      exact: item.path === '/dashboard' // Exact matching for dashboard
+    }))
+  );
+
+  // Get current active tab based on router
+  readonly currentActiveTab = computed(() => this.currentRoute());
 
   readonly mcpStatusText = computed(() => {
     const status = this.mcpStatus();
     return status === 'active' ? 'MCP Active' : status === 'inactive' ? 'MCP Inactive' : 'MCP Error';
   });
 
-  readonly mcpStatusClass = computed(() => {
+  readonly mcpStatusColor = computed(() => {
     const status = this.mcpStatus();
-    return status === 'active' ? 'status-active' : status === 'inactive' ? 'status-inactive' : 'status-error';
+    return status === 'active' ? 'green' : status === 'inactive' ? 'gray' : 'red';
+  });
+
+  readonly mcpStatusIcon = computed(() => {
+    const status = this.mcpStatus();
+    return status === 'active' ? ServerIcon : status === 'inactive' ? ServerOffIcon : AlertCircleIcon;
   });
 
   constructor(private router: Router) {
-    // Listen to route changes for any future navigation logic
+    // Listen to route changes to update active tab
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
-      // Future: Update page title or other navigation-related logic
+    ).subscribe((event: NavigationEnd) => {
+      this.currentRoute.set(event.url);
     });
+
+    // Initialize current route
+    this.currentRoute.set(this.router.url);
+  }
+
+  onTabChange(item: TabNavItem): void {
+    this.router.navigate([item.id]);
+  }
+
+  onTabIndexChange(index: number): void {
+    const item = this.tabItems()[index];
+    if (item) {
+      this.router.navigate([item.id]);
+    }
   }
 }

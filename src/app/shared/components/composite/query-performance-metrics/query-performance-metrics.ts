@@ -2,7 +2,8 @@ import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
-import { LucideAngularModule } from 'lucide-angular';
+import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
+import { RefreshCw } from 'lucide-angular';
 
 export interface PerformanceMetrics {
   p50Latency: string;
@@ -14,11 +15,14 @@ export interface PerformanceMetrics {
 
 @Component({
   selector: 'rag-query-performance-metrics',
-  imports: [CommonModule, RagCard, RagButton, LucideAngularModule],
+  imports: [CommonModule, RagCard, RagButton, RagIcon],
   templateUrl: './query-performance-metrics.html',
   styleUrl: './query-performance-metrics.scss'
 })
 export class QueryPerformanceMetrics {
+  // Icon components
+  readonly RefreshCwIcon = RefreshCw;
+  
   // Mock data - in real app this would come from a service
   readonly metrics = signal<PerformanceMetrics>({
     p50Latency: '124ms',

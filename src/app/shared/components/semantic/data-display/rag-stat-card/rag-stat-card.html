@@ -2,7 +2,7 @@
   <div class="rag-stat-card__header">
     <span class="rag-stat-card__label">{{ data().label }}</span>
     @if (data().icon) {
-      <lucide-icon [name]="data().icon" class="rag-stat-card__icon" />
+      <rag-icon [img]="data().icon" class="rag-stat-card__icon" />
     }
   </div>
   
@@ -11,11 +11,11 @@
   @if (data().change) {
     <div [class]="trendClasses()">
       @if (data().change!.trend === 'up') {
-        <lucide-icon name="trending-up" size="14" />
+        <rag-icon [img]="TrendingUpIcon" size="sm" />
       } @else if (data().change!.trend === 'down') {
-        <lucide-icon name="trending-down" size="14" />
+        <rag-icon [img]="TrendingDownIcon" size="sm" />
       } @else {
-        <lucide-icon name="minus" size="14" />
+        <rag-icon [img]="MinusIcon" size="sm" />
       }
       <span>{{ data().change!.value }}</span>
     </div>

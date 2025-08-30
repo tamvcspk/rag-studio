@@ -1,21 +1,25 @@
 import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
+import { Copy } from 'lucide-angular';
+import { RagIcon } from '../../../atomic';
 
 export interface KeyValuePair {
   key: string;
   value: string | number | boolean;
-  icon?: string;
+  icon?: any; // Now accepts icon component instead of string
   copyable?: boolean;
 }
 
 @Component({
   selector: 'rag-key-value',
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, RagIcon],
   templateUrl: './rag-key-value.html',
   styleUrl: './rag-key-value.scss'
 })
 export class RagKeyValue {
+  // Icon constants
+  readonly CopyIcon = Copy;
+  
   readonly data = input.required<KeyValuePair>();
   readonly orientation = input<'horizontal' | 'vertical'>('horizontal');
   readonly variant = input<'default' | 'compact' | 'highlighted'>('default');

@@ -22,11 +22,11 @@
         >
           <div class="rt-ContextMenuItemContent">
             @if (item.icon) {
-              <lucide-angular
-                [name]="item.icon"
-                size="16"
+              <rag-icon
+                [img]="item.icon"
+                size="sm"
                 class="rt-ContextMenuItemIcon"
-              ></lucide-angular>
+              ></rag-icon>
             }
             
             <span class="rt-ContextMenuItemLabel">{{ item.label }}</span>
@@ -36,11 +36,11 @@
             }
             
             @if (item.submenu) {
-              <lucide-angular
-                name="chevron-right"
-                size="14"
+              <rag-icon
+                [img]="chevronRight()"
+                size="xs"
                 class="rt-ContextMenuItemSubmenuArrow"
-              ></lucide-angular>
+              ></rag-icon>
             }
           </div>
 
@@ -61,11 +61,11 @@
                   >
                     <div class="rt-ContextMenuItemContent">
                       @if (subItem.icon) {
-                        <lucide-angular
-                          [name]="subItem.icon"
-                          size="16"
+                        <rag-icon
+                          [img]="subItem.icon"
+                          size="sm"
                           class="rt-ContextMenuItemIcon"
-                        ></lucide-angular>
+                        ></rag-icon>
                       }
                       
                       <span class="rt-ContextMenuItemLabel">{{ subItem.label }}</span>

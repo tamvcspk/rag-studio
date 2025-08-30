@@ -1,6 +1,7 @@
 import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
+import { CheckCircle, AlertTriangle, XCircle } from 'lucide-angular';
+import { RagIcon } from '../../../atomic';
 
 export interface PerformanceMetric {
   label: string;
@@ -16,11 +17,16 @@ export interface PerformanceMetric {
 
 @Component({
   selector: 'rag-metric-display',
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, RagIcon],
   templateUrl: './rag-metric-display.html',
   styleUrl: './rag-metric-display.scss'
 })
 export class RagMetricDisplay {
+  // Icon constants
+  readonly CheckCircleIcon = CheckCircle;
+  readonly AlertTriangleIcon = AlertTriangle;
+  readonly XCircleIcon = XCircle;
+  
   readonly metric = input.required<PerformanceMetric>();
   readonly showTarget = input<boolean>(true);
   readonly variant = input<'default' | 'compact' | 'detailed'>('default');

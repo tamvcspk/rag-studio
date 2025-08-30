@@ -1,7 +1,8 @@
 import { Component, input, output, forwardRef, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { LucideAngularModule } from 'lucide-angular';
+import { Info, AlertCircle, HelpCircle, Clock } from 'lucide-angular';
+import { RagIcon } from '../../../atomic/primitives/rag-icon/rag-icon';
 import { RagInput, RagSelect } from '../../../atomic';
 
 export type CronPreset = 'custom' | 'hourly' | 'daily' | 'weekly' | 'monthly';
@@ -15,7 +16,7 @@ export interface CronValue {
 @Component({
   selector: 'rag-cron-input',
   standalone: true,
-  imports: [CommonModule, RagInput, RagSelect, LucideAngularModule],
+  imports: [CommonModule, RagInput, RagSelect, RagIcon],
   templateUrl: './rag-cron-input.html',
   styleUrl: './rag-cron-input.scss',
   providers: [
@@ -27,6 +28,12 @@ export interface CronValue {
   ]
 })
 export class RagCronInput implements ControlValueAccessor {
+  // Icon constants
+  readonly InfoIcon = Info;
+  readonly AlertCircleIcon = AlertCircle;
+  readonly HelpCircleIcon = HelpCircle;
+  readonly ClockIcon = Clock;
+  
   // Modern Angular 20: Use input() with proper typing
   readonly size = input<'sm' | 'md' | 'lg'>('md');
   readonly disabled = input(false);

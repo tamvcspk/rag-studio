@@ -55,11 +55,11 @@
   }
 
   &.rt-error {
-    border-color: var(--rag-semantic-color-error-700);
+    border-color: var(--rag-semantic-color-danger-700);
 
     &:focus {
-      border-color: var(--rag-semantic-color-error-700);
-      box-shadow: 0 0 0 1px var(--rag-semantic-color-error-700);
+      border-color: var(--rag-semantic-color-danger-700);
+      box-shadow: 0 0 0 1px var(--rag-semantic-color-danger-700);
     }
   }
 

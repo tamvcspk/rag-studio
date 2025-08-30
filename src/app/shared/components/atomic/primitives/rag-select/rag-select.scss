@@ -21,9 +21,9 @@
   padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
   font-size: var(--rag-primitive-fontSize-sm);
   line-height: var(--rag-primitive-lineHeight-sm);
-  color: var(--rag-semantic-color-text-default);
-  background-color: white;
-  border: 1px solid var(--rag-semantic-color-border-subtle);
+  background: var(--rag-semantic-component-select-default-background);
+  border: var(--rag-semantic-component-select-default-border);
+  color: var(--rag-semantic-component-select-default-color);
   border-radius: var(--rag-primitive-radius-md);
   outline: none;
   cursor: pointer;
@@ -37,23 +37,27 @@
 
   &:focus,
   &.rt-open {
-    border-color: var(--rag-semantic-color-primary-500);
-    box-shadow: 0 0 0 1px var(--rag-semantic-color-primary-500);
+    background: var(--rag-semantic-component-select-focus-background);
+    border: var(--rag-semantic-component-select-focus-border);
+    box-shadow: var(--rag-semantic-component-select-focus-boxShadow);
+    color: var(--rag-semantic-component-select-focus-color);
   }
 
   &:disabled {
-    background-color: var(--rag-semantic-color-background-muted);
-    color: var(--rag-semantic-color-text-subtle);
+    background: var(--rag-semantic-component-select-disabled-background);
+    border: var(--rag-semantic-component-select-disabled-border);
+    color: var(--rag-semantic-component-select-disabled-color);
     cursor: not-allowed;
   }
 
   &.rt-error {
-    border-color: var(--rag-semantic-color-error-700);
+    background: var(--rag-semantic-component-select-error-background);
+    border: var(--rag-semantic-component-select-error-border);
+    color: var(--rag-semantic-component-select-error-color);
 
     &:focus,
     &.rt-open {
-      border-color: var(--rag-semantic-color-error-700);
-      box-shadow: 0 0 0 1px var(--rag-semantic-color-error-700);
+      box-shadow: var(--rag-semantic-component-select-error-boxShadow);
     }
   }
 }

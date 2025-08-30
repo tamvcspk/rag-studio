@@ -12,14 +12,14 @@
     <div class="rt-checkbox-indicator">
       @if (checked && !indeterminate()) {
         <rag-icon 
-          name="check" 
+          [img]="CheckIcon" 
           size="xs"
           class="rt-checkbox-check"
         />
       }
       @if (indeterminate()) {
         <rag-icon 
-          name="minus" 
+          [img]="MinusIcon" 
           size="xs"
           class="rt-checkbox-indeterminate"
         />

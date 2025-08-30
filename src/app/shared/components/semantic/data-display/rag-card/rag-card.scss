@@ -9,15 +9,20 @@
   transition: all 0.15s ease;
 
   &--default {
-    box-shadow: var(--rag-primitive-shadow-sm);
+    background: var(--rag-semantic-component-card-flat-background);
+    border: var(--rag-semantic-component-card-flat-border);
+    box-shadow: var(--rag-semantic-component-card-flat-boxShadow);
   }
 
   &--elevated {
-    box-shadow: var(--rag-primitive-shadow-lg);
+    background: var(--rag-semantic-component-card-elevated-background);
+    border: var(--rag-semantic-component-card-elevated-border);
+    box-shadow: var(--rag-semantic-component-card-elevated-boxShadow);
   }
 
   &--outlined {
-    border-color: var(--rag-semantic-color-border-default);
+    background: var(--rag-semantic-component-card-flat-background);
+    border: var(--rag-semantic-component-card-flat-border);
     box-shadow: none;
   }
 
@@ -29,7 +34,8 @@
     cursor: pointer;
 
     &:hover {
-      box-shadow: var(--rag-primitive-shadow-md);
+      background: var(--rag-semantic-component-card-elevated-background);
+      box-shadow: var(--rag-semantic-component-card-floating-boxShadow);
       transform: translateY(-1px);
     }
 
@@ -38,8 +44,8 @@
     }
 
     &:focus-visible {
-      outline: 2px solid var(--rag-semantic-color-primary-500);
-      outline-offset: 2px;
+      box-shadow: var(--rag-semantic-component-focus-ring-primary);
+      outline: none;
     }
   }
 }

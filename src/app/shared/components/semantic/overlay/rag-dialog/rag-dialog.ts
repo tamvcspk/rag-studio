@@ -1,11 +1,12 @@
 import { Component, input, output, signal, computed, effect, ElementRef, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
+import { X } from 'lucide-angular';
+import { RagIcon } from '../../../atomic/primitives/rag-icon/rag-icon';
 
 @Component({
   selector: 'rag-dialog',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, RagIcon],
   templateUrl: './rag-dialog.html',
   styleUrl: './rag-dialog.scss'
 })
@@ -13,6 +14,9 @@ export class RagDialogComponent {
   readonly open = input<boolean>(false);
   readonly title = input<string>('');
   readonly description = input<string>('');
+
+  // Icon constants
+  readonly XIcon = X;
   readonly size = input<'sm' | 'md' | 'lg' | 'xl' | 'full'>('md');
   readonly showCloseButton = input<boolean>(true);
   readonly closeOnEscape = input<boolean>(true);

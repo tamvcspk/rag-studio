@@ -25,8 +25,8 @@ export class RagInput implements ControlValueAccessor {
   readonly disabled = input(false);
   readonly readonly = input(false);
   readonly error = input(false);
-  readonly leftIcon = input<string>();
-  readonly rightIcon = input<string>();
+  readonly leftIcon = input<any>(); // Now accepts icon component instead of string
+  readonly rightIcon = input<any>(); // Now accepts icon component instead of string
   readonly maxlength = input<number>();
   readonly value = input<string>('');
   

@@ -2,7 +2,7 @@
   <div class="rt-input-wrapper">
     @if (leftIcon()) {
       <rag-icon 
-        [name]="leftIcon()!" 
+        [img]="leftIcon()!" 
         size="sm" 
         class="rt-input-left-icon"
       />
@@ -23,7 +23,7 @@
     
     @if (rightIcon()) {
       <rag-icon 
-        [name]="rightIcon()!" 
+        [img]="rightIcon()!" 
         size="sm" 
         class="rt-input-right-icon"
         (click)="handleRightIconClick()"

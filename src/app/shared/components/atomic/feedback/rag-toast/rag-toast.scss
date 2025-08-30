@@ -54,10 +54,10 @@
   }
 
   &.rt-variant-error {
-    border-left: 4px solid var(--rag-semantic-color-error-700);
+    border-left: 4px solid var(--rag-semantic-color-danger-700);
     
     .rt-toast-icon {
-      color: var(--rag-semantic-color-error-700);
+      color: var(--rag-semantic-color-danger-700);
     }
   }
 }

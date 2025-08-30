@@ -1,9 +1,10 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Play, Pause, Edit, Calendar, Clock, CheckCircle } from 'lucide-angular';
+import { Play, Pause, Edit, Calendar, Clock, CheckCircle } from 'lucide-angular';
 import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
+import { RagIcon } from '../../atomic';
 import { PipelineFlowVisualization } from '../pipeline-flow-visualization/pipeline-flow-visualization';
 
 export interface Pipeline {
@@ -32,10 +33,10 @@ export interface PipelineStep {
   standalone: true,
   imports: [
     CommonModule,
-    LucideAngularModule,
     RagBadge,
     RagButton,
     RagCard,
+    RagIcon,
     PipelineFlowVisualization
   ],
   templateUrl: './pipeline-card.html',

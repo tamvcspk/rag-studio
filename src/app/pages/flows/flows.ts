@@ -1,6 +1,17 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
+import { 
+  GitBranchIcon,
+  LayoutIcon,
+  PlusIcon,
+  SearchIcon,
+  PlayCircleIcon,
+  PauseCircleIcon,
+  FileEditIcon,
+  XCircleIcon,
+  FilterXIcon
+} from 'lucide-angular';
+import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
 import { Flow } from '../../shared/models/flow.model';
 import { FlowsService } from '../../shared/services/flows';
 import { FlowCardComponent } from '../../shared/components/composite/flow-card/flow-card';
@@ -8,13 +19,14 @@ import { CreateFlowWizardComponent } from '../../shared/components/composite/cre
 import { FlowDesignerComponent } from '../../shared/components/composite/flow-designer/flow-designer';
 import { EmptyStatePanelComponent } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
 import { RagAlert, RagBadge, RagButton, RagInput, RagSelect } from '../../shared/components';
+import { RagDialogComponent } from '../../shared/components/semantic/overlay/rag-dialog/rag-dialog';
 
 @Component({
   selector: 'app-flows',
   standalone: true,
   imports: [
     CommonModule,
-    LucideAngularModule,
+    RagIcon,
     FlowCardComponent,
     CreateFlowWizardComponent,
     FlowDesignerComponent,
@@ -23,12 +35,24 @@ import { RagAlert, RagBadge, RagButton, RagInput, RagSelect } from '../../shared
     RagInput,
     RagSelect,
     RagBadge,
-    RagAlert
+    RagAlert,
+    RagDialogComponent
   ],
   templateUrl: './flows.html',
   styleUrl: './flows.scss'
 })
 export class Flows implements OnInit {
+  // Icon components
+  readonly GitBranchIcon = GitBranchIcon;
+  readonly LayoutIcon = LayoutIcon;
+  readonly PlusIcon = PlusIcon;
+  readonly SearchIcon = SearchIcon;
+  readonly PlayCircleIcon = PlayCircleIcon;
+  readonly PauseCircleIcon = PauseCircleIcon;
+  readonly FileEditIcon = FileEditIcon;
+  readonly XCircleIcon = XCircleIcon;
+  readonly FilterXIcon = FilterXIcon;
+
   readonly flows = signal<Flow[]>([]);
   readonly filteredFlows = signal<Flow[]>([]);
   readonly loading = signal(false);

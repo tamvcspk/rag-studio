@@ -14,7 +14,7 @@ export class RagBadge {
   readonly variant = input<'solid' | 'soft' | 'outline'>('soft');
   readonly color = input<'gray' | 'blue' | 'green' | 'amber' | 'red' | 'orange' | 'purple'>('gray');
   readonly size = input<'xs' | 'sm' | 'md' | 'lg' | 'xl'>('md');
-  readonly icon = input<string>();
+  readonly icon = input<any>(); // Now accepts icon component instead of string
   readonly dot = input(false);
 
   // Modern Angular 20: Use computed for derived state

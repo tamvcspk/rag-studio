@@ -1,12 +1,12 @@
 import { Component, input, output, signal, computed, effect, ElementRef, viewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { RagIcon } from '../../../atomic/primitives/rag-icon/rag-icon';
 
 export interface DropdownItem {
   id: string;
   label: string;
-  icon?: string;
+  icon?: any; // Icon component, not string
   disabled?: boolean;
   separator?: boolean;
   href?: string;
@@ -16,7 +16,7 @@ export interface DropdownItem {
 @Component({
   selector: 'rag-dropdown',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, OverlayModule],
+  imports: [CommonModule, RagIcon, OverlayModule],
   templateUrl: './rag-dropdown.html',
   styleUrl: './rag-dropdown.scss'
 })
@@ -24,7 +24,8 @@ export class RagDropdownComponent {
   readonly items = input<DropdownItem[]>([]);
   readonly open = input<boolean>(false);
   readonly triggerContent = input<string>('');
-  readonly triggerIcon = input<string | null>(null);
+  readonly triggerIcon = input<any | null>(null); // Icon component
+  readonly chevronDown = input<any>(); // Chevron down icon component
   readonly placement = input<'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' | 'right-start' | 'left-start'>('bottom-start');
   readonly size = input<'sm' | 'md' | 'lg'>('md');
   readonly variant = input<'default' | 'ghost' | 'outline'>('default');

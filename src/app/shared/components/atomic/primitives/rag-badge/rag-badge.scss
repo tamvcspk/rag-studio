@@ -54,7 +54,7 @@
   }
 
   &.rt-color-red {
-    background-color: var(--rag-semantic-color-error-700);
+    background-color: var(--rag-semantic-color-danger-700);
     color: var(--rag-primitive-color-white);
   }
 }
@@ -79,8 +79,8 @@
   }
 
   &.rt-color-red {
-    background-color: var(--rag-semantic-color-error-100);
-    color: var(--rag-semantic-color-error-700);
+    background-color: var(--rag-semantic-color-danger-100);
+    color: var(--rag-semantic-color-danger-700);
   }
 }
 
@@ -105,8 +105,8 @@
   }
 
   &.rt-color-red {
-    border-color: var(--rag-semantic-color-error-700);
-    color: var(--rag-semantic-color-error-700);
+    border-color: var(--rag-semantic-color-danger-700);
+    color: var(--rag-semantic-color-danger-700);
   }
 }
 
@@ -132,8 +132,8 @@
   }
 
   &.rt-color-red .status-indicator {
-    background-color: var(--rag-semantic-color-error-700);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--rag-semantic-color-error-700) 20%, transparent);
+    background-color: var(--rag-semantic-color-danger-700);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--rag-semantic-color-danger-700) 20%, transparent);
   }
 
   &.rt-color-gray .status-indicator {

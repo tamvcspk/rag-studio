@@ -1,164 +1,153 @@
 /**
- * Type definitions for the design system
- * Provides type safety for all design tokens and component props
+ * RAG Studio Design System Types
+ * 
+ * Simple, practical types for design tokens and components.
+ * No over-engineering, just what's needed.
  */
 
-// ===== SIZE SYSTEM TYPES =====
+// ===== CORE TYPES =====
 
-/** Standard size scale used across all components */
 export type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type ColorName = 'gray' | 'blue' | 'green' | 'red' | 'amber';
 
-/** Legacy size mappings for migration */
-export type LegacyButtonSize = '1' | '2' | '3';
-export type LegacyBadgeSize = 'sm' | 'md';
+// ===== COMPONENT TYPES =====
 
-// ===== COLOR SYSTEM TYPES =====
-
-/** Available color names in the palette */
-export type ColorName = 'gray' | 'blue' | 'green' | 'red' | 'amber' | 'orange' | 'purple';
-
-/** Color scale steps */
-export type ColorScale = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950 | 1000;
-
-/** Full color reference with scale */
-export type ColorReference = `${ColorName}.${ColorScale}`;
-
-/** Semantic color intentions */
-export type SemanticColor = 'primary' | 'success' | 'warning' | 'danger' | 'error' | 'info' | 'neutral';
-
-/** Status color variants */
-export type StatusColor = 'idle' | 'loading' | 'success' | 'error' | 'warning';
-
-// ===== COMPONENT VARIANT TYPES =====
-
-/** Button variants */
 export type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'soft';
+export type BadgeVariant = 'primary' | 'success' | 'warning' | 'danger' | 'neutral';
+export type InputState = 'default' | 'focus' | 'error' | 'disabled';
+export type CardVariant = 'flat' | 'elevated' | 'floating';
+export type AlertVariant = 'info' | 'success' | 'warning' | 'error';
+export type SelectState = 'default' | 'focus' | 'error' | 'disabled';
+export type ProgressVariant = 'primary' | 'success' | 'warning' | 'danger';
+export type SwitchState = 'default' | 'checked' | 'disabled';
+export type IconVariant = 'default' | 'subtle' | 'muted' | 'primary' | 'success' | 'warning' | 'danger';
+export type SkeletonVariant = 'text' | 'circular' | 'rectangular';
+export type FocusVariant = 'primary' | 'danger' | 'success';
+export type DialogSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
+export type ToastVariant = 'success' | 'warning' | 'error' | 'info';
+export type DropdownItemState = 'default' | 'hover' | 'active' | 'disabled';
+export type TabState = 'default' | 'hover' | 'active' | 'disabled';
+export type BreadcrumbItemState = 'default' | 'hover' | 'current';
+export type NavigationVariant = 'primary' | 'secondary' | 'minimal';
+export type TabNavItemState = 'default' | 'hover' | 'active' | 'disabled';
 
-/** Badge variants */
-export type BadgeVariant = 'solid' | 'soft' | 'outline';
+// ===== COMPONENT INTERFACES =====
 
-/** Button types */
-export type ButtonType = 'button' | 'submit' | 'reset';
-
-// ===== COMPONENT PROP TYPES =====
-
-/** Button component props */
 export interface ButtonProps {
   variant?: ButtonVariant;
   size?: Size;
   disabled?: boolean;
-  loading?: boolean;
-  type?: ButtonType;
-  fullWidth?: boolean;
 }
 
-/** Badge component props */
 export interface BadgeProps {
   variant?: BadgeVariant;
-  color?: ColorName;
   size?: Size;
+}
+
+export interface InputProps {
+  state?: InputState;
+  size?: Size;
+  disabled?: boolean;
+}
+
+export interface CardProps {
+  variant?: CardVariant;
+  size?: Size;
+}
+
+export interface AlertProps {
+  variant?: AlertVariant;
+  title?: string;
+  closable?: boolean;
   icon?: string;
-  dot?: boolean;
 }
 
-/** Status indicator component props */
-export interface StatusIndicatorProps {
-  status?: StatusColor;
+export interface SelectProps {
+  state?: SelectState;
   size?: Size;
-  showIcon?: boolean;
-  showLabel?: boolean;
-  label?: string;
-  pulse?: boolean;
+  disabled?: boolean;
+  searchable?: boolean;
+  clearable?: boolean;
 }
 
-// ===== DESIGN TOKEN TYPES =====
+export interface ProgressProps {
+  variant?: ProgressVariant;
+  size?: Size;
+  value?: number;
+  showLabel?: boolean;
+}
 
-/** Spacing token keys */
-export type SpacingToken = keyof typeof import('./design-tokens').PrimitiveTokens.spacing;
+export interface SwitchProps {
+  state?: SwitchState;
+  size?: Size;
+  disabled?: boolean;
+}
 
-/** Border radius token keys */
-export type RadiusToken = keyof typeof import('./design-tokens').PrimitiveTokens.radius;
+export interface IconProps {
+  variant?: IconVariant;
+  size?: Size | number;
+}
 
-/** Typography size token keys */
-export type FontSizeToken = keyof typeof import('./design-tokens').PrimitiveTokens.fontSize;
+export interface SkeletonProps {
+  variant?: SkeletonVariant;
+  width?: string | number;
+  height?: string | number;
+}
 
-/** Shadow token keys */
-export type ShadowToken = keyof typeof import('./design-tokens').PrimitiveTokens.shadow;
+export interface DialogProps {
+  size?: DialogSize;
+  title?: string;
+  description?: string;
+  open?: boolean;
+  showCloseButton?: boolean;
+}
+
+export interface ToastProps {
+  variant?: ToastVariant;
+  title?: string;
+  duration?: number;
+  dismissible?: boolean;
+}
+
+export interface DropdownProps {
+  items?: DropdownItem[];
+  placement?: 'top' | 'bottom' | 'left' | 'right';
+  trigger?: 'click' | 'hover';
+}
+
+export interface DropdownItem {
+  id: string;
+  label: string;
+  icon?: string;
+  disabled?: boolean;
+  separator?: boolean;
+}
+
+export interface TabNavItem {
+  id: string;
+  label: string;
+  icon?: string;
+  routerLink?: string;
+  disabled?: boolean;
+  onClick?: () => void;
+}
+
+export interface FormFieldProps {
+  label?: string;
+  description?: string;
+  error?: string;
+  required?: boolean;
+  size?: Size;
+}
+
+export interface NavigationProps {
+  items?: TabNavItem[];
+  variant?: NavigationVariant;
+  activeItem?: string;
+  orientation?: 'horizontal' | 'vertical';
+}
 
 // ===== UTILITY TYPES =====
 
-/** CSS custom property name */
-export type CSSCustomProperty = `--${string}`;
-
-/** Design token path for accessing nested properties */
 export type TokenPath = string;
-
-/** Component size configuration */
-export interface ComponentSizeConfig {
-  height: string;
-  padding: string;
-  fontSize: string;
-  borderRadius: string;
-}
-
-/** Color variant configuration */
-export interface ColorVariantConfig {
-  background: string;
-  color: string;
-  border?: string;
-}
-
-// ===== THEME TYPES =====
-
-/** Theme mode */
 export type ThemeMode = 'light' | 'dark';
-
-/** Color scheme preference */
-export type ColorScheme = 'system' | 'light' | 'dark';
-
-// ===== VALIDATION TYPES =====
-
-/** Valid component size values */
-export const VALID_SIZES: readonly Size[] = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
-
-/** Valid color names */
-export const VALID_COLORS: readonly ColorName[] = [
-  'gray', 'blue', 'green', 'red', 'amber', 'orange', 'purple'
-] as const;
-
-/** Valid button variants */
-export const VALID_BUTTON_VARIANTS: readonly ButtonVariant[] = [
-  'solid', 'outline', 'ghost', 'soft'
-] as const;
-
-/** Valid badge variants */
-export const VALID_BADGE_VARIANTS: readonly BadgeVariant[] = [
-  'solid', 'soft', 'outline'
-] as const;
-
-/** Valid status colors */
-export const VALID_STATUS_COLORS: readonly StatusColor[] = [
-  'idle', 'loading', 'success', 'error', 'warning'
-] as const;
-
-// ===== TYPE GUARDS =====
-
-/** Type guard for Size */
-export function isValidSize(value: unknown): value is Size {
-  return typeof value === 'string' && VALID_SIZES.includes(value as Size);
-}
-
-/** Type guard for ColorName */
-export function isValidColorName(value: unknown): value is ColorName {
-  return typeof value === 'string' && VALID_COLORS.includes(value as ColorName);
-}
-
-/** Type guard for ButtonVariant */
-export function isValidButtonVariant(value: unknown): value is ButtonVariant {
-  return typeof value === 'string' && VALID_BUTTON_VARIANTS.includes(value as ButtonVariant);
-}
-
-/** Type guard for StatusColor */
-export function isValidStatusColor(value: unknown): value is StatusColor {
-  return typeof value === 'string' && VALID_STATUS_COLORS.includes(value as StatusColor);
-}

@@ -15,7 +15,7 @@
     <div class="header-content">
       <div class="header-info">
         <div class="page-icon">
-          <lucide-angular [name]="'git-branch'" [size]="32"></lucide-angular>
+          <rag-icon [img]="GitBranchIcon" size="xl"></rag-icon>
         </div>
         <div class="page-details">
           <h1>Complete Flows</h1>
@@ -27,14 +27,14 @@
           [variant]="'outline'" 
           [size]="'md'"
           (click)="openDesigner()">
-          <lucide-angular [name]="'layout'" [size]="16"></lucide-angular>
+          <rag-icon [img]="LayoutIcon" size="sm"></rag-icon>
           Flow Designer
         </rag-button>
         <rag-button 
           [variant]="'solid'" 
           [size]="'md'"
           (click)="openCreateWizard()">
-          <lucide-angular [name]="'plus'" [size]="16"></lucide-angular>
+          <rag-icon [img]="PlusIcon" size="sm"></rag-icon>
           Create Flow
         </rag-button>
       </div>
@@ -49,7 +49,7 @@
           [value]="searchQuery()"
           [placeholder]="'Search flows by name, description, or tags...'"
           (valueChange)="onSearchChange($event)">
-          <lucide-angular [name]="'search'" [size]="16" slot="prefix"></lucide-angular>
+          <rag-icon [img]="SearchIcon" size="sm" slot="prefix"></rag-icon>
         </rag-input>
       </div>
       
@@ -104,7 +104,7 @@
       @if (flows().length === 0) {
         <!-- No flows at all -->
         <app-empty-state-panel
-          [icon]="'git-branch'"
+          [icon]="GitBranchIcon"
           [title]="'No flows created yet'"
           [description]="'Flows combine multiple components into complete RAG processes. Create your first flow to get started.'"
           [actionLabel]="'Create Your First Flow'"
@@ -113,7 +113,7 @@
       } @else {
         <!-- No results for current filters -->
         <app-empty-state-panel
-          [icon]="'filter-x'"
+          [icon]="FilterXIcon"
           [title]="'No flows match your filters'"
           [description]="'Try adjusting your search query or status filter to find flows.'"
           [actionLabel]="'Clear Filters'"
@@ -143,22 +143,22 @@
   @if (flows().length > 0 && !loading()) {
     <div class="quick-stats">
       <div class="stat-item">
-        <lucide-angular [name]="'play-circle'" [size]="16"></lucide-angular>
+        <rag-icon [img]="PlayCircleIcon" size="sm"></rag-icon>
         <span class="stat-value">{{ activeFlowsCount() }}</span>
         <span class="stat-label">Active</span>
       </div>
       <div class="stat-item">
-        <lucide-angular [name]="'pause-circle'" [size]="16"></lucide-angular>
+        <rag-icon [img]="PauseCircleIcon" size="sm"></rag-icon>
         <span class="stat-value">{{ pausedFlowsCount() }}</span>
         <span class="stat-label">Paused</span>
       </div>
       <div class="stat-item">
-        <lucide-angular [name]="'file-edit'" [size]="16"></lucide-angular>
+        <rag-icon [img]="FileEditIcon" size="sm"></rag-icon>
         <span class="stat-value">{{ draftFlowsCount() }}</span>
         <span class="stat-label">Drafts</span>
       </div>
       <div class="stat-item">
-        <lucide-angular [name]="'x-circle'" [size]="16"></lucide-angular>
+        <rag-icon [img]="XCircleIcon" size="sm"></rag-icon>
         <span class="stat-value">{{ errorFlowsCount() }}</span>
         <span class="stat-label">Errors</span>
       </div>
@@ -166,27 +166,31 @@
   }
 </div>
 
-<!-- Create Flow Wizard Modal -->
-@if (showCreateWizard()) {
-  <div class="modal-overlay" (click)="closeCreateWizard()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <app-create-flow-wizard
-        (onFlowCreated)="onFlowCreated($event)"
-        (onCancel)="onWizardCancel()">
-      </app-create-flow-wizard>
-    </div>
-  </div>
-}
+<!-- Create Flow Wizard Dialog -->
+<rag-dialog
+  [open]="showCreateWizard()"
+  [title]="'Create New Flow'"
+  [description]="'Build complete RAG processes by combining tools, knowledge bases, and pipelines'"
+  [size]="'lg'"
+  (openChange)="showCreateWizard.set($event)"
+  (close)="closeCreateWizard()">
+  <app-create-flow-wizard
+    (onFlowCreated)="onFlowCreated($event)"
+    (onCancel)="onWizardCancel()">
+  </app-create-flow-wizard>
+</rag-dialog>
 
-<!-- Flow Designer Modal -->
-@if (showDesigner()) {
-  <div class="modal-overlay" (click)="closeDesigner()">
-    <div class="modal-content designer-modal" (click)="$event.stopPropagation()">
-      <app-flow-designer
-        [flow]="selectedFlow() || undefined"
-        (onSave)="onFlowSaved($event)"
-        (onCancel)="onDesignerCancel()">
-      </app-flow-designer>
-    </div>
-  </div>
-}
+<!-- Flow Designer Dialog -->
+<rag-dialog
+  [open]="showDesigner()"
+  [title]="selectedFlow() ? 'Edit Flow: ' + selectedFlow()!.name : 'Flow Designer'"
+  [description]="'Design and configure your flow components and connections'"
+  [size]="'full'"
+  (openChange)="showDesigner.set($event)"
+  (close)="closeDesigner()">
+  <app-flow-designer
+    [flow]="selectedFlow() || undefined"
+    (onSave)="onFlowSaved($event)"
+    (onCancel)="onDesignerCancel()">
+  </app-flow-designer>
+</rag-dialog>

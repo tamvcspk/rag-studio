@@ -1,18 +1,18 @@
 import { Component, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { LucideAngularModule } from 'lucide-angular';
+import { RagIcon } from '../../../atomic/primitives/rag-icon/rag-icon';
 
 @Component({
   selector: 'rag-sidebar-item',
   standalone: true,
-  imports: [CommonModule, RouterModule, LucideAngularModule],
+  imports: [CommonModule, RouterModule, RagIcon],
   templateUrl: './rag-sidebar-item.html',
   styleUrl: './rag-sidebar-item.scss'
 })
 export class RagSidebarItemComponent {
   readonly label = input.required<string>();
-  readonly icon = input<string | null>(null);
+  readonly icon = input<any | null>(null); // Icon component
   readonly url = input<string | null>(null);
   readonly active = input<boolean>(false);
   readonly disabled = input<boolean>(false);
@@ -24,6 +24,8 @@ export class RagSidebarItemComponent {
   readonly collapsible = input<boolean>(false);
   readonly collapsed = input<boolean>(false);
   readonly hasChildren = input<boolean>(false);
+  readonly chevronRight = input<any>(); // Icon component for collapsed state
+  readonly chevronDown = input<any>(); // Icon component for expanded state
 
   readonly click = output<void>();
   readonly toggle = output<boolean>();

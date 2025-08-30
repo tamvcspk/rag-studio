@@ -19,7 +19,9 @@
       "Bash(ng generate service:*)",
       "Bash(npm run generate:tokens:*)",
       "Bash(move:*)",
-      "Bash(ng generate module:*)"
+      "Bash(ng generate module:*)",
+      "mcp__angular-cli__search_documentation",
+      "WebFetch(domain:material.angular.dev)"
     ],
     "deny": [],
     "ask": [],

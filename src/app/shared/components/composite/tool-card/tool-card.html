@@ -2,11 +2,11 @@
   <div class="error-card">
     <div class="tool-card-header">
       <div class="tool-info">
-        <lucide-angular 
+        <rag-icon 
           [img]="AlertCircle" 
-          size="20" 
+          size="md" 
           class="tool-icon error">
-        </lucide-angular>
+        </rag-icon>
         <div class="tool-details">
           <h3 class="tool-name">{{ tool().name }}</h3>
           <code class="tool-endpoint">{{ tool().endpoint }}</code>
@@ -22,7 +22,7 @@
 
     @if (tool().errorMessage) {
       <rag-alert variant="error" class="error-alert">
-        <lucide-angular [img]="AlertCircle" size="14"></lucide-angular>
+        <rag-icon [img]="AlertCircle" size="xs" />
         <div>
           <strong>Registration Failed:</strong> {{ tool().errorMessage }}
         </div>
@@ -34,7 +34,7 @@
         variant="solid" 
         size="sm"
         (click)="handleAction('retry')">
-        <lucide-angular [img]="RefreshCw" size="14"></lucide-angular>
+        <rag-icon [img]="RefreshCw" size="xs" />
         Retry Registration
       </rag-button>
       
@@ -42,7 +42,7 @@
         variant="outline" 
         size="sm"
         (click)="handleAction('logs')">
-        <lucide-angular [img]="FileText" size="14"></lucide-angular>
+        <rag-icon [img]="FileText" size="xs" />
         View Logs
       </rag-button>
 
@@ -51,7 +51,7 @@
         size="sm"
         class="delete-button"
         (click)="handleAction('delete')">
-        <lucide-angular [img]="Trash2" size="14"></lucide-angular>
+        <rag-icon [img]="Trash2" size="xs" />
         Remove
       </rag-button>
     </div>
@@ -60,11 +60,11 @@
   <rag-card class="tool-card">
     <div class="tool-card-header">
       <div class="tool-info">
-        <lucide-angular 
+        <rag-icon 
           [img]="getStatusIcon()" 
-          size="20" 
+          size="md" 
           [class]="'tool-icon ' + tool().baseOperation">
-        </lucide-angular>
+        </rag-icon>
         <div class="tool-details">
           <h3 class="tool-name">{{ tool().name }}</h3>
           <code class="tool-endpoint">{{ tool().endpoint }}</code>
@@ -121,7 +121,7 @@
           variant="outline" 
           size="sm"
           (click)="handleAction('deactivate')">
-          <lucide-angular [img]="Pause" size="14"></lucide-angular>
+          <rag-icon [img]="Pause" size="xs" />
           Deactivate
         </rag-button>
       } @else {
@@ -129,7 +129,7 @@
           variant="outline" 
           size="sm"
           (click)="handleAction('activate')">
-          <lucide-angular [img]="Play" size="14"></lucide-angular>
+          <rag-icon [img]="Play" size="xs" />
           Activate
         </rag-button>
       }
@@ -138,7 +138,7 @@
         variant="ghost" 
         size="sm"
         (click)="handleAction('edit')">
-        <lucide-angular [img]="Edit" size="14"></lucide-angular>
+        <rag-icon [img]="Edit" size="xs" />
         Edit
       </rag-button>
 
@@ -147,7 +147,7 @@
         size="sm"
         class="delete-button"
         (click)="handleAction('delete')">
-        <lucide-angular [img]="Trash2" size="14"></lucide-angular>
+        <rag-icon [img]="Trash2" size="xs" />
         Delete
       </rag-button>
     </div>

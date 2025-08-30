@@ -22,7 +22,7 @@
   font-family: inherit;
 
   &:focus-visible {
-    box-shadow: 0 0 0 2px var(--rag-primitive-color-gray-50), 0 0 0 4px var(--rag-semantic-color-primary-500);
+    box-shadow: var(--rag-semantic-component-focus-ring-primary);
   }
 
   &.rt-disabled,
@@ -43,9 +43,9 @@
 
 // Variant styles
 .rt-Button.rt-variant-solid {
-  background: var(--rag-component-button-solid-background);
-  color: var(--rag-component-button-solid-color);
-  border: var(--rag-component-button-solid-border);
+  background: var(--rag-semantic-component-button-solid-background);
+  color: var(--rag-semantic-component-button-solid-color);
+  border: var(--rag-semantic-component-button-solid-border);
 
   &:hover:not(:disabled):not(.rt-disabled):not(.rt-loading) {
     background-color: var(--rag-primitive-color-gray-950);
@@ -53,9 +53,9 @@
 }
 
 .rt-Button.rt-variant-soft {
-  background: var(--rag-component-button-soft-background);
-  color: var(--rag-component-button-soft-color);
-  border: var(--rag-component-button-soft-border);
+  background: var(--rag-semantic-component-button-soft-background);
+  color: var(--rag-semantic-component-button-soft-color);
+  border: var(--rag-semantic-component-button-soft-border);
 
   &:hover:not(:disabled):not(.rt-disabled):not(.rt-loading) {
     background-color: var(--rag-primitive-color-gray-300);
@@ -63,9 +63,9 @@
 }
 
 .rt-Button.rt-variant-outline {
-  background: var(--rag-component-button-outline-background);
-  color: var(--rag-component-button-outline-color);
-  border: var(--rag-component-button-outline-border);
+  background: var(--rag-semantic-component-button-outline-background);
+  color: var(--rag-semantic-component-button-outline-color);
+  border: var(--rag-semantic-component-button-outline-border);
 
   &:hover:not(:disabled):not(.rt-disabled):not(.rt-loading) {
     background-color: var(--rag-primitive-color-gray-100);
@@ -73,9 +73,9 @@
 }
 
 .rt-Button.rt-variant-ghost {
-  background: var(--rag-component-button-ghost-background);
-  color: var(--rag-component-button-ghost-color);
-  border: var(--rag-component-button-ghost-border);
+  background: var(--rag-semantic-component-button-ghost-background);
+  color: var(--rag-semantic-component-button-ghost-color);
+  border: var(--rag-semantic-component-button-ghost-border);
 
   &:hover:not(:disabled):not(.rt-disabled):not(.rt-loading) {
     background-color: var(--rag-primitive-color-gray-200);

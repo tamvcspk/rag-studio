@@ -1,59 +1,59 @@
 /**
- * Design Tokens System Entry Point
- * Exports all token-related utilities and types
+ * RAG Studio Design Tokens - Main Export
+ * 
+ * Simple, practical design token system.
+ * Clean exports, no over-engineering.
  */
 
-// Export all from design-tokens except TokenPath to avoid conflict
+// Core design token system
 export {
   CSS_VAR_PREFIX,
   cssVar,
   cssVarValue,
   PrimitiveTokens,
   SemanticTokens,
-  ComponentTokens,
-  RagStudioPreset,
+  ComponentArchetypes,
+  RagTokens,
   flattenTokens,
   generateCSSVariables,
   $dt,
-  injectDesignTokens
+  injectDesignTokens,
+  combineArchetypes
 } from './design-tokens';
 
-// Export types from design-tokens, using TokenPath from design-tokens as the authoritative one
-export type { Size, ColorName, ColorScale, Color, TokenPath, TokenValue } from './design-tokens';
+// Service and provider
+export { DesignTokenService } from './design-tokens.service';
+export { provideDesignTokens } from './provider';
+export type { DesignTokenOverrides, DesignTokenConfig } from './design-tokens.service';
 
-// Export all from types except TokenPath to avoid conflict
+// Types
 export type {
-  LegacyButtonSize,
-  LegacyBadgeSize,
-  ColorReference,
-  SemanticColor,
-  StatusColor,
+  Size,
+  ColorName,
   ButtonVariant,
   BadgeVariant,
-  ButtonType,
+  InputState,
+  CardVariant,
+  NavigationVariant,
+  TabNavItemState,
   ButtonProps,
   BadgeProps,
-  StatusIndicatorProps,
-  SpacingToken,
-  RadiusToken,
-  FontSizeToken,
-  ShadowToken,
-  CSSCustomProperty,
-  ComponentSizeConfig,
-  ColorVariantConfig,
-  ThemeMode,
-  ColorScheme
+  InputProps,
+  CardProps,
+  NavigationProps,
+  TabNavItem,
+  TokenPath,
+  ThemeMode
 } from './types';
 
-// Export validation constants and type guards
-export {
-  VALID_SIZES,
-  VALID_COLORS,
-  VALID_BUTTON_VARIANTS,
-  VALID_BADGE_VARIANTS,
-  VALID_STATUS_COLORS,
-  isValidSize,
-  isValidColorName,
-  isValidButtonVariant,
-  isValidStatusColor
-} from './types';
+// Also export types from design-tokens to avoid conflicts
+export type { 
+  Size as DesignTokenSize,
+  ColorName as DesignTokenColorName,
+  ButtonVariant as DesignTokenButtonVariant,
+  BadgeVariant as DesignTokenBadgeVariant,
+  InputState as DesignTokenInputState,
+  CardVariant as DesignTokenCardVariant,
+  NavigationVariant as DesignTokenNavigationVariant,
+  TabNavItemState as DesignTokenTabNavItemState
+} from './design-tokens';

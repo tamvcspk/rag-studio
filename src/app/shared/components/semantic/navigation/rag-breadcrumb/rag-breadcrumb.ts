@@ -1,12 +1,12 @@
 import { Component, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { LucideAngularModule } from 'lucide-angular';
+import { RagIcon } from '../../../atomic/primitives/rag-icon/rag-icon';
 
 export interface BreadcrumbItem {
   label: string;
   url?: string;
-  icon?: string;
+  icon?: any; // Icon component, not string
   disabled?: boolean;
   current?: boolean;
 }
@@ -14,17 +14,17 @@ export interface BreadcrumbItem {
 @Component({
   selector: 'rag-breadcrumb',
   standalone: true,
-  imports: [CommonModule, RouterModule, LucideAngularModule],
+  imports: [CommonModule, RouterModule, RagIcon],
   templateUrl: './rag-breadcrumb.html',
   styleUrl: './rag-breadcrumb.scss'
 })
 export class RagBreadcrumbComponent {
   readonly items = input.required<BreadcrumbItem[]>();
-  readonly separator = input<string>('chevron-right');
+  readonly separator = input<any>(); // Icon component for separator
   readonly size = input<'sm' | 'md' | 'lg'>('md');
   readonly maxItems = input<number | null>(null);
   readonly showHome = input(true);
-  readonly homeIcon = input<string>('house');
+  readonly homeIcon = input<any>(); // Icon component
   readonly homeLabel = input<string>('Home');
   readonly homeUrl = input<string>('/');
 

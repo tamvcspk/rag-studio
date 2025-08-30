@@ -4,11 +4,11 @@
     
     <div class="rag-metric-display__status">
       @if (metricStatus() === 'good') {
-        <lucide-icon name="check-circle" size="14" class="rag-metric-display__status-icon" />
+        <rag-icon [img]="CheckCircleIcon" size="sm" class="rag-metric-display__status-icon" />
       } @else if (metricStatus() === 'warning') {
-        <lucide-icon name="alert-triangle" size="14" class="rag-metric-display__status-icon" />
+        <rag-icon [img]="AlertTriangleIcon" size="sm" class="rag-metric-display__status-icon" />
       } @else if (metricStatus() === 'critical') {
-        <lucide-icon name="x-circle" size="14" class="rag-metric-display__status-icon" />
+        <rag-icon [img]="XCircleIcon" size="sm" class="rag-metric-display__status-icon" />
       }
     </div>
   </div>

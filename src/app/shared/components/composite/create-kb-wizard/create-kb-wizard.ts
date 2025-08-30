@@ -1,13 +1,14 @@
 import { Component, output, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { LucideAngularModule, Plus, X } from 'lucide-angular';
+import { Plus, X } from 'lucide-angular';
 import { ContentSourceType, EmbeddingModel, CreateKBFormData } from '../../../types';
 import { RagDialogComponent } from '../../semantic/overlay/rag-dialog/rag-dialog';
 import { RagFormField } from '../../semantic/forms/rag-form-field/rag-form-field';
 import { RagInput } from '../../atomic/primitives/rag-input/rag-input';
 import { RagTextarea } from '../../atomic/primitives/rag-textarea/rag-textarea';
 import { RagSelect } from '../../atomic/primitives/rag-select/rag-select';
+import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 
 interface ContentSourceOption {
@@ -28,7 +29,7 @@ interface EmbeddingModelOption {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    LucideAngularModule,
+    RagIcon,
     RagDialogComponent,
     RagFormField,
     RagInput,

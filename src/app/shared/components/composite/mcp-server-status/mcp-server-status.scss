@@ -1,31 +1,31 @@
 .mcp-server-status {
   background: white;
   border: 1px solid var(--rag-semantic-color-border-default);
-  border-radius: 8px;
-  padding: 1rem;
+  border-radius: var(--rag-primitive-radius-md);
+  padding: var(--rag-primitive-spacing-lg);
 
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1rem;
+    margin-bottom: var(--rag-primitive-spacing-lg);
   }
 
   &__info {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--rag-primitive-spacing-md);
   }
 
   &__title {
-    font-size: 1rem;
+    font-size: var(--rag-primitive-fontSize-md);
     font-weight: 600;
-    margin: 0 0 0.125rem 0;
+    margin: 0 0 var(--rag-primitive-spacing-xs) 0;
     color: var(--rag-semantic-color-text-default);
   }
 
   &__subtitle {
-    font-size: 0.75rem;
+    font-size: var(--rag-primitive-fontSize-xs);
     color: var(--rag-semantic-color-text-muted);
     margin: 0;
   }
@@ -33,7 +33,7 @@
   &__details {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+    gap: var(--rag-primitive-spacing-md);
 
     @media (max-width: 640px) {
       grid-template-columns: 1fr;
@@ -45,15 +45,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0;
+  padding: var(--rag-primitive-spacing-sm) 0;
 
   &__label {
-    font-size: 0.75rem;
+    font-size: var(--rag-primitive-fontSize-xs);
     color: var(--rag-semantic-color-text-muted);
   }
 
   &__value {
-    font-size: 0.875rem;
+    font-size: var(--rag-primitive-fontSize-sm);
     font-weight: 500;
     color: var(--rag-semantic-color-text-default);
   }
@@ -65,7 +65,7 @@
 }
 
 .text-red-600 {
-  color: var(--rag-semantic-color-error-700);
+  color: var(--rag-semantic-color-danger-700);
 }
 
 .text-gray-400 {

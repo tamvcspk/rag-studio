@@ -10,10 +10,10 @@
         (click)="onTabClick(tab.id)"
       >
         @if (tab.icon) {
-          <lucide-angular
-            [name]="tab.icon"
-            size="16"
-          ></lucide-angular>
+          <rag-icon
+            [img]="tab.icon"
+            size="sm"
+          ></rag-icon>
         }
         <span>{{ tab.label }}</span>
       </button>

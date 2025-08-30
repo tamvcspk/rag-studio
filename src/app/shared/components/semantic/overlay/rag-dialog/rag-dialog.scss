@@ -79,7 +79,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: var(--rag-semantic-component-dialog-backdrop-background);
+  backdrop-filter: var(--rag-semantic-component-dialog-backdrop-backdropFilter);
   animation: overlayShow 0.15s ease-out;
 }
 
@@ -88,9 +89,10 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0.95);
-  background-color: var(--rag-semantic-color-background-default);
-  border-radius: var(--rag-primitive-radius-xl);
-  box-shadow: var(--rag-primitive-shadow-xl);
+  background: var(--rag-semantic-component-dialog-container-background);
+  border-radius: var(--rag-semantic-component-dialog-container-borderRadius);
+  box-shadow: var(--rag-semantic-component-dialog-container-boxShadow);
+  border: var(--rag-semantic-component-dialog-container-border);
   max-height: 85vh;
   opacity: 0;
   overflow: hidden;
@@ -125,7 +127,8 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: var(--rag-primitive-spacing-lg);
+  padding: var(--rag-semantic-component-dialog-header-padding);
+  border-bottom: var(--rag-semantic-component-dialog-header-borderBottom);
   gap: var(--rag-primitive-spacing-lg);
 }
 
@@ -149,8 +152,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: var(--rag-primitive-fontSize-lg);
+  height: var(--rag-primitive-fontSize-lg);
   border: none;
   background: none;
   border-radius: var(--rag-primitive-radius-sm);
@@ -169,7 +172,7 @@
     box-shadow: 0 0 0 2px var(--rag-semantic-color-primary-700);
   }
 
-  lucide-angular {
+  rag-icon {
     flex-shrink: 0;
   }
 }
@@ -177,7 +180,7 @@
 .rt-DialogBody {
   flex: 1;
   overflow-y: auto;
-  margin-bottom: var(--rag-primitive-spacing-lg);
+  padding: var(--rag-semantic-component-dialog-content-padding);
 
   &:last-child {
     margin-bottom: 0;
@@ -189,6 +192,8 @@
   align-items: center;
   justify-content: flex-end;
   gap: var(--rag-primitive-spacing-md);
+  padding: var(--rag-semantic-component-dialog-footer-padding);
+  border-top: var(--rag-semantic-component-dialog-footer-borderTop);
   margin-top: auto;
   
   &:empty {

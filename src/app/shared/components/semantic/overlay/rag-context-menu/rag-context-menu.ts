@@ -1,12 +1,12 @@
 import { Component, input, output, signal, computed, effect, ElementRef, viewChild, HostListener, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { RagIcon } from '../../../atomic/primitives/rag-icon/rag-icon';
 
 export interface ContextMenuItem {
   id: string;
   label: string;
-  icon?: string;
+  icon?: any; // Icon component, not string
   disabled?: boolean;
   separator?: boolean;
   shortcut?: string;
@@ -21,13 +21,14 @@ export interface ContextMenuPosition {
 @Component({
   selector: 'rag-context-menu',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, OverlayModule],
+  imports: [CommonModule, RagIcon, OverlayModule],
   templateUrl: './rag-context-menu.html',
   styleUrl: './rag-context-menu.scss'
 })
 export class RagContextMenuComponent implements OnDestroy {
   readonly items = input<ContextMenuItem[]>([]);
   readonly position = input<ContextMenuPosition | null>(null);
+  readonly chevronRight = input<any>(); // Chevron right icon component for submenus
   readonly open = input<boolean>(false);
   readonly size = input<'sm' | 'md' | 'lg'>('md');
 

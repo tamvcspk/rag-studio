@@ -19,7 +19,7 @@
           [placeholder]="inputPlaceholder()"
           [size]="size()"
           [disabled]="disabled()"
-          [leftIcon]="versionType === 'range' ? 'git-branch' : 'tag'"
+          [leftIcon]="leftIcon()"
           [error]="!isValidVersion()"
           [value]="versionValue"
           (input)="handleVersionChange($event)"
@@ -31,7 +31,7 @@
     @if (versionType === 'latest') {
       <div class="rag-version-input__latest">
         <div class="rag-version-input__latest-indicator">
-          <lucide-icon name="trending-up" [size]="16"></lucide-icon>
+          <rag-icon [img]="TrendingUpIcon" size="sm"></rag-icon>
           <span>Will use the latest available version</span>
         </div>
       </div>
@@ -41,7 +41,7 @@
   <!-- Version validation feedback -->
   @if (isExactOrRange() && versionValue && !isValidVersion()) {
     <div class="rag-version-input__validation">
-      <lucide-icon name="alert-circle" [size]="14"></lucide-icon>
+      <rag-icon [img]="AlertCircleIcon" size="sm"></rag-icon>
       @if (versionType === 'exact') {
         <span>Please enter a valid semantic version (e.g., 1.0.0)</span>
       } @else {

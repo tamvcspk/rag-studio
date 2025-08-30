@@ -1,10 +1,11 @@
 import { Component, input, computed, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
+import { Clock } from 'lucide-angular';
+import { RagIcon } from '../../../atomic/primitives/rag-icon/rag-icon';
 
 @Component({
   selector: 'rag-timestamp',
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, RagIcon],
   templateUrl: './rag-timestamp.html',
   styleUrl: './rag-timestamp.scss'
 })
@@ -14,6 +15,9 @@ export class RagTimestamp {
   readonly showIcon = input<boolean>(false);
   readonly precision = input<'seconds' | 'minutes' | 'hours' | 'days'>('minutes');
   readonly updateInterval = input<boolean>(true);
+
+  // Icon constants
+  readonly ClockIcon = Clock;
 
   private readonly now = signal(new Date());
 

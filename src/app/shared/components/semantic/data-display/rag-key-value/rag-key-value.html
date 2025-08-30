@@ -1,7 +1,7 @@
 <div [class]="containerClasses()">
   <div class="rag-key-value__key">
     @if (data().icon) {
-      <lucide-icon [name]="data().icon" size="14" class="rag-key-value__icon" />
+      <rag-icon [img]="data().icon" size="sm" class="rag-key-value__icon" />
     }
     <span>{{ data().key }}</span>
   </div>
@@ -16,7 +16,7 @@
         (click)="copyValue()"
         title="Copy value"
         aria-label="Copy value">
-        <lucide-icon name="copy" size="12" />
+        <rag-icon [img]="CopyIcon" size="xs" />
       </button>
     }
   </div>

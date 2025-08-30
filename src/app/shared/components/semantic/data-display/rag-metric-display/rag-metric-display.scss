@@ -41,10 +41,10 @@
   }
 
   &--critical {
-    border-left: 4px solid var(--rag-semantic-color-error-700);
+    border-left: 4px solid var(--rag-semantic-color-danger-700);
     
     .rag-metric-display__status-icon {
-      color: var(--rag-semantic-color-error-700);
+      color: var(--rag-semantic-color-danger-700);
     }
   }
 
@@ -160,7 +160,7 @@
 
   .rag-metric-display--critical & {
     &__progress-fill {
-      background: var(--rag-semantic-color-error-700);
+      background: var(--rag-semantic-color-danger-700);
     }
   }
 

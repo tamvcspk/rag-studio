@@ -1,8 +1,8 @@
 .recent-activity {
   &__title {
-    font-size: 1.125rem;
+    font-size: var(--rag-primitive-fontSize-lg);
     font-weight: 600;
-    margin: 0 0 1rem 0;
+    margin: 0 0 var(--rag-primitive-spacing-lg) 0;
     color: var(--rag-semantic-color-text-default);
   }
 }
@@ -10,19 +10,19 @@
 .activity-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--rag-primitive-spacing-md);
 
   &__empty {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: var(--rag-primitive-spacing-xl);
     color: var(--rag-semantic-color-text-muted);
     
     p {
-      margin: 0.5rem 0 0 0;
-      font-size: 0.875rem;
+      margin: var(--rag-primitive-spacing-sm) 0 0 0;
+      font-size: var(--rag-primitive-fontSize-sm);
     }
   }
 }
@@ -30,22 +30,22 @@
 .activity-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
+  gap: var(--rag-primitive-spacing-md);
+  padding: var(--rag-primitive-spacing-sm) 0;
 
   &__timestamp {
     font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
-    font-size: 0.75rem;
+    font-size: var(--rag-primitive-fontSize-xs);
     color: var(--rag-semantic-color-text-muted);
     min-width: 4rem;
     flex-shrink: 0;
   }
 
   &__message {
-    font-size: 0.875rem;
+    font-size: var(--rag-primitive-fontSize-sm);
     color: var(--rag-semantic-color-text-default);
     flex: 1;
-    line-height: 1.4;
+    line-height: var(--rag-primitive-lineHeight-md);
   }
 
   rag-badge {
@@ -55,7 +55,7 @@
   @media (max-width: 640px) {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: var(--rag-primitive-spacing-sm);
     
     &__timestamp {
       min-width: auto;
@@ -64,7 +64,7 @@
     .badge-and-message {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: var(--rag-primitive-spacing-md);
       width: 100%;
     }
   }

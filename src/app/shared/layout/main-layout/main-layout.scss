@@ -1,75 +1,86 @@
-// Main Layout Styles
+// Main Layout Styles using Design Tokens
 .app-header {
   background-color: var(--rag-semantic-color-background-default);
-  border-bottom: 1px solid var(--rag-semantic-color-border-default);
+  border-bottom: var(--rag-primitive-borderWidth-1) solid var(--rag-semantic-color-border-default);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: var(--rag-primitive-zIndex-sticky);
+  backdrop-filter: blur(8px);
 }
 
 .header-content {
-  height: 64px;
-}
-
-.app-logo-icon {
-  width: 24px;
-  height: 24px;
-  color: var(--rag-semantic-color-primary-500);
+  height: var(--rag-primitive-size-16);
+  padding: 0 var(--rag-primitive-spacing-lg);
 }
 
 .app-title {
   font-size: var(--rag-primitive-fontSize-xl);
+  font-weight: var(--rag-primitive-fontWeight-semibold);
+  color: var(--rag-semantic-color-text-default);
   margin: 0;
 }
 
 .app-subtitle {
-  font-size: var(--rag-primitive-fontSize-md);
+  font-size: var(--rag-primitive-fontSize-sm);
+  font-weight: var(--rag-primitive-fontWeight-medium);
   color: var(--rag-semantic-color-text-muted);
 }
 
 .app-main {
-  min-height: calc(100vh - 64px);
-  padding: var(--rag-primitive-spacing-xl) 0;
+  min-height: calc(100vh - var(--rag-primitive-size-16));
+  background-color: var(--rag-semantic-color-background-subtle);
 }
 
-.nav-icon {
-  width: 16px;
-  height: 16px;
+.navigation-wrapper {
+  background-color: var(--rag-semantic-color-background-default);
+  border-bottom: var(--rag-primitive-borderWidth-1) solid var(--rag-semantic-color-border-subtle);
+  padding: 0 var(--rag-primitive-spacing-lg);
 }
 
-.button-icon {
-  width: 16px;
-  height: 16px;
+.content-area {
+  padding: var(--rag-primitive-spacing-xl);
+  background-color: var(--rag-semantic-color-background-default);
+  min-height: calc(100vh - var(--rag-primitive-size-16) - var(--rag-primitive-size-12));
+  border-radius: var(--rag-primitive-radius-lg) var(--rag-primitive-radius-lg) 0 0;
+  margin-top: var(--rag-primitive-spacing-sm);
+  box-shadow: var(--rag-primitive-shadow-sm);
 }
 
-.status-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-
-  &.status-active {
-    background-color: var(--rag-semantic-color-success-700);
-    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
-  }
-
-  &.status-inactive {
-    background-color: var(--rag-primitive-color-gray-800);
-  }
-
-  &.status-error {
-    background-color: var(--rag-semantic-color-error-700);
-    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
-  }
-}
-
-// Responsive styles
-@media (max-width: 768px) {
+// Responsive styles using design tokens
+@media (max-width: var(--rag-primitive-breakpoint-md)) {
   .hide-mobile {
     display: none;
   }
 
-  .rt-TabsList {
-    flex-direction: column;
+  .header-content {
+    padding: 0 var(--rag-primitive-spacing-md);
+  }
+
+  .navigation-wrapper {
+    padding: 0 var(--rag-primitive-spacing-md);
+  }
+
+  .content-area {
+    padding: var(--rag-primitive-spacing-lg);
+    margin-top: 0;
+    border-radius: 0;
+  }
+
+  .app-subtitle {
+    display: none;
+  }
+}
+
+@media (max-width: var(--rag-primitive-breakpoint-sm)) {
+  .header-content {
+    padding: 0 var(--rag-primitive-spacing-sm);
+  }
+
+  .navigation-wrapper {
+    padding: 0 var(--rag-primitive-spacing-sm);
+  }
+
+  .content-area {
+    padding: var(--rag-primitive-spacing-md);
   }
 }

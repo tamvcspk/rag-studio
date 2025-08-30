@@ -19,9 +19,9 @@
   padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
   font-size: var(--rag-primitive-fontSize-md);
   line-height: var(--rag-primitive-lineHeight-md);
-  color: var(--rag-semantic-color-text-default);
-  background-color: var(--rag-semantic-color-background-default);
-  border: 1px solid var(--rag-semantic-color-border-default);
+  color: var(--rag-semantic-component-input-default-color);
+  background: var(--rag-semantic-component-input-default-background);
+  border: var(--rag-semantic-component-input-default-border);
   border-radius: var(--rag-primitive-radius-md);
   outline: none;
   transition: all 0.15s;
@@ -32,8 +32,10 @@
   }
 
   &:focus {
-    border-color: var(--rag-semantic-color-primary-500);
-    box-shadow: 0 0 0 1px var(--rag-semantic-color-primary-500);
+    background: var(--rag-semantic-component-input-focus-background);
+    border: var(--rag-semantic-component-input-focus-border);
+    box-shadow: var(--rag-semantic-component-input-focus-boxShadow);
+    color: var(--rag-semantic-component-input-focus-color);
   }
 
   &::placeholder {
@@ -41,9 +43,10 @@
   }
 
   &:disabled {
-    background-color: var(--rag-semantic-color-background-subtle);
-    color: var(--rag-semantic-color-text-disabled);
-    cursor: not-allowed;
+    background: var(--rag-semantic-component-input-disabled-background);
+    border: var(--rag-semantic-component-input-disabled-border);
+    color: var(--rag-semantic-component-input-disabled-color);
+    cursor: var(--rag-semantic-component-input-disabled-cursor);
 
     &::placeholder {
       color: var(--rag-semantic-color-text-disabled);
@@ -55,11 +58,12 @@
   }
 
   &.rt-error {
-    border-color: var(--rag-semantic-color-error-700);
+    background: var(--rag-semantic-component-input-error-background);
+    border: var(--rag-semantic-component-input-error-border);
+    color: var(--rag-semantic-component-input-error-color);
 
     &:focus {
-      border-color: var(--rag-semantic-color-error-700);
-      box-shadow: 0 0 0 1px var(--rag-semantic-color-error-700);
+      box-shadow: var(--rag-semantic-component-input-error-boxShadow);
     }
   }
 

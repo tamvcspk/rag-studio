@@ -1,9 +1,9 @@
 <div class="mcp-server-status">
   <div class="mcp-server-status__header">
     <div class="mcp-server-status__info">
-      <lucide-angular 
-        [name]="getStatusIcon(serverInfo().status)" 
-        class="w-5 h-5"
+      <rag-icon 
+        [img]="getStatusIcon(serverInfo().status)" 
+        size="sm"
         [class.text-green-600]="serverInfo().status === 'active'"
         [class.text-red-600]="serverInfo().status === 'error'"
         [class.text-gray-400]="serverInfo().status === 'inactive'" />

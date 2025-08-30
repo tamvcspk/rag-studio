@@ -1,40 +1,23 @@
 /**
- * Design Tokens System for RAG Studio
- * Based on Radix color system with three-tier architecture:
- * 1. Primitive tokens - raw values with no context
- * 2. Semantic tokens - contextual naming that maps to primitives
- * 3. Component tokens - component-specific values that map to semantic
+ * RAG Studio Design Tokens
  * 
- * This system generates CSS variables with --rag- prefix for use in components.
- * Components use CSS variables as placeholders, while this preset system
- * injects the actual values at runtime.
+ * Simple, practical design token system with:
+ * - Primitive tokens (colors, spacing, typography, etc.)
+ * - Semantic tokens (contextual meanings)
+ * - Component archetypes (reusable patterns)
  */
 
-// CSS Variable prefix for the design system
 export const CSS_VAR_PREFIX = 'rag';
 
-// Helper function to generate CSS variable name
+// Utility functions
 export const cssVar = (path: string) => `--${CSS_VAR_PREFIX}-${path.replace(/\./g, '-')}`;
-
-// Helper function to get CSS variable value
 export const cssVarValue = (path: string) => `var(${cssVar(path)})`;
 
 // ===== PRIMITIVE TOKENS =====
-// These are raw values with no context - the foundation of the design system
-
 export const PrimitiveTokens = {
-  // Size Scale - xs, sm, md, lg, xl system
-  size: {
-    xs: 'xs',
-    sm: 'sm', 
-    md: 'md',
-    lg: 'lg',
-    xl: 'xl'
-  } as const,
-
-  // Color Palettes - Full Radix color scales
+  // Colors - Radix-inspired 12-step scales
   color: {
-    // Gray scale (primary neutral)
+    // Gray scale
     gray: {
       50: 'hsl(0, 0%, 99.0%)',
       100: 'hsl(0, 0%, 97.3%)',
@@ -49,8 +32,6 @@ export const PrimitiveTokens = {
       950: 'hsl(0, 0%, 43.5%)',
       1000: 'hsl(0, 0%, 9.0%)'
     },
-
-    // Blue scale (primary brand)
     blue: {
       50: 'hsl(206, 100%, 97.0%)',
       100: 'hsl(205, 100%, 94.0%)',
@@ -65,8 +46,6 @@ export const PrimitiveTokens = {
       950: 'hsl(221, 83%, 23.0%)',
       1000: 'hsl(224, 76%, 16.0%)'
     },
-
-    // Green scale (success)
     green: {
       50: 'hsl(136, 50%, 98.9%)',
       100: 'hsl(138, 62%, 96.9%)',
@@ -81,8 +60,6 @@ export const PrimitiveTokens = {
       950: 'hsl(153, 67%, 28.5%)',
       1000: 'hsl(155, 40%, 14.0%)'
     },
-
-    // Red scale (error/danger)  
     red: {
       50: 'hsl(359, 100%, 99.4%)',
       100: 'hsl(359, 100%, 98.6%)',
@@ -97,8 +74,6 @@ export const PrimitiveTokens = {
       950: 'hsl(354, 50%, 14.6%)',
       1000: 'hsl(353, 23%, 10.0%)'
     },
-
-    // Amber scale (warning)
     amber: {
       50: 'hsl(39, 70%, 97.0%)',
       100: 'hsl(40, 85%, 95.0%)',
@@ -113,68 +88,25 @@ export const PrimitiveTokens = {
       950: 'hsl(15, 25%, 15.0%)',
       1000: 'hsl(20, 14%, 9.0%)'
     },
-
-    // Orange scale 
-    orange: {
-      50: 'hsl(24, 100%, 97.0%)',
-      100: 'hsl(24, 100%, 95.0%)',
-      200: 'hsl(24, 100%, 92.0%)',
-      300: 'hsl(24, 100%, 86.0%)',
-      400: 'hsl(24, 100%, 78.0%)',
-      500: 'hsl(25, 95%, 71.0%)',
-      600: 'hsl(25, 90%, 60.0%)',
-      700: 'hsl(25, 100%, 54.0%)',
-      800: 'hsl(25, 100%, 47.0%)',
-      900: 'hsl(25, 100%, 37.0%)',
-      950: 'hsl(15, 25%, 15.0%)',
-      1000: 'hsl(15, 20%, 10.0%)'
-    },
-
-    // Purple scale
-    purple: {
-      50: 'hsl(280, 100%, 99.0%)',
-      100: 'hsl(279, 75%, 97.0%)',
-      200: 'hsl(280, 56%, 93.0%)',
-      300: 'hsl(280, 50%, 88.0%)',
-      400: 'hsl(281, 47%, 82.0%)',
-      500: 'hsl(282, 44%, 75.0%)',
-      600: 'hsl(283, 42%, 67.0%)',
-      700: 'hsl(285, 45%, 58.0%)',
-      800: 'hsl(288, 56%, 52.0%)',
-      900: 'hsl(292, 62%, 46.0%)',
-      950: 'hsl(303, 45%, 15.0%)',
-      1000: 'hsl(300, 26%, 9.0%)'
-    },
-
-    // Special colors
     white: 'hsl(0, 0%, 100%)',
     black: 'hsl(0, 0%, 0%)',
     transparent: 'transparent'
   },
 
-  // Spacing scale (in px values)
+  // Spacing scale
   spacing: {
-    xs: '4px',    // xs
-    sm: '8px',    // sm  
-    md: '12px',   // md
-    lg: '16px',   // lg
-    xl: '24px'    // xl
-  },
-
-  // Border radius scale
-  radius: {
-    xs: '2px',
-    sm: '4px', 
-    md: '6px',
-    lg: '8px',
-    xl: '12px'
+    xs: '4px',
+    sm: '8px',
+    md: '12px',
+    lg: '16px',
+    xl: '24px'
   },
 
   // Typography scale
   fontSize: {
     xs: '11px',
     sm: '12px',
-    md: '14px', 
+    md: '14px',
     lg: '16px',
     xl: '18px'
   },
@@ -183,8 +115,17 @@ export const PrimitiveTokens = {
     xs: '16px',
     sm: '16px',
     md: '20px',
-    lg: '24px', 
+    lg: '24px',
     xl: '28px'
+  },
+
+  // Border radius scale
+  radius: {
+    xs: '2px',
+    sm: '4px',
+    md: '6px',
+    lg: '8px',
+    xl: '12px'
   },
 
   // Box shadow scale
@@ -198,39 +139,28 @@ export const PrimitiveTokens = {
 } as const;
 
 // ===== SEMANTIC TOKENS =====
-// These define context and map to primitive tokens
-
 export const SemanticTokens = {
-  // Color intent mapping
   color: {
-    // Primary brand colors
+    // Brand & status colors
     primary: PrimitiveTokens.color.blue,
-    
-    // Semantic state colors
     success: PrimitiveTokens.color.green,
     warning: PrimitiveTokens.color.amber,
     danger: PrimitiveTokens.color.red,
-    error: PrimitiveTokens.color.red,
-    info: PrimitiveTokens.color.blue,
-    
-    // Neutral colors
     neutral: PrimitiveTokens.color.gray,
     
-    // Surface colors
+    // UI colors
     background: {
       default: PrimitiveTokens.color.white,
       subtle: PrimitiveTokens.color.gray[50],
       muted: PrimitiveTokens.color.gray[100]
     },
     
-    // Border colors  
     border: {
       default: PrimitiveTokens.color.gray[300],
       subtle: PrimitiveTokens.color.gray[200],
       muted: PrimitiveTokens.color.gray[400]
     },
     
-    // Text colors
     text: {
       default: PrimitiveTokens.color.gray[1000],
       subtle: PrimitiveTokens.color.gray[950],
@@ -238,260 +168,557 @@ export const SemanticTokens = {
       disabled: PrimitiveTokens.color.gray[500],
       inverse: PrimitiveTokens.color.white
     }
-  },
-
-  // Size semantics
-  size: {
-    component: {
-      xs: PrimitiveTokens.size.xs,
-      sm: PrimitiveTokens.size.sm,
-      md: PrimitiveTokens.size.md,
-      lg: PrimitiveTokens.size.lg,
-      xl: PrimitiveTokens.size.xl
-    },
-    
-    spacing: {
-      xs: PrimitiveTokens.spacing.xs,
-      sm: PrimitiveTokens.spacing.sm,
-      md: PrimitiveTokens.spacing.md,
-      lg: PrimitiveTokens.spacing.lg,
-      xl: PrimitiveTokens.spacing.xl
-    }
-  },
-
-  // Typography semantics
-  typography: {
-    fontSize: {
-      caption: PrimitiveTokens.fontSize.xs,
-      body: PrimitiveTokens.fontSize.md,
-      heading: PrimitiveTokens.fontSize.lg
-    }
   }
 } as const;
 
-// ===== COMPONENT TOKENS =====
-// Component-specific tokens that map to semantic tokens
+// ===== COMPONENT ARCHETYPES =====
+// Reusable patterns for common component needs
 
-export const ComponentTokens = {
+export const ComponentArchetypes = {
+  // Button archetypes - different visual styles
   button: {
-    size: {
-      xs: {
-        height: '24px',
-        padding: `0 ${SemanticTokens.size.spacing.xs}`,
-        fontSize: PrimitiveTokens.fontSize.xs,
-        borderRadius: PrimitiveTokens.radius.xs
+    solid: {
+      background: cssVarValue('semantic.color.text.default'),
+      color: cssVarValue('semantic.color.text.inverse'),
+      border: 'none'
+    },
+    outline: {
+      background: cssVarValue('semantic.color.background.default'),
+      color: cssVarValue('semantic.color.text.default'),
+      border: `1px solid ${cssVarValue('semantic.color.border.default')}`
+    },
+    ghost: {
+      background: 'transparent',
+      color: cssVarValue('semantic.color.text.default'),
+      border: 'none'
+    },
+    soft: {
+      background: cssVarValue('semantic.color.background.muted'),
+      color: cssVarValue('semantic.color.text.default'),
+      border: 'none'
+    }
+  },
+
+  // Input archetypes - different states
+  input: {
+    default: {
+      background: cssVarValue('semantic.color.background.default'),
+      border: `1px solid ${cssVarValue('semantic.color.border.default')}`,
+      color: cssVarValue('semantic.color.text.default')
+    },
+    focus: {
+      background: cssVarValue('semantic.color.background.default'),
+      border: `1px solid ${cssVarValue('semantic.color.primary.500')}`,
+      boxShadow: `0 0 0 3px ${cssVarValue('semantic.color.primary.100')}`,
+      color: cssVarValue('semantic.color.text.default')
+    },
+    error: {
+      background: cssVarValue('semantic.color.background.default'),
+      border: `1px solid ${cssVarValue('semantic.color.danger.500')}`,
+      boxShadow: `0 0 0 3px ${cssVarValue('semantic.color.danger.100')}`,
+      color: cssVarValue('semantic.color.text.default')
+    },
+    disabled: {
+      background: cssVarValue('semantic.color.background.muted'),
+      border: `1px solid ${cssVarValue('semantic.color.border.subtle')}`,
+      color: cssVarValue('semantic.color.text.disabled'),
+      cursor: 'not-allowed'
+    }
+  },
+
+  // Card archetypes - different elevations
+  card: {
+    flat: {
+      background: cssVarValue('semantic.color.background.default'),
+      border: `1px solid ${cssVarValue('semantic.color.border.default')}`,
+      boxShadow: 'none'
+    },
+    elevated: {
+      background: cssVarValue('semantic.color.background.default'),
+      border: 'none',
+      boxShadow: cssVarValue('primitive.shadow.md')
+    },
+    floating: {
+      background: cssVarValue('semantic.color.background.default'),
+      border: 'none',
+      boxShadow: cssVarValue('primitive.shadow.lg')
+    }
+  },
+
+  // Badge archetypes - different intents
+  badge: {
+    primary: { background: cssVarValue('semantic.color.primary.100'), color: cssVarValue('semantic.color.primary.900') },
+    success: { background: cssVarValue('semantic.color.success.100'), color: cssVarValue('semantic.color.success.900') },
+    warning: { background: cssVarValue('semantic.color.warning.100'), color: cssVarValue('semantic.color.warning.900') },
+    danger: { background: cssVarValue('semantic.color.danger.100'), color: cssVarValue('semantic.color.danger.900') },
+    neutral: { background: cssVarValue('semantic.color.neutral.100'), color: cssVarValue('semantic.color.neutral.900') }
+  },
+
+  // Size archetype - consistent sizing across components
+  size: {
+    xs: { height: '24px', padding: `0 ${cssVarValue('primitive.spacing.xs')}`, fontSize: cssVarValue('primitive.fontSize.xs'), borderRadius: cssVarValue('primitive.radius.xs') },
+    sm: { height: '28px', padding: `0 ${cssVarValue('primitive.spacing.sm')}`, fontSize: cssVarValue('primitive.fontSize.sm'), borderRadius: cssVarValue('primitive.radius.sm') },
+    md: { height: '32px', padding: `0 ${cssVarValue('primitive.spacing.md')}`, fontSize: cssVarValue('primitive.fontSize.md'), borderRadius: cssVarValue('primitive.radius.md') },
+    lg: { height: '40px', padding: `0 ${cssVarValue('primitive.spacing.lg')}`, fontSize: cssVarValue('primitive.fontSize.lg'), borderRadius: cssVarValue('primitive.radius.md') },
+    xl: { height: '48px', padding: `0 ${cssVarValue('primitive.spacing.xl')}`, fontSize: cssVarValue('primitive.fontSize.xl'), borderRadius: cssVarValue('primitive.radius.lg') }
+  },
+
+  // Alert/Feedback archetypes - different message types
+  alert: {
+    info: {
+      background: cssVarValue('semantic.color.primary.100'),
+      color: cssVarValue('semantic.color.primary.950'),
+      border: `1px solid ${cssVarValue('semantic.color.primary.300')}`,
+      iconColor: cssVarValue('semantic.color.primary.700')
+    },
+    success: {
+      background: cssVarValue('semantic.color.success.100'),
+      color: cssVarValue('semantic.color.success.950'),
+      border: `1px solid ${cssVarValue('semantic.color.success.300')}`,
+      iconColor: cssVarValue('semantic.color.success.700')
+    },
+    warning: {
+      background: cssVarValue('semantic.color.warning.100'),
+      color: cssVarValue('semantic.color.warning.950'),
+      border: `1px solid ${cssVarValue('semantic.color.warning.300')}`,
+      iconColor: cssVarValue('semantic.color.warning.700')
+    },
+    error: {
+      background: cssVarValue('semantic.color.danger.100'),
+      color: cssVarValue('semantic.color.danger.950'),
+      border: `1px solid ${cssVarValue('semantic.color.danger.300')}`,
+      iconColor: cssVarValue('semantic.color.danger.700')
+    }
+  },
+
+  // Select/Dropdown archetypes - different states
+  select: {
+    default: {
+      background: cssVarValue('semantic.color.background.default'),
+      border: `1px solid ${cssVarValue('semantic.color.border.default')}`,
+      color: cssVarValue('semantic.color.text.default')
+    },
+    focus: {
+      background: cssVarValue('semantic.color.background.default'),
+      border: `1px solid ${cssVarValue('semantic.color.primary.500')}`,
+      boxShadow: `0 0 0 3px ${cssVarValue('semantic.color.primary.100')}`,
+      color: cssVarValue('semantic.color.text.default')
+    },
+    error: {
+      background: cssVarValue('semantic.color.background.default'),
+      border: `1px solid ${cssVarValue('semantic.color.danger.500')}`,
+      boxShadow: `0 0 0 3px ${cssVarValue('semantic.color.danger.100')}`,
+      color: cssVarValue('semantic.color.text.default')
+    },
+    disabled: {
+      background: cssVarValue('semantic.color.background.muted'),
+      border: `1px solid ${cssVarValue('semantic.color.border.subtle')}`,
+      color: cssVarValue('semantic.color.text.disabled'),
+      cursor: 'not-allowed'
+    }
+  },
+
+  // Progress archetypes - different states and colors
+  progress: {
+    primary: {
+      background: cssVarValue('semantic.color.primary.200'),
+      fill: cssVarValue('semantic.color.primary.600'),
+      text: cssVarValue('semantic.color.primary.900')
+    },
+    success: {
+      background: cssVarValue('semantic.color.success.200'),
+      fill: cssVarValue('semantic.color.success.600'),
+      text: cssVarValue('semantic.color.success.900')
+    },
+    warning: {
+      background: cssVarValue('semantic.color.warning.200'),
+      fill: cssVarValue('semantic.color.warning.600'),
+      text: cssVarValue('semantic.color.warning.900')
+    },
+    danger: {
+      background: cssVarValue('semantic.color.danger.200'),
+      fill: cssVarValue('semantic.color.danger.600'),
+      text: cssVarValue('semantic.color.danger.900')
+    }
+  },
+
+  // Switch/Toggle archetypes - different states
+  switch: {
+    default: {
+      track: {
+        background: cssVarValue('semantic.color.neutral.300'),
+        borderColor: cssVarValue('semantic.color.neutral.400')
       },
-      sm: {
-        height: '28px',
-        padding: `0 ${SemanticTokens.size.spacing.sm}`,
-        fontSize: PrimitiveTokens.fontSize.sm,
-        borderRadius: PrimitiveTokens.radius.sm
-      },
-      md: {
-        height: '32px',
-        padding: `0 ${SemanticTokens.size.spacing.md}`,
-        fontSize: PrimitiveTokens.fontSize.md,
-        borderRadius: PrimitiveTokens.radius.md
-      },
-      lg: {
-        height: '40px',
-        padding: `0 ${SemanticTokens.size.spacing.lg}`,
-        fontSize: PrimitiveTokens.fontSize.lg,
-        borderRadius: PrimitiveTokens.radius.md
-      },
-      xl: {
-        height: '48px',
-        padding: `0 ${SemanticTokens.size.spacing.xl}`,
-        fontSize: PrimitiveTokens.fontSize.xl,
-        borderRadius: PrimitiveTokens.radius.lg
+      thumb: {
+        background: cssVarValue('semantic.color.background.default'),
+        borderColor: cssVarValue('semantic.color.neutral.300')
       }
     },
-    
-    variant: {
-      solid: {
-        background: SemanticTokens.color.text.default,
-        color: SemanticTokens.color.text.inverse,
-        border: 'none'
+    checked: {
+      track: {
+        background: cssVarValue('semantic.color.primary.500'),
+        borderColor: cssVarValue('semantic.color.primary.600')
       },
-      outline: {
-        background: SemanticTokens.color.background.default,
-        color: SemanticTokens.color.text.default,
-        border: `1px solid ${SemanticTokens.color.border.default}`
+      thumb: {
+        background: cssVarValue('semantic.color.background.default'),
+        borderColor: cssVarValue('semantic.color.primary.600')
+      }
+    },
+    disabled: {
+      track: {
+        background: cssVarValue('semantic.color.neutral.200'),
+        borderColor: cssVarValue('semantic.color.neutral.300')
       },
-      ghost: {
-        background: PrimitiveTokens.color.transparent,
-        color: SemanticTokens.color.text.default,
-        border: 'none'
-      },
-      soft: {
-        background: SemanticTokens.color.background.muted,
-        color: SemanticTokens.color.text.default,
-        border: 'none'
+      thumb: {
+        background: cssVarValue('semantic.color.neutral.100'),
+        borderColor: cssVarValue('semantic.color.neutral.200')
       }
     }
   },
 
-  badge: {
+  // Icon archetypes - consistent sizing and colors
+  icon: {
     size: {
-      xs: {
-        height: '16px',
-        padding: `0 ${SemanticTokens.size.spacing.xs}`,
-        fontSize: PrimitiveTokens.fontSize.xs,
-        borderRadius: PrimitiveTokens.radius.xs
+      xs: '12px',
+      sm: '14px',
+      md: '16px',
+      lg: '20px',
+      xl: '24px'
+    },
+    color: {
+      default: cssVarValue('semantic.color.text.default'),
+      subtle: cssVarValue('semantic.color.text.subtle'),
+      muted: cssVarValue('semantic.color.text.muted'),
+      primary: cssVarValue('semantic.color.primary.600'),
+      success: cssVarValue('semantic.color.success.600'),
+      warning: cssVarValue('semantic.color.warning.600'),
+      danger: cssVarValue('semantic.color.danger.600')
+    }
+  },
+
+  // Skeleton archetypes - loading placeholders
+  skeleton: {
+    text: {
+      background: cssVarValue('semantic.color.neutral.200'),
+      borderRadius: cssVarValue('primitive.radius.xs')
+    },
+    circular: {
+      background: cssVarValue('semantic.color.neutral.200'),
+      borderRadius: '50%'
+    },
+    rectangular: {
+      background: cssVarValue('semantic.color.neutral.200'),
+      borderRadius: cssVarValue('primitive.radius.sm')
+    }
+  },
+
+  // Tooltip archetypes - positioning and styling
+  tooltip: {
+    default: {
+      background: cssVarValue('semantic.color.text.default'),
+      color: cssVarValue('semantic.color.text.inverse'),
+      borderRadius: cssVarValue('primitive.radius.sm'),
+      boxShadow: cssVarValue('primitive.shadow.lg'),
+      fontSize: cssVarValue('primitive.fontSize.sm'),
+      padding: `${cssVarValue('primitive.spacing.xs')} ${cssVarValue('primitive.spacing.sm')}`
+    }
+  },
+
+  // Focus states - accessibility and interaction
+  focus: {
+    ring: {
+      primary: `0 0 0 2px ${cssVarValue('semantic.color.background.default')}, 0 0 0 4px ${cssVarValue('semantic.color.primary.500')}`,
+      danger: `0 0 0 2px ${cssVarValue('semantic.color.background.default')}, 0 0 0 4px ${cssVarValue('semantic.color.danger.500')}`,
+      success: `0 0 0 2px ${cssVarValue('semantic.color.background.default')}, 0 0 0 4px ${cssVarValue('semantic.color.success.500')}`
+    }
+  },
+
+  // Dialog/Modal archetypes - overlay components
+  dialog: {
+    backdrop: {
+      background: 'rgba(0, 0, 0, 0.5)',
+      backdropFilter: 'blur(4px)'
+    },
+    container: {
+      background: cssVarValue('semantic.color.background.default'),
+      borderRadius: cssVarValue('primitive.radius.lg'),
+      boxShadow: cssVarValue('primitive.shadow.xl'),
+      border: `1px solid ${cssVarValue('semantic.color.border.subtle')}`
+    },
+    header: {
+      borderBottom: `1px solid ${cssVarValue('semantic.color.border.subtle')}`,
+      padding: `${cssVarValue('primitive.spacing.lg')} ${cssVarValue('primitive.spacing.xl')}`
+    },
+    content: {
+      padding: cssVarValue('primitive.spacing.xl')
+    },
+    footer: {
+      borderTop: `1px solid ${cssVarValue('semantic.color.border.subtle')}`,
+      padding: `${cssVarValue('primitive.spacing.lg')} ${cssVarValue('primitive.spacing.xl')}`
+    }
+  },
+
+  // Dropdown/Menu archetypes - contextual overlays
+  dropdown: {
+    container: {
+      background: cssVarValue('semantic.color.background.default'),
+      borderRadius: cssVarValue('primitive.radius.md'),
+      boxShadow: cssVarValue('primitive.shadow.lg'),
+      border: `1px solid ${cssVarValue('semantic.color.border.default')}`,
+      padding: cssVarValue('primitive.spacing.xs')
+    },
+    item: {
+      default: {
+        background: 'transparent',
+        color: cssVarValue('semantic.color.text.default'),
+        padding: `${cssVarValue('primitive.spacing.sm')} ${cssVarValue('primitive.spacing.md')}`
       },
-      sm: {
-        height: '20px',
-        padding: `0 ${SemanticTokens.size.spacing.xs}`,
-        fontSize: PrimitiveTokens.fontSize.xs,
-        borderRadius: PrimitiveTokens.radius.sm
+      hover: {
+        background: cssVarValue('semantic.color.background.subtle'),
+        color: cssVarValue('semantic.color.text.default')
       },
-      md: {
-        height: '24px',
-        padding: `0 ${SemanticTokens.size.spacing.sm}`,
-        fontSize: PrimitiveTokens.fontSize.sm,
-        borderRadius: PrimitiveTokens.radius.sm
+      active: {
+        background: cssVarValue('semantic.color.primary.100'),
+        color: cssVarValue('semantic.color.primary.900')
       },
-      lg: {
-        height: '28px',
-        padding: `0 ${SemanticTokens.size.spacing.md}`,
-        fontSize: PrimitiveTokens.fontSize.md,
-        borderRadius: PrimitiveTokens.radius.md
+      disabled: {
+        background: 'transparent',
+        color: cssVarValue('semantic.color.text.disabled'),
+        cursor: 'not-allowed'
+      }
+    },
+    separator: {
+      background: cssVarValue('semantic.color.border.subtle'),
+      height: '1px',
+      margin: `${cssVarValue('primitive.spacing.xs')} 0`
+    }
+  },
+
+  // Notification/Toast archetypes - feedback overlays
+  toast: {
+    container: {
+      background: cssVarValue('semantic.color.background.default'),
+      borderRadius: cssVarValue('primitive.radius.md'),
+      boxShadow: cssVarValue('primitive.shadow.lg'),
+      border: `1px solid ${cssVarValue('semantic.color.border.default')}`,
+      padding: cssVarValue('primitive.spacing.md')
+    },
+    success: {
+      background: cssVarValue('semantic.color.success.50'),
+      border: `1px solid ${cssVarValue('semantic.color.success.200')}`,
+      color: cssVarValue('semantic.color.success.900'),
+      iconColor: cssVarValue('semantic.color.success.600')
+    },
+    warning: {
+      background: cssVarValue('semantic.color.warning.50'),
+      border: `1px solid ${cssVarValue('semantic.color.warning.200')}`,
+      color: cssVarValue('semantic.color.warning.900'),
+      iconColor: cssVarValue('semantic.color.warning.600')
+    },
+    error: {
+      background: cssVarValue('semantic.color.danger.50'),
+      border: `1px solid ${cssVarValue('semantic.color.danger.200')}`,
+      color: cssVarValue('semantic.color.danger.900'),
+      iconColor: cssVarValue('semantic.color.danger.600')
+    },
+    info: {
+      background: cssVarValue('semantic.color.primary.50'),
+      border: `1px solid ${cssVarValue('semantic.color.primary.200')}`,
+      color: cssVarValue('semantic.color.primary.900'),
+      iconColor: cssVarValue('semantic.color.primary.600')
+    }
+  },
+
+  // Form Field archetypes - form component patterns
+  formField: {
+    label: {
+      color: cssVarValue('semantic.color.text.default'),
+      fontSize: cssVarValue('primitive.fontSize.sm'),
+      fontWeight: '500',
+      marginBottom: cssVarValue('primitive.spacing.xs')
+    },
+    description: {
+      color: cssVarValue('semantic.color.text.muted'),
+      fontSize: cssVarValue('primitive.fontSize.xs'),
+      marginTop: cssVarValue('primitive.spacing.xs')
+    },
+    error: {
+      color: cssVarValue('semantic.color.danger.700'),
+      fontSize: cssVarValue('primitive.fontSize.xs'),
+      marginTop: cssVarValue('primitive.spacing.xs')
+    },
+    required: {
+      color: cssVarValue('semantic.color.danger.600')
+    }
+  },
+
+  // Tab Navigation archetypes - tab component patterns
+  tabs: {
+    container: {
+      background: cssVarValue('semantic.color.background.muted'),
+      borderRadius: cssVarValue('primitive.radius.lg'),
+      padding: cssVarValue('primitive.spacing.xs'),
+      gap: cssVarValue('primitive.spacing.xs')
+    },
+    trigger: {
+      default: {
+        background: 'transparent',
+        color: cssVarValue('semantic.color.text.subtle'),
+        padding: `${cssVarValue('primitive.spacing.sm')} ${cssVarValue('primitive.spacing.md')}`,
+        borderRadius: cssVarValue('primitive.radius.md'),
+        fontSize: cssVarValue('primitive.fontSize.sm'),
+        fontWeight: '500'
       },
-      xl: {
-        height: '32px',
-        padding: `0 ${SemanticTokens.size.spacing.lg}`,
-        fontSize: PrimitiveTokens.fontSize.md,
-        borderRadius: PrimitiveTokens.radius.md
+      hover: {
+        color: cssVarValue('semantic.color.text.default')
+      },
+      active: {
+        background: cssVarValue('semantic.color.background.default'),
+        color: cssVarValue('semantic.color.text.default'),
+        boxShadow: cssVarValue('primitive.shadow.xs')
+      },
+      disabled: {
+        opacity: '0.5',
+        cursor: 'not-allowed'
       }
     }
   },
 
-  input: {
-    size: {
-      xs: {
-        height: '24px',
-        padding: `0 ${SemanticTokens.size.spacing.xs}`,
-        fontSize: PrimitiveTokens.fontSize.xs,
-        borderRadius: PrimitiveTokens.radius.xs
+  // Breadcrumb Navigation archetypes - breadcrumb component patterns
+  breadcrumb: {
+    container: {
+      gap: cssVarValue('primitive.spacing.xs'),
+      fontSize: cssVarValue('primitive.fontSize.sm')
+    },
+    item: {
+      default: {
+        color: cssVarValue('semantic.color.text.muted'),
+        textDecoration: 'none'
       },
-      sm: {
-        height: '28px',
-        padding: `0 ${SemanticTokens.size.spacing.sm}`,
-        fontSize: PrimitiveTokens.fontSize.sm,
-        borderRadius: PrimitiveTokens.radius.sm
+      hover: {
+        color: cssVarValue('semantic.color.text.default')
       },
-      md: {
-        height: '32px',
-        padding: `0 ${SemanticTokens.size.spacing.md}`,
-        fontSize: PrimitiveTokens.fontSize.md,
-        borderRadius: PrimitiveTokens.radius.md
-      },
-      lg: {
-        height: '40px',
-        padding: `0 ${SemanticTokens.size.spacing.lg}`,
-        fontSize: PrimitiveTokens.fontSize.lg,
-        borderRadius: PrimitiveTokens.radius.md
-      },
-      xl: {
-        height: '48px',
-        padding: `0 ${SemanticTokens.size.spacing.xl}`,
-        fontSize: PrimitiveTokens.fontSize.xl,
-        borderRadius: PrimitiveTokens.radius.lg
+      current: {
+        color: cssVarValue('semantic.color.text.default'),
+        fontWeight: '500'
       }
+    },
+    separator: {
+      color: cssVarValue('semantic.color.text.muted'),
+      opacity: '0.6'
     }
   },
 
-  statusIndicator: {
-    size: {
-      xs: {
-        iconSize: '12px',
-        dotSize: '6px'
+  // Navigation archetypes - router-based navigation component patterns
+  navigation: {
+    container: {
+      primary: {
+        background: cssVarValue('semantic.color.background.default'),
+        border: `1px solid ${cssVarValue('semantic.color.border.default')}`,
+        borderRadius: cssVarValue('primitive.radius.lg'),
+        padding: cssVarValue('primitive.spacing.xs'),
+        gap: cssVarValue('primitive.spacing.xs')
       },
-      sm: {
-        iconSize: '14px', 
-        dotSize: '8px'
+      secondary: {
+        background: 'transparent',
+        border: 'none',
+        borderRadius: '0',
+        padding: '0',
+        gap: cssVarValue('primitive.spacing.sm'),
+        borderBottom: `1px solid ${cssVarValue('semantic.color.border.subtle')}`
       },
-      md: {
-        iconSize: '16px',
-        dotSize: '10px'
+      minimal: {
+        background: 'transparent',
+        border: 'none',
+        borderRadius: '0',
+        padding: '0',
+        gap: cssVarValue('primitive.spacing.md')
+      }
+    },
+    item: {
+      default: {
+        background: 'transparent',
+        color: cssVarValue('semantic.color.text.subtle'),
+        padding: `${cssVarValue('primitive.spacing.sm')} ${cssVarValue('primitive.spacing.md')}`,
+        borderRadius: cssVarValue('primitive.radius.md'),
+        fontSize: cssVarValue('primitive.fontSize.sm'),
+        fontWeight: '500',
+        textDecoration: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease'
       },
-      lg: {
-        iconSize: '20px',
-        dotSize: '12px'
+      hover: {
+        background: cssVarValue('semantic.color.background.subtle'),
+        color: cssVarValue('semantic.color.text.default')
       },
-      xl: {
-        iconSize: '24px',
-        dotSize: '14px'
+      active: {
+        background: cssVarValue('semantic.color.primary.100'),
+        color: cssVarValue('semantic.color.primary.900')
+      },
+      disabled: {
+        opacity: '0.5',
+        cursor: 'not-allowed',
+        pointerEvents: 'none'
       }
     }
   }
 } as const;
 
-// ===== PRESET SYSTEM =====
-// Complete preset that combines all token layers for CSS variable generation
-
-export const RagStudioPreset = {
+// ===== COMPLETE TOKEN SYSTEM =====
+export const RagTokens = {
   primitive: PrimitiveTokens,
   semantic: SemanticTokens,
-  component: ComponentTokens
+  archetypes: ComponentArchetypes
 } as const;
 
 // ===== UTILITY FUNCTIONS =====
 
-// Function to flatten token object into dot notation paths
+// Flatten nested object to dot notation
 export function flattenTokens(obj: any, prefix = ''): Record<string, string> {
-  const flattened: Record<string, string> = {};
+  const result: Record<string, string> = {};
   
   for (const [key, value] of Object.entries(obj)) {
     const path = prefix ? `${prefix}.${key}` : key;
     
     if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.assign(flattened, flattenTokens(value, path));
+      Object.assign(result, flattenTokens(value, path));
     } else {
-      flattened[path] = String(value);
+      result[path] = String(value);
     }
   }
   
-  return flattened;
+  return result;
 }
 
-// Function to generate CSS variables from tokens
-export function generateCSSVariables(tokens: any = RagStudioPreset): string {
+// Generate CSS variables
+export function generateCSSVariables(tokens: any = RagTokens): string {
   const flattened = flattenTokens(tokens);
-  
   return Object.entries(flattened)
     .map(([path, value]) => `  ${cssVar(path)}: ${value};`)
     .join('\n');
 }
 
-// Function to get token value by path (similar to PrimeNG's $dt function)
+// Get token by path
 export function $dt(path: string): { value: string; cssVar: string } {
-  const flattened = flattenTokens(RagStudioPreset);
+  const flattened = flattenTokens(RagTokens);
   const value = flattened[path];
   
-  if (!value) {
-    console.warn(`Design token not found: ${path}`);
-    return { value: '', cssVar: cssVar(path) };
-  }
-  
   return {
-    value,
+    value: value || '',
     cssVar: cssVar(path)
   };
 }
 
-// Function to inject CSS variables into DOM (for runtime usage)
+// Inject CSS variables into DOM
 export function injectDesignTokens(
-  tokens: any = RagStudioPreset,
-  selector = ':root',
-  layer?: string
+  tokens: any = RagTokens,
+  selector = ':root'
 ): void {
   if (typeof document === 'undefined') return;
   
   const cssContent = generateCSSVariables(tokens);
-  const styleContent = layer 
-    ? `@layer ${layer} {\n${selector} {\n${cssContent}\n}\n}`
-    : `${selector} {\n${cssContent}\n}`;
+  const styleContent = `${selector} {\n${cssContent}\n}`;
   
   const styleId = `${CSS_VAR_PREFIX}-design-tokens`;
   let styleElement = document.getElementById(styleId) as HTMLStyleElement;
@@ -505,12 +732,27 @@ export function injectDesignTokens(
   styleElement.textContent = styleContent;
 }
 
-// Type definitions for the token system
-export type Size = typeof PrimitiveTokens.size[keyof typeof PrimitiveTokens.size];
-export type ColorName = 'gray' | 'blue' | 'green' | 'red' | 'amber' | 'orange' | 'purple';
-export type ColorScale = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950 | 1000;
-export type Color = `${ColorName}.${ColorScale}`;
+// Helper to combine archetype styles
+export function combineArchetypes(...archetypes: Array<Record<string, any>>): Record<string, any> {
+  return Object.assign({}, ...archetypes);
+}
 
-// Additional types for better type safety
-export type TokenPath = keyof ReturnType<typeof flattenTokens>;
-export type TokenValue = string;
+// Basic types
+export type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type ColorName = 'gray' | 'blue' | 'green' | 'red' | 'amber';
+export type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'soft';
+export type BadgeVariant = 'primary' | 'success' | 'warning' | 'danger' | 'neutral';
+export type InputState = 'default' | 'focus' | 'error' | 'disabled';
+export type CardVariant = 'flat' | 'elevated' | 'floating';
+export type AlertVariant = 'info' | 'success' | 'warning' | 'error';
+export type SelectState = 'default' | 'focus' | 'error' | 'disabled';
+export type ProgressVariant = 'primary' | 'success' | 'warning' | 'danger';
+export type SwitchState = 'default' | 'checked' | 'disabled';
+export type IconVariant = 'default' | 'subtle' | 'muted' | 'primary' | 'success' | 'warning' | 'danger';
+export type SkeletonVariant = 'text' | 'circular' | 'rectangular';
+export type FocusVariant = 'primary' | 'danger' | 'success';
+export type DialogSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
+export type ToastVariant = 'success' | 'warning' | 'error' | 'info';
+export type DropdownItemState = 'default' | 'hover' | 'active' | 'disabled';
+export type NavigationVariant = 'primary' | 'secondary' | 'minimal';
+export type TabNavItemState = 'default' | 'hover' | 'active' | 'disabled';

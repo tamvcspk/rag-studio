@@ -6,7 +6,6 @@
   background: linear-gradient(90deg, var(--rag-semantic-color-background-muted) 25%, var(--rag-semantic-color-border-default) 50%, var(--rag-semantic-color-background-muted) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: var(--rag-primitive-radius-sm);
   margin-bottom: var(--rag-primitive-spacing-sm);
 }
 
@@ -14,33 +13,26 @@
   margin-bottom: 0;
 }
 
-// Variant styles
-.rt-Skeleton.rt-text {
+// Variant styles using archetype system
+.rt-Skeleton.rt-variant-text {
+  background: var(--rag-semantic-component-skeleton-text-background);
+  border-radius: var(--rag-semantic-component-skeleton-text-borderRadius);
   height: var(--rag-primitive-lineHeight-sm);
   width: 100%;
 }
 
-.rt-Skeleton.rt-heading {
-  height: var(--rag-primitive-lineHeight-xl);
-  width: 60%;
-}
-
-.rt-Skeleton.rt-button {
-  height: 32px;
-  width: 100px;
-  border-radius: var(--rag-primitive-radius-md);
-}
-
-.rt-Skeleton.rt-card {
-  height: 120px;
-  width: 100%;
-  border-radius: var(--rag-primitive-radius-lg);
-}
-
-.rt-Skeleton.rt-circle {
+.rt-Skeleton.rt-variant-circular {
+  background: var(--rag-semantic-component-skeleton-circular-background);
+  border-radius: var(--rag-semantic-component-skeleton-circular-borderRadius);
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+}
+
+.rt-Skeleton.rt-variant-rectangular {
+  background: var(--rag-semantic-component-skeleton-rectangular-background);
+  border-radius: var(--rag-semantic-component-skeleton-rectangular-borderRadius);
+  width: 100%;
+  height: 120px;
 }
 
 @keyframes shimmer {

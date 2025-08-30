@@ -128,8 +128,8 @@
       }
 
       &[data-value="false"] {
-        background: var(--rag-semantic-color-error-200);
-        color: var(--rag-semantic-color-error-700);
+        background: var(--rag-semantic-color-danger-200);
+        color: var(--rag-semantic-color-danger-700);
       }
     }
   }

@@ -2,7 +2,7 @@
   <!-- Header -->
   <div class="wizard-header">
     <div class="wizard-title">
-      <lucide-angular [name]="'git-branch'" [size]="24"></lucide-angular>
+      <rag-icon [img]="gitBranchIcon" [size]="24"></rag-icon>
       <h2>Create New Flow</h2>
     </div>
     <div class="wizard-progress">
@@ -21,7 +21,7 @@
         (click)="goToStep(i)">
         <div class="step-icon">
           @if (step.completed) {
-            <lucide-angular [name]="'check'" [size]="16"></lucide-angular>
+            <rag-icon [img]="checkIcon" [size]="16"></rag-icon>
           } @else {
             <span>{{ i + 1 }}</span>
           }
@@ -81,7 +81,7 @@
                 <rag-badge [variant]="'soft'" class="tag-item">
                   {{ tag }}
                   <button class="remove-tag" (click)="removeTag(tag)">
-                    <lucide-angular [name]="'x'" [size]="12"></lucide-angular>
+                    <rag-icon [img]="xIcon" [size]="12"></rag-icon>
                   </button>
                 </rag-badge>
               }
@@ -104,7 +104,7 @@
                 (click)="toggleComponent(component)">
                 <div class="component-header">
                   <div class="component-icon">
-                    <lucide-angular [name]="getComponentIcon(component.type)" [size]="20"></lucide-angular>
+                    <rag-icon [img]="getComponentIcon(component.type)" [size]="20"></rag-icon>
                   </div>
                   <div class="component-info">
                     <div class="component-name">{{ component.name }}</div>
@@ -112,9 +112,9 @@
                   </div>
                   <div class="selection-indicator">
                     @if (isComponentSelected(component)) {
-                      <lucide-angular [name]="'check-circle'" [size]="20" class="selected-icon"></lucide-angular>
+                      <rag-icon [img]="checkCircleIcon" [size]="20" class="selected-icon"></rag-icon>
                     } @else {
-                      <lucide-angular [name]="'plus-circle'" [size]="20" class="add-icon"></lucide-angular>
+                      <rag-icon [img]="plusCircleIcon" [size]="20" class="add-icon"></rag-icon>
                     }
                   </div>
                 </div>
@@ -130,7 +130,7 @@
             <div class="selected-list">
               @for (component of selectedComponents(); track component.id) {
                 <rag-badge [variant]="'outline'">
-                  <lucide-angular [name]="getComponentIcon(component.type)" [size]="12"></lucide-angular>
+                  <rag-icon [img]="getComponentIcon(component.type)" [size]="12"></rag-icon>
                   {{ component.name }}
                 </rag-badge>
               }
@@ -150,13 +150,13 @@
               @for (component of selectedComponents(); track component.id; let isLast = $last) {
                 <div class="flow-node">
                   <div class="node-icon">
-                    <lucide-angular [name]="getComponentIcon(component.type)" [size]="16"></lucide-angular>
+                    <rag-icon [img]="getComponentIcon(component.type)" [size]="16"></rag-icon>
                   </div>
                   <div class="node-label">{{ component.name }}</div>
                 </div>
                 @if (!isLast) {
                   <div class="flow-connector">
-                    <lucide-angular [name]="'arrow-right'" [size]="20"></lucide-angular>
+                    <rag-icon [img]="arrowRightIcon" [size]="20"></rag-icon>
                   </div>
                 }
               }
@@ -164,7 +164,7 @@
           </div>
 
           <div class="connection-note">
-            <lucide-angular [name]="'info'" [size]="16"></lucide-angular>
+            <rag-icon [img]="infoIcon" [size]="16"></rag-icon>
             <div>
               <strong>Note:</strong> Advanced connection configuration will be available in the flow designer. 
               For now, components will be connected in the order selected.
@@ -206,7 +206,7 @@
                 <div class="component-review-item">
                   <div class="component-order">{{ i + 1 }}</div>
                   <div class="component-icon">
-                    <lucide-angular [name]="getComponentIcon(component.type)" [size]="16"></lucide-angular>
+                    <rag-icon [img]="getComponentIcon(component.type)" [size]="16"></rag-icon>
                   </div>
                   <div class="component-details">
                     <div class="component-name">{{ component.name }}</div>
@@ -234,7 +234,7 @@
         <rag-button 
           [variant]="'outline'" 
           (click)="previousStep()">
-          <lucide-angular [name]="'arrow-left'" [size]="14"></lucide-angular>
+          <rag-icon [img]="arrowLeftIcon" [size]="14"></rag-icon>
           Previous
         </rag-button>
       }
@@ -247,7 +247,7 @@
           [disabled]="!canGoNext"
           (click)="nextStep()">
           Next
-          <lucide-angular [name]="'arrow-right'" [size]="14"></lucide-angular>
+          <rag-icon [img]="arrowRightIcon" [size]="14"></rag-icon>
         </rag-button>
       } @else {
         <rag-button 
@@ -259,7 +259,7 @@
           } @else {
             Create Flow
           }
-          <lucide-angular [name]="'check'" [size]="14"></lucide-angular>
+          <rag-icon [img]="checkIcon" [size]="14"></rag-icon>
         </rag-button>
       }
     </div>

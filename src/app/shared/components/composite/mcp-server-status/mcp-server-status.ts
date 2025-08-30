@@ -1,7 +1,8 @@
 import { Component, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
-import { LucideAngularModule } from 'lucide-angular';
+import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
+import { Server, CheckCircle, XCircle, Circle } from 'lucide-angular';
 
 export interface McpServerInfo {
   status: 'active' | 'inactive' | 'error';
@@ -13,11 +14,14 @@ export interface McpServerInfo {
 
 @Component({
   selector: 'rag-mcp-server-status',
-  imports: [CommonModule, RagBadge, LucideAngularModule],
+  imports: [CommonModule, RagBadge, RagIcon],
   templateUrl: './mcp-server-status.html',
   styleUrl: './mcp-server-status.scss'
 })
 export class McpServerStatus implements OnInit, OnDestroy {
+  // Icon components
+  readonly ServerIcon = Server;
+  
   readonly serverInfo = signal<McpServerInfo>({
     status: 'active',
     port: 3000,
@@ -66,11 +70,11 @@ export class McpServerStatus implements OnInit, OnDestroy {
     }
   }
 
-  getStatusIcon(status: string): string {
+  getStatusIcon(status: string): any {
     switch (status) {
-      case 'active': return 'check-circle';
-      case 'error': return 'x-circle';
-      default: return 'circle';
+      case 'active': return CheckCircle;
+      case 'error': return XCircle;
+      default: return Circle;
     }
   }
 }

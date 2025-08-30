@@ -1,6 +1,7 @@
 import { Component, input, output, forwardRef, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Check, Minus } from 'lucide-angular';
 import { RagIcon } from '../rag-icon/rag-icon';
 
 @Component({
@@ -18,6 +19,10 @@ import { RagIcon } from '../rag-icon/rag-icon';
   ]
 })
 export class RagCheckbox implements ControlValueAccessor {
+  // Icon constants
+  readonly CheckIcon = Check;
+  readonly MinusIcon = Minus;
+  
   // Modern Angular 20: Use input() with proper typing
   readonly size = input<'sm' | 'md' | 'lg'>('md');
   readonly disabled = input(false);

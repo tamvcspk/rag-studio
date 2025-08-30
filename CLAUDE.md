@@ -2,6 +2,19 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Quick Reference Guide
+
+### Project Information Sources
+For detailed project information, refer to the `docs/` folder:
+- **System Requirements**: `docs/SRS_RAG_Studio.md` - Complete functional and non-functional requirements
+- **System Design**: `docs/SDD_RAG_Studio.md` - Architectural design and implementation details
+- **Component Documentation**: `docs/ATOMIC_COMPONENTS.md`, `docs/SEMANTIC_COMPONENTS.md` - Component library guides
+- **Design Tokens**: `docs/DESIGN_TOKENS_GUIDE.md`, `docs/DESIGN_TOKENS_API.md` - Design system documentation
+
+### Development Best Practices
+- **Angular Best Practices**: Use the Angular CLI MCP tool (`mcp__angular-cli__get_best_practices`) for current Angular 20+ guidelines
+- **Rust Best Practices**: Follow the comprehensive Rust guidelines detailed in the "Rust Development Guidelines" section below
+
 ## Project Overview
 
 RAG Studio is a local-first, no-code/low-code application for building and operating personal Retrieval-Augmented Generation (RAG) systems. It's built using Tauri with an Angular frontend and Rust backend (with PyO3 for Python AI integration), designed to manage knowledge bases, pipelines, tools, and flows while exposing functionality via a single Model Context Protocol (MCP) server.
@@ -57,9 +70,20 @@ This is a hybrid Tauri application with two main components:
 ## Project Structure
 
 - `src/`: Angular frontend application
+  - `src/app/pages/`: Main application pages (dashboard, tools, knowledge-bases, pipelines, flows, settings)
+  - `src/app/shared/components/`: Component library with 3-tier architecture:
+    - `atomic/`: Basic UI primitives (buttons, inputs, icons, badges, etc.)
+    - `semantic/`: Context-aware components (cards, forms, navigation, overlays)
+    - `composite/`: Complex business components (wizards, designers, dashboards)
+  - `src/app/shared/tokens/`: Design token system with CSS custom properties
+  - `src/app/shared/layout/`: Layout components (main-layout with sidebar)
 - `src-tauri/`: Rust backend and Tauri configuration
+  - `src-tauri/src/lib.rs`: Main library with Tauri commands and Python integration
+  - `src-tauri/src/python_integration.rs`: PyO3 integration layer
+  - `src-tauri/src/mcp_server.rs`: MCP server management
+  - `src-tauri/Cargo.toml`: Rust dependencies including PyO3, Tokio, rmcp
 - `docs/`: Technical documentation (SRS, SDD)
-- `angular.json`: Angular workspace configuration
+- `angular.json`: Angular workspace configuration (port 1420, SCSS support)
 - `tauri.conf.json`: Tauri application configuration
 
 ## Core Concepts
@@ -103,22 +127,21 @@ Key Python integration patterns:
 
 The application exposes several Tauri commands for frontend-backend communication:
 
-### Core RAG Operations
-- `rust_call_rag_search(query: &str)` - RAG search with hybrid BM25 + vector search
-- `advanced_python_text_processing(text: String)` - Text processing for pipeline operations
-
-### System Integration
-- `greet(name: &str)` - Basic Rust greeting
-- `rust_call_python(name: &str)` - Python greeting function
-- `rust_call_python_direct(x: i32, y: i32)` - Mathematical operations
-- `get_python_system_info()` - Python system information
-- `test_python_libraries()` - External library testing (FAISS, Sentence-Transformers)
+### Core System Commands
+- `greet(name: &str)` - Basic Rust greeting for testing
+- `rust_call_python(name: &str)` - Python greeting function via PyO3
 
 ### MCP Server Management
-- Tool registration and activation/deactivation
-- Knowledge base management and versioning
-- Pipeline orchestration and scheduling
-- Flow composition and execution
+- `start_mcp_server()` - Start the MCP server instance
+- `stop_mcp_server()` - Stop the MCP server instance
+- `get_mcp_status()` - Get current MCP server status
+- `get_mcp_healthcheck()` - Health check for MCP server
+- `get_mcp_service_info()` - Service information for MCP server
+
+The MCP server exposes tool sets:
+- `rag.*` - RAG search and answer operations
+- `kb.*` - Knowledge base management
+- `admin.*` - Administrative functions
 
 ## Performance Considerations
 
@@ -147,10 +170,24 @@ The architecture is designed for optimal performance with significant improvemen
 
 ## Testing
 
-The Rust backend includes comprehensive tests:
-- Python integration tests in `src-tauri/src/lib.rs:81-138`
+The project includes comprehensive testing across both frontend and backend:
+
+### Rust Backend Testing
+- Python integration tests in `src-tauri/src/lib.rs` (lines 107-129)
 - Run tests with `cargo test` from the `src-tauri/` directory
 - Tests verify Python context initialization, system info, and library functionality
+
+### Angular Frontend Testing
+- Component tests using Angular Testing Library patterns
+- Test files follow `*.spec.ts` naming convention
+- Tests located alongside components in their respective directories
+- Run tests with `ng test` (when test runner is configured)
+
+### Key Test Areas
+- Python-Rust integration via PyO3
+- MCP server initialization and commands
+- Component rendering and interaction
+- Design token system functionality
 
 ## Development Guidelines
 
@@ -269,8 +306,36 @@ export class ExampleComponent {
 - Deep integration with Chrome DevTools for performance profiling
 - Test signal-based components with modern testing patterns
 
-### Rust Backend Guidelines
+### Rust Development Guidelines
 
+**IMPORTANT: Follow these comprehensive Rust best practices for all backend development.**
+
+#### Core Principles
+Generate high-quality, idiomatic Rust code adhering to Rust's best practices as per the Rust Book, Rust API Guidelines, and community standards.
+
+#### Key Guidelines
+
+1. **Use Cargo**: Structure projects with Cargo.toml and src/main.rs or lib.rs. Include dependencies only if necessary, preferring standard library features.
+
+2. **Code Formatting**: Use rustfmt-style: snake_case for functions/variables, CamelCase for types/traits/enums, SCREAMING_SNAKE_CASE for constants. Limit lines to 100 characters. Use 4-space indentation.
+
+3. **Memory Management**: Prioritize ownership and borrowing. Use references (&T, &mut T) over cloning. Employ lifetimes ('a) correctly. Use smart pointers (Box, Rc, Arc) judiciously.
+
+4. **Error Handling**: Return Result<T, E> for errors, using ? for propagation. Define custom errors with thiserror or anyhow if needed. Use Option<T> for absence. Avoid unwrap/expect in production code; use them only in examples.
+
+5. **Safety and Idioms**: Write safe code; avoid unsafe unless justified with detailed comments. Use iterators, closures, and functional patterns (e.g., map, filter, collect). Prefer enums over booleans for state.
+
+6. **Concurrency**: For multithreading, use std::thread and sync primitives (Mutex, RwLock, Arc). For async, use async/await with tokio if required.
+
+7. **Performance**: Avoid unnecessary allocations. Use slices over Vec when possible. Profile with tools like cargo flamegraph if performance is mentioned.
+
+8. **Testing**: Include #[cfg(test)] modules with unit tests using assert_eq!, assert!. Add integration tests in tests/ directory.
+
+9. **Documentation**: Use /// doc comments for public items. Include examples in docs with ```rust (disable examples with :disable-run when appropriate).
+
+10. **Dependencies and Security**: Minimize crates; use trusted ones like serde, rand. Sanitize inputs, handle edge cases. Follow semver.
+
+#### Project-Specific Guidelines
 - Use `OnceLock` for thread-safe lazy initialization of shared resources
 - Cache Python modules to avoid repeated compilation overhead
 - Always use `Python::with_gil()` for Python operations in PyO3 integration
@@ -278,6 +343,9 @@ export class ExampleComponent {
 - Implement comprehensive error handling with proper error propagation
 - Use Tokio async runtime efficiently for concurrent operations
 - Follow Rust ownership and borrowing principles strictly
+
+#### Code Generation Standards
+Generate complete, compilable code with a main function or lib entry point. If the code is a snippet, wrap it in a minimal example. Ensure it's modular, readable, and efficient. Respond with code only unless explanations are specifically requested.
 
 ### Security Guidelines
 

@@ -1,7 +1,7 @@
 <div class="flow-designer">
   <div class="designer-header">
     <div class="header-info">
-      <lucide-angular [name]="'layout'" [size]="24"></lucide-angular>
+      <rag-icon [img]="layoutIcon" [size]="24"></rag-icon>
       <div>
         <h3>Flow Designer</h3>
         <p *ngIf="flow()">{{ flow()?.name }}</p>
@@ -12,7 +12,7 @@
         [variant]="isDesignMode() ? 'solid' : 'outline'" 
         [size]="'sm'"
         (click)="toggleDesignMode()">
-        <lucide-angular [name]="'edit-3'" [size]="14"></lucide-angular>
+        <rag-icon [img]="edit3Icon" [size]="14"></rag-icon>
         {{ isDesignMode() ? 'View Mode' : 'Design Mode' }}
       </rag-button>
       <rag-button 
@@ -26,7 +26,7 @@
         [size]="'sm'"
         (click)="saveFlow()"
         [disabled]="!flow()">
-        <lucide-angular [name]="'save'" [size]="14"></lucide-angular>
+        <rag-icon [img]="saveIcon" [size]="14"></rag-icon>
         Save Flow
       </rag-button>
     </div>
@@ -35,7 +35,7 @@
   <div class="designer-content">
     @if (nodes().length === 0) {
       <app-empty-state-panel
-        [icon]="'git-branch'"
+        [icon]="gitBranchIcon"
         [title]="'No Flow Components'"
         [description]="'Add components to your flow to start designing the workflow.'"
         [actionLabel]="'Add Components'"
@@ -71,7 +71,7 @@
               (click)="selectNode(node)">
               <div class="node-header">
                 <div class="node-icon">
-                  <lucide-angular [name]="getNodeIcon(node.type)" [size]="16"></lucide-angular>
+                  <rag-icon [img]="getNodeIcon(node.type)" [size]="16"></rag-icon>
                 </div>
                 <rag-badge 
                   [variant]="'soft'" 
@@ -101,7 +101,7 @@
               class="close-panel" 
               (click)="selectedNode.set(null)"
               aria-label="Close properties panel">
-              <lucide-angular [name]="'x'" [size]="16"></lucide-angular>
+              <rag-icon [img]="xIcon" [size]="16"></rag-icon>
             </button>
           </div>
           <div class="panel-content">
@@ -156,14 +156,14 @@
         [variant]="'ghost'" 
         [size]="'sm'"
         title="Fit to screen">
-        <lucide-angular [name]="'maximize-2'" [size]="14"></lucide-angular>
+        <rag-icon [img]="maximize2Icon" [size]="14"></rag-icon>
         Fit View
       </rag-button>
       <rag-button 
         [variant]="'ghost'" 
         [size]="'sm'"
         title="Reset zoom">
-        <lucide-angular [name]="'refresh-cw'" [size]="14"></lucide-angular>
+        <rag-icon [img]="refreshCwIcon" [size]="14"></rag-icon>
         Reset
       </rag-button>
     </div>

@@ -21,7 +21,7 @@
         [size]="size()"
         [disabled]="disabled() || (!showPresets() ? false : !isCustom())"
         [readonly]="!showPresets() ? false : !isCustom()"
-        [leftIcon]="'clock'"
+        [leftIcon]="ClockIcon"
         [error]="!isValidCron()"
         [value]="expression"
         (input)="handleExpressionChange($event)"
@@ -33,7 +33,7 @@
   <div class="rag-cron-input__feedback">
     @if (isValidCron()) {
       <div class="rag-cron-input__description">
-        <lucide-icon name="info" [size]="14"></lucide-icon>
+        <rag-icon [img]="InfoIcon" size="xs"></rag-icon>
         <span>{{ currentValue().description }}</span>
         @if (timezone() !== 'UTC') {
           <span class="rag-cron-input__timezone">({{ timezone() }})</span>
@@ -41,7 +41,7 @@
       </div>
     } @else {
       <div class="rag-cron-input__error">
-        <lucide-icon name="alert-circle" [size]="14"></lucide-icon>
+        <rag-icon [img]="AlertCircleIcon" size="xs"></rag-icon>
         <span>Invalid cron expression. Use format: minute hour day month weekday</span>
       </div>
     }
@@ -50,7 +50,7 @@
   <!-- Cron Format Help -->
   <div class="rag-cron-input__help">
     <div class="rag-cron-input__help-header">
-      <lucide-icon name="help-circle" [size]="14"></lucide-icon>
+      <rag-icon [img]="HelpCircleIcon" size="xs"></rag-icon>
       <span>Cron Format Help</span>
     </div>
     <div class="rag-cron-input__help-content">

@@ -1,5 +1,5 @@
 <div [class]="blockClasses()">
-  @if (title() || showCopy()) {
+  @if (title() || copyable()) {
     <div class="rag-code-block__header">
       @if (title()) {
         <div class="rag-code-block__title-group">
@@ -10,14 +10,14 @@
         </div>
       }
       
-      @if (showCopy()) {
+      @if (copyable()) {
         <button 
           class="rag-code-block__copy-button" 
           type="button"
           (click)="copyToClipboard()"
           [attr.aria-label]="copied() ? 'Copied!' : 'Copy code'"
           [title]="copied() ? 'Copied!' : 'Copy code'">
-          <lucide-icon [name]="copyButtonIcon()" size="14" />
+          <rag-icon [img]="copyButtonIcon()" size="sm" />
         </button>
       }
     </div>

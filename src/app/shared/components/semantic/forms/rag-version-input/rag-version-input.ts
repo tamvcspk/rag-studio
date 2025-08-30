@@ -1,8 +1,8 @@
 import { Component, input, output, forwardRef, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { LucideAngularModule } from 'lucide-angular';
-import { RagInput, RagSelect } from '../../../atomic';
+import { TrendingUp, AlertCircle, GitBranch, Tag } from 'lucide-angular';
+import { RagInput, RagSelect, RagIcon } from '../../../atomic';
 
 export type VersionType = 'exact' | 'range' | 'latest';
 
@@ -14,7 +14,7 @@ export interface VersionValue {
 @Component({
   selector: 'rag-version-input',
   standalone: true,
-  imports: [CommonModule, RagInput, RagSelect, LucideAngularModule],
+  imports: [CommonModule, RagInput, RagSelect, RagIcon],
   templateUrl: './rag-version-input.html',
   styleUrl: './rag-version-input.scss',
   providers: [
@@ -26,6 +26,12 @@ export interface VersionValue {
   ]
 })
 export class RagVersionInput implements ControlValueAccessor {
+  // Icon constants
+  readonly TrendingUpIcon = TrendingUp;
+  readonly AlertCircleIcon = AlertCircle;
+  readonly GitBranchIcon = GitBranch;
+  readonly TagIcon = Tag;
+  
   // Modern Angular 20: Use input() with proper typing
   readonly placeholder = input('e.g., 1.0.0');
   readonly size = input<'sm' | 'md' | 'lg'>('md');
@@ -41,6 +47,11 @@ export class RagVersionInput implements ControlValueAccessor {
   private readonly versionValueSignal = signal('');
   private onChange = (value: VersionValue) => {};
   private onTouched = () => {};
+
+  // Computed properties
+  readonly leftIcon = computed(() => {
+    return this.versionType === 'range' ? this.GitBranchIcon : this.TagIcon;
+  });
 
   get versionType(): VersionType {
     return this.versionTypeSignal();

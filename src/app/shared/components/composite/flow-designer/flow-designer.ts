@@ -1,8 +1,21 @@
 import { Component, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
+import { 
+  LayoutIcon,
+  Edit3Icon,
+  SaveIcon,
+  XIcon,
+  Maximize2Icon,
+  RefreshCwIcon,
+  WrenchIcon,
+  BookOpenIcon,
+  WorkflowIcon,
+  CircleIcon,
+  GitBranchIcon
+} from 'lucide-angular';
 import { Flow, FlowPart } from '../../../models/flow.model';
 import { EmptyStatePanelComponent } from '../empty-state-panel/empty-state-panel';
+import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
 import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 
@@ -19,7 +32,7 @@ interface DesignerNode {
   standalone: true,
   imports: [
     CommonModule,
-    LucideAngularModule,
+    RagIcon,
     RagButton,
     RagBadge,
     EmptyStatePanelComponent
@@ -30,6 +43,19 @@ interface DesignerNode {
 export class FlowDesignerComponent {
   readonly flow = input<Flow>();
   readonly readonly = input(false);
+
+  // Icon components
+  readonly layoutIcon = LayoutIcon;
+  readonly edit3Icon = Edit3Icon;
+  readonly saveIcon = SaveIcon;
+  readonly xIcon = XIcon;
+  readonly maximize2Icon = Maximize2Icon;
+  readonly refreshCwIcon = RefreshCwIcon;
+  readonly wrenchIcon = WrenchIcon;
+  readonly bookOpenIcon = BookOpenIcon;
+  readonly workflowIcon = WorkflowIcon;
+  readonly circleIcon = CircleIcon;
+  readonly gitBranchIcon = GitBranchIcon;
 
   readonly onSave = output<Flow>();
   readonly onCancel = output<void>();
@@ -59,12 +85,12 @@ export class FlowDesignerComponent {
     this.nodes.set(nodes);
   }
 
-  getNodeIcon(type: 'tool' | 'kb' | 'pipeline'): string {
+  getNodeIcon(type: 'tool' | 'kb' | 'pipeline'): any {
     switch (type) {
-      case 'tool': return 'wrench';
-      case 'kb': return 'book-open';
-      case 'pipeline': return 'workflow';
-      default: return 'circle';
+      case 'tool': return this.wrenchIcon;
+      case 'kb': return this.bookOpenIcon;
+      case 'pipeline': return this.workflowIcon;
+      default: return this.circleIcon;
     }
   }
 

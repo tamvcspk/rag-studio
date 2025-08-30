@@ -1,7 +1,7 @@
 import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RagStatCard, StatCardData } from '../../semantic/data-display/rag-stat-card/rag-stat-card';
-import { LucideAngularModule } from 'lucide-angular';
+import { ServerIcon, WrenchIcon, BookOpenIcon, WorkflowIcon } from 'lucide-angular';
 
 export interface DashboardStats {
   mcpServer: {
@@ -25,11 +25,17 @@ export interface DashboardStats {
 
 @Component({
   selector: 'rag-dashboard-stats-grid',
-  imports: [CommonModule, RagStatCard, LucideAngularModule],
+  imports: [CommonModule, RagStatCard],
   templateUrl: './dashboard-stats-grid.html',
   styleUrl: './dashboard-stats-grid.scss'
 })
 export class DashboardStatsGrid {
+  // Icon components
+  readonly serverIcon = ServerIcon;
+  readonly wrenchIcon = WrenchIcon;
+  readonly bookOpenIcon = BookOpenIcon;
+  readonly workflowIcon = WorkflowIcon;
+
   // Mock data - in real app this would come from a service
   readonly stats = signal<DashboardStats>({
     mcpServer: {
@@ -58,22 +64,22 @@ export class DashboardStatsGrid {
       {
         label: 'MCP Server',
         value: currentStats.mcpServer.status === 'active' ? 'Active' : 'Inactive',
-        icon: 'server'
+        icon: this.serverIcon
       },
       {
         label: 'Active Tools',
         value: currentStats.activeTools.total,
-        icon: 'wrench'
+        icon: this.wrenchIcon
       },
       {
         label: 'Knowledge Bases',
         value: currentStats.knowledgeBases.total,
-        icon: 'book-open'
+        icon: this.bookOpenIcon
       },
       {
         label: 'Active Pipelines',
         value: currentStats.activePipelines.total,
-        icon: 'workflow'
+        icon: this.workflowIcon
       }
     ];
   });

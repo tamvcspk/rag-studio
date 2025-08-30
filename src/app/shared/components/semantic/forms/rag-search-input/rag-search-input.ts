@@ -1,13 +1,13 @@
 import { Component, input, output, forwardRef, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { LucideAngularModule } from 'lucide-angular';
+import { Search, X } from 'lucide-angular';
 import { RagInput } from '../../../atomic';
 
 @Component({
   selector: 'rag-search-input',
   standalone: true,
-  imports: [CommonModule, RagInput, LucideAngularModule],
+  imports: [CommonModule, RagInput],
   templateUrl: './rag-search-input.html',
   styleUrl: './rag-search-input.scss',
   providers: [
@@ -19,6 +19,10 @@ import { RagInput } from '../../../atomic';
   ]
 })
 export class RagSearchInput implements ControlValueAccessor {
+  // Icon constants
+  readonly SearchIcon = Search;
+  readonly XIcon = X;
+
   // Modern Angular 20: Use input() with proper typing
   readonly placeholder = input('Search...');
   readonly size = input<'sm' | 'md' | 'lg'>('md');
@@ -62,6 +66,8 @@ export class RagSearchInput implements ControlValueAccessor {
   // Modern Angular 20: Use computed for derived state
   readonly hasValue = computed(() => this.valueSignal().length > 0);
   readonly showClear = computed(() => this.showClearButton() && this.hasValue() && !this.disabled());
+  readonly leftIcon = computed(() => this.SearchIcon);
+  readonly rightIcon = computed(() => this.showClear() ? this.XIcon : undefined);
 
   handleInput(event: Event): void {
     const target = event.target as HTMLInputElement;

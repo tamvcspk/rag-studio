@@ -1,10 +1,10 @@
 import { Component, ViewChild, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularModule, Plus, Wrench, Search, Filter } from 'lucide-angular';
+import { Plus, Wrench, Search, Filter } from 'lucide-angular';
 import { ToolCardComponent } from '../../shared/components/composite/tool-card/tool-card';
 import { CreateToolWizardComponent } from '../../shared/components/composite/create-tool-wizard/create-tool-wizard';
-
+import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
 import { MockToolsService } from '../../shared/services/mock-tools.service';
 import { Tool, ToolStatus } from '../../shared/types/tool.types';
 import { RagBadge, RagButton, RagSearchInput, RagSelect, RagToast } from '../../shared/components';
@@ -15,7 +15,7 @@ import { RagBadge, RagButton, RagSearchInput, RagSelect, RagToast } from '../../
   imports: [
     CommonModule,
     FormsModule,
-    LucideAngularModule,
+    RagIcon,
     ToolCardComponent,
     CreateToolWizardComponent,
     RagButton,
@@ -31,6 +31,12 @@ export class Tools {
   @ViewChild(CreateToolWizardComponent) createWizard!: CreateToolWizardComponent;
   
   private readonly toolsService = inject(MockToolsService);
+  
+  // Icon components
+  readonly PlusIcon = Plus;
+  readonly WrenchIcon = Wrench;
+  readonly SearchIcon = Search;
+  readonly FilterIcon = Filter;
   
   // Reactive signals
   readonly tools = this.toolsService.tools;

@@ -3,7 +3,7 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--rag-primitive-spacing-md);
   }
 
   &__title-section {
@@ -17,47 +17,46 @@
 
   &__title {
     font-size: var(--rag-primitive-fontSize-lg);
-    font-weight: var(--font-weight-semibold);
-    margin-bottom: var(--space-1);
-    margin: 0 0 var(--space-1) 0;
-    color: var(--gray-12);
+    font-weight: 600;
+    margin: 0 0 var(--rag-primitive-spacing-xs) 0;
+    color: var(--rag-semantic-color-text-default);
   }
 
   &__description {
     font-size: var(--rag-primitive-fontSize-md);
-    color: var(--gray-10);
+    color: var(--rag-semantic-color-text-muted);
     margin: 0;
   }
 
   &__status {
     display: flex;
     align-items: center;
-    gap: var(--space-1);
+    gap: var(--rag-primitive-spacing-xs);
     flex-shrink: 0;
 
     .status-icon {
-      width: 12px;
-      height: 12px;
+      width: var(--rag-primitive-fontSize-xs);
+      height: var(--rag-primitive-fontSize-xs);
 
       &.active {
-        color: var(--green-9);
+        color: var(--rag-semantic-color-success-600);
       }
 
       &.error {
-        color: var(--red-9);
+        color: var(--rag-semantic-color-danger-600);
       }
     }
   }
 
   &__flow {
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--rag-primitive-spacing-lg);
   }
 
   &__metrics {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-3);
-    margin-bottom: var(--space-4);
+    gap: var(--rag-primitive-spacing-md);
+    margin-bottom: var(--rag-primitive-spacing-lg);
 
     .metric-item {
       display: flex;
@@ -65,14 +64,14 @@
 
       .metric-label {
         font-size: var(--rag-primitive-fontSize-xs);
-        color: var(--gray-10);
-        margin-bottom: var(--space-1);
+        color: var(--rag-semantic-color-text-muted);
+        margin-bottom: var(--rag-primitive-spacing-xs);
       }
 
       .metric-value {
         font-size: var(--rag-primitive-fontSize-md);
-        font-weight: var(--font-weight-medium);
-        color: var(--gray-12);
+        font-weight: 500;
+        color: var(--rag-semantic-color-text-default);
       }
     }
 
@@ -84,17 +83,17 @@
 
   &__actions {
     display: flex;
-    gap: var(--space-2);
+    gap: var(--rag-primitive-spacing-sm);
     flex-wrap: wrap;
 
     rag-button {
       display: flex;
       align-items: center;
-      gap: var(--space-1);
+      gap: var(--rag-primitive-spacing-xs);
 
-      lucide-icon {
-        width: 14px;
-        height: 14px;
+      rag-icon {
+        width: var(--rag-primitive-fontSize-sm);
+        height: var(--rag-primitive-fontSize-sm);
       }
     }
   }
@@ -102,27 +101,27 @@
 
 // Status indicator styles
 .status-indicator {
-  width: 8px;
-  height: 8px;
+  width: var(--rag-primitive-spacing-sm);
+  height: var(--rag-primitive-spacing-sm);
   border-radius: 50%;
   display: inline-block;
 
   &.active {
-    background-color: var(--green-9);
-    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+    background-color: var(--rag-semantic-color-success-600);
+    box-shadow: 0 0 0 2px var(--rag-semantic-color-success-100);
   }
 
   &.inactive {
-    background-color: var(--gray-9);
+    background-color: var(--rag-semantic-color-neutral-500);
   }
 
   &.warning {
-    background-color: var(--amber-9);
-    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+    background-color: var(--rag-semantic-color-warning-600);
+    box-shadow: 0 0 0 2px var(--rag-semantic-color-warning-100);
   }
 
   &.error {
-    background-color: var(--red-9);
-    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+    background-color: var(--rag-semantic-color-danger-600);
+    box-shadow: 0 0 0 2px var(--rag-semantic-color-danger-100);
   }
 }

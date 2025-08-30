@@ -11,11 +11,11 @@
     (keydown)="onTriggerKeydown($event)"
   >
     @if (triggerIcon()) {
-      <lucide-angular
-        [name]="triggerIcon()!"
-        size="16"
+      <rag-icon
+        [img]="triggerIcon()!"
+        size="sm"
         class="rt-DropdownTriggerIcon"
-      ></lucide-angular>
+      ></rag-icon>
     }
     
     @if (triggerContent()) {
@@ -25,12 +25,12 @@
     <ng-content select="[slot=trigger]"></ng-content>
     
     @if (showArrow()) {
-      <lucide-angular
-        name="chevron-down"
-        size="14"
+      <rag-icon
+        [img]="chevronDown()"
+        size="xs"
         class="rt-DropdownTriggerArrow"
         [class.rt-rotated]="isOpen()"
-      ></lucide-angular>
+      />
     }
   </button>
 
@@ -57,11 +57,11 @@
             >
               <div class="rt-DropdownItemContent">
                 @if (item.icon) {
-                  <lucide-angular
-                    [name]="item.icon"
-                    size="16"
+                  <rag-icon
+                    [img]="item.icon"
+                    size="sm"
                     class="rt-DropdownItemIcon"
-                  ></lucide-angular>
+                  ></rag-icon>
                 }
                 
                 <span class="rt-DropdownItemLabel">{{ item.label }}</span>
@@ -84,11 +84,11 @@
             >
               <div class="rt-DropdownItemContent">
                 @if (item.icon) {
-                  <lucide-angular
-                    [name]="item.icon"
-                    size="16"
+                  <rag-icon
+                    [img]="item.icon"
+                    size="sm"
                     class="rt-DropdownItemIcon"
-                  ></lucide-angular>
+                  ></rag-icon>
                 }
                 
                 <span class="rt-DropdownItemLabel">{{ item.label }}</span>

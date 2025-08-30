@@ -1,18 +1,19 @@
 import { Component, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Globe, FileText, RefreshCw, Download, Trash2, Pause, X, LoaderCircle } from 'lucide-angular';
+import { Globe, FileText, RefreshCw, Download, Trash2, Pause, X, LoaderCircle } from 'lucide-angular';
 import { KnowledgeBase, KnowledgeBaseStatus } from '../../../types';
 import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
 import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 import { RagProgress } from '../../atomic/primitives/rag-progress/rag-progress';
+import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
 
 @Component({
   selector: 'app-knowledge-base-card',
   standalone: true,
   imports: [
     CommonModule,
-    LucideAngularModule,
+    RagIcon,
     RagCard,
     RagBadge,
     RagButton,

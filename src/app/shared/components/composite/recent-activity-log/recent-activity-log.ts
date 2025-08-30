@@ -2,7 +2,8 @@ import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
 import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
-import { LucideAngularModule } from 'lucide-angular';
+import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
+import { Activity } from 'lucide-angular';
 
 export interface ActivityLogEntry {
   id: string;
@@ -14,13 +15,16 @@ export interface ActivityLogEntry {
 
 @Component({
   selector: 'rag-recent-activity-log',
-  imports: [CommonModule, RagCard, RagBadge, LucideAngularModule],
+  imports: [CommonModule, RagCard, RagBadge, RagIcon],
   templateUrl: './recent-activity-log.html',
   styleUrl: './recent-activity-log.scss'
 })
 export class RecentActivityLog implements OnInit {
   readonly activities = signal<ActivityLogEntry[]>([]);
   readonly maxEntries = signal(10);
+
+  // Icon components
+  readonly ActivityIcon = Activity;
 
   ngOnInit(): void {
     this.loadMockData();

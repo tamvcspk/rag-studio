@@ -10,11 +10,11 @@
     <div class="rt-SidebarItemContent">
       <div class="rt-SidebarItemMain">
         @if (icon()) {
-          <lucide-angular
-            [name]="icon()!"
-            size="16"
+          <rag-icon
+            [img]="icon()!"
+            size="sm"
             class="rt-SidebarItemIcon"
-          ></lucide-angular>
+          ></rag-icon>
         }
         
         <span class="rt-SidebarItemLabel">{{ label() }}</span>
@@ -32,10 +32,10 @@
           (click)="onToggleClick($event)"
           type="button"
         >
-          <lucide-angular
-            [name]="collapsed() ? 'chevron-right' : 'chevron-down'"
-            size="14"
-          ></lucide-angular>
+          <rag-icon
+            [img]="collapsed() ? chevronRight() : chevronDown()"
+            size="xs"
+          ></rag-icon>
         </button>
       }
     </div>
@@ -51,11 +51,11 @@
     <div class="rt-SidebarItemContent">
       <div class="rt-SidebarItemMain">
         @if (icon()) {
-          <lucide-angular
-            [name]="icon()!"
-            size="16"
+          <rag-icon
+            [img]="icon()!"
+            size="sm"
             class="rt-SidebarItemIcon"
-          ></lucide-angular>
+          ></rag-icon>
         }
         
         <span class="rt-SidebarItemLabel">{{ label() }}</span>
@@ -74,10 +74,10 @@
           (click)="onToggleClick($event)"
           type="button"
         >
-          <lucide-angular
-            [name]="collapsed() ? 'chevron-right' : 'chevron-down'"
-            size="14"
-          ></lucide-angular>
+          <rag-icon
+            [img]="collapsed() ? chevronRight() : chevronDown()"
+            size="xs"
+          ></rag-icon>
         </button>
       }
     </div>

@@ -2,11 +2,11 @@
   <!-- Header -->
   <div class="card-header">
     <div class="title-section">
-      <lucide-angular 
+      <rag-icon 
         [img]="statusConfig().icon.component" 
-        [size]="20"
+        size="md"
         [style.color]="statusConfig().icon.color">
-      </lucide-angular>
+      </rag-icon>
       <div class="title-info">
         <h3 class="title">{{ knowledgeBase().name }}</h3>
         <p class="subtitle">
@@ -21,11 +21,11 @@
       [color]="statusConfig().badge.color"
       class="status-badge">
       @if (statusConfig().badge.icon && isIndexing()) {
-        <lucide-angular 
+        <rag-icon 
           [img]="statusConfig().badge.icon" 
-          [size]="12"
+          size="xs"
           class="animate-spin">
-        </lucide-angular>
+        </rag-icon>
       }
       {{ knowledgeBase().status | uppercase }}
     </rag-badge>
@@ -111,29 +111,29 @@
     <div class="action-buttons">
       @if (isIndexed()) {
         <rag-button variant="outline" size="sm" (click)="onReindex()">
-          <lucide-angular [img]="iconComponents.RefreshCw" [size]="14"></lucide-angular>
+          <rag-icon [img]="iconComponents.RefreshCw" size="xs" />
           Reindex
         </rag-button>
         <rag-button variant="ghost" size="sm" (click)="onExport()">
-          <lucide-angular [img]="iconComponents.Download" [size]="14"></lucide-angular>
+          <rag-icon [img]="iconComponents.Download" size="xs" />
           Export
         </rag-button>
         <rag-button variant="ghost" size="sm" class="danger-button" (click)="onDelete()">
-          <lucide-angular [img]="iconComponents.Trash2" [size]="14"></lucide-angular>
+          <rag-icon [img]="iconComponents.Trash2" size="xs" />
           Delete
         </rag-button>
       } @else if (isIndexing()) {
         <rag-button variant="outline" size="sm" (click)="onPause()">
-          <lucide-angular [img]="iconComponents.Pause" [size]="14"></lucide-angular>
+          <rag-icon [img]="iconComponents.Pause" size="xs" />
           Pause
         </rag-button>
         <rag-button variant="ghost" size="sm" class="danger-button" (click)="onCancel()">
-          <lucide-angular [img]="iconComponents.X" [size]="14"></lucide-angular>
+          <rag-icon [img]="iconComponents.X" size="xs" />
           Cancel
         </rag-button>
       } @else if (isFailed()) {
         <rag-button variant="solid" size="sm" (click)="onReindex()">
-          <lucide-angular [img]="iconComponents.RefreshCw" [size]="14"></lucide-angular>
+          <rag-icon [img]="iconComponents.RefreshCw" size="xs" />
           Retry
         </rag-button>
         <rag-button variant="outline" size="sm">

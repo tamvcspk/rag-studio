@@ -1,5 +1,6 @@
 import { Component, input, output, computed, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Info, CheckCircle, AlertTriangle, XCircle, X } from 'lucide-angular';
 import { RagIcon, RagButton } from '../../primitives';
 
 export interface RagToastAction {
@@ -53,15 +54,18 @@ export class RagToast implements OnInit, OnDestroy {
 
   readonly defaultIcon = computed(() => {
     switch (this.variant()) {
-      case 'info': return 'info';
-      case 'success': return 'check-circle';
-      case 'warning': return 'alert-triangle';
-      case 'error': return 'x-circle';
-      default: return 'info';
+      case 'info': return Info;
+      case 'success': return CheckCircle;
+      case 'warning': return AlertTriangle;
+      case 'error': return XCircle;
+      default: return Info;
     }
   });
 
   readonly displayIcon = computed(() => this.icon() || this.defaultIcon());
+
+  // Icon constants
+  readonly XIcon = X;
 
   ngOnInit(): void {
     if (!this.persistent() && this.duration() > 0) {

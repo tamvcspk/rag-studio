@@ -1,6 +1,7 @@
 import { Component, input, output, forwardRef, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { X, ChevronDown, Search, Check } from 'lucide-angular';
 import { RagIcon } from '../rag-icon/rag-icon';
 
 export interface RagSelectOption<T = any> {
@@ -25,6 +26,12 @@ export interface RagSelectOption<T = any> {
   ]
 })
 export class RagSelect<T = any> implements ControlValueAccessor {
+  // Icon constants
+  readonly XIcon = X;
+  readonly ChevronDownIcon = ChevronDown;
+  readonly SearchIcon = Search;
+  readonly CheckIcon = Check;
+  
   // Modern Angular 20: Use input() with proper typing
   readonly options = input<RagSelectOption<T>[]>([]);
   readonly placeholder = input('Select an option...');

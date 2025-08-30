@@ -4,19 +4,24 @@
     <div class="rt-Flex items-center justify-between header-content">
       <div class="rt-Flex items-center gap-4">
         <div class="rt-Flex items-center gap-2">
-          <lucide-angular [img]="Database" class="app-logo-icon" />
+          <rag-icon [img]="DatabaseIcon" variant="primary" size="lg"></rag-icon>
           <h1 class="rt-Heading app-title">RAG Studio</h1>
         </div>
         <span class="rt-Text text-muted app-subtitle hide-mobile">Personal RAG & MCP Server</span>
       </div>
       <div class="rt-Flex items-center gap-3">
-        <div class="rt-Badge rt-variant-soft rt-color-green">
-          <span [class]="'status-indicator ' + mcpStatusClass()"></span>
-          <span>{{ mcpStatusText() }}</span>
-        </div>
-        <button class="rt-Button rt-variant-ghost rt-size-md" aria-label="Settings">
-          <lucide-angular [img]="Settings" class="button-icon" />
-        </button>
+        <rag-badge 
+          variant="soft" 
+          [color]="mcpStatusColor()" 
+          [icon]="mcpStatusIcon()">
+          {{ mcpStatusText() }}
+        </rag-badge>
+        <rag-button 
+          variant="ghost" 
+          size="md" 
+          aria-label="Settings">
+          <rag-icon [img]="SettingsIcon" size="sm"></rag-icon>
+        </rag-button>
       </div>
     </div>
   </div>
@@ -25,42 +30,19 @@
 <!-- Main Content -->
 <main class="app-main">
   <div class="rt-Container">
-    <div class="rt-Tabs">
-      <!-- Tab List (Navigation) -->
-      <div class="rt-TabsList" role="tablist">
-        @for (navItem of navItems; track navItem.path) {
-          <a 
-            [routerLink]="navItem.path"
-            routerLinkActive="rt-active"
-            class="rt-TabsTrigger"
-            role="tab">
-            @switch (navItem.icon) {
-              @case ('layout-dashboard') {
-                <lucide-angular [img]="LayoutDashboard" class="nav-icon" />
-              }
-              @case ('wrench') {
-                <lucide-angular [img]="Wrench" class="nav-icon" />
-              }
-              @case ('book-open') {
-                <lucide-angular [img]="BookOpen" class="nav-icon" />
-              }
-              @case ('workflow') {
-                <lucide-angular [img]="Workflow" class="nav-icon" />
-              }
-              @case ('git-branch') {
-                <lucide-angular [img]="GitBranch" class="nav-icon" />
-              }
-              @case ('settings') {
-                <lucide-angular [img]="Settings" class="nav-icon" />
-              }
-            }
-            <span>{{ navItem.title }}</span>
-          </a>
-        }
-      </div>
-
-      <!-- Tab Content (Router Outlet) -->
-      <div class="rt-TabsContent rt-active" role="tabpanel">
+    <!-- Navigation using RagTabNavigation -->
+    <div class="navigation-wrapper">
+      <rag-tab-navigation 
+        [items]="tabItems()" 
+        [activeItem]="currentActiveTab()"
+        size="lg"
+        variant="nav"
+        (itemChange)="onTabChange($event)"
+        (indexChange)="onTabIndexChange($event)">
+      </rag-tab-navigation>
+      
+      <!-- Main content area -->
+      <div class="content-area" role="main">
         <router-outlet />
       </div>
     </div>

@@ -10,10 +10,10 @@
             [attr.aria-current]="item.current || isLast ? 'page' : null"
           >
             @if (item.icon) {
-              <lucide-angular
-                [name]="item.icon"
-                size="16"
-              ></lucide-angular>
+              <rag-icon
+                [img]="item.icon"
+                size="sm"
+              ></rag-icon>
             }
             <span>{{ item.label }}</span>
           </a>
@@ -23,22 +23,22 @@
             [attr.aria-current]="item.current || isLast ? 'page' : null"
           >
             @if (item.icon) {
-              <lucide-angular
-                [name]="item.icon"
-                size="16"
-              ></lucide-angular>
+              <rag-icon
+                [img]="item.icon"
+                size="sm"
+              ></rag-icon>
             }
             <span>{{ item.label }}</span>
           </span>
         }
 
         @if (!isLast) {
-          <lucide-angular
-            [name]="separator()"
-            size="14"
+          <rag-icon
+            [img]="separator()"
+            size="xs"
             class="rt-BreadcrumbSeparator"
             aria-hidden="true"
-          ></lucide-angular>
+          ></rag-icon>
         }
       </li>
     } @empty {

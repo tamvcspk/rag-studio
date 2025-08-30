@@ -1,6 +1,7 @@
 import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-angular';
+import { RagIcon } from '../../../atomic';
 
 export interface StatCardData {
   label: string;
@@ -9,16 +10,21 @@ export interface StatCardData {
     value: string | number;
     trend: 'up' | 'down' | 'neutral';
   };
-  icon?: string;
+  icon?: any; // Now accepts icon component instead of string
 }
 
 @Component({
   selector: 'rag-stat-card',
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, RagIcon],
   templateUrl: './rag-stat-card.html',
   styleUrl: './rag-stat-card.scss'
 })
 export class RagStatCard {
+  // Icon constants
+  readonly TrendingUpIcon = TrendingUp;
+  readonly TrendingDownIcon = TrendingDown;
+  readonly MinusIcon = Minus;
+  
   readonly data = input.required<StatCardData>();
   readonly size = input<'sm' | 'md' | 'lg'>('md');
   readonly variant = input<'default' | 'minimal'>('default');

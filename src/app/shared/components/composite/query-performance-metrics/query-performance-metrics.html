@@ -10,10 +10,10 @@
         size="sm" 
         [disabled]="isRefreshing()"
         (click)="refresh()">
-        <lucide-angular 
-          name="refresh-cw" 
+        <rag-icon 
+          [img]="RefreshCwIcon" 
           [class.animate-spin]="isRefreshing()" 
-          class="w-4 h-4" />
+          size="xs" />
         Refresh
       </rag-button>
     </div>

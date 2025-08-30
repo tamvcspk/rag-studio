@@ -62,10 +62,10 @@
 
   &.rt-status-error {
     .rt-status-icon {
-      color: var(--rag-semantic-color-error-700);
+      color: var(--rag-semantic-color-danger-700);
     }
     .rt-status-label {
-      color: var(--rag-semantic-color-error-900);
+      color: var(--rag-semantic-color-danger-900);
     }
   }
 
@@ -150,7 +150,7 @@
 
   &.rt-status-error {
     .rt-status-label {
-      color: var(--rag-semantic-color-error-200);
+      color: var(--rag-semantic-color-danger-200);
     }
   }
 

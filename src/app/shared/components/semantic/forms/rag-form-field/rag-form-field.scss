@@ -22,11 +22,11 @@
       :deep(.rt-TextFieldInput),
       :deep(.rt-TextArea),
       :deep(.rt-SelectTrigger) {
-        border-color: var(--rag-semantic-color-error-700);
+        border-color: var(--rag-semantic-color-danger-700);
 
         &:focus {
-          border-color: var(--rag-semantic-color-error-700);
-          box-shadow: 0 0 0 1px var(--rag-semantic-color-error-700);
+          border-color: var(--rag-semantic-color-danger-700);
+          box-shadow: 0 0 0 1px var(--rag-semantic-color-danger-700);
         }
       }
     }
@@ -34,31 +34,32 @@
 }
 
 .rag-form-field__label {
-  font-size: var(--rag-primitive-fontSize-md);
-  font-weight: 500;
-  color: var(--rag-semantic-color-text-default);
+  font-size: var(--rag-semantic-component-formField-label-fontSize);
+  font-weight: var(--rag-semantic-component-formField-label-fontWeight);
+  color: var(--rag-semantic-component-formField-label-color);
   line-height: var(--rag-primitive-lineHeight-md);
+  margin-bottom: var(--rag-semantic-component-formField-label-marginBottom);
   display: flex;
   align-items: center;
   gap: var(--rag-primitive-spacing-xs);
 
   &--required {
     .rag-form-field__required {
-      color: var(--rag-semantic-color-error-700);
+      color: var(--rag-semantic-component-formField-required-color);
     }
   }
 }
 
 .rag-form-field__required {
-  color: var(--rag-semantic-color-error-700);
+  color: var(--rag-semantic-component-formField-required-color);
   margin-left: var(--rag-primitive-spacing-xs);
 }
 
 .rag-form-field__description {
-  font-size: var(--rag-primitive-fontSize-sm);
-  color: var(--rag-semantic-color-text-muted);
+  font-size: var(--rag-semantic-component-formField-description-fontSize);
+  color: var(--rag-semantic-component-formField-description-color);
   line-height: var(--rag-primitive-lineHeight-md);
-  margin-top: calc(var(--rag-primitive-spacing-xs) * -1);
+  margin-top: var(--rag-semantic-component-formField-description-marginTop);
 }
 
 .rag-form-field__input {
@@ -69,11 +70,12 @@
   display: flex;
   align-items: center;
   gap: var(--rag-primitive-spacing-sm);
-  font-size: var(--rag-primitive-fontSize-sm);
-  color: var(--rag-semantic-color-error-700);
+  font-size: var(--rag-semantic-component-formField-error-fontSize);
+  color: var(--rag-semantic-component-formField-error-color);
   line-height: var(--rag-primitive-lineHeight-md);
+  margin-top: var(--rag-semantic-component-formField-error-marginTop);
 
-  lucide-icon {
+  rag-icon {
     flex-shrink: 0;
   }
 }

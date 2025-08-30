@@ -19,12 +19,12 @@
           (click)="clearSelection($event)"
           [attr.aria-label]="'Clear selection'"
         >
-          <rag-icon name="x" size="xs" />
+          <rag-icon [img]="XIcon" size="xs" />
         </button>
       }
       
       <rag-icon 
-        name="chevron-down" 
+        [img]="ChevronDownIcon" 
         size="sm" 
         class="rt-select-chevron"
         [class.rt-rotated]="isOpen"
@@ -44,7 +44,7 @@
         (input)="onSearchInput($event)"
         #searchInput
       />
-          <rag-icon name="search" size="xs" class="rt-select-search-icon" />
+          <rag-icon [img]="SearchIcon" size="xs" class="rt-select-search-icon" />
         </div>
       }
     
@@ -61,7 +61,7 @@
         <span class="rt-option-label">{{ option.label }}</span>
         @if (option.value === selectedValue) {
           <rag-icon 
-            name="check" 
+            [img]="CheckIcon" 
             size="xs" 
             class="rt-option-check"
           />

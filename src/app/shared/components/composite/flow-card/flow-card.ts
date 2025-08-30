@@ -1,7 +1,23 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
+import { 
+  GitBranchIcon, 
+  ArrowRightIcon, 
+  PauseIcon, 
+  PlayIcon, 
+  EditIcon, 
+  CopyIcon, 
+  DownloadIcon, 
+  Trash2Icon,
+  PlayCircleIcon,
+  PauseCircleIcon,
+  XCircleIcon,
+  FileEditIcon,
+  ArchiveIcon,
+  CircleIcon
+} from 'lucide-angular';
 import { Flow } from '../../../models/flow.model';
+import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
 import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
@@ -11,7 +27,7 @@ import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
   standalone: true,
   imports: [
     CommonModule,
-    LucideAngularModule,
+    RagIcon,
     RagBadge,
     RagButton,
     RagCard
@@ -21,16 +37,30 @@ import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
 })
 export class FlowCardComponent {
   readonly flow = input.required<Flow>();
-  
+
+  // Icon components
+  readonly gitBranchIcon = GitBranchIcon;
+  readonly arrowRightIcon = ArrowRightIcon;
+  readonly pauseIcon = PauseIcon;
+  readonly playIcon = PlayIcon;
+  readonly editIcon = EditIcon;
+  readonly copyIcon = CopyIcon;
+  readonly downloadIcon = DownloadIcon;
+  readonly trash2Icon = Trash2Icon;
+  readonly playCircleIcon = PlayCircleIcon;
+  readonly pauseCircleIcon = PauseCircleIcon;
+  readonly xCircleIcon = XCircleIcon;
+  readonly fileEditIcon = FileEditIcon;
+  readonly archiveIcon = ArchiveIcon;
+  readonly circleIcon = CircleIcon;
+
   readonly onEdit = output<Flow>();
   readonly onDelete = output<Flow>();
   readonly onExecute = output<Flow>();
   readonly onPause = output<Flow>();
   readonly onResume = output<Flow>();
   readonly onDuplicate = output<Flow>();
-  readonly onExport = output<Flow>();
-
-  onEditClick() {
+  readonly onExport = output<Flow>();  onEditClick() {
     this.onEdit.emit(this.flow());
   }
 
@@ -58,14 +88,14 @@ export class FlowCardComponent {
     this.onExport.emit(this.flow());
   }
 
-  getStatusIcon(): string {
+  getStatusIcon(): any {
     switch (this.flow().status) {
-      case 'active': return 'play-circle';
-      case 'paused': return 'pause-circle';
-      case 'error': return 'x-circle';
-      case 'draft': return 'file-edit';
-      case 'archived': return 'archive';
-      default: return 'circle';
+      case 'active': return this.playCircleIcon;
+      case 'paused': return this.pauseCircleIcon;
+      case 'error': return this.xCircleIcon;
+      case 'draft': return this.fileEditIcon;
+      case 'archived': return this.archiveIcon;
+      default: return this.circleIcon;
     }
   }
 

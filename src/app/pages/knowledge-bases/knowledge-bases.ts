@@ -1,6 +1,6 @@
 import { Component, signal, computed, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, BookOpen, Plus, Upload } from 'lucide-angular';
+import { BookOpen, Plus, Upload } from 'lucide-angular';
 import { Observable, map } from 'rxjs';
 import { 
   KnowledgeBase, 
@@ -13,6 +13,7 @@ import { CreateKBWizardComponent } from '../../shared/components/composite/creat
 import { EmptyStatePanelComponent } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
 import { RagButton } from '../../shared/components/atomic/primitives/rag-button/rag-button';
 import { RagSearchInput } from '../../shared/components/semantic/forms/rag-search-input/rag-search-input';
+import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
 import { RagSelect } from '../../shared/components/atomic/primitives/rag-select/rag-select';
 
 type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
@@ -22,7 +23,7 @@ type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
   standalone: true,
   imports: [
     CommonModule,
-    LucideAngularModule,
+    RagIcon,
     KnowledgeBaseCardComponent,
     CreateKBWizardComponent,
     EmptyStatePanelComponent,

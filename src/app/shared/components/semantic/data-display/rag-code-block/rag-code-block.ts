@@ -1,11 +1,12 @@
 import { Component, input, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
+import { CopyIcon, CheckIcon } from 'lucide-angular';
+import { RagIcon } from '../../../atomic';
 
 @Component({
   selector: 'rag-code-block',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, RagIcon],
   templateUrl: './rag-code-block.html',
   styleUrl: './rag-code-block.scss'
 })
@@ -13,11 +14,15 @@ export class RagCodeBlock {
   readonly code = input.required<string>();
   readonly language = input<string>('');
   readonly title = input<string>('');
-  readonly showCopy = input<boolean>(true);
   readonly showLineNumbers = input<boolean>(false);
+  readonly copyable = input<boolean>(true);
   readonly maxHeight = input<string>('');
 
   readonly copied = signal(false);
+
+  // Icon components
+  readonly CopyIcon = CopyIcon;
+  readonly CheckIcon = CheckIcon;
 
   readonly codeLines = computed(() => {
     return this.code().split('\n');
@@ -47,6 +52,6 @@ export class RagCodeBlock {
   }
 
   readonly copyButtonIcon = computed(() => 
-    this.copied() ? 'check' : 'copy'
+    this.copied() ? this.CheckIcon : this.CopyIcon
   );
 }

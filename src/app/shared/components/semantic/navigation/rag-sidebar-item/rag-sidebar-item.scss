@@ -144,7 +144,7 @@
     cursor: not-allowed;
   }
 
-  lucide-angular {
+  rag-icon {
     transition: transform 0.15s;
   }
 }
@@ -179,8 +179,8 @@
   }
 
   &.rt-variant-error {
-    background-color: var(--rag-semantic-color-error-200);
-    color: var(--rag-semantic-color-error-900);
+    background-color: var(--rag-semantic-color-danger-200);
+    color: var(--rag-semantic-color-danger-900);
   }
 }
 

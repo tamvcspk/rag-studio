@@ -111,10 +111,10 @@
     flex-wrap: wrap;
 
     .danger-button {
-      color: var(--rag-semantic-color-error-800);
+      color: var(--rag-semantic-color-danger-800);
 
       &:hover {
-        color: var(--rag-semantic-color-error-900);
+        color: var(--rag-semantic-color-danger-900);
         background-color: rgba(239, 68, 68, 0.05);
       }
     }
@@ -143,11 +143,11 @@
 // Error state styling for failed KBs
 :host.failed {
   .knowledge-base-card {
-    border-color: var(--rag-semantic-color-error-600);
+    border-color: var(--rag-semantic-color-danger-600);
     background-color: rgba(239, 68, 68, 0.02);
 
     .title {
-      color: var(--rag-semantic-color-error-950);
+      color: var(--rag-semantic-color-danger-950);
     }
   }
 }

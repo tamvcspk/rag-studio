@@ -1,13 +1,14 @@
 import { Component, input, computed, contentChild, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
+import { AlertCircle } from 'lucide-angular';
+import { RagIcon } from '../../../atomic/primitives/rag-icon/rag-icon';
 
 export type RagFormFieldSize = 'sm' | 'md' | 'lg';
 
 @Component({
   selector: 'rag-form-field',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, RagIcon],
   templateUrl: './rag-form-field.html',
   styleUrl: './rag-form-field.scss'
 })
@@ -18,6 +19,9 @@ export class RagFormField {
   readonly error = input<string>();
   readonly required = input(false);
   readonly size = input<RagFormFieldSize>('md');
+
+  // Icon constants
+  readonly AlertCircleIcon = AlertCircle;
   readonly disabled = input(false);
   readonly htmlFor = input<string>();
 
