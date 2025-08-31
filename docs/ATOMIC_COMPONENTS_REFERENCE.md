@@ -46,7 +46,7 @@ This change provides better tree-shaking and type safety by only importing icons
 | Component | Purpose | Key Props | Use Case |
 |-----------|---------|-----------|----------|
 | `<rag-alert>` | Important messages | `variant`, `title`, `closable`, `icon` | Notifications, warnings |
-| `<rag-toast>` | Temporary notifications | `variant`, `duration`, `action` | Success, error messages |
+| `<rag-toast>` | Overlay-based notifications | `variant`, `duration`, `dismissible`, `actions` | Service-managed notifications |
 | `<rag-tooltip>` | Contextual help | `content`, `placement`, `trigger` | Help text, descriptions |
 | `<rag-status-indicator>` | System status | `status`, `label`, `size`, `variant` | Health, connection status |
 
@@ -97,9 +97,21 @@ type AlertVariant = 'info' | 'success' | 'warning' | 'error';
 
 // RagToast
 type ToastVariant = 'info' | 'success' | 'warning' | 'error';
-interface ToastAction {
+interface RagToastAction {
   label: string;
-  action: () => void;
+  handler: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+}
+
+// ToastService Configuration
+interface ToastConfig {
+  variant?: ToastVariant;
+  title?: string;
+  message?: string;
+  duration?: number;
+  persistent?: boolean;
+  dismissible?: boolean;
+  actions?: RagToastAction[];
 }
 
 // RagStatusIndicator
@@ -276,6 +288,92 @@ export class IconExampleComponent {
   readonly StarIcon = StarIcon;
 }
 ```
+
+---
+
+## 📢 Toast Service Usage
+
+The `ToastService` provides Angular CDK Overlay-based toast management with stacking and auto-dismiss features:
+
+```typescript
+// Inject the service
+import { ToastService } from '../shared/services/toast.service';
+
+@Component({
+  // ...
+})
+export class MyComponent {
+  private toastService = inject(ToastService);
+
+  // Convenience methods
+  showSuccess() {
+    this.toastService.success('Operation completed!', 'Success');
+  }
+
+  showError() {
+    this.toastService.error('Something went wrong', 'Error');
+  }
+
+  showInfo() {
+    this.toastService.info('New feature available', 'Info');
+  }
+
+  showWarning() {
+    this.toastService.warning('Please review changes', 'Warning');
+  }
+
+  // Custom configuration
+  showCustomToast() {
+    this.toastService.show({
+      variant: 'info',
+      title: 'Confirm Action',
+      message: 'Are you sure you want to proceed?',
+      persistent: true,
+      actions: [
+        {
+          label: 'Yes',
+          handler: () => this.proceedAction(),
+          variant: 'solid'
+        },
+        {
+          label: 'Cancel',
+          handler: () => console.log('Cancelled'),
+          variant: 'ghost'
+        }
+      ]
+    });
+  }
+
+  // Dismiss specific or all toasts
+  dismissAllToasts() {
+    this.toastService.dismissAll();
+  }
+}
+```
+
+### ToastService Methods
+```typescript
+// Convenience methods
+toastService.info(message: string, title?: string, config?: Partial<ToastConfig>): string
+toastService.success(message: string, title?: string, config?: Partial<ToastConfig>): string
+toastService.warning(message: string, title?: string, config?: Partial<ToastConfig>): string
+toastService.error(message: string, title?: string, config?: Partial<ToastConfig>): string
+
+// Full configuration
+toastService.show(config: ToastConfig): string
+
+// Management
+toastService.dismiss(id: string): void
+toastService.dismissAll(): void
+```
+
+### Toast Features
+- **Stacking**: Multiple toasts appear in a vertical stack
+- **Auto-dismiss**: Configurable duration (default 5 seconds)
+- **Persistent**: Toasts that don't auto-dismiss
+- **Actions**: Custom action buttons with handlers
+- **Hover pause**: Auto-dismiss pauses on hover
+- **Angular CDK Overlay**: Proper z-index and positioning
 
 ---
 

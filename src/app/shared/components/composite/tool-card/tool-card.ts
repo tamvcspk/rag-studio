@@ -22,7 +22,7 @@ import { Tool } from '../../../types/tool.types';
   templateUrl: './tool-card.html',
   styleUrl: './tool-card.scss'
 })
-export class ToolCardComponent {
+export class ToolCard {
   readonly tool = input.required<Tool>();
   readonly loading = input(false);
   

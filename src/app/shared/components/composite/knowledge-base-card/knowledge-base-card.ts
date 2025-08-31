@@ -22,7 +22,7 @@ import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
   templateUrl: './knowledge-base-card.html',
   styleUrl: './knowledge-base-card.scss'
 })
-export class KnowledgeBaseCardComponent {
+export class KnowledgeBaseCard {
   readonly knowledgeBase = input.required<KnowledgeBase>();
   readonly showActions = input(true);
 

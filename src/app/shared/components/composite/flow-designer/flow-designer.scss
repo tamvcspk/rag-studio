@@ -1,49 +1,19 @@
-.flow-designer {
+.flow-designer-content {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--rag-semantic-color-background-default);
-  border-radius: var(--rag-primitive-radius-lg);
-  overflow: hidden;
+  min-height: 500px;
 
-  .designer-header {
+  .designer-toolbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
-    padding: var(--rag-primitive-spacing-lg) var(--rag-primitive-spacing-xl);
-    border-bottom: 1px solid var(--rag-semantic-color-border-default);
-    background: var(--rag-semantic-color-background-subtle);
-
-    .header-info {
-      display: flex;
-      align-items: center;
-      gap: var(--rag-primitive-spacing-md);
-
-      rag-icon {
-        color: var(--rag-semantic-color-primary-600);
-      }
-
-      h3 {
-        margin: 0;
-        font-size: var(--rag-primitive-fontSize-lg);
-        font-weight: 600;
-        color: var(--rag-semantic-color-text-default);
-      }
-
-      p {
-        margin: 0;
-        font-size: var(--rag-primitive-fontSize-sm);
-        color: var(--rag-semantic-color-text-subtle);
-      }
-    }
-
-    .header-actions {
-      display: flex;
-      gap: var(--rag-primitive-spacing-sm);
-    }
+    padding: var(--rag-primitive-spacing-md) 0;
+    margin-bottom: var(--rag-primitive-spacing-md);
+    border-bottom: 1px solid var(--rag-semantic-color-border-muted);
   }
 
-  .designer-content {
+  .designer-canvas {
     flex: 1;
     position: relative;
     overflow: hidden;
@@ -237,61 +207,66 @@
     }
   }
 
-  .designer-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--rag-primitive-spacing-md) var(--rag-primitive-spacing-xl);
-    border-top: 1px solid var(--rag-semantic-color-border-default);
-    background: var(--rag-semantic-color-background-subtle);
+  .designer-status {
+    padding: var(--rag-primitive-spacing-md) 0;
+    font-size: var(--rag-primitive-fontSize-sm);
+    color: var(--rag-semantic-color-text-subtle);
+    border-top: 1px solid var(--rag-semantic-color-border-muted);
+    margin-top: var(--rag-primitive-spacing-md);
 
-    .status-info {
-      font-size: var(--rag-primitive-fontSize-sm);
-      color: var(--rag-semantic-color-text-subtle);
-
-      .selected-info,
-      .mode-indicator {
-        color: var(--rag-semantic-color-primary-600);
-      }
-    }
-
-    .footer-actions {
-      display: flex;
-      gap: var(--rag-primitive-spacing-sm);
+    .selected-info,
+    .mode-indicator {
+      color: var(--rag-semantic-color-primary-600);
     }
   }
 }
 
+// Dialog footer actions styling
+.dialog-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: var(--rag-primitive-spacing-md);
+
+  .footer-controls {
+    display: flex;
+    gap: var(--rag-primitive-spacing-sm);
+  }
+
+  .primary-actions {
+    display: flex;
+    gap: var(--rag-primitive-spacing-sm);
+    margin-left: auto;
+  }
+}
+
 @media (max-width: 768px) {
-  .flow-designer {
-    .designer-header {
-      flex-direction: column;
-      gap: var(--rag-primitive-spacing-lg);
-      align-items: flex-start;
-
-      .header-actions {
-        width: 100%;
-        justify-content: space-between;
-      }
-    }
-
-    .designer-content {
+  .flow-designer-content {
+    .designer-canvas {
       .properties-panel {
         position: static;
         width: 100%;
-        margin: var(--rag-primitive-spacing-lg);
-        width: calc(100% - 2rem);
+        margin: var(--rag-primitive-spacing-lg) 0;
       }
     }
+  }
 
-    .designer-footer {
-      flex-direction: column;
-      gap: var(--rag-primitive-spacing-sm);
-      align-items: flex-start;
+  .dialog-actions {
+    flex-direction: column;
+    gap: var(--rag-primitive-spacing-md);
+    align-items: stretch;
 
-      .footer-actions {
-        width: 100%;
-        justify-content: center;
+    .footer-controls {
+      justify-content: center;
+    }
+
+    .primary-actions {
+      margin-left: 0;
+      justify-content: stretch;
+      
+      rag-button {
+        flex: 1;
       }
     }
   }

@@ -1,5 +1,6 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { 
   LayoutIcon,
   Edit3Icon,
@@ -14,10 +15,11 @@ import {
   GitBranchIcon
 } from 'lucide-angular';
 import { Flow, FlowPart } from '../../../models/flow.model';
-import { EmptyStatePanelComponent } from '../empty-state-panel/empty-state-panel';
+import { EmptyStatePanel } from '../empty-state-panel/empty-state-panel';
 import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
 import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
+import { RagDialog } from '../../semantic/overlay/rag-dialog/rag-dialog';
 
 interface DesignerNode {
   id: string;
@@ -35,14 +37,24 @@ interface DesignerNode {
     RagIcon,
     RagButton,
     RagBadge,
-    EmptyStatePanelComponent
+    EmptyStatePanel,
+    RagDialog
   ],
   templateUrl: './flow-designer.html',
   styleUrl: './flow-designer.scss'
 })
-export class FlowDesignerComponent {
-  readonly flow = input<Flow>();
+export class FlowDesigner {
+  // Inject dialog dependencies
+  private readonly dialogRef = inject(DialogRef, { optional: true });
+  private readonly dialogData = inject(DIALOG_DATA, { optional: true });
+
+  readonly flowInput = input<Flow>();
+  readonly flow = signal<Flow | null>(null);
   readonly readonly = input(false);
+  
+  // Dialog-specific properties
+  readonly title = 'Flow Designer';
+  readonly description = '';
 
   // Icon components
   readonly layoutIcon = LayoutIcon;
@@ -65,6 +77,16 @@ export class FlowDesignerComponent {
   readonly isDesignMode = signal(false);
 
   ngOnInit() {
+    // Load flow from dialog data or input
+    const flowFromDialog = this.dialogData?.flow;
+    const flowFromInput = this.flowInput();
+    
+    if (flowFromDialog) {
+      this.flow.set(flowFromDialog);
+    } else if (flowFromInput) {
+      this.flow.set(flowFromInput);
+    }
+    
     if (this.flow()) {
       this.loadFlowNodes();
     }
@@ -131,10 +153,18 @@ export class FlowDesignerComponent {
       updatedAt: new Date().toISOString()
     };
 
-    this.onSave.emit(updatedFlow);
+    if (this.dialogRef) {
+      this.dialogRef.close(updatedFlow);
+    } else {
+      this.onSave.emit(updatedFlow);
+    }
   }
 
   cancel(): void {
-    this.onCancel.emit();
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    } else {
+      this.onCancel.emit();
+    }
   }
 }

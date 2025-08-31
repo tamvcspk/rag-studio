@@ -25,7 +25,7 @@ export interface ContextMenuPosition {
   templateUrl: './rag-context-menu.html',
   styleUrl: './rag-context-menu.scss'
 })
-export class RagContextMenuComponent implements OnDestroy {
+export class RagContextMenu implements OnDestroy {
   readonly items = input<ContextMenuItem[]>([]);
   readonly position = input<ContextMenuPosition | null>(null);
   readonly chevronRight = input<any>(); // Chevron right icon component for submenus

@@ -338,13 +338,7 @@ PrimitiveTokens.zIndex = {
 --rag-primitive-zIndex-auto: auto;
 --rag-primitive-zIndex-base: 0;
 --rag-primitive-zIndex-raised: 10;
---rag-primitive-zIndex-dropdown: 1000;
---rag-primitive-zIndex-sticky: 1010;
---rag-primitive-zIndex-modal: 1020;
---rag-primitive-zIndex-popover: 1030;
---rag-primitive-zIndex-tooltip: 1040;
---rag-primitive-zIndex-toast: 1050;
---rag-primitive-zIndex-overlay: 1060;
+--rag-primitive-zIndex-sticky: 11;
 ```
 
 ### Font Weight Scale
@@ -625,7 +619,6 @@ All CSS variables follow the pattern:
 --rag-primitive-borderWidth-1
 --rag-primitive-borderWidth-2
 --rag-primitive-zIndex-sticky
---rag-primitive-zIndex-modal
 --rag-primitive-fontWeight-semibold
 --rag-primitive-fontWeight-bold
 --rag-primitive-size-16

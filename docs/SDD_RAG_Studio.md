@@ -335,7 +335,7 @@ export const DOMAIN_ICONS = {
 const routes: Routes = [
   {
     path: '',
-    component: MainLayoutComponent,
+    component: MainLayout,
     children: [
       // Dashboard Module
       {

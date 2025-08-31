@@ -161,13 +161,7 @@
   --rag-primitive-zIndex-auto: auto;
   --rag-primitive-zIndex-base: 0;
   --rag-primitive-zIndex-raised: 10;
-  --rag-primitive-zIndex-dropdown: 1000;
-  --rag-primitive-zIndex-sticky: 1010;
-  --rag-primitive-zIndex-modal: 1020;
-  --rag-primitive-zIndex-popover: 1030;
-  --rag-primitive-zIndex-tooltip: 1040;
-  --rag-primitive-zIndex-toast: 1050;
-  --rag-primitive-zIndex-overlay: 1060;
+  --rag-primitive-zIndex-sticky: 11;
 
   // Size scale (height/width values)
   --rag-primitive-size-1: 4px;
@@ -513,6 +507,7 @@
 
   --rag-semantic-component-dialog-header-borderBottom: 1px solid var(--rag-semantic-color-border-subtle);
   --rag-semantic-component-dialog-header-padding: var(--rag-primitive-spacing-lg) var(--rag-primitive-spacing-xl);
+  --rag-semantic-component-dialog-description-padding: 0 var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl);
 
   --rag-semantic-component-dialog-content-padding: var(--rag-primitive-spacing-xl);
 

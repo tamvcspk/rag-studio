@@ -1,6 +1,7 @@
-import { Component, signal, output } from '@angular/core';
+import { Component, signal, output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { 
   GitBranchIcon,
   CheckIcon,
@@ -16,6 +17,7 @@ import {
   CircleIcon
 } from 'lucide-angular';
 import { Flow, FlowPart } from '../../../models/flow.model';
+import { RagDialog } from '../../semantic/overlay/rag-dialog/rag-dialog';
 import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 import { RagInput } from '../../atomic/primitives/rag-input/rag-input';
@@ -51,6 +53,7 @@ interface AvailableComponent {
   imports: [
     CommonModule,
     FormsModule,
+    RagDialog,
     RagIcon,
     RagButton,
     RagInput,
@@ -62,9 +65,12 @@ interface AvailableComponent {
   templateUrl: './create-flow-wizard.html',
   styleUrl: './create-flow-wizard.scss'
 })
-export class CreateFlowWizardComponent {
+export class CreateFlowWizard {
   readonly onFlowCreated = output<Flow>();
   readonly onCancel = output<void>();
+
+  private readonly dialogRef = inject(DialogRef, { optional: true });
+  private readonly data = inject(DIALOG_DATA, { optional: true });
 
   // Icon components
   readonly gitBranchIcon = GitBranchIcon;
@@ -290,6 +296,9 @@ export class CreateFlowWizardComponent {
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       this.onFlowCreated.emit(newFlow);
+      if (this.dialogRef) {
+        this.dialogRef.close(newFlow);
+      }
       this.resetWizard();
     } catch (error) {
       console.error('Error creating flow:', error);
@@ -300,6 +309,9 @@ export class CreateFlowWizardComponent {
 
   cancel(): void {
     this.onCancel.emit();
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
     this.resetWizard();
   }
 

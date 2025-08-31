@@ -154,18 +154,5 @@
     }
   </div>
 
-  <!-- Create Tool Wizard -->
-  <app-create-tool-wizard
-    (onClose)="onToastClose()"
-    (onSubmit)="onToolSubmit($event)">
-  </app-create-tool-wizard>
 
-  <!-- Toast Notifications -->
-  @if (showToast()) {
-    <rag-toast
-      [variant]="toastType()"
-      [message]="toastMessage()"
-      (onDismiss)="onToastClose()">
-    </rag-toast>
-  }
 </div>

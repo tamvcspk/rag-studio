@@ -33,9 +33,11 @@ Quick lookup reference for all RAG Studio semantic components with essential inf
 ### 🎭 Overlay (3 components)
 | Component | Purpose | Key Props | Use Case |
 |-----------|---------|-----------|----------|
-| `<rag-dialog>` | Modal dialogs | `open`, `size`, `title` | Confirmations, forms |
+| `<rag-dialog>` | Dialog template | `title`, `description`, `size` | Dialog styling wrapper |
 | `<rag-dropdown>` | Context menus | `items`, `placement` | Action menus |
 | `<rag-context-menu>` | Right-click menus | `items` | Contextual actions |
+
+**Note**: `<rag-dialog>` is used as a template wrapper. Use `RagDialogService` to open components as dialogs.
 
 ---
 
@@ -186,22 +188,48 @@ interface BreadcrumbItem {
 ]" />
 ```
 
-### 4. Modal Dialogs
-```html
-<!-- Confirmation dialog -->
-<rag-dialog
-  [open]="showDeleteDialog"
-  title="Confirm Deletion"
-  size="sm"
-  (close)="showDeleteDialog = false">
+### 4. Service-Based Dialogs
+```typescript
+// Component that opens as a dialog
+@Component({
+  template: `
+    <rag-dialog
+      title="Confirm Deletion" 
+      size="sm">
+      
+      <p>Are you sure you want to delete this item?</p>
+      
+      <div slot="footer" class="dialog-actions">
+        <rag-button variant="outline" (click)="cancel()">Cancel</rag-button>
+        <rag-button variant="solid" (click)="confirm()">Delete</rag-button>
+      </div>
+    </rag-dialog>
+  `
+})
+export class ConfirmDialogComponent {
+  private dialogRef = inject(DialogRef);
   
-  <p>Are you sure you want to delete this item?</p>
+  cancel() {
+    this.dialogRef.close(false);
+  }
   
-  <div class="dialog-actions">
-    <rag-button variant="outline" (click)="cancel()">Cancel</rag-button>
-    <rag-button variant="solid" (click)="confirm()">Delete</rag-button>
-  </div>
-</rag-dialog>
+  confirm() {
+    this.dialogRef.close(true);
+  }
+}
+
+// Opening the dialog
+openConfirmDialog() {
+  const dialogRef = this.dialogService.open(ConfirmDialogComponent, {
+    data: { itemName: 'Selected Item' }
+  });
+  
+  dialogRef.closed.subscribe(result => {
+    if (result) {
+      console.log('User confirmed deletion');
+    }
+  });
+}
 ```
 
 ### 5. Content Cards
@@ -309,19 +337,37 @@ it('should integrate with reactive forms', () => {
 
 ### Dialog Testing
 ```typescript
-// Test dialog behavior
-it('should close on escape key', () => {
-  component.open.set(true);
-  fixture.detectChanges();
+// Test service-based dialog
+it('should open dialog using service', () => {
+  const dialogService = TestBed.inject(RagDialogService);
+  const dialogRef = dialogService.open(TestDialogComponent, {
+    data: { message: 'Test data' }
+  });
   
-  const closeEmitted = jasmine.createSpy();
-  component.close.subscribe(closeEmitted);
+  expect(dialogRef).toBeDefined();
   
-  // Simulate escape key
-  const event = new KeyboardEvent('keydown', { key: 'Escape' });
-  document.dispatchEvent(event);
+  // Test dialog closes with result
+  dialogRef.close('test-result');
+  dialogRef.closed.subscribe(result => {
+    expect(result).toBe('test-result');
+  });
+});
+
+// Test dialog component
+it('should inject DialogRef and DIALOG_DATA', () => {
+  const dialogRef = jasmine.createSpyObj('DialogRef', ['close']);
+  const dialogData = { message: 'Test' };
   
-  expect(closeEmitted).toHaveBeenCalled();
+  TestBed.configureTestingModule({
+    providers: [
+      { provide: DialogRef, useValue: dialogRef },
+      { provide: DIALOG_DATA, useValue: dialogData }
+    ]
+  });
+  
+  const component = TestBed.createComponent(TestDialogComponent).componentInstance;
+  expect(component.dialogRef).toBe(dialogRef);
+  expect(component.data).toBe(dialogData);
 });
 ```
 
@@ -340,16 +386,21 @@ readonly trackByFn = (index: number, item: any) => item.id;
 
 ### 2. Lazy Load Heavy Components
 ```typescript
-// Lazy load dialog content
+// Lazy load dialog content using service
 @Component({
   template: `
-    <rag-dialog [open]="isOpen">
-      <ng-container *ngIf="isOpen">
+    <rag-dialog title="Heavy Content">
+      @defer (on viewport) {
         <heavy-dialog-content />
-      </ng-container>
+      } @placeholder {
+        <div>Loading...</div>
+      }
     </rag-dialog>
   `
 })
+export class HeavyDialogComponent {
+  // Opened via RagDialogService
+}
 ```
 
 ### 3. Optimize Search with Debouncing
@@ -390,11 +441,21 @@ get fieldError() {
 ```
 
 ### Issue: Dialog not focusing properly
-```html
-<!-- ✅ Solution: Use focus trap directive -->
-<rag-dialog [open]="isOpen" cdkTrapFocus>
-  <input #firstInput />
-</rag-dialog>
+```typescript
+// ✅ Solution: Use CDK focus trap in dialog component
+@Component({
+  template: `
+    <rag-dialog title="Form Dialog" cdkTrapFocus>
+      <form>
+        <input #firstInput />
+        <button type="submit">Save</button>
+      </form>
+    </rag-dialog>
+  `
+})
+export class FormDialogComponent {
+  // Opened via RagDialogService.open()
+}
 ```
 
 ### Issue: Search input not debouncing

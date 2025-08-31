@@ -1,46 +1,28 @@
-<dialog
-  #dialog
-  [class]="dialogClasses()"
-  role="dialog"
-  [attr.aria-modal]="open()"
-  [attr.aria-labelledby]="title() ? 'dialog-title' : null"
-  [attr.aria-describedby]="description() ? 'dialog-description' : null"
-  (click)="onOverlayClick($event)"
->
-  <div class="rt-DialogOverlay"></div>
-  <div
-    [class]="contentClasses()"
-    (click)="onDialogClick($event)"
-  >
-    @if (showCloseButton() || title()) {
-      <div class="rt-DialogHeader">
-        @if (title()) {
-          <h2 id="dialog-title" class="rt-DialogTitle">{{ title() }}</h2>
-        }
-        
-        @if (showCloseButton()) {
-          <button
-            class="rt-DialogCloseButton"
-            type="button"
-            [attr.aria-label]="'Close ' + (title() || 'dialog')"
-            (click)="onClose()"
-          >
-            <rag-icon [img]="XIcon" size="sm"></rag-icon>
-          </button>
-        }
-      </div>
+<div class="rt-DialogContent" [class]="contentClasses">
+  @if (showCloseButton() || title()) {
+  <div class="rt-DialogHeader">
+    @if (title()) {
+    <h2 id="dialog-title" class="rt-DialogTitle">{{ title() }}</h2>
     }
 
-    @if (description()) {
-      <p id="dialog-description" class="rt-DialogDescription">{{ description() }}</p>
+    @if (showCloseButton()) {
+    <button class="rt-DialogCloseButton" type="button" [attr.aria-label]="'Close ' + (title() || 'dialog')"
+      (click)="closeDialog()">
+      <rag-icon [img]="XIcon" size="sm"></rag-icon>
+    </button>
     }
-
-    <div class="rt-DialogBody">
-      <ng-content></ng-content>
-    </div>
-
-    <div class="rt-DialogFooter">
-      <ng-content select="[slot=footer]"></ng-content>
-    </div>
   </div>
-</dialog>
+  }
+
+  @if (description()) {
+  <p id="dialog-description" class="rt-DialogDescription">{{ description() }}</p>
+  }
+
+  <div class="rt-DialogBody">
+    <ng-content></ng-content>
+  </div>
+
+  <div class="rt-DialogFooter">
+    <ng-content select="[slot=footer]"></ng-content>
+  </div>
+</div>

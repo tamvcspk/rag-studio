@@ -157,13 +157,7 @@ export const PrimitiveTokens = {
     auto: 'auto',
     base: '0',
     raised: '10',
-    dropdown: '1000',
-    sticky: '1010',
-    modal: '1020',
-    popover: '1030',
-    tooltip: '1040',
-    toast: '1050',
-    overlay: '1060'
+    sticky: '11'
   },
 
   // Size scale (height/width values)
@@ -519,6 +513,9 @@ export const ComponentArchetypes = {
     header: {
       borderBottom: `1px solid ${cssVarValue('semantic.color.border.subtle')}`,
       padding: `${cssVarValue('primitive.spacing.lg')} ${cssVarValue('primitive.spacing.xl')}`
+    },
+    description: {
+      padding: `0 ${cssVarValue('--rag-primitive-spacing-xl')} ${cssVarValue('--rag-primitive-spacing-xl')} ${cssVarValue('--rag-primitive-spacing-xl')}`
     },
     content: {
       padding: cssVarValue('primitive.spacing.xl')

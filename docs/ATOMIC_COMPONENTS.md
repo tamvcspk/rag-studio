@@ -570,19 +570,283 @@ Visual indicator for system or component status.
 
 ### RagToast
 
-Toast notification component for temporary messages.
+**Angular CDK Overlay-based toast notification component managed via ToastService for temporary messages with stacking, actions, and auto-dismiss functionality.**
 
 **Selector:** `rag-toast`
+
+> **Important:** Toasts are typically not used directly in templates. Instead, use the `ToastService` for programmatic toast management with proper overlay positioning and stacking.
 
 #### Properties
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `variant` | `'info' \| 'success' \| 'warning' \| 'error'` | `'info'` | Toast type |
-| `title` | `string` | - | Toast title |
-| `message` | `string \| undefined` | `undefined` | Toast message |
-| `duration` | `number` | `5000` | Auto-dismiss duration (ms) |
-| `closable` | `boolean` | `true` | Show close button |
+| `variant` | `'info' \| 'success' \| 'warning' \| 'error'` | `'info'` | Toast semantic variant |
+| `title` | `string \| undefined` | `undefined` | Toast title |
+| `message` | `string \| undefined` | `undefined` | Toast message content |
+| `duration` | `number` | `5000` | Auto-dismiss duration in milliseconds |
+| `persistent` | `boolean` | `false` | If true, toast won't auto-dismiss |
+| `dismissible` | `boolean` | `true` | Show close button for manual dismiss |
+| `icon` | `string \| undefined` | `undefined` | Custom Lucide icon name (overrides default) |
+| `actions` | `RagToastAction[]` | `[]` | Array of action buttons |
+
+#### Events
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `onDismiss` | `EventEmitter<void>` | Emitted when toast is dismissed |
+| `onAction` | `EventEmitter<string>` | Emitted when action button is clicked |
+
+#### Types
+
+```typescript
+interface RagToastAction {
+  label: string;
+  handler: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+}
+```
+
+#### ToastService Integration
+
+The recommended way to use toasts is through the `ToastService`:
+
+```typescript
+import { inject } from '@angular/core';
+import { ToastService } from './shared/services/toast.service';
+
+@Component({
+  // ...
+})
+export class MyComponent {
+  private toastService = inject(ToastService);
+
+  // Convenience methods
+  showSuccess() {
+    this.toastService.success(
+      'Your changes have been saved successfully!', 
+      'Success'
+    );
+  }
+
+  showError() {
+    this.toastService.error(
+      'Failed to save changes. Please try again.', 
+      'Error'
+    );
+  }
+
+  showInfo() {
+    this.toastService.info(
+      'New features are available in the latest update.', 
+      'Info'
+    );
+  }
+
+  showWarning() {
+    this.toastService.warning(
+      'Your session will expire in 5 minutes.', 
+      'Warning'
+    );
+  }
+
+  // Advanced usage with actions
+  showConfirmationToast() {
+    this.toastService.show({
+      variant: 'warning',
+      title: 'Unsaved Changes',
+      message: 'You have unsaved changes. What would you like to do?',
+      persistent: true, // Won't auto-dismiss
+      actions: [
+        {
+          label: 'Save',
+          handler: () => this.saveChanges(),
+          variant: 'solid'
+        },
+        {
+          label: 'Discard',
+          handler: () => this.discardChanges(),
+          variant: 'outline'
+        },
+        {
+          label: 'Cancel',
+          handler: () => console.log('Cancelled'),
+          variant: 'ghost'
+        }
+      ]
+    });
+  }
+
+  // Multiple toasts (will stack)
+  showMultipleToasts() {
+    this.toastService.info('First notification');
+    
+    setTimeout(() => {
+      this.toastService.success('Second notification');
+    }, 1000);
+    
+    setTimeout(() => {
+      this.toastService.warning('Third notification');
+    }, 2000);
+  }
+
+  // Dismiss all toasts
+  clearAllToasts() {
+    this.toastService.dismissAll();
+  }
+}
+```
+
+#### Service Methods
+
+```typescript
+export class ToastService {
+  // Convenience methods
+  info(message: string, title?: string, config?: Partial<ToastConfig>): string;
+  success(message: string, title?: string, config?: Partial<ToastConfig>): string;
+  warning(message: string, title?: string, config?: Partial<ToastConfig>): string;
+  error(message: string, title?: string, config?: Partial<ToastConfig>): string;
+  
+  // Full configuration
+  show(config: ToastConfig): string;
+  
+  // Management
+  dismiss(id: string): void;
+  dismissAll(): void;
+}
+
+interface ToastConfig {
+  variant?: 'info' | 'success' | 'warning' | 'error';
+  title?: string;
+  message?: string;
+  duration?: number;        // Auto-dismiss time (default: 5000ms)
+  persistent?: boolean;     // If true, won't auto-dismiss (default: false)
+  dismissible?: boolean;    // Show close button (default: true)
+  actions?: RagToastAction[]; // Action buttons
+}
+```
+
+#### Key Features
+
+1. **Angular CDK Overlay Integration**: Proper z-index management and positioning
+2. **Stacking**: Multiple toasts stack vertically with proper spacing
+3. **Auto-dismiss**: Configurable duration with hover-to-pause functionality
+4. **Persistent Mode**: Toasts that remain until manually dismissed
+5. **Action Buttons**: Custom action buttons with different variants
+6. **Service-based**: Centralized management like Angular Material's SnackBar
+7. **Repositioning**: Remaining toasts smoothly reposition when others are dismissed
+
+#### Usage Examples
+
+```html
+<!-- Direct usage (rare) - typically managed by service -->
+<rag-toast 
+  [variant]="'success'"
+  [title]="'Success!'"
+  [message]="'Operation completed'"
+  [duration]="3000"
+  [dismissible]="true"
+  (onDismiss)="handleDismiss()">
+</rag-toast>
+```
+
+```typescript
+// Service usage (recommended)
+@Component({
+  selector: 'app-user-actions',
+  template: `
+    <rag-button (onClick)="saveUser()" [loading]="isSaving()">
+      Save User
+    </rag-button>
+    <rag-button (onClick)="deleteUser()" variant="outline" color="red">
+      Delete User
+    </rag-button>
+  `
+})
+export class UserActionsComponent {
+  private toastService = inject(ToastService);
+  private userService = inject(UserService);
+  
+  isSaving = signal(false);
+
+  async saveUser() {
+    this.isSaving.set(true);
+    
+    try {
+      await this.userService.save(this.user);
+      this.toastService.success('User saved successfully!', 'Success');
+    } catch (error) {
+      this.toastService.error(
+        'Failed to save user. Please try again.', 
+        'Save Error'
+      );
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
+  deleteUser() {
+    const toastId = this.toastService.show({
+      variant: 'warning',
+      title: 'Confirm Deletion',
+      message: `Delete user "${this.user.name}"? This cannot be undone.`,
+      persistent: true,
+      actions: [
+        {
+          label: 'Delete',
+          handler: () => {
+            this.toastService.dismiss(toastId);
+            this.performDelete();
+          },
+          variant: 'solid'
+        },
+        {
+          label: 'Cancel',
+          handler: () => this.toastService.dismiss(toastId),
+          variant: 'ghost'
+        }
+      ]
+    });
+  }
+
+  private async performDelete() {
+    try {
+      await this.userService.delete(this.user.id);
+      this.toastService.success('User deleted successfully');
+      // Navigate away or refresh list
+    } catch (error) {
+      this.toastService.error('Failed to delete user', 'Delete Error');
+    }
+  }
+}
+```
+
+#### Styling Integration
+
+Toasts use the design token system and automatically adapt to light/dark themes:
+
+```scss
+// Toast styles use semantic color tokens
+.rt-Toast {
+  // Variant-based border colors
+  &.rt-variant-success {
+    border-left: 4px solid var(--rag-semantic-color-success-800);
+  }
+  
+  &.rt-variant-warning {
+    border-left: 4px solid var(--rag-semantic-color-warning-700);
+  }
+  
+  &.rt-variant-error {
+    border-left: 4px solid var(--rag-semantic-color-danger-700);
+  }
+}
+
+// Dark mode support included
+:global(.dark) .rt-Toast {
+  background-color: var(--rag-semantic-color-background-default);
+  border-color: var(--rag-semantic-color-border-muted);
+}
+```
 
 ---
 

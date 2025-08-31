@@ -1,4 +1,4 @@
-import { Component, signal, computed, OnInit, ViewChild } from '@angular/core';
+import { Component, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BookOpen, Plus, Upload } from 'lucide-angular';
 import { Observable, map } from 'rxjs';
@@ -8,13 +8,14 @@ import {
   KnowledgeBaseStatus 
 } from '../../shared/types';
 import { MockKnowledgeBasesService } from '../../shared/services/mock-knowledge-bases';
-import { KnowledgeBaseCardComponent } from '../../shared/components/composite/knowledge-base-card/knowledge-base-card';
-import { CreateKBWizardComponent } from '../../shared/components/composite/create-kb-wizard/create-kb-wizard';
-import { EmptyStatePanelComponent } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
+import { KnowledgeBaseCard } from '../../shared/components/composite/knowledge-base-card/knowledge-base-card';
+import { CreateKBWizard } from '../../shared/components/composite/create-kb-wizard/create-kb-wizard';
+import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
 import { RagButton } from '../../shared/components/atomic/primitives/rag-button/rag-button';
 import { RagSearchInput } from '../../shared/components/semantic/forms/rag-search-input/rag-search-input';
 import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
 import { RagSelect } from '../../shared/components/atomic/primitives/rag-select/rag-select';
+import { RagDialogService } from '../../shared/components/semantic/overlay/rag-dialog/rag-dialog.service';
 
 type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
 
@@ -24,9 +25,8 @@ type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
   imports: [
     CommonModule,
     RagIcon,
-    KnowledgeBaseCardComponent,
-    CreateKBWizardComponent,
-    EmptyStatePanelComponent,
+    KnowledgeBaseCard,
+    EmptyStatePanel,
     RagButton,
     RagSearchInput,
     RagSelect
@@ -35,7 +35,6 @@ type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
   styleUrl: './knowledge-bases.scss'
 })
 export class KnowledgeBases implements OnInit {
-  @ViewChild(CreateKBWizardComponent) createWizard!: CreateKBWizardComponent;
 
   private allKnowledgeBases = signal<KnowledgeBase[]>([]);
   private searchQuery = signal('');
@@ -98,7 +97,10 @@ export class KnowledgeBases implements OnInit {
     Upload
   };
 
-  constructor(private kbService: MockKnowledgeBasesService) {}
+  constructor(
+    private kbService: MockKnowledgeBasesService,
+    private dialogService: RagDialogService
+  ) {}
 
   ngOnInit(): void {
     this.loadKnowledgeBases();
@@ -128,7 +130,18 @@ export class KnowledgeBases implements OnInit {
   }
 
   openCreateWizard(): void {
-    this.createWizard.open();
+    const dialogRef = this.dialogService.open(CreateKBWizard, {
+      title: 'Create Knowledge Base',
+      description: 'Create a new versioned knowledge base from your content',
+      size: 'lg',
+      showCloseButton: true
+    });
+
+    dialogRef.closed.subscribe((result: CreateKBFormData | undefined) => {
+      if (result) {
+        this.onCreateKB(result);
+      }
+    });
   }
 
   onCreateKB(formData: CreateKBFormData): void {

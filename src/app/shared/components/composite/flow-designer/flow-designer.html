@@ -1,13 +1,11 @@
-<div class="flow-designer">
-  <div class="designer-header">
-    <div class="header-info">
-      <rag-icon [img]="layoutIcon" [size]="24"></rag-icon>
-      <div>
-        <h3>Flow Designer</h3>
-        <p *ngIf="flow()">{{ flow()?.name }}</p>
-      </div>
-    </div>
-    <div class="header-actions" *ngIf="!readonly()">
+<rag-dialog 
+  [title]="flow() ? 'Edit Flow - ' + flow()!.name : 'Flow Designer'"
+  [description]="flow() ? 'Design and configure your flow components and connections.' : ''"
+  size="xl">
+  
+  <div class="flow-designer-content">
+    @if (!readonly()) {
+    <div class="designer-toolbar">
       <rag-button 
         [variant]="isDesignMode() ? 'solid' : 'outline'" 
         [size]="'sm'"
@@ -15,24 +13,10 @@
         <rag-icon [img]="edit3Icon" [size]="14"></rag-icon>
         {{ isDesignMode() ? 'View Mode' : 'Design Mode' }}
       </rag-button>
-      <rag-button 
-        [variant]="'outline'" 
-        [size]="'sm'"
-        (click)="cancel()">
-        Cancel
-      </rag-button>
-      <rag-button 
-        [variant]="'solid'" 
-        [size]="'sm'"
-        (click)="saveFlow()"
-        [disabled]="!flow()">
-        <rag-icon [img]="saveIcon" [size]="14"></rag-icon>
-        Save Flow
-      </rag-button>
     </div>
-  </div>
+    }
 
-  <div class="designer-content">
+    <div class="designer-canvas">
     @if (nodes().length === 0) {
       <app-empty-state-panel
         [icon]="gitBranchIcon"
@@ -139,10 +123,10 @@
         </div>
       }
     }
-  </div>
-
-  <div class="designer-footer" *ngIf="nodes().length > 0">
-    <div class="status-info">
+    </div>
+    
+    @if (nodes().length > 0) {
+    <div class="designer-status">
       <span class="node-count">{{ nodes().length }} components</span>
       @if (selectedNode()) {
         <span class="selected-info">• {{ selectedNode()?.name }} selected</span>
@@ -151,7 +135,13 @@
         <span class="mode-indicator">• Design mode active</span>
       }
     </div>
-    <div class="footer-actions">
+    }
+  </div>
+  
+  @if (!readonly()) {
+  <div slot="footer" class="dialog-actions">
+    @if (nodes().length > 0) {
+    <div class="footer-controls">
       <rag-button 
         [variant]="'ghost'" 
         [size]="'sm'"
@@ -167,5 +157,21 @@
         Reset
       </rag-button>
     </div>
+    }
+    <div class="primary-actions">
+      <rag-button 
+        [variant]="'outline'" 
+        (click)="cancel()">
+        Cancel
+      </rag-button>
+      <rag-button 
+        [variant]="'solid'" 
+        (click)="saveFlow()"
+        [disabled]="!flow()">
+        <rag-icon [img]="saveIcon" [size]="14"></rag-icon>
+        Save Flow
+      </rag-button>
+    </div>
   </div>
-</div>
+  }
+</rag-dialog>

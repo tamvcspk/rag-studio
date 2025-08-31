@@ -1,9 +1,10 @@
-import { Component, output, signal, computed } from '@angular/core';
+import { Component, output, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Plus, X } from 'lucide-angular';
 import { ContentSourceType, EmbeddingModel, CreateKBFormData } from '../../../types';
-import { RagDialogComponent } from '../../semantic/overlay/rag-dialog/rag-dialog';
+import { RagDialog } from '../../semantic/overlay/rag-dialog/rag-dialog';
 import { RagFormField } from '../../semantic/forms/rag-form-field/rag-form-field';
 import { RagInput } from '../../atomic/primitives/rag-input/rag-input';
 import { RagTextarea } from '../../atomic/primitives/rag-textarea/rag-textarea';
@@ -30,7 +31,7 @@ interface EmbeddingModelOption {
     CommonModule,
     ReactiveFormsModule,
     RagIcon,
-    RagDialogComponent,
+    RagDialog,
     RagFormField,
     RagInput,
     RagTextarea,
@@ -40,13 +41,11 @@ interface EmbeddingModelOption {
   templateUrl: './create-kb-wizard.html',
   styleUrl: './create-kb-wizard.scss'
 })
-export class CreateKBWizardComponent {
-  readonly isOpen = signal(false);
+export class CreateKBWizard {
   readonly isSubmitting = signal(false);
-
-  readonly create = output<CreateKBFormData>();
-  readonly cancel = output<void>();
-
+  
+  private readonly dialogRef = inject(DialogRef, { optional: true });
+  private readonly data = inject(DIALOG_DATA, { optional: true });
   private fb = new FormBuilder();
   
   readonly kbForm: FormGroup = this.fb.group({
@@ -142,51 +141,40 @@ export class CreateKBWizardComponent {
     });
   }
 
-  open(): void {
-    this.isOpen.set(true);
-    this.kbForm.reset({
-      name: '',
-      product: '',
-      version: '',
-      description: '',
-      contentSource: 'local-folder' as ContentSourceType,
-      sourceUrl: '',
-      embeddingModel: 'all-MiniLM-L6-v2' as EmbeddingModel
-    });
-  }
-
-  close(): void {
-    this.isOpen.set(false);
-    this.isSubmitting.set(false);
-    this.cancel.emit();
-  }
-
-  onSubmit(): void {
-    if (this.kbForm.valid && !this.isSubmitting()) {
-      this.isSubmitting.set(true);
-      
-      const formData: CreateKBFormData = {
-        name: this.kbForm.get('name')?.value,
-        product: this.kbForm.get('product')?.value,
-        version: this.kbForm.get('version')?.value,
-        description: this.kbForm.get('description')?.value,
-        contentSource: this.kbForm.get('contentSource')?.value,
-        sourceUrl: this.kbForm.get('sourceUrl')?.value,
-        embeddingModel: this.kbForm.get('embeddingModel')?.value
-      };
-
-      this.create.emit(formData);
-      
-      // Reset submitting state after a delay (simulating API call)
-      setTimeout(() => {
-        this.isSubmitting.set(false);
-        this.close();
-      }, 1500);
+  cancel(): void {
+    if (this.dialogRef) {
+      this.dialogRef.close();
     }
   }
 
-  onCancel(): void {
-    this.close();
+  async onSubmit(): Promise<void> {
+    if (this.kbForm.valid && !this.isSubmitting()) {
+      this.isSubmitting.set(true);
+      
+      try {
+        const formData: CreateKBFormData = {
+          name: this.kbForm.get('name')?.value,
+          product: this.kbForm.get('product')?.value,
+          version: this.kbForm.get('version')?.value,
+          description: this.kbForm.get('description')?.value,
+          contentSource: this.kbForm.get('contentSource')?.value,
+          sourceUrl: this.kbForm.get('sourceUrl')?.value,
+          embeddingModel: this.kbForm.get('embeddingModel')?.value
+        };
+
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Close dialog with form data as result
+        if (this.dialogRef) {
+          this.dialogRef.close(formData);
+        }
+      } catch (error) {
+        console.error('Error creating knowledge base:', error);
+      } finally {
+        this.isSubmitting.set(false);
+      }
+    }
   }
 
   getFieldError(fieldName: string): string | undefined {

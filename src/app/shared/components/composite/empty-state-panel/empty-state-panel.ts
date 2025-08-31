@@ -18,7 +18,7 @@ import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
   templateUrl: './empty-state-panel.html',
   styleUrl: './empty-state-panel.scss'
 })
-export class EmptyStatePanelComponent {
+export class EmptyStatePanel {
   readonly icon = input.required<IconComponent>();
   readonly title = input.required<string>();
   readonly description = input<string>();

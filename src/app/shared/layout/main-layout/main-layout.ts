@@ -38,7 +38,7 @@ interface NavItem {
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss'
 })
-export class MainLayoutComponent {
+export class MainLayout {
   readonly navItems: NavItem[] = [
     { path: '/dashboard', title: 'Dashboard', icon: LayoutDashboardIcon },
     { path: '/tools', title: 'Tools', icon: WrenchIcon },

@@ -35,7 +35,7 @@ import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
   templateUrl: './flow-card.html',
   styleUrl: './flow-card.scss'
 })
-export class FlowCardComponent {
+export class FlowCard {
   readonly flow = input.required<Flow>();
 
   // Icon components

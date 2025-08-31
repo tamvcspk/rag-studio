@@ -10,7 +10,7 @@ import { RagIcon } from '../../../atomic/primitives/rag-icon/rag-icon';
   templateUrl: './rag-sidebar-item.html',
   styleUrl: './rag-sidebar-item.scss'
 })
-export class RagSidebarItemComponent {
+export class RagSidebarItem {
   readonly label = input.required<string>();
   readonly icon = input<any | null>(null); // Icon component
   readonly url = input<string | null>(null);

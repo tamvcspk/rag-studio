@@ -14,12 +14,12 @@ import {
 import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
 import { Flow } from '../../shared/models/flow.model';
 import { FlowsService } from '../../shared/services/flows';
-import { FlowCardComponent } from '../../shared/components/composite/flow-card/flow-card';
-import { CreateFlowWizardComponent } from '../../shared/components/composite/create-flow-wizard/create-flow-wizard';
-import { FlowDesignerComponent } from '../../shared/components/composite/flow-designer/flow-designer';
-import { EmptyStatePanelComponent } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
+import { FlowCard } from '../../shared/components/composite/flow-card/flow-card';
+import { CreateFlowWizard } from '../../shared/components/composite/create-flow-wizard/create-flow-wizard';
+import { FlowDesigner } from '../../shared/components/composite/flow-designer/flow-designer';
+import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
 import { RagAlert, RagBadge, RagButton, RagInput, RagSelect } from '../../shared/components';
-import { RagDialogComponent } from '../../shared/components/semantic/overlay/rag-dialog/rag-dialog';
+import { RagDialogService } from '../../shared/components/semantic/overlay/rag-dialog/rag-dialog.service';
 
 @Component({
   selector: 'app-flows',
@@ -27,16 +27,13 @@ import { RagDialogComponent } from '../../shared/components/semantic/overlay/rag
   imports: [
     CommonModule,
     RagIcon,
-    FlowCardComponent,
-    CreateFlowWizardComponent,
-    FlowDesignerComponent,
-    EmptyStatePanelComponent,
+    FlowCard,
+    EmptyStatePanel,
     RagButton,
     RagInput,
     RagSelect,
     RagBadge,
-    RagAlert,
-    RagDialogComponent
+    RagAlert
   ],
   templateUrl: './flows.html',
   styleUrl: './flows.scss'
@@ -86,7 +83,10 @@ export class Flows implements OnInit {
     { value: 'archived', label: 'Archived' }
   ];
 
-  constructor(private flowsService: FlowsService) {}
+  constructor(
+    private flowsService: FlowsService,
+    private dialogService: RagDialogService
+  ) {}
 
   ngOnInit(): void {
     this.loadFlows();
@@ -194,23 +194,41 @@ export class Flows implements OnInit {
   }
 
   openCreateWizard(): void {
-    this.showCreateWizard.set(true);
+    const dialogRef = this.dialogService.open(CreateFlowWizard, {
+      size: 'lg'
+    });
+
+    dialogRef.closed.subscribe((result: any) => {
+      if (result) {
+        this.onFlowCreated(result);
+      }
+    });
   }
 
   closeCreateWizard(): void {
-    this.showCreateWizard.set(false);
+    // No longer needed - handled by dialog service
   }
 
   openDesigner(flow?: Flow): void {
+    const config: any = {
+      size: 'xl'
+    };
+    
     if (flow) {
-      this.selectedFlow.set(flow);
+      config.data = { flow };
     }
-    this.showDesigner.set(true);
+    
+    const dialogRef = this.dialogService.open(FlowDesigner, config);
+
+    dialogRef.closed.subscribe((result: any) => {
+      if (result) {
+        this.onFlowSaved(result);
+      }
+    });
   }
 
   closeDesigner(): void {
-    this.showDesigner.set(false);
-    this.selectedFlow.set(null);
+    // No longer needed - handled by dialog service
   }
 
   // Flow card event handlers
@@ -311,13 +329,12 @@ export class Flows implements OnInit {
 
   // Wizard event handlers
   onFlowCreated(flow: Flow): void {
-    this.closeCreateWizard();
     this.loadFlows();
     console.log('Flow created:', flow);
   }
 
   onWizardCancel(): void {
-    this.closeCreateWizard();
+    // No longer needed - handled by dialog service
   }
 
   // Designer event handlers
@@ -325,7 +342,6 @@ export class Flows implements OnInit {
     this.flowsService.updateFlow(flow.id, flow).subscribe({
       next: (updatedFlow) => {
         if (updatedFlow) {
-          this.closeDesigner();
           this.loadFlows();
         }
       },
@@ -337,7 +353,7 @@ export class Flows implements OnInit {
   }
 
   onDesignerCancel(): void {
-    this.closeDesigner();
+    // No longer needed - handled by dialog service
   }
 
   dismissError(): void {

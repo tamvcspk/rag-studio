@@ -1,46 +1,31 @@
-<rag-dialog 
-  [open]="isOpen()" 
-  (close)="close()"
-  [title]="'Create Knowledge Base'"
-  [description]="'Create a new versioned knowledge base from your content'"
-  class="create-kb-wizard">
-  
+<rag-dialog title="Create Knowledge Base" description="Create a new versioned knowledge base from your content"
+  size="lg" [showCloseButton]="true">
+
   <form [formGroup]="kbForm" (ngSubmit)="onSubmit()" class="wizard-form">
-    
+
     <!-- Basic Information Section -->
     <div class="form-section">
       <h3 class="section-title">Basic Information</h3>
-      
+
       <rag-form-field label="Knowledge Base Name" [error]="getFieldError('name')">
-        <rag-input 
-          formControlName="name" 
-          placeholder="e.g., Product Documentation"
-          [error]="!!getFieldError('name')">
+        <rag-input formControlName="name" placeholder="e.g., Product Documentation" [error]="!!getFieldError('name')">
         </rag-input>
       </rag-form-field>
 
       <div class="form-row">
         <rag-form-field label="Product" [error]="getFieldError('product')">
-          <rag-input 
-            formControlName="product" 
-            placeholder="e.g., myapp"
-            [error]="!!getFieldError('product')">
+          <rag-input formControlName="product" placeholder="e.g., myapp" [error]="!!getFieldError('product')">
           </rag-input>
         </rag-form-field>
 
         <rag-form-field label="Version" [error]="getFieldError('version')">
-          <rag-input 
-            formControlName="version" 
-            placeholder="e.g., 1.0.0"
-            [error]="!!getFieldError('version')">
+          <rag-input formControlName="version" placeholder="e.g., 1.0.0" [error]="!!getFieldError('version')">
           </rag-input>
         </rag-form-field>
       </div>
 
       <rag-form-field label="Description (Optional)">
-        <rag-textarea 
-          formControlName="description" 
-          placeholder="Describe what this knowledge base contains..."
+        <rag-textarea formControlName="description" placeholder="Describe what this knowledge base contains..."
           [rows]="3">
         </rag-textarea>
       </rag-form-field>
@@ -49,74 +34,60 @@
     <!-- Content Source Section -->
     <div class="form-section">
       <h3 class="section-title">Content Source</h3>
-      
-      <rag-form-field 
-        label="Content Source" 
-        [description]="selectedContentSource()?.description">
+
+      <rag-form-field label="Content Source" [description]="selectedContentSource()?.description">
         <rag-select formControlName="contentSource">
           @for (option of contentSourceOptions; track option.value) {
-            <option [value]="option.value">{{ option.label }}</option>
+          <option [value]="option.value">{{ option.label }}</option>
           }
         </rag-select>
       </rag-form-field>
 
       @if (showSourceUrl()) {
-        <rag-form-field 
-          [label]="sourceUrlLabel()" 
-          [error]="getFieldError('sourceUrl')">
-          <rag-input 
-            formControlName="sourceUrl" 
-            [placeholder]="sourceUrlPlaceholder()"
-            [error]="!!getFieldError('sourceUrl')">
-          </rag-input>
-        </rag-form-field>
+      <rag-form-field [label]="sourceUrlLabel()" [error]="getFieldError('sourceUrl')">
+        <rag-input formControlName="sourceUrl" [placeholder]="sourceUrlPlaceholder()"
+          [error]="!!getFieldError('sourceUrl')">
+        </rag-input>
+      </rag-form-field>
       }
     </div>
 
     <!-- Configuration Section -->
     <div class="form-section">
       <h3 class="section-title">Configuration</h3>
-      
-      <rag-form-field 
-        label="Embedding Model" 
+
+      <rag-form-field label="Embedding Model"
         description="Choose the model that will generate vector embeddings for your content">
         <rag-select formControlName="embeddingModel">
           @for (option of embeddingModelOptions; track option.value) {
-            <option [value]="option.value">{{ option.label }}</option>
+          <option [value]="option.value">{{ option.label }}</option>
           }
         </rag-select>
       </rag-form-field>
-      
+
       <div class="model-description">
         @for (option of embeddingModelOptions; track option.value) {
-          @if (kbForm.get('embeddingModel')?.value === option.value) {
-            <p class="description-text">{{ option.description }}</p>
-          }
+        @if (kbForm.get('embeddingModel')?.value === option.value) {
+        <p class="description-text">{{ option.description }}</p>
+        }
         }
       </div>
     </div>
-
-    <!-- Form Actions -->
-    <div class="form-actions">
-      <rag-button 
-        type="button" 
-        variant="outline" 
-        (click)="onCancel()"
-        [disabled]="isSubmitting()">
-        Cancel
-      </rag-button>
-      
-      <rag-button 
-        type="submit" 
-        variant="solid"
-        [disabled]="kbForm.invalid || isSubmitting()">
-        @if (isSubmitting()) {
-          Creating...
-        } @else {
-          <rag-icon [img]="iconComponents.Plus" size="sm" />
-          Create Knowledge Base
-        }
-      </rag-button>
-    </div>
   </form>
+
+  <div slot="footer" class="wizard-actions">
+    <rag-button variant="outline" size="md" type="button" (click)="cancel()" [disabled]="isSubmitting()">
+      Cancel
+    </rag-button>
+
+    <rag-button variant="solid" size="md" type="button" [disabled]="kbForm.invalid || isSubmitting()"
+      [loading]="isSubmitting()" (click)="onSubmit()">
+      @if (isSubmitting()) {
+      Creating...
+      } @else {
+      <rag-icon [img]="iconComponents.Plus" size="sm" />
+      Create Knowledge Base
+      }
+    </rag-button>
+  </div>
 </rag-dialog>

@@ -166,31 +166,3 @@
   }
 </div>
 
-<!-- Create Flow Wizard Dialog -->
-<rag-dialog
-  [open]="showCreateWizard()"
-  [title]="'Create New Flow'"
-  [description]="'Build complete RAG processes by combining tools, knowledge bases, and pipelines'"
-  [size]="'lg'"
-  (openChange)="showCreateWizard.set($event)"
-  (close)="closeCreateWizard()">
-  <app-create-flow-wizard
-    (onFlowCreated)="onFlowCreated($event)"
-    (onCancel)="onWizardCancel()">
-  </app-create-flow-wizard>
-</rag-dialog>
-
-<!-- Flow Designer Dialog -->
-<rag-dialog
-  [open]="showDesigner()"
-  [title]="selectedFlow() ? 'Edit Flow: ' + selectedFlow()!.name : 'Flow Designer'"
-  [description]="'Design and configure your flow components and connections'"
-  [size]="'full'"
-  (openChange)="showDesigner.set($event)"
-  (close)="closeDesigner()">
-  <app-flow-designer
-    [flow]="selectedFlow() || undefined"
-    (onSave)="onFlowSaved($event)"
-    (onCancel)="onDesignerCancel()">
-  </app-flow-designer>
-</rag-dialog>

@@ -521,66 +521,134 @@ interface BreadcrumbItem {
 ## 🎭 Overlay Components
 
 ### RagDialog
-**Purpose**: Modal dialog with focus management, animations, and accessibility features.
+**Purpose**: Template wrapper component for consistent dialog styling. Dialogs are opened programmatically using `RagDialogService`.
 
-#### Props
+#### Service Usage
+Use `RagDialogService` to open components as dialogs:
+
+```typescript
+import { RagDialogService } from './shared/components/semantic/overlay/rag-dialog/rag-dialog.service';
+
+export class MyComponent {
+  constructor(private dialogService: RagDialogService) {}
+
+  openDialog() {
+    const dialogRef = this.dialogService.open(MyDialogComponent, {
+      data: { message: 'Hello from dialog' },
+      panelClass: 'custom-dialog',
+      disableClose: false,
+      backdropClass: 'custom-backdrop'
+    });
+
+    dialogRef.closed.subscribe(result => {
+      console.log('Dialog closed with result:', result);
+    });
+  }
+}
+```
+
+#### Template Component Properties
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `open` | `boolean` | `false` | Dialog visibility |
 | `title` | `string` | `''` | Dialog title |
 | `description` | `string` | `''` | Dialog description |
 | `size` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'` | `'md'` | Dialog size |
 | `showCloseButton` | `boolean` | `true` | Show close button |
-| `closeOnEscape` | `boolean` | `true` | Close on Escape key |
-| `closeOnClickOutside` | `boolean` | `true` | Close on overlay click |
-| `preventBodyScroll` | `boolean` | `true` | Prevent body scrolling |
 
-#### Events
-| Event | Type | Description |
-|-------|------|-------------|
-| `openChange` | `boolean` | Dialog open state changed |
-| `close` | `void` | Dialog close requested |
-| `afterOpen` | `void` | Dialog opened (after animation) |
-| `afterClose` | `void` | Dialog closed (after animation) |
+#### Dialog Component Structure
+Create dialog components that use `<rag-dialog>` as a template wrapper:
 
-#### Usage
-```html
-<!-- Confirmation dialog -->
-<rag-dialog
-  [open]="showDeleteDialog"
-  title="Confirm Deletion"
-  description="This action cannot be undone."
-  size="sm"
-  (close)="showDeleteDialog = false">
-  
-  <div class="dialog-content">
-    <p>Are you sure you want to delete this item?</p>
-  </div>
-  
-  <div class="dialog-actions">
-    <rag-button variant="outline" (click)="showDeleteDialog = false">
-      Cancel
-    </rag-button>
-    <rag-button variant="solid" (click)="confirmDelete()">
-      Delete
-    </rag-button>
-  </div>
-</rag-dialog>
+```typescript
+import { Component, inject } from '@angular/core';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+import { RagDialog } from './shared/components/semantic/overlay/rag-dialog/rag-dialog';
 
-<!-- Form dialog -->
-<rag-dialog
-  [open]="showCreateDialog"
-  title="Create New Item"
-  size="lg"
-  (openChange)="showCreateDialog = $event">
+@Component({
+  selector: 'app-confirmation-dialog',
+  standalone: true,
+  imports: [RagDialog, RagButton],
+  template: `
+    <rag-dialog
+      title="Confirm Deletion"
+      description="This action cannot be undone."
+      size="sm">
+      
+      <div class="dialog-content">
+        <p>Are you sure you want to delete "{{ data.itemName }}"?</p>
+      </div>
+      
+      <div slot="footer" class="dialog-actions">
+        <rag-button variant="outline" (click)="cancel()">Cancel</rag-button>
+        <rag-button variant="solid" (click)="confirm()">Delete</rag-button>
+      </div>
+    </rag-dialog>
+  `
+})
+export class ConfirmationDialogComponent {
+  private dialogRef = inject(DialogRef);
+  readonly data = inject(DIALOG_DATA);
+
+  cancel() {
+    this.dialogRef.close(false);
+  }
+
+  confirm() {
+    this.dialogRef.close(true);
+  }
+}
+```
+
+#### Form Dialog Example
+```typescript
+@Component({
+  selector: 'app-create-item-dialog',
+  standalone: true,
+  imports: [RagDialog, RagFormField, RagInput, RagButton],
+  template: `
+    <rag-dialog
+      title="Create New Item"
+      size="lg">
+      
+      <form [formGroup]="createForm">
+        <rag-form-field label="Name" [required]="true">
+          <rag-input formControlName="name" />
+        </rag-form-field>
+        <rag-form-field label="Description">
+          <rag-textarea formControlName="description" />
+        </rag-form-field>
+      </form>
+      
+      <div slot="footer" class="dialog-actions">
+        <rag-button variant="outline" (click)="cancel()">Cancel</rag-button>
+        <rag-button 
+          variant="solid" 
+          [disabled]="createForm.invalid"
+          (click)="save()">
+          Create Item
+        </rag-button>
+      </div>
+    </rag-dialog>
+  `
+})
+export class CreateItemDialogComponent {
+  private dialogRef = inject(DialogRef);
+  readonly data = inject(DIALOG_DATA);
   
-  <form [formGroup]="createForm">
-    <rag-form-field label="Name" [required]="true">
-      <rag-input formControlName="name" />
-    </rag-form-field>
-    <!-- More form fields -->
-  </form>
-</rag-dialog>
+  readonly createForm = this.fb.group({
+    name: ['', Validators.required],
+    description: ['']
+  });
+
+  cancel() {
+    this.dialogRef.close();
+  }
+
+  save() {
+    if (this.createForm.valid) {
+      this.dialogRef.close(this.createForm.value);
+    }
+  }
+}
 ```
 
 ---
@@ -758,18 +826,28 @@ export class CustomInput implements ControlValueAccessor {
 ```
 
 ### 4. **Accessibility**
-```html
-<!-- ✅ Good: Proper ARIA attributes -->
-<rag-dialog
-  [open]="isOpen"
-  title="Settings"
-  role="dialog"
-  aria-labelledby="dialog-title"
-  aria-describedby="dialog-description">
-  
-  <h2 id="dialog-title">Settings</h2>
-  <p id="dialog-description">Configure your preferences</p>
-</rag-dialog>
+```typescript
+// ✅ Good: Accessible dialog component
+@Component({
+  template: `
+    <rag-dialog
+      title="Settings"
+      description="Configure your preferences"
+      role="dialog"
+      aria-labelledby="dialog-title"
+      aria-describedby="dialog-description">
+      
+      <div class="settings-form">
+        <rag-form-field label="Theme">
+          <rag-select formControlName="theme" />
+        </rag-form-field>
+      </div>
+    </rag-dialog>
+  `
+})
+export class SettingsDialogComponent {
+  // Opened via RagDialogService
+}
 ```
 
 ### 5. **Performance**

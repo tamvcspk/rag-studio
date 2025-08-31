@@ -5,12 +5,12 @@ import { KnowledgeBases } from "./pages/knowledge-bases/knowledge-bases";
 import { Pipelines } from "./pages/pipelines/pipelines";
 import { Flows } from "./pages/flows/flows";
 import { Settings } from "./pages/settings/settings";
-import { MainLayoutComponent } from "./shared/layout";
+import { MainLayout } from "./shared/layout";
 
 export const routes: Routes = [
   {
     path: '',
-    component: MainLayoutComponent,
+    component: MainLayout,
     children: [
       {
         path: '',

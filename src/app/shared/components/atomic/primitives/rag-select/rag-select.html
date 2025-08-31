@@ -1,5 +1,6 @@
 <div [class]="containerClasses()">
   <button
+    #trigger
     type="button"
     [class]="selectClasses()"
     [disabled]="disabled()"
@@ -31,22 +32,24 @@
       />
     </div>
   </button>
-  
-  @if (isOpen) {
-    <div class="rt-select-dropdown">
-      @if (searchable()) {
-        <div class="rt-select-search">
-      <input
-        type="text"
-        class="rt-select-search-input"
-        placeholder="Search options..."
-        [value]="searchTerm"
-        (input)="onSearchInput($event)"
-        #searchInput
-      />
-          <rag-icon [img]="SearchIcon" size="xs" class="rt-select-search-icon" />
-        </div>
-      }
+</div>
+
+<!-- Overlay template for dropdown -->
+<ng-template #dropdownTemplate>
+  <div class="rt-select-dropdown">
+    @if (searchable()) {
+      <div class="rt-select-search">
+        <input
+          type="text"
+          class="rt-select-search-input"
+          placeholder="Search options..."
+          [value]="searchTerm"
+          (input)="onSearchInput($event)"
+          #searchInput
+        />
+        <rag-icon [img]="SearchIcon" size="xs" class="rt-select-search-icon" />
+      </div>
+    }
     
     <ul class="rt-select-options" role="listbox">
       <li
@@ -68,12 +71,11 @@
         }
       </li>
       
-        @if (filteredOptions().length === 0) {
-          <li class="rt-select-empty">
-            No options found
-          </li>
-        }
-      </ul>
-    </div>
-  }
-</div>
+      @if (filteredOptions().length === 0) {
+        <li class="rt-select-empty">
+          No options found
+        </li>
+      }
+    </ul>
+  </div>
+</ng-template>

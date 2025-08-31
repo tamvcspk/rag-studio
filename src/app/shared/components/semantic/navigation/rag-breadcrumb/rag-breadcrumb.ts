@@ -18,7 +18,7 @@ export interface BreadcrumbItem {
   templateUrl: './rag-breadcrumb.html',
   styleUrl: './rag-breadcrumb.scss'
 })
-export class RagBreadcrumbComponent {
+export class RagBreadcrumb {
   readonly items = input.required<BreadcrumbItem[]>();
   readonly separator = input<any>(); // Icon component for separator
   readonly size = input<'sm' | 'md' | 'lg'>('md');

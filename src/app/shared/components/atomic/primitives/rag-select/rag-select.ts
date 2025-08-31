@@ -1,6 +1,9 @@
-import { Component, input, output, forwardRef, signal, computed } from '@angular/core';
+import { Component, input, output, forwardRef, signal, computed, ViewChild, ElementRef, effect, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Overlay, OverlayRef, OverlayModule, ConnectedPosition, FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { ViewContainerRef, TemplateRef } from '@angular/core';
 import { X, ChevronDown, Search, Check } from 'lucide-angular';
 import { RagIcon } from '../rag-icon/rag-icon';
 
@@ -14,7 +17,7 @@ export interface RagSelectOption<T = any> {
 @Component({
   selector: 'rag-select',
   standalone: true,
-  imports: [CommonModule, RagIcon],
+  imports: [CommonModule, RagIcon, OverlayModule],
   templateUrl: './rag-select.html',
   styleUrl: './rag-select.scss',
   providers: [
@@ -25,12 +28,19 @@ export interface RagSelectOption<T = any> {
     }
   ]
 })
-export class RagSelect<T = any> implements ControlValueAccessor {
+export class RagSelect<T = any> implements ControlValueAccessor, OnDestroy {
+  // ViewChild references for overlay positioning
+  @ViewChild('trigger', { static: false }) triggerRef!: ElementRef<HTMLButtonElement>;
+  @ViewChild('dropdownTemplate', { static: true }) dropdownTemplate!: TemplateRef<any>;
+  
   // Icon constants
   readonly XIcon = X;
   readonly ChevronDownIcon = ChevronDown;
   readonly SearchIcon = Search;
   readonly CheckIcon = Check;
+  
+  // Overlay management
+  private overlayRef: OverlayRef | null = null;
   
   // Modern Angular 20: Use input() with proper typing
   readonly options = input<RagSelectOption<T>[]>([]);
@@ -52,6 +62,18 @@ export class RagSelect<T = any> implements ControlValueAccessor {
   private readonly searchTermSignal = signal('');
   private onChange = (value: T | null) => {};
   private onTouched = () => {};
+  
+  constructor(
+    private overlay: Overlay,
+    private viewContainerRef: ViewContainerRef
+  ) {
+    // Effect to handle overlay cleanup when isOpen changes
+    effect(() => {
+      if (!this.isOpen && this.overlayRef) {
+        this.closeOverlay();
+      }
+    });
+  }
 
   // Computed value that prioritizes input() over internal state
   readonly currentValue = computed(() => 
@@ -113,10 +135,93 @@ export class RagSelect<T = any> implements ControlValueAccessor {
 
   toggleDropdown(): void {
     if (this.disabled()) return;
-    this.isOpen = !this.isOpen;
-    if (!this.isOpen) {
-      this.onTouched();
-      this.searchTerm = '';
+    
+    if (this.isOpen) {
+      this.closeDropdown();
+    } else {
+      this.openDropdown();
+    }
+  }
+  
+  private openDropdown(): void {
+    if (this.overlayRef) {
+      this.closeOverlay();
+    }
+    
+    this.createOverlay();
+    this.isOpen = true;
+  }
+  
+  private closeDropdown(): void {
+    this.isOpen = false;
+    this.onTouched();
+    this.searchTerm = '';
+  }
+  
+  private createOverlay(): void {
+    const positionStrategy = this.getPositionStrategy();
+    
+    this.overlayRef = this.overlay.create({
+      positionStrategy,
+      hasBackdrop: true,
+      backdropClass: 'cdk-overlay-transparent-backdrop',
+      scrollStrategy: this.overlay.scrollStrategies.reposition(),
+      width: this.triggerRef.nativeElement.offsetWidth,
+      minWidth: 200
+    });
+    
+    const portal = new TemplatePortal(this.dropdownTemplate, this.viewContainerRef);
+    this.overlayRef.attach(portal);
+    
+    // Close dropdown when backdrop is clicked
+    this.overlayRef.backdropClick().subscribe(() => {
+      this.closeDropdown();
+    });
+  }
+  
+  private getPositionStrategy(): FlexibleConnectedPositionStrategy {
+    const positions: ConnectedPosition[] = [
+      {
+        originX: 'start',
+        originY: 'bottom',
+        overlayX: 'start',
+        overlayY: 'top',
+        offsetY: 4
+      },
+      {
+        originX: 'start',
+        originY: 'top',
+        overlayX: 'start',
+        overlayY: 'bottom',
+        offsetY: -4
+      },
+      {
+        originX: 'end',
+        originY: 'bottom',
+        overlayX: 'end',
+        overlayY: 'top',
+        offsetY: 4
+      },
+      {
+        originX: 'end',
+        originY: 'top',
+        overlayX: 'end',
+        overlayY: 'bottom',
+        offsetY: -4
+      }
+    ];
+    
+    return this.overlay.position()
+      .flexibleConnectedTo(this.triggerRef)
+      .withPositions(positions)
+      .withPush(false)
+      .withViewportMargin(8);
+  }
+  
+  private closeOverlay(): void {
+    if (this.overlayRef) {
+      this.overlayRef.dispose();
+      this.overlayRef = null;
     }
   }
 
@@ -124,8 +229,7 @@ export class RagSelect<T = any> implements ControlValueAccessor {
     if (option.disabled) return;
     
     this.selectedValue = option.value;
-    this.isOpen = false;
-    this.searchTerm = '';
+    this.closeDropdown();
     
     this.onChange(this.selectedValue);
     this.valueChange.emit(this.selectedValue);
@@ -161,5 +265,9 @@ export class RagSelect<T = any> implements ControlValueAccessor {
     // Note: With input() signals, disabled state is managed externally via input binding
     // This method is kept for ControlValueAccessor compliance but doesn't modify the input
     // The parent component should bind [disabled]="formControl.disabled" to the component
+  }
+  
+  ngOnDestroy(): void {
+    this.closeOverlay();
   }
 }

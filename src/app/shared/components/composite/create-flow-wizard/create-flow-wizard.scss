@@ -1,44 +1,17 @@
 .create-flow-wizard {
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
 
-  .wizard-header {
+  .wizard-progress {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: var(--rag-primitive-spacing-lg);
     margin-bottom: calc(var(--rag-primitive-spacing-xl) * 2);
-    padding-bottom: var(--rag-primitive-spacing-lg);
-    border-bottom: 1px solid var(--rag-semantic-color-border-default);
+    min-width: 200px;
 
-    .wizard-title {
-      display: flex;
-      align-items: center;
-      gap: var(--rag-primitive-spacing-md);
-
-      h2 {
-        margin: 0;
-        font-size: var(--rag-primitive-fontSize-xl);
-        font-weight: 600;
-        color: var(--rag-semantic-color-text-default);
-      }
-
-      rag-icon {
-        color: var(--rag-semantic-color-primary-600);
-      }
-    }
-
-    .wizard-progress {
-      display: flex;
-      align-items: center;
-      gap: var(--rag-primitive-spacing-lg);
-      min-width: 200px;
-
-      .progress-text {
-        font-size: var(--rag-primitive-fontSize-sm);
-        color: var(--rag-semantic-color-text-muted);
-        white-space: nowrap;
-      }
+    .progress-text {
+      font-size: var(--rag-primitive-fontSize-sm);
+      color: var(--rag-semantic-color-text-muted);
+      white-space: nowrap;
     }
   }
 
@@ -455,32 +428,27 @@
     }
   }
 
-  .wizard-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: var(--rag-primitive-spacing-lg);
-    border-top: 1px solid var(--rag-semantic-color-border-default);
+}
 
-    .secondary-actions,
-    .primary-actions {
-      display: flex;
-      gap: var(--rag-primitive-spacing-sm);
-    }
+// Dialog footer actions styles
+.wizard-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  .secondary-actions,
+  .primary-actions {
+    display: flex;
+    gap: var(--rag-primitive-spacing-sm);
   }
 }
 
 @media (max-width: 768px) {
   .create-flow-wizard {
-    .wizard-header {
-      flex-direction: column;
-      gap: var(--rag-primitive-spacing-lg);
-      align-items: flex-start;
-
-      .wizard-progress {
-        width: 100%;
-        min-width: auto;
-      }
+    .wizard-progress {
+      width: 100%;
+      min-width: auto;
     }
 
     .step-navigation {
@@ -506,15 +474,17 @@
       }
     }
 
-    .wizard-actions {
-      flex-direction: column;
-      gap: var(--rag-primitive-spacing-lg);
-      align-items: stretch;
+  }
 
-      .secondary-actions,
-      .primary-actions {
-        justify-content: center;
-      }
+  // Mobile wizard actions styles
+  .wizard-actions {
+    flex-direction: column;
+    gap: var(--rag-primitive-spacing-lg);
+    align-items: stretch;
+
+    .secondary-actions,
+    .primary-actions {
+      justify-content: center;
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, input, output, signal, computed, effect, ElementRef, viewChild, HostListener } from '@angular/core';
+import { Component, input, output, signal, computed, effect, ElementRef, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { RagIcon } from '../../../atomic/primitives/rag-icon/rag-icon';
@@ -20,7 +20,7 @@ export interface DropdownItem {
   templateUrl: './rag-dropdown.html',
   styleUrl: './rag-dropdown.scss'
 })
-export class RagDropdownComponent {
+export class RagDropdown {
   readonly items = input<DropdownItem[]>([]);
   readonly open = input<boolean>(false);
   readonly triggerContent = input<string>('');

@@ -23,6 +23,9 @@ import {
   RagIcon, RagSpinner, RagProgress, RagSkeleton
 } from './shared/components/atomic';
 
+// Services
+import { ToastService } from './shared/services/toast.service';
+
 // Semantic components  
 import {
   RagCard, RagStatCard, RagFormField, RagTabs,
@@ -49,9 +52,16 @@ import {
   `
 })
 export class ExampleComponent {
+  private toastService = inject(ToastService);
+  
   // Import specific icons needed
   readonly SaveIcon = SaveIcon;
   readonly SearchIcon = SearchIcon;
+  
+  submit() {
+    // Show success toast
+    this.toastService.success('Form submitted successfully!', 'Success');
+  }
 }
 ```
 
@@ -99,6 +109,60 @@ export class ExampleComponent {
     </div>
   </form>
 </rag-card>
+
+<!-- Toast notifications will appear automatically via service -->
+```
+
+```typescript
+export class FormComponent {
+  private toastService = inject(ToastService);
+  
+  async submit() {
+    if (this.myForm.invalid) return;
+    
+    this.isSubmitting.set(true);
+    
+    try {
+      await this.saveData(this.myForm.value);
+      this.toastService.success('Changes saved successfully!', 'Success');
+    } catch (error) {
+      this.toastService.error('Failed to save changes. Please try again.', 'Error');
+    } finally {
+      this.isSubmitting.set(false);
+    }
+  }
+  
+  cancel() {
+    if (this.myForm.dirty) {
+      // Show confirmation toast with actions
+      this.toastService.show({
+        variant: 'warning',
+        title: 'Unsaved Changes',
+        message: 'You have unsaved changes. Are you sure you want to cancel?',
+        persistent: true,
+        actions: [
+          {
+            label: 'Save & Exit',
+            handler: () => this.submit(),
+            variant: 'solid'
+          },
+          {
+            label: 'Discard Changes',
+            handler: () => this.discardAndExit(),
+            variant: 'outline'
+          },
+          {
+            label: 'Continue Editing',
+            handler: () => {}, // Just dismisses the toast
+            variant: 'ghost'
+          }
+        ]
+      });
+    } else {
+      this.router.navigate(['/']);
+    }
+  }
+}
 ```
 
 ### 2. Dashboard Cards with Metrics
@@ -197,34 +261,168 @@ export class ExampleComponent {
   </rag-button>
 </rag-dropdown>
 
-<!-- Confirmation dialog -->
-<rag-dialog
-  [open]="showDeleteDialog()"
-  title="Confirm Deletion"
-  size="sm"
-  (close)="showDeleteDialog.set(false)">
-  
-  <p>Are you sure you want to delete "{{ itemToDelete()?.name }}"?</p>
-  <rag-alert variant="warning" [icon]="'alert-triangle'">
-    This action cannot be undone.
-  </rag-alert>
-
-  <div class="dialog-actions">
-    <rag-button variant="outline" (onClick)="cancelDelete()">
-      Cancel
-    </rag-button>
-    <rag-button 
-      variant="solid" 
-      color="red"
-      [loading]="isDeleting()"
-      (onClick)="confirmDelete()">
-      Delete
-    </rag-button>
-  </div>
-</rag-dialog>
+<!-- Opening dialogs via service (recommended) -->
+<rag-button (click)="openConfirmDialog()" variant="solid" color="red">
+  Delete Item
+</rag-button>
 ```
 
-### 5. Loading States and Feedback
+```typescript
+// Service-based dialog approach (recommended)
+export class MyComponent {
+  private dialogService = inject(RagDialogService);
+
+  openConfirmDialog() {
+    const dialogRef = this.dialogService.open(ConfirmDeleteDialogComponent, {
+      title: 'Confirm Deletion',
+      size: 'sm',
+      data: { item: this.itemToDelete }
+    });
+
+    dialogRef.closed.subscribe(result => {
+      if (result) {
+        this.performDelete();
+      }
+    });
+  }
+}
+
+// Dialog component with rag-dialog wrapper
+@Component({
+  template: `
+    <rag-dialog 
+      title="Confirm Deletion"
+      [showCloseButton]="true">
+      
+      <p>Are you sure you want to delete "{{ data?.item?.name }}"?</p>
+      <rag-alert variant="warning" [icon]="'alert-triangle'">
+        This action cannot be undone.
+      </rag-alert>
+
+      <div slot="footer" class="dialog-actions">
+        <rag-button variant="outline" (click)="cancel()">
+          Cancel
+        </rag-button>
+        <rag-button 
+          variant="solid" 
+          color="red"
+          [loading]="isDeleting()"
+          (click)="confirm()">
+          Delete
+        </rag-button>
+      </div>
+    </rag-dialog>
+  `
+})
+export class ConfirmDeleteDialogComponent {
+  private dialogRef = inject(DialogRef);
+  data = inject(DIALOG_DATA, { optional: true });
+  
+  isDeleting = signal(false);
+
+  cancel() {
+    this.dialogRef.close(false);
+  }
+
+  confirm() {
+    this.dialogRef.close(true);
+  }
+}
+```
+
+### 5. Toast Notifications (Service-based)
+```typescript
+// Toast service injection and usage
+@Component({
+  selector: 'app-actions',
+  template: `
+    <div class="action-buttons">
+      <rag-button (onClick)="showSuccess()">Success Toast</rag-button>
+      <rag-button (onClick)="showError()">Error Toast</rag-button>
+      <rag-button (onClick)="showConfirmation()">Confirmation</rag-button>
+      <rag-button (onClick)="showMultiple()">Multiple Toasts</rag-button>
+      <rag-button (onClick)="clearAll()" variant="ghost">Clear All</rag-button>
+    </div>
+  `
+})
+export class ActionsComponent {
+  private toastService = inject(ToastService);
+
+  // Convenience methods
+  showSuccess() {
+    this.toastService.success(
+      'Your operation completed successfully!', 
+      'Success'
+    );
+  }
+
+  showError() {
+    this.toastService.error(
+      'Something went wrong. Please try again.', 
+      'Error'
+    );
+  }
+
+  showInfo() {
+    this.toastService.info(
+      'New features are now available.', 
+      'Information'
+    );
+  }
+
+  showWarning() {
+    this.toastService.warning(
+      'Your session will expire in 5 minutes.', 
+      'Warning'
+    );
+  }
+
+  // Advanced usage with actions
+  showConfirmation() {
+    this.toastService.show({
+      variant: 'warning',
+      title: 'Delete Item',
+      message: 'Are you sure you want to delete this item? This cannot be undone.',
+      persistent: true, // Won't auto-dismiss
+      actions: [
+        {
+          label: 'Delete',
+          handler: () => this.performDelete(),
+          variant: 'solid'
+        },
+        {
+          label: 'Cancel',
+          handler: () => {}, // Just dismisses
+          variant: 'ghost'
+        }
+      ]
+    });
+  }
+
+  // Multiple stacked toasts
+  showMultiple() {
+    this.toastService.info('First notification');
+    setTimeout(() => this.toastService.success('Second notification'), 500);
+    setTimeout(() => this.toastService.warning('Third notification'), 1000);
+  }
+
+  // Clear all toasts
+  clearAll() {
+    this.toastService.dismissAll();
+  }
+
+  private performDelete() {
+    // Simulate async operation
+    this.toastService.info('Deleting item...', 'Processing');
+    
+    setTimeout(() => {
+      this.toastService.success('Item deleted successfully!', 'Deleted');
+    }, 2000);
+  }
+}
+```
+
+### 6. Loading States and Feedback
 ```html
 <!-- Content loading with skeleton -->
 @if (isLoading()) {
@@ -277,6 +475,7 @@ export class ExampleComponent {
 | `<rag-select>` | `<rag-select [options]="items" [searchable]="true">` | `options`, `searchable`, `clearable` |
 | `<rag-badge>` | `<rag-badge color="green">Active</rag-badge>` | `variant`, `color`, `icon` |
 | `<rag-alert>` | `<rag-alert variant="success">Success!</rag-alert>` | `variant`, `closable`, `title` |
+| `<rag-toast>` | `toastService.success('Done!', 'Success')` | Service-based, `variant`, `actions` |
 | `<rag-icon>` | `<rag-icon [img]="CheckIcon" variant="success">` | `img`, `size`, `variant` |
 
 ### 📊 Semantic Components (Business Logic)
@@ -561,6 +760,29 @@ export class MyComponent {
 </rag-button>
 ```
 
+### Toast Service Missing
+```typescript
+// ❌ Wrong - not providing feedback to user
+async saveData() {
+  try {
+    await this.api.save(this.data);
+    // No feedback to user
+  } catch (error) {
+    // Error ignored
+  }
+}
+
+// ✅ Correct - proper user feedback
+async saveData() {
+  try {
+    await this.api.save(this.data);
+    this.toastService.success('Data saved successfully!', 'Success');
+  } catch (error) {
+    this.toastService.error('Failed to save data. Please try again.', 'Error');
+  }
+}
+```
+
 ---
 
 ## 🎨 Design System Hierarchy
@@ -628,6 +850,28 @@ export class MyComponent {
 | `md` | 20px | Default icons |  
 | `lg` | 24px | Header icons, important actions |
 | `xl` | 28px | Large interface elements |
+
+### ToastService API Reference
+| Method | Usage | Returns |
+|--------|-------|---------|
+| `info(msg, title?, config?)` | Information toast | `string` (toast ID) |
+| `success(msg, title?, config?)` | Success toast | `string` (toast ID) |
+| `warning(msg, title?, config?)` | Warning toast | `string` (toast ID) |
+| `error(msg, title?, config?)` | Error toast (persistent) | `string` (toast ID) |
+| `show(config)` | Custom toast | `string` (toast ID) |
+| `dismiss(id)` | Remove specific toast | `void` |
+| `dismissAll()` | Remove all toasts | `void` |
+
+### Toast Configuration Options
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `variant` | `'info' \| 'success' \| 'warning' \| 'error'` | `'info'` | Toast type |
+| `title` | `string` | - | Toast title |
+| `message` | `string` | - | Toast message |
+| `duration` | `number` | `5000` | Auto-dismiss time (ms) |
+| `persistent` | `boolean` | `false` | Prevent auto-dismiss |
+| `dismissible` | `boolean` | `true` | Show close button |
+| `actions` | `RagToastAction[]` | `[]` | Action buttons |
 
 ---
 

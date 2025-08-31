@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Plus, Workflow } from 'lucide-angular';
 import { RagButton } from '../../shared/components/atomic/primitives/rag-button/rag-button';
 import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
-import { EmptyStatePanelComponent } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
+import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
 import { PipelineCard, type Pipeline } from '../../shared/components/composite/pipeline-card/pipeline-card';
 
 @Component({
@@ -13,7 +13,7 @@ import { PipelineCard, type Pipeline } from '../../shared/components/composite/p
     CommonModule,
     RagButton,
     RagIcon,
-    EmptyStatePanelComponent,
+    EmptyStatePanel,
     PipelineCard
   ],
   templateUrl: './pipelines.html',

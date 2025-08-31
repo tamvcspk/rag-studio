@@ -1,13 +1,15 @@
-import { Component, ViewChild, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Plus, Wrench, Search, Filter } from 'lucide-angular';
-import { ToolCardComponent } from '../../shared/components/composite/tool-card/tool-card';
-import { CreateToolWizardComponent } from '../../shared/components/composite/create-tool-wizard/create-tool-wizard';
+import { ToolCard } from '../../shared/components/composite/tool-card/tool-card';
+import { CreateToolWizard } from '../../shared/components/composite/create-tool-wizard/create-tool-wizard';
 import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
+import { RagDialogService } from '../../shared/components/semantic/overlay/rag-dialog/rag-dialog.service';
+import { RagToastService } from '../../shared/components/atomic/feedback/rag-toast/rag-toast.service';
 import { MockToolsService } from '../../shared/services/mock-tools.service';
 import { Tool, ToolStatus } from '../../shared/types/tool.types';
-import { RagBadge, RagButton, RagSearchInput, RagSelect, RagToast } from '../../shared/components';
+import { RagBadge, RagButton, RagSearchInput, RagSelect } from '../../shared/components';
 
 @Component({
   selector: 'app-tools',
@@ -16,21 +18,19 @@ import { RagBadge, RagButton, RagSearchInput, RagSelect, RagToast } from '../../
     CommonModule,
     FormsModule,
     RagIcon,
-    ToolCardComponent,
-    CreateToolWizardComponent,
+    ToolCard,
     RagButton,
     RagSearchInput,
     RagSelect,
-    RagBadge,
-    RagToast
+    RagBadge
   ],
   templateUrl: './tools.html',
   styleUrl: './tools.scss'
 })
 export class Tools {
-  @ViewChild(CreateToolWizardComponent) createWizard!: CreateToolWizardComponent;
-  
   private readonly toolsService = inject(MockToolsService);
+  private readonly dialogService = inject(RagDialogService);
+  private readonly toastService = inject(RagToastService);
   
   // Icon components
   readonly PlusIcon = Plus;
@@ -43,9 +43,6 @@ export class Tools {
   readonly searchQuery = signal('');
   readonly statusFilter = signal<ToolStatus | 'ALL'>('ALL');
   readonly isLoading = signal(false);
-  readonly toastMessage = signal('');
-  readonly toastType = signal<'success' | 'error' | 'info'>('info');
-  readonly showToast = signal(false);
   
   // Lucide icons
   readonly Plus = Plus;
@@ -85,16 +82,25 @@ export class Tools {
   
   // Event handlers
   onCreateTool() {
-    this.createWizard.open();
+    const dialogRef = this.dialogService.open(CreateToolWizard, {
+      title: 'Create Dynamic MCP Tool',
+      size: 'lg'
+    });
+
+    dialogRef.closed.subscribe(result => {
+      if (result) {
+        this.toastService.success('Tool created successfully!', 'Success');
+      }
+    });
   }
   
   async onToolSubmit(toolData: any) {
     this.isLoading.set(true);
     try {
       await this.toolsService.createTool(toolData);
-      this.showSuccessToast('Tool created successfully!');
+      this.toastService.success('Tool created successfully!', 'Success');
     } catch (error) {
-      this.showErrorToast('Failed to create tool. Please try again.');
+      this.toastService.error('Failed to create tool. Please try again.', 'Error');
     } finally {
       this.isLoading.set(false);
     }
@@ -103,25 +109,25 @@ export class Tools {
   async onToolActivate(toolId: string) {
     try {
       await this.toolsService.updateToolStatus(toolId, 'ACTIVE');
-      this.showSuccessToast('Tool activated successfully!');
+      this.toastService.success('Tool activated successfully!', 'Success');
     } catch (error) {
-      this.showErrorToast('Failed to activate tool.');
+      this.toastService.error('Failed to activate tool.', 'Error');
     }
   }
   
   async onToolDeactivate(toolId: string) {
     try {
       await this.toolsService.updateToolStatus(toolId, 'INACTIVE');
-      this.showInfoToast('Tool deactivated.');
+      this.toastService.info('Tool deactivated.', 'Info');
     } catch (error) {
-      this.showErrorToast('Failed to deactivate tool.');
+      this.toastService.error('Failed to deactivate tool.', 'Error');
     }
   }
   
   onToolEdit(toolId: string) {
     // In a real app, this would open an edit form
     console.log('Edit tool:', toolId);
-    this.showInfoToast('Edit functionality coming soon!');
+    this.toastService.info('Edit functionality coming soon!', 'Info');
   }
   
   async onToolDelete(toolId: string) {
@@ -130,9 +136,9 @@ export class Tools {
     if (tool && confirm(`Are you sure you want to delete "${tool.name}"?`)) {
       try {
         await this.toolsService.deleteTool(toolId);
-        this.showSuccessToast('Tool deleted successfully.');
+        this.toastService.success('Tool deleted successfully.', 'Success');
       } catch (error) {
-        this.showErrorToast('Failed to delete tool.');
+        this.toastService.error('Failed to delete tool.', 'Error');
       }
     }
   }
@@ -140,16 +146,16 @@ export class Tools {
   async onToolRetry(toolId: string) {
     try {
       await this.toolsService.retryToolRegistration(toolId);
-      this.showSuccessToast('Tool registration retry successful!');
+      this.toastService.success('Tool registration retry successful!', 'Success');
     } catch (error) {
-      this.showErrorToast('Retry failed. Please check configuration.');
+      this.toastService.error('Retry failed. Please check configuration.', 'Error');
     }
   }
   
   onToolViewLogs(toolId: string) {
     // In a real app, this would open a logs viewer
     console.log('View logs for tool:', toolId);
-    this.showInfoToast('Logs viewer coming soon!');
+    this.toastService.info('Logs viewer coming soon!', 'Info');
   }
   
   onSearchChange(query: string) {
@@ -160,29 +166,4 @@ export class Tools {
     this.statusFilter.set(status || 'ALL');
   }
   
-  // Toast helpers
-  private showSuccessToast(message: string) {
-    this.toastMessage.set(message);
-    this.toastType.set('success');
-    this.showToast.set(true);
-    setTimeout(() => this.showToast.set(false), 5000);
-  }
-  
-  private showErrorToast(message: string) {
-    this.toastMessage.set(message);
-    this.toastType.set('error');
-    this.showToast.set(true);
-    setTimeout(() => this.showToast.set(false), 5000);
-  }
-  
-  private showInfoToast(message: string) {
-    this.toastMessage.set(message);
-    this.toastType.set('info');
-    this.showToast.set(true);
-    setTimeout(() => this.showToast.set(false), 3000);
-  }
-  
-  onToastClose() {
-    this.showToast.set(false);
-  }
 }

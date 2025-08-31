@@ -22,7 +22,7 @@ export class RagTabNavigation {
   readonly items = input.required<TabNavItem[]>();
   readonly activeItem = input<string | null>(null);
   readonly size = input<'sm' | 'md' | 'lg'>('md');
-  readonly variant = input<'default' | 'pills' | 'nav'>('nav');
+  readonly variant = input<'primary' | 'secondary' | 'minimal'>('primary');
   readonly disabled = input(false);
 
   // Navigation-specific outputs
