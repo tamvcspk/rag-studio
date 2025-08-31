@@ -1,4 +1,11 @@
 // Main Layout Styles using Design Tokens
+:host {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 .app-header {
   background-color: var(--rag-semantic-color-background-default);
   border-bottom: var(--rag-primitive-borderWidth-1) solid var(--rag-semantic-color-border-default);
@@ -35,6 +42,13 @@
   background-color: var(--rag-semantic-color-background-default);
   border-bottom: var(--rag-primitive-borderWidth-1) solid var(--rag-semantic-color-border-subtle);
   padding: 0 var(--rag-primitive-spacing-lg);
+  backdrop-filter: blur(8px);
+
+  rag-tab-navigation {
+    position: sticky;
+    top: var(--rag-primitive-size-16);
+    z-index: var(--rag-primitive-zIndex-sticky);
+  }
 }
 
 .content-area {

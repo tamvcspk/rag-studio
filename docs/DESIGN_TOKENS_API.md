@@ -43,8 +43,13 @@ RagTokens = {
     spacing: { xs, sm, md, lg, xl },
     fontSize: { xs, sm, md, lg, xl },
     lineHeight: { xs, sm, md, lg, xl },
+    fontWeight: { normal, medium, semibold, bold },
+    borderWidth: { 1, 2, 4, 8 },
     radius: { xs, sm, md, lg, xl },
-    shadow: { xs, sm, md, lg, xl }
+    shadow: { xs, sm, md, lg, xl },
+    zIndex: { auto, base, raised, dropdown, sticky, modal, popover, tooltip, toast, overlay },
+    size: { 1, 2, 3, 4, ...96 },
+    breakpoint: { sm, md, lg, xl, '2xl' }
   },
   
   semantic: {
@@ -296,6 +301,115 @@ ComponentArchetypes.size = {
 }
 ```
 
+## 🧱 Primitive Token Reference
+
+### Border Width Scale
+```typescript
+PrimitiveTokens.borderWidth = {
+  1: '1px',    // Hairline borders
+  2: '2px',    // Standard borders  
+  4: '4px',    // Thick borders
+  8: '8px'     // Extra thick borders
+}
+
+// CSS Variables
+--rag-primitive-borderWidth-1: 1px;
+--rag-primitive-borderWidth-2: 2px;
+--rag-primitive-borderWidth-4: 4px;
+--rag-primitive-borderWidth-8: 8px;
+```
+
+### Z-Index Layering Scale
+```typescript
+PrimitiveTokens.zIndex = {
+  auto: 'auto',      // Default stacking context
+  base: '0',         // Base layer
+  raised: '10',      // Slightly elevated elements
+  dropdown: '1000',  // Dropdown menus
+  sticky: '1010',    // Sticky positioned elements
+  modal: '1020',     // Modal dialogs
+  popover: '1030',   // Popover components
+  tooltip: '1040',   // Tooltip overlays
+  toast: '1050',     // Toast notifications
+  overlay: '1060'    // Top-level overlays
+}
+
+// CSS Variables
+--rag-primitive-zIndex-auto: auto;
+--rag-primitive-zIndex-base: 0;
+--rag-primitive-zIndex-raised: 10;
+--rag-primitive-zIndex-dropdown: 1000;
+--rag-primitive-zIndex-sticky: 1010;
+--rag-primitive-zIndex-modal: 1020;
+--rag-primitive-zIndex-popover: 1030;
+--rag-primitive-zIndex-tooltip: 1040;
+--rag-primitive-zIndex-toast: 1050;
+--rag-primitive-zIndex-overlay: 1060;
+```
+
+### Font Weight Scale
+```typescript
+PrimitiveTokens.fontWeight = {
+  normal: '400',    // Regular text
+  medium: '500',    // Medium emphasis
+  semibold: '600',  // Strong emphasis  
+  bold: '700'       // Bold text
+}
+
+// CSS Variables
+--rag-primitive-fontWeight-normal: 400;
+--rag-primitive-fontWeight-medium: 500;
+--rag-primitive-fontWeight-semibold: 600;
+--rag-primitive-fontWeight-bold: 700;
+```
+
+### Size Scale (Heights & Widths)
+```typescript
+PrimitiveTokens.size = {
+  1: '4px',     // 0.25rem
+  2: '8px',     // 0.5rem
+  3: '12px',    // 0.75rem
+  4: '16px',    // 1rem (base unit)
+  5: '20px',    // 1.25rem
+  6: '24px',    // 1.5rem
+  8: '32px',    // 2rem
+  10: '40px',   // 2.5rem
+  12: '48px',   // 3rem
+  16: '64px',   // 4rem
+  20: '80px',   // 5rem
+  24: '96px',   // 6rem
+  // ... up to 96: '384px' (24rem)
+}
+
+// Usage examples
+--rag-primitive-size-4: 16px;   // Base unit
+--rag-primitive-size-12: 48px;  // Header height
+--rag-primitive-size-16: 64px;  // Large component height
+```
+
+### Breakpoint Scale
+```typescript
+PrimitiveTokens.breakpoint = {
+  sm: '640px',    // Small devices and up
+  md: '768px',    // Medium devices and up
+  lg: '1024px',   // Large devices and up
+  xl: '1280px',   // Extra large devices and up
+  '2xl': '1536px' // 2X large devices and up
+}
+
+// CSS Variables
+--rag-primitive-breakpoint-sm: 640px;
+--rag-primitive-breakpoint-md: 768px;
+--rag-primitive-breakpoint-lg: 1024px;
+--rag-primitive-breakpoint-xl: 1280px;
+--rag-primitive-breakpoint-2xl: 1536px;
+
+// Usage in media queries
+@media (max-width: var(--rag-primitive-breakpoint-md)) {
+  /* Styles for devices smaller than 768px */
+}
+```
+
 ## 🎨 Color Scale Reference
 
 ### Available Colors
@@ -434,21 +548,38 @@ export class RagButtonLegacyComponent {
   background: var(--rag-semantic-color-background-default);
   padding: var(--rag-primitive-spacing-md);
   border-radius: var(--rag-primitive-radius-md);
+  border: var(--rag-primitive-borderWidth-1) solid var(--rag-semantic-color-border-default);
+  font-weight: var(--rag-primitive-fontWeight-medium);
+  z-index: var(--rag-primitive-zIndex-raised);
   
-  // Size variants
-  &.size-sm { height: var(--rag-primitive-spacing-sm); }
-  &.size-md { height: var(--rag-primitive-spacing-md); }
-  &.size-lg { height: var(--rag-primitive-spacing-lg); }
+  // Size variants using primitive size scale
+  &.size-sm { height: var(--rag-primitive-size-8); }  // 32px
+  &.size-md { height: var(--rag-primitive-size-10); } // 40px  
+  &.size-lg { height: var(--rag-primitive-size-12); } // 48px
   
   // State variations
   &:hover {
     background: var(--rag-semantic-color-background-subtle);
     box-shadow: var(--rag-primitive-shadow-sm);
+    border-width: var(--rag-primitive-borderWidth-2);
   }
   
   &:focus {
-    outline: 2px solid var(--rag-semantic-color-primary-500);
+    outline: var(--rag-primitive-borderWidth-2) solid var(--rag-semantic-color-primary-500);
     outline-offset: 2px;
+    z-index: var(--rag-primitive-zIndex-raised);
+  }
+  
+  // Responsive design with breakpoint tokens
+  @media (max-width: var(--rag-primitive-breakpoint-md)) {
+    padding: var(--rag-primitive-spacing-sm);
+    height: var(--rag-primitive-size-8);
+    font-weight: var(--rag-primitive-fontWeight-normal);
+  }
+  
+  @media (min-width: var(--rag-primitive-breakpoint-lg)) {
+    height: var(--rag-primitive-size-12);
+    font-weight: var(--rag-primitive-fontWeight-semibold);
   }
 }
 ```
@@ -485,10 +616,22 @@ All CSS variables follow the pattern:
 
 ### Examples
 ```css
-/* Primitive tokens */
+/* Color & spacing tokens */
 --rag-primitive-color-blue-500
 --rag-primitive-spacing-md
 --rag-primitive-fontSize-lg
+
+/* New primitive tokens */
+--rag-primitive-borderWidth-1
+--rag-primitive-borderWidth-2
+--rag-primitive-zIndex-sticky
+--rag-primitive-zIndex-modal
+--rag-primitive-fontWeight-semibold
+--rag-primitive-fontWeight-bold
+--rag-primitive-size-16
+--rag-primitive-size-24
+--rag-primitive-breakpoint-md
+--rag-primitive-breakpoint-lg
 
 /* Semantic tokens */
 --rag-semantic-color-primary-500

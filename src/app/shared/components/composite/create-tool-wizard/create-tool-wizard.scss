@@ -1,22 +1,4 @@
 .create-tool-wizard {
-  .wizard-header {
-    margin-bottom: var(--rag-primitive-spacing-xl);
-    text-align: center;
-    
-    .wizard-title {
-      font-size: var(--rag-primitive-fontSize-lg);
-      font-weight: 600;
-      margin-bottom: var(--rag-primitive-spacing-sm);
-      color: var(--rag-semantic-color-text-default);
-    }
-    
-    .wizard-description {
-      color: var(--rag-semantic-color-text-muted);
-      font-size: var(--rag-primitive-fontSize-sm);
-      line-height: var(--rag-primitive-lineHeight-md);
-    }
-  }
-  
   .wizard-form {
     display: flex;
     flex-direction: column;

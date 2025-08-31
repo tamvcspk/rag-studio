@@ -82,6 +82,21 @@ html, body {
 .gap-xl { gap: var(--rag-primitive-spacing-xl); }
 .gap-2xl { gap: var(--rag-primitive-spacing-2xl); }
 
+// Row and column gap utilities
+.gap-x-xs { column-gap: var(--rag-primitive-spacing-xs); }
+.gap-x-sm { column-gap: var(--rag-primitive-spacing-sm); }
+.gap-x-md { column-gap: var(--rag-primitive-spacing-md); }
+.gap-x-lg { column-gap: var(--rag-primitive-spacing-lg); }
+.gap-x-xl { column-gap: var(--rag-primitive-spacing-xl); }
+.gap-x-2xl { column-gap: var(--rag-primitive-spacing-2xl); }
+
+.gap-y-xs { row-gap: var(--rag-primitive-spacing-xs); }
+.gap-y-sm { row-gap: var(--rag-primitive-spacing-sm); }
+.gap-y-md { row-gap: var(--rag-primitive-spacing-md); }
+.gap-y-lg { row-gap: var(--rag-primitive-spacing-lg); }
+.gap-y-xl { row-gap: var(--rag-primitive-spacing-xl); }
+.gap-y-2xl { row-gap: var(--rag-primitive-spacing-2xl); }
+
 .p-xs { padding: var(--rag-primitive-spacing-xs); }
 .p-sm { padding: var(--rag-primitive-spacing-sm); }
 .p-md { padding: var(--rag-primitive-spacing-md); }

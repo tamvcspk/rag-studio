@@ -33,8 +33,11 @@ Raw design values with no context:
 
 ```typescript
 PrimitiveTokens.color.blue[500]    // hsl(206, 100%, 50.0%)
-PrimitiveTokens.spacing.md         // 12px
+PrimitiveTokens.spacing.md         // 12px  
 PrimitiveTokens.fontSize.lg        // 16px
+PrimitiveTokens.borderWidth[1]     // 1px
+PrimitiveTokens.zIndex.sticky      // 1010
+PrimitiveTokens.fontWeight.semibold // 600
 ```
 
 ### 2. Semantic Tokens (Context)
@@ -70,6 +73,114 @@ Each color has 12 steps optimized for UI usage:
 - **300-500**: Borders, disabled states
 - **600-800**: Primary content
 - **900-1000**: High contrast text
+
+## 🧱 Primitive Token Reference
+
+### Spacing Scale
+```typescript
+PrimitiveTokens.spacing = {
+  xs: '4px',   // Extra small spacing
+  sm: '8px',   // Small spacing
+  md: '12px',  // Medium spacing (default)
+  lg: '16px',  // Large spacing
+  xl: '24px'   // Extra large spacing
+}
+```
+
+### Typography Scale
+```typescript
+// Font sizes
+PrimitiveTokens.fontSize = {
+  xs: '11px',  // Captions, small text
+  sm: '12px',  // Small text
+  md: '14px',  // Body text (default)
+  lg: '16px',  // Large body text
+  xl: '18px'   // Headings
+}
+
+// Line heights
+PrimitiveTokens.lineHeight = {
+  xs: '16px',  // Matches xs fontSize
+  sm: '16px',  // Matches sm fontSize
+  md: '20px',  // Matches md fontSize
+  lg: '24px',  // Matches lg fontSize
+  xl: '28px'   // Matches xl fontSize
+}
+
+// Font weights
+PrimitiveTokens.fontWeight = {
+  normal: '400',    // Regular text
+  medium: '500',    // Medium emphasis
+  semibold: '600',  // Strong emphasis
+  bold: '700'       // Bold text
+}
+```
+
+### Border & Radius Scale
+```typescript
+// Border widths
+PrimitiveTokens.borderWidth = {
+  1: '1px',    // Hairline border
+  2: '2px',    // Standard border
+  4: '4px',    // Thick border
+  8: '8px'     // Extra thick border
+}
+
+// Border radius
+PrimitiveTokens.radius = {
+  xs: '2px',   // Subtle rounding
+  sm: '4px',   // Small rounding
+  md: '6px',   // Medium rounding (default)
+  lg: '8px',   // Large rounding
+  xl: '12px'   // Extra large rounding
+}
+```
+
+### Layout & Positioning
+```typescript
+// Z-index layering
+PrimitiveTokens.zIndex = {
+  auto: 'auto',      // Default stacking
+  base: '0',         // Base layer
+  raised: '10',      // Slightly raised
+  dropdown: '1000',  // Dropdown menus
+  sticky: '1010',    // Sticky headers
+  modal: '1020',     // Modal dialogs
+  popover: '1030',   // Popover overlays
+  tooltip: '1040',   // Tooltips
+  toast: '1050',     // Toast notifications
+  overlay: '1060'    // Top-level overlays
+}
+
+// Size scale (heights, widths)
+PrimitiveTokens.size = {
+  1: '4px',    // 0.25rem
+  2: '8px',    // 0.5rem
+  3: '12px',   // 0.75rem
+  4: '16px',   // 1rem (base unit)
+  // ... up to 96: '384px' (24rem)
+}
+
+// Responsive breakpoints
+PrimitiveTokens.breakpoint = {
+  sm: '640px',   // Small devices
+  md: '768px',   // Medium devices
+  lg: '1024px',  // Large devices
+  xl: '1280px',  // Extra large devices
+  '2xl': '1536px' // 2X large devices
+}
+```
+
+### Shadow Scale
+```typescript
+PrimitiveTokens.shadow = {
+  xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',          // Subtle shadow
+  sm: '0 1px 3px 0 rgba(0, 0, 0, 0.1), ...',      // Small shadow
+  md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), ...',   // Medium shadow
+  lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), ...',  // Large shadow
+  xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), ...'   // Extra large shadow
+}
+```
 
 ## 💻 Usage Examples
 
@@ -161,10 +272,19 @@ export class MyComponent {
   background: var(--rag-semantic-color-primary-500);
   padding: var(--rag-primitive-spacing-md);
   border-radius: var(--rag-primitive-radius-md);
+  border: var(--rag-primitive-borderWidth-1) solid var(--rag-semantic-color-border-default);
+  font-weight: var(--rag-primitive-fontWeight-medium);
+  z-index: var(--rag-primitive-zIndex-raised);
   
   &:hover {
     background: var(--rag-semantic-color-primary-600);
     box-shadow: var(--rag-primitive-shadow-md);
+  }
+  
+  // Responsive behavior using breakpoint tokens
+  @media (max-width: var(--rag-primitive-breakpoint-md)) {
+    padding: var(--rag-primitive-spacing-sm);
+    font-size: var(--rag-primitive-fontSize-sm);
   }
 }
 ```

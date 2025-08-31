@@ -2,14 +2,10 @@
   [open]="isOpen()" 
   (close)="close()"
   size="lg"
-  class="create-tool-wizard">
-  
-  <div class="wizard-header">
-    <h2 class="wizard-title">Create Dynamic MCP Tool</h2>
-    <p class="wizard-description">
-      Create a new tool that will be exposed via MCP to external AI models
-    </p>
-  </div>
+  class="create-tool-wizard"
+  title="Create Dynamic MCP Tool"
+  description="Create a new tool that will be exposed via MCP to external AI models"
+  >
 
   <form [formGroup]="toolForm" (ngSubmit)="onFormSubmit()" class="wizard-form">
     <!-- Tool Identity Section -->

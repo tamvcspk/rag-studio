@@ -119,6 +119,13 @@ export const PrimitiveTokens = {
     xl: '28px'
   },
 
+  fontWeight: {
+    normal: '400',
+    medium: '500',
+    semibold: '600',
+    bold: '700'
+  },
+
   // Border radius scale
   radius: {
     xs: '2px',
@@ -135,6 +142,70 @@ export const PrimitiveTokens = {
     md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
     lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
     xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)'
+  },
+
+  // Border width scale
+  borderWidth: {
+    1: '1px',
+    2: '2px',
+    4: '4px',
+    8: '8px'
+  },
+
+  // Z-index scale
+  zIndex: {
+    auto: 'auto',
+    base: '0',
+    raised: '10',
+    dropdown: '1000',
+    sticky: '1010',
+    modal: '1020',
+    popover: '1030',
+    tooltip: '1040',
+    toast: '1050',
+    overlay: '1060'
+  },
+
+  // Size scale (height/width values)
+  size: {
+    1: '4px',
+    2: '8px',
+    3: '12px',
+    4: '16px',
+    5: '20px',
+    6: '24px',
+    7: '28px',
+    8: '32px',
+    9: '36px',
+    10: '40px',
+    11: '44px',
+    12: '48px',
+    14: '56px',
+    16: '64px',
+    20: '80px',
+    24: '96px',
+    28: '112px',
+    32: '128px',
+    36: '144px',
+    40: '160px',
+    44: '176px',
+    48: '192px',
+    52: '208px',
+    56: '224px',
+    60: '240px',
+    64: '256px',
+    72: '288px',
+    80: '320px',
+    96: '384px'
+  },
+
+  // Breakpoint scale
+  breakpoint: {
+    sm: '640px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+    '2xl': '1536px'
   }
 } as const;
 

@@ -131,6 +131,12 @@
   --rag-primitive-lineHeight-lg: 24px;
   --rag-primitive-lineHeight-xl: 28px;
 
+  // Font weight scale
+  --rag-primitive-fontWeight-normal: 400;
+  --rag-primitive-fontWeight-medium: 500;
+  --rag-primitive-fontWeight-semibold: 600;
+  --rag-primitive-fontWeight-bold: 700;
+
   // Border radius scale
   --rag-primitive-radius-xs: 2px;
   --rag-primitive-radius-sm: 4px;
@@ -138,12 +144,68 @@
   --rag-primitive-radius-lg: 8px;
   --rag-primitive-radius-xl: 12px;
 
+  // Border width scale
+  --rag-primitive-borderWidth-1: 1px;
+  --rag-primitive-borderWidth-2: 2px;
+  --rag-primitive-borderWidth-4: 4px;
+  --rag-primitive-borderWidth-8: 8px;
+
   // Box shadow scale
   --rag-primitive-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --rag-primitive-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
   --rag-primitive-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   --rag-primitive-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
   --rag-primitive-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+  // Z-index layering scale
+  --rag-primitive-zIndex-auto: auto;
+  --rag-primitive-zIndex-base: 0;
+  --rag-primitive-zIndex-raised: 10;
+  --rag-primitive-zIndex-dropdown: 1000;
+  --rag-primitive-zIndex-sticky: 1010;
+  --rag-primitive-zIndex-modal: 1020;
+  --rag-primitive-zIndex-popover: 1030;
+  --rag-primitive-zIndex-tooltip: 1040;
+  --rag-primitive-zIndex-toast: 1050;
+  --rag-primitive-zIndex-overlay: 1060;
+
+  // Size scale (height/width values)
+  --rag-primitive-size-1: 4px;
+  --rag-primitive-size-2: 8px;
+  --rag-primitive-size-3: 12px;
+  --rag-primitive-size-4: 16px;
+  --rag-primitive-size-5: 20px;
+  --rag-primitive-size-6: 24px;
+  --rag-primitive-size-7: 28px;
+  --rag-primitive-size-8: 32px;
+  --rag-primitive-size-9: 36px;
+  --rag-primitive-size-10: 40px;
+  --rag-primitive-size-11: 44px;
+  --rag-primitive-size-12: 48px;
+  --rag-primitive-size-14: 56px;
+  --rag-primitive-size-16: 64px;
+  --rag-primitive-size-20: 80px;
+  --rag-primitive-size-24: 96px;
+  --rag-primitive-size-28: 112px;
+  --rag-primitive-size-32: 128px;
+  --rag-primitive-size-36: 144px;
+  --rag-primitive-size-40: 160px;
+  --rag-primitive-size-44: 176px;
+  --rag-primitive-size-48: 192px;
+  --rag-primitive-size-52: 208px;
+  --rag-primitive-size-56: 224px;
+  --rag-primitive-size-60: 240px;
+  --rag-primitive-size-64: 256px;
+  --rag-primitive-size-72: 288px;
+  --rag-primitive-size-80: 320px;
+  --rag-primitive-size-96: 384px;
+
+  // Responsive breakpoint scale
+  --rag-primitive-breakpoint-sm: 640px;
+  --rag-primitive-breakpoint-md: 768px;
+  --rag-primitive-breakpoint-lg: 1024px;
+  --rag-primitive-breakpoint-xl: 1280px;
+  --rag-primitive-breakpoint-2xl: 1536px;
 
   // Semantic tokens
   --rag-semantic-color-background-default: var(--rag-primitive-color-white);
