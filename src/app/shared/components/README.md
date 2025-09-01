@@ -19,7 +19,7 @@ src/app/shared/components/
 ### Atomic Components
 
 **Primitives** - Basic UI building blocks:
-- `rag-badge` - Status badges and labels
+- `rag-chip` - Status chips and labels
 - `rag-button` - Interactive buttons
 - `rag-checkbox` - Checkbox inputs
 - `rag-icon` - Icon component using Lucide

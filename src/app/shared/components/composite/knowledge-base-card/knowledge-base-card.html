@@ -16,19 +16,19 @@
       </div>
     </div>
     
-    <rag-badge 
-      [variant]="statusConfig().badge.variant"
-      [color]="statusConfig().badge.color"
-      class="status-badge">
-      @if (statusConfig().badge.icon && isIndexing()) {
+    <rag-chip 
+      [variant]="statusConfig().chip.variant"
+      [color]="statusConfig().chip.color"
+      class="status-chip">
+      @if (statusConfig().chip.icon && isIndexing()) {
         <rag-icon 
-          [img]="statusConfig().badge.icon" 
+          [img]="statusConfig().chip.icon" 
           size="xs"
           class="animate-spin">
         </rag-icon>
       }
       {{ knowledgeBase().status | uppercase }}
-    </rag-badge>
+    </rag-chip>
   </div>
 
   <!-- Description -->
@@ -97,12 +97,12 @@
     </div>
   </div>
 
-  <!-- Metadata badges -->
-  <div class="metadata-badges">
-    <rag-badge variant="outline">Semver: {{ knowledgeBase().semverRange }}</rag-badge>
-    <rag-badge variant="outline">Model: {{ knowledgeBase().embeddingModel }}</rag-badge>
+  <!-- Metadata chips -->
+  <div class="metadata-chips">
+    <rag-chip variant="outline">Semver: {{ knowledgeBase().semverRange }}</rag-chip>
+    <rag-chip variant="outline">Model: {{ knowledgeBase().embeddingModel }}</rag-chip>
     @if (knowledgeBase().lastIndexedAt) {
-      <rag-badge variant="outline">Updated: {{ getRelativeTime(knowledgeBase().lastIndexedAt!) }}</rag-badge>
+      <rag-chip variant="outline">Updated: {{ getRelativeTime(knowledgeBase().lastIndexedAt!) }}</rag-chip>
     }
   </div>
 

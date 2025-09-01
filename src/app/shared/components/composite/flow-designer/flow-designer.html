@@ -57,12 +57,12 @@
                 <div class="node-icon">
                   <rag-icon [img]="getNodeIcon(node.type)" [size]="16"></rag-icon>
                 </div>
-                <rag-badge 
+                <rag-chip 
                   [variant]="'soft'" 
                   [color]="getNodeColor(node.type)"
                   size="sm">
                   {{ node.type }}
-                </rag-badge>
+                </rag-chip>
               </div>
               <div class="node-content">
                 <div class="node-title">{{ node.name }}</div>
@@ -95,11 +95,11 @@
             </div>
             <div class="property-group">
               <label>Type</label>
-              <rag-badge 
+              <rag-chip 
                 [variant]="'soft'" 
                 [color]="getNodeColor(selectedNode()!.type)">
                 {{ selectedNode()?.type }}
-              </rag-badge>
+              </rag-chip>
             </div>
             <div class="property-group">
               <label>Position</label>
@@ -114,7 +114,7 @@
                   <span class="no-connections">No connections</span>
                 } @else if (selectedNode() && selectedNode()!.connections.length > 0) {
                   @for (connectionId of selectedNode()!.connections; track connectionId) {
-                    <rag-badge [variant]="'outline'">{{ connectionId }}</rag-badge>
+                    <rag-chip [variant]="'outline'">{{ connectionId }}</rag-chip>
                   }
                 }
               </div>

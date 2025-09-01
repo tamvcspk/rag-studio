@@ -1,7 +1,7 @@
 import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
-import { RagIcon, RagButton, RagBadge } from '../../components/atomic';
+import { RagIcon, RagButton, RagChip } from '../../components/atomic';
 import { RagTabNavigation, type TabNavItem } from '../../components/semantic/navigation/rag-tab-navigation/rag-tab-navigation';
 import { filter } from 'rxjs';
 import { 
@@ -32,7 +32,7 @@ interface NavItem {
     RouterOutlet,
     RagIcon,
     RagButton,
-    RagBadge,
+    RagChip,
     RagTabNavigation
   ],
   templateUrl: './main-layout.html',

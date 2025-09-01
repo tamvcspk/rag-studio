@@ -37,7 +37,7 @@ This change provides better tree-shaking and type safety by only importing icons
 | `<rag-checkbox>` | Boolean selection | `checked`, `indeterminate`, `label` | Forms, bulk actions |
 | `<rag-radio>` | Single selection | `value`, `name`, `checked` | Forms, settings |
 | `<rag-switch>` | Toggle control | `checked`, `size`, `label` | Settings, features |
-| `<rag-badge>` | Status/count display | `variant`, `color`, `icon`, `dot` | Status, notifications |
+| `<rag-chip>` | Status/count display | `variant`, `color`, `icon`, `dot` | Status, notifications |
 | `<rag-progress>` | Progress indication | `value`, `max`, `variant`, `indeterminate` | Loading, completion |
 | `<rag-skeleton>` | Loading placeholder | `width`, `height`, `variant`, `count` | Loading states |
 | `<rag-icon>` | Icon display | `img`, `size`, `variant`, `color` | UI decoration, actions |
@@ -77,7 +77,7 @@ interface RagSelectOption<T = any> {
   group?: string;
 }
 
-// RagBadge
+// RagChip
 type BadgeVariant = 'solid' | 'soft' | 'outline';
 type BadgeColor = 'gray' | 'blue' | 'green' | 'amber' | 'red' | 'orange' | 'purple';
 type BadgeSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -116,7 +116,7 @@ interface ToastConfig {
 
 // RagStatusIndicator
 type StatusType = 'online' | 'offline' | 'loading' | 'error' | 'warning';
-type StatusVariant = 'dot' | 'badge' | 'text';
+type StatusVariant = 'dot' | 'chip' | 'text';
 ```
 
 ---
@@ -167,15 +167,15 @@ type StatusVariant = 'dot' | 'badge' | 'text';
 
 ### 3. Status and Feedback
 ```html
-<!-- Status badges -->
-<rag-badge variant="soft" color="green">
+<!-- Status chips -->
+<rag-chip variant="soft" color="green">
   <rag-icon [img]="CheckIcon" size="xs"></rag-icon>
   Active
-</rag-badge>
+</rag-chip>
 
-<rag-badge variant="soft" color="amber" [dot]="true">
+<rag-chip variant="soft" color="amber" [dot]="true">
   Pending
-</rag-badge>
+</rag-chip>
 
 <!-- Alert messages -->
 <rag-alert variant="success" [closable]="true">
@@ -677,7 +677,7 @@ Design Tokens (Consistent styling)
 <!-- Components automatically use design tokens -->
 <rag-button>                           <!-- Uses button archetype tokens -->
 <rag-input [error]="true">             <!-- Uses form field error tokens -->
-<rag-badge variant="soft" color="red"> <!-- Uses badge danger tokens -->
+<rag-chip variant="soft" color="red"> <!-- Uses chip danger tokens -->
 <rag-progress variant="success">       <!-- Uses progress success tokens -->
 ```
 

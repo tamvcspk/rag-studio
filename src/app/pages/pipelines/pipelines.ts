@@ -5,6 +5,7 @@ import { RagButton } from '../../shared/components/atomic/primitives/rag-button/
 import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
 import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
 import { PipelineCard, type Pipeline } from '../../shared/components/composite/pipeline-card/pipeline-card';
+import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
 
 @Component({
   selector: 'app-pipelines',
@@ -14,7 +15,8 @@ import { PipelineCard, type Pipeline } from '../../shared/components/composite/p
     RagButton,
     RagIcon,
     EmptyStatePanel,
-    PipelineCard
+    PipelineCard,
+    RagPageHeader
   ],
   templateUrl: './pipelines.html',
   styleUrl: './pipelines.scss'
@@ -22,6 +24,16 @@ import { PipelineCard, type Pipeline } from '../../shared/components/composite/p
 export class Pipelines {
   readonly PlusIcon = Plus;
   readonly WorkflowIcon = Workflow;
+
+  // Page header actions
+  readonly headerActions = signal([
+    {
+      label: 'Design Pipeline',
+      icon: Plus,
+      variant: 'solid' as const,
+      action: () => this.onCreatePipeline()
+    }
+  ]);
 
   // Mock data signals
   readonly pipelines = signal<Pipeline[]>([

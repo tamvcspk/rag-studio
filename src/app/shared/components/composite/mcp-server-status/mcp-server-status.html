@@ -12,9 +12,9 @@
         <p class="mcp-server-status__subtitle">Model Context Protocol</p>
       </div>
     </div>
-    <rag-badge [variant]="getBadgeVariant(serverInfo().status)" [color]="getBadgeColor(serverInfo().status)">
+    <rag-chip [variant]="getBadgeVariant(serverInfo().status)" [color]="getBadgeColor(serverInfo().status)">
       {{ serverInfo().status.toUpperCase() }}
-    </rag-badge>
+    </rag-chip>
   </div>
   
   <div class="mcp-server-status__details">

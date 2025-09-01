@@ -345,30 +345,30 @@
   --rag-archetypes-size-xl-borderRadius: var(--rag-primitive-radius-lg);
 
   // Component patterns - Badge sizes (smaller scale)
-  --rag-archetypes-badge-xs-height: 16px;
-  --rag-archetypes-badge-xs-padding: 0 var(--rag-primitive-spacing-xs);
-  --rag-archetypes-badge-xs-fontSize: var(--rag-primitive-fontSize-xs);
-  --rag-archetypes-badge-xs-borderRadius: var(--rag-primitive-radius-xs);
+  --rag-archetypes-chip-xs-height: 16px;
+  --rag-archetypes-chip-xs-padding: 0 var(--rag-primitive-spacing-xs);
+  --rag-archetypes-chip-xs-fontSize: var(--rag-primitive-fontSize-xs);
+  --rag-archetypes-chip-xs-borderRadius: var(--rag-primitive-radius-xs);
 
-  --rag-archetypes-badge-sm-height: 20px;
-  --rag-archetypes-badge-sm-padding: 0 var(--rag-primitive-spacing-xs);
-  --rag-archetypes-badge-sm-fontSize: var(--rag-primitive-fontSize-xs);
-  --rag-archetypes-badge-sm-borderRadius: var(--rag-primitive-radius-sm);
+  --rag-archetypes-chip-sm-height: 20px;
+  --rag-archetypes-chip-sm-padding: 0 var(--rag-primitive-spacing-xs);
+  --rag-archetypes-chip-sm-fontSize: var(--rag-primitive-fontSize-xs);
+  --rag-archetypes-chip-sm-borderRadius: var(--rag-primitive-radius-sm);
 
-  --rag-archetypes-badge-md-height: 24px;
-  --rag-archetypes-badge-md-padding: 0 var(--rag-primitive-spacing-sm);
-  --rag-archetypes-badge-md-fontSize: var(--rag-primitive-fontSize-sm);
-  --rag-archetypes-badge-md-borderRadius: var(--rag-primitive-radius-sm);
+  --rag-archetypes-chip-md-height: 24px;
+  --rag-archetypes-chip-md-padding: 0 var(--rag-primitive-spacing-sm);
+  --rag-archetypes-chip-md-fontSize: var(--rag-primitive-fontSize-sm);
+  --rag-archetypes-chip-md-borderRadius: var(--rag-primitive-radius-sm);
 
-  --rag-archetypes-badge-lg-height: 28px;
-  --rag-archetypes-badge-lg-padding: 0 var(--rag-primitive-spacing-md);
-  --rag-archetypes-badge-lg-fontSize: var(--rag-primitive-fontSize-md);
-  --rag-archetypes-badge-lg-borderRadius: var(--rag-primitive-radius-md);
+  --rag-archetypes-chip-lg-height: 28px;
+  --rag-archetypes-chip-lg-padding: 0 var(--rag-primitive-spacing-md);
+  --rag-archetypes-chip-lg-fontSize: var(--rag-primitive-fontSize-md);
+  --rag-archetypes-chip-lg-borderRadius: var(--rag-primitive-radius-md);
 
-  --rag-archetypes-badge-xl-height: 32px;
-  --rag-archetypes-badge-xl-padding: 0 var(--rag-primitive-spacing-lg);
-  --rag-archetypes-badge-xl-fontSize: var(--rag-primitive-fontSize-md);
-  --rag-archetypes-badge-xl-borderRadius: var(--rag-primitive-radius-md);
+  --rag-archetypes-chip-xl-height: 32px;
+  --rag-archetypes-chip-xl-padding: 0 var(--rag-primitive-spacing-lg);
+  --rag-archetypes-chip-xl-fontSize: var(--rag-primitive-fontSize-md);
+  --rag-archetypes-chip-xl-borderRadius: var(--rag-primitive-radius-md);
 
   // Component patterns - Status indicators
   --rag-archetypes-status-xs-iconSize: 12px;
@@ -590,7 +590,7 @@
 
   --rag-archetypes-tabs-trigger-default-background: transparent;
   --rag-archetypes-tabs-trigger-default-color: var(--rag-semantic-color-text-subtle);
-  --rag-archetypes-tabs-trigger-default-padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+  --rag-archetypes-tabs-trigger-default-padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-md);
   --rag-archetypes-tabs-trigger-default-borderRadius: var(--rag-primitive-radius-xxl);
   --rag-archetypes-tabs-trigger-default-fontSize: var(--rag-primitive-fontSize-sm);
   --rag-archetypes-tabs-trigger-default-fontWeight: 500;

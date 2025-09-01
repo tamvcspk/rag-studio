@@ -16,8 +16,8 @@ export class RagSidebarItem {
   readonly url = input<string | null>(null);
   readonly active = input<boolean>(false);
   readonly disabled = input<boolean>(false);
-  readonly badge = input<string | number | null>(null);
-  readonly badgeVariant = input<'default' | 'success' | 'warning' | 'error'>('default');
+  readonly chip = input<string | number | null>(null);
+  readonly chipVariant = input<'default' | 'success' | 'warning' | 'error'>('default');
   readonly size = input<'sm' | 'md' | 'lg'>('md');
   readonly variant = input<'default' | 'ghost' | 'subtle'>('default');
   readonly indent = input<boolean>(false);
@@ -40,9 +40,9 @@ export class RagSidebarItem {
     this.collapsible() ? 'rt-collapsible' : ''
   ].filter(Boolean).join(' '));
 
-  readonly badgeClasses = computed(() => [
+  readonly chipClasses = computed(() => [
     'rt-SidebarBadge',
-    `rt-variant-${this.badgeVariant()}`
+    `rt-variant-${this.chipVariant()}`
   ].filter(Boolean).join(' '));
 
   onItemClick(event: Event): void {

@@ -228,7 +228,7 @@ Settings: {
 
 **Primitives**
 - RagButton (variants: solid/outline/ghost/soft)
-- RagBadge (status indicators)
+- RagChip (status indicators)
 - RagSpinner
 - RagSkeleton
 - RagProgress

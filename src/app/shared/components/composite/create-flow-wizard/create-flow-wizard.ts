@@ -22,7 +22,7 @@ import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 import { RagInput } from '../../atomic/primitives/rag-input/rag-input';
 import { RagTextarea } from '../../atomic/primitives/rag-textarea/rag-textarea';
-import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
+import { RagChip } from '../../atomic/primitives/rag-chip/rag-chip';
 import { RagProgress } from '../../atomic/primitives/rag-progress/rag-progress';
 import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
 
@@ -58,7 +58,7 @@ interface AvailableComponent {
     RagButton,
     RagInput,
     RagTextarea,
-    RagBadge,
+    RagChip,
     RagCard,
     RagProgress
   ],

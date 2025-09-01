@@ -119,8 +119,8 @@
   background-color: currentColor;
 }
 
-// Special dot badge
-.rt-badge-dot {
+// Special dot chip
+.rt-chip-dot {
   .status-indicator {
     background-color: var(--rag-semantic-color-success-800);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--rag-semantic-color-success-800) 20%, transparent);

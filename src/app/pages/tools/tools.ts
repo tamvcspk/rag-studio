@@ -9,7 +9,8 @@ import { RagDialogService } from '../../shared/components/semantic/overlay/rag-d
 import { RagToastService } from '../../shared/components/atomic/feedback/rag-toast/rag-toast.service';
 import { MockToolsService } from '../../shared/services/mock-tools.service';
 import { Tool, ToolStatus } from '../../shared/types/tool.types';
-import { RagBadge, RagButton, RagSearchInput, RagSelect } from '../../shared/components';
+import { RagChip, RagButton, RagSearchInput, RagSelect } from '../../shared/components';
+import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
 
 @Component({
   selector: 'app-tools',
@@ -22,7 +23,8 @@ import { RagBadge, RagButton, RagSearchInput, RagSelect } from '../../shared/com
     RagButton,
     RagSearchInput,
     RagSelect,
-    RagBadge
+    RagChip,
+    RagPageHeader
   ],
   templateUrl: './tools.html',
   styleUrl: './tools.scss'
@@ -49,6 +51,16 @@ export class Tools {
   readonly Wrench = Wrench;
   readonly Search = Search;
   readonly Filter = Filter;
+
+  // Page header actions
+  readonly headerActions = computed(() => [
+    {
+      label: 'Create Tool',
+      icon: Plus,
+      variant: 'solid' as const,
+      action: () => this.onCreateTool()
+    }
+  ]);
   
   // Filter options for dropdown
   readonly statusFilterOptions = [

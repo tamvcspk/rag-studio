@@ -1,6 +1,6 @@
 // Atomic Primitives - Base UI Elements
 export { RagButton } from './rag-button/rag-button';
-export { RagBadge } from './rag-badge/rag-badge';
+export { RagChip } from './rag-chip/rag-chip';
 export { RagSpinner } from './rag-spinner/rag-spinner';
 export { RagSkeleton } from './rag-skeleton/rag-skeleton';
 export { RagProgress } from './rag-progress/rag-progress';

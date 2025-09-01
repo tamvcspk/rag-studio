@@ -2,7 +2,7 @@ import { Component, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Search, MessageSquare, Pause, Edit, Trash2, Play, AlertCircle, RefreshCw, FileText } from 'lucide-angular';
 import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
-import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
+import { RagChip } from '../../atomic/primitives/rag-chip/rag-chip';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 import { RagAlert } from '../../atomic/feedback/rag-alert/rag-alert';
 import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
@@ -15,7 +15,7 @@ import { Tool } from '../../../types/tool.types';
     CommonModule,
     RagIcon,
     RagCard,
-    RagBadge,
+    RagChip,
     RagButton,
     RagAlert
   ],

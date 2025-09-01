@@ -1,6 +1,6 @@
 import { Component, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
+import { RagChip } from '../../atomic/primitives/rag-chip/rag-chip';
 import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
 import { Server, CheckCircle, XCircle, Circle } from 'lucide-angular';
 
@@ -14,7 +14,7 @@ export interface McpServerInfo {
 
 @Component({
   selector: 'rag-mcp-server-status',
-  imports: [CommonModule, RagBadge, RagIcon],
+  imports: [CommonModule, RagChip, RagIcon],
   templateUrl: './mcp-server-status.html',
   styleUrl: './mcp-server-status.scss'
 })

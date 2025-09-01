@@ -17,7 +17,7 @@ import {
 import { Flow, FlowPart } from '../../../models/flow.model';
 import { EmptyStatePanel } from '../empty-state-panel/empty-state-panel';
 import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
-import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
+import { RagChip } from '../../atomic/primitives/rag-chip/rag-chip';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 import { RagDialog } from '../../semantic/overlay/rag-dialog/rag-dialog';
 
@@ -36,7 +36,7 @@ interface DesignerNode {
     CommonModule,
     RagIcon,
     RagButton,
-    RagBadge,
+    RagChip,
     EmptyStatePanel,
     RagDialog
   ],

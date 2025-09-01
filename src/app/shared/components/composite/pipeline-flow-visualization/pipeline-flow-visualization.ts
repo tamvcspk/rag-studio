@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ArrowRight } from 'lucide-angular';
-import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
+import { RagChip } from '../../atomic/primitives/rag-chip/rag-chip';
 import { RagIcon } from '../../atomic';
 import type { PipelineStep } from '../pipeline-card/pipeline-card';
 
@@ -10,7 +10,7 @@ import type { PipelineStep } from '../pipeline-card/pipeline-card';
   standalone: true,
   imports: [
     CommonModule,
-    RagBadge,
+    RagChip,
     RagIcon
   ],
   templateUrl: './pipeline-flow-visualization.html',

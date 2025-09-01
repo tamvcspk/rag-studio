@@ -1,22 +1,12 @@
 <div class="pipelines-page">
   <!-- Page Header -->
-  <header class="page-header">
-    <div class="header-content">
-      <div class="title-section">
-        <h1 class="page-title">Processing Pipelines</h1>
-        <p class="page-description">Automated workflows for data ingestion and indexing</p>
-      </div>
-      <div class="header-actions">
-        <rag-button 
-          variant="solid" 
-          size="md" 
-          (onClick)="onCreatePipeline()">
-          <rag-icon [img]="PlusIcon"></rag-icon>
-          Design Pipeline
-        </rag-button>
-      </div>
-    </div>
-  </header>
+  <rag-page-header
+    [title]="'Processing Pipelines'"
+    [description]="'Automated workflows for data ingestion and indexing'"
+    [icon]="WorkflowIcon"
+    [actions]="headerActions()"
+    size="lg">
+  </rag-page-header>
 
   <!-- Main Content -->
   <main class="page-content">

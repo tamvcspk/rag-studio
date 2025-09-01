@@ -72,7 +72,7 @@ This is a hybrid Tauri application with two main components:
 - `src/`: Angular frontend application
   - `src/app/pages/`: Main application pages (dashboard, tools, knowledge-bases, pipelines, flows, settings)
   - `src/app/shared/components/`: Component library with 3-tier architecture:
-    - `atomic/`: Basic UI primitives (buttons, inputs, icons, badges, etc.)
+    - `atomic/`: Basic UI primitives (buttons, inputs, icons, chips, etc.)
     - `semantic/`: Context-aware components (cards, forms, navigation, overlays)
     - `composite/`: Complex business components (wizards, designers, dashboards)
   - `src/app/shared/tokens/`: Design token system with CSS custom properties
@@ -281,7 +281,7 @@ export class ExampleComponent {
 - Use Radix-inspired design system components consistently
 - Use Lucide Icons for all iconography (3,300+ icons, tree-shakeable)
 - Implement atomic, semantic, and composite component architecture:
-  - Atomic: RagButton, RagBadge, RagSpinner, RagIcon, etc.
+  - Atomic: RagButton, RagChip, RagSpinner, RagIcon, etc.
   - Semantic: RagCard, RagFormField, RagSearchInput, etc.
   - Composite: ToolCard, PipelineDesigner, CreateToolWizard, etc.
 - Use SCSS with CSS custom properties for theming (light/dark mode support)

@@ -18,7 +18,7 @@ import {
 } from 'lucide-angular';
 import { Flow } from '../../../models/flow.model';
 import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
-import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
+import { RagChip } from '../../atomic/primitives/rag-chip/rag-chip';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
 
@@ -28,7 +28,7 @@ import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
   imports: [
     CommonModule,
     RagIcon,
-    RagBadge,
+    RagChip,
     RagButton,
     RagCard
   ],

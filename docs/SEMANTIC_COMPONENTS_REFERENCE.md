@@ -22,13 +22,14 @@ Quick lookup reference for all RAG Studio semantic components with essential inf
 | `<rag-version-input>` | Version selector | `allowLatest`, `allowRange` | Package versions |
 | `<rag-cron-input>` | Cron builder | `showPresets` | Scheduling |
 
-### 🧭 Navigation (4 components)
+### 🧭 Navigation (5 components)
 | Component | Purpose | Key Props | Use Case |
 |-----------|---------|-----------|----------|
 | `<rag-tabs>` | Tab navigation | `tabs: TabItem[]`, `variant` | Content organization |
 | `<rag-tab-navigation>` | Router navigation | `items: TabNavItem[]`, `variant` | App navigation tabs |
 | `<rag-breadcrumb>` | Path navigation | `items: BreadcrumbItem[]` | Hierarchical navigation |
-| `<rag-sidebar-item>` | Sidebar links | `label`, `icon`, `badge` | App navigation |
+| `<rag-page-header>` | Page headers | `title`, `description`, `actions` | Page title sections |
+| `<rag-sidebar-item>` | Sidebar links | `label`, `icon`, `chip` | App navigation |
 
 ### 🎭 Overlay (3 components)
 | Component | Purpose | Key Props | Use Case |
@@ -121,6 +122,17 @@ interface BreadcrumbItem {
   disabled?: boolean;
   current?: boolean;
 }
+
+// RagPageHeader
+interface PageHeaderAction {
+  label: string;
+  icon?: any; // Lucide icon component
+  variant?: 'solid' | 'outline' | 'ghost' | 'soft';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  disabled?: boolean;
+  loading?: boolean;
+  action: () => void;
+}
 ```
 
 ---
@@ -186,6 +198,26 @@ interface BreadcrumbItem {
   { label: 'Projects', url: '/projects' },
   { label: 'Current Project', current: true }
 ]" />
+
+<!-- Page header with actions -->
+<rag-page-header
+  [title]="'Complete Flows'"
+  [description]="'End-to-end RAG processes combining tools, knowledge bases, and pipelines'"
+  [icon]="GitBranchIcon"
+  [actions]="[
+    {
+      label: 'Flow Designer',
+      icon: LayoutIcon,
+      variant: 'outline',
+      action: () => openDesigner()
+    },
+    {
+      label: 'Create Flow',
+      icon: PlusIcon,
+      variant: 'solid',
+      action: () => openCreateWizard()
+    }
+  ]" />
 ```
 
 ### 4. Service-Based Dialogs
@@ -483,5 +515,5 @@ export class FormDialogComponent {
 
 ---
 
-**Last Updated**: August 30, 2025  
-**Total Components**: 16 semantic components
+**Last Updated**: September 1, 2025  
+**Total Components**: 17 semantic components

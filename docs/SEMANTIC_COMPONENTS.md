@@ -74,7 +74,7 @@ For detailed archetype documentation and implementation details, see [ARCHETYPE_
 |----------|------------|---------|
 | **Data Display** | 6 components | Presenting information and data visualization |
 | **Forms** | 4 components | Advanced form controls and input patterns |
-| **Navigation** | 3 components | User navigation and wayfinding |
+| **Navigation** | 4 components | User navigation and wayfinding |
 | **Overlay** | 3 components | Modal dialogs, dropdowns, and layered content |
 
 ---
@@ -504,15 +504,85 @@ interface BreadcrumbItem {
 
 ---
 
+### RagPageHeader
+**Purpose**: Reusable page header component with title, description, icon, and action buttons for consistent page layouts.
+
+#### Props
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `title` | `string` | ✅ | Page title text |
+| `description` | `string` | `''` | Optional page description |
+| `icon` | `any` | | Lucide icon component for page icon |
+| `actions` | `PageHeaderAction[]` | `[]` | Action buttons configuration |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Component size |
+
+#### PageHeaderAction Interface
+```typescript
+interface PageHeaderAction {
+  label: string;                    // Button label
+  icon?: any;                      // Lucide icon component  
+  variant?: ButtonVariant;         // Button style variant
+  size?: ButtonSize;               // Button size
+  disabled?: boolean;              // Disabled state
+  loading?: boolean;               // Loading state
+  action: () => void;              // Click handler function
+}
+```
+
+#### Events
+| Event | Type | Description |
+|-------|------|-------------|
+| `actionClick` | `PageHeaderAction` | Emitted when action button clicked |
+
+#### Usage
+```html
+<!-- Basic page header -->
+<rag-page-header
+  [title]="'Page Title'"
+  [description]="'Page description text'"
+  [icon]="HomeIcon">
+</rag-page-header>
+
+<!-- Page header with actions -->
+<rag-page-header
+  [title]="'Complete Flows'"
+  [description]="'End-to-end RAG processes combining tools, knowledge bases, and pipelines'"
+  [icon]="GitBranchIcon"
+  [actions]="[
+    {
+      label: 'Flow Designer',
+      icon: LayoutIcon,
+      variant: 'outline',
+      action: () => openDesigner()
+    },
+    {
+      label: 'Create Flow',
+      icon: PlusIcon,
+      variant: 'solid',
+      action: () => openCreateWizard()
+    }
+  ]"
+  [size]="'lg'">
+</rag-page-header>
+```
+
+#### Responsive Behavior
+- Actions stack vertically on mobile devices
+- Title truncates with ellipsis on narrow screens
+- Description shows up to 2-3 lines based on screen size
+- Icon and actions maintain proper spacing across breakpoints
+
+---
+
 ### RagSidebarItem
-**Purpose**: Sidebar navigation item with nested children, badges, and state management.
+**Purpose**: Sidebar navigation item with nested children, chips, and state management.
 
 #### Usage
 ```html
 <rag-sidebar-item
   label="Knowledge Bases"
   icon="database"
-  [badge]="5"
+  [chip]="5"
   [active]="currentRoute === '/knowledge-bases'" />
 ```
 
@@ -869,7 +939,7 @@ readonly trackByFn = (index: number, item: any) => item.id;
 
 The RAG Studio semantic components provide:
 
-- **16 high-level components** across 4 categories
+- **17 high-level components** across 4 categories
 - **Comprehensive form integration** with reactive forms support
 - **Advanced interaction patterns** (search, version input, cron builder)
 - **Accessibility features** built-in
@@ -881,6 +951,6 @@ These components form the building blocks for complex RAG Studio interfaces, pro
 
 ---
 
-**Last Updated**: August 30, 2025  
-**Version**: 2.0.0  
-**Total Components**: 16 semantic components
+**Last Updated**: September 1, 2025  
+**Version**: 2.1.0  
+**Total Components**: 17 semantic components

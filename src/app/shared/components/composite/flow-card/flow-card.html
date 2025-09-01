@@ -11,13 +11,13 @@
         </div>
       </div>
       <div class="flow-status">
-        <rag-badge 
+        <rag-chip 
           [variant]="'solid'" 
           [color]="getStatusColor()"
-          class="status-badge">
+          class="status-chip">
           <rag-icon [img]="getStatusIcon()" [size]="12"></rag-icon>
           <span>{{ flow().status | titlecase }}</span>
-        </rag-badge>
+        </rag-chip>
       </div>
     </div>
 
@@ -25,7 +25,7 @@
       <div class="parts-flow">
         @for (part of flow().parts; track part.id; let isLast = $last) {
           <div class="flow-part">
-            <rag-badge [variant]="'soft'">{{ part.kind }}</rag-badge>
+            <rag-chip [variant]="'soft'">{{ part.kind }}</rag-chip>
             <span class="part-name">{{ part.name }}</span>
           </div>
           @if (!isLast) {
@@ -41,7 +41,7 @@
 
     <div class="flow-tags" *ngIf="flow().tags.length > 0">
       @for (tag of flow().tags; track tag) {
-        <rag-badge [variant]="'outline'" size="sm">{{ tag }}</rag-badge>
+        <rag-chip [variant]="'outline'" size="sm">{{ tag }}</rag-chip>
       }
     </div>
 

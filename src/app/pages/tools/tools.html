@@ -1,25 +1,14 @@
 <div class="tools-page">
   <!-- Page Header -->
+  <rag-page-header
+    [title]="'Dynamic MCP Tools'"
+    [description]="'Create and manage tools exposed via Model Context Protocol'"
+    [icon]="WrenchIcon"
+    [actions]="headerActions()"
+    size="lg">
+  </rag-page-header>
+
   <div class="page-header">
-    <div class="header-content">
-      <div class="header-info">
-        <div class="title-section">
-          <rag-icon [img]="WrenchIcon" size="lg" class="page-icon" />
-          <h1 class="page-title">Dynamic MCP Tools</h1>
-        </div>
-        <p class="page-description">
-          Create and manage tools exposed via Model Context Protocol
-        </p>
-      </div>
-      
-      <rag-button 
-        variant="solid" 
-        size="md"
-        (click)="onCreateTool()">
-        <rag-icon [img]="PlusIcon" size="sm" />
-        Create Tool
-      </rag-button>
-    </div>
     
     <!-- Statistics -->
     <div class="stats-overview">
@@ -30,27 +19,27 @@
       <div class="stat-item">
         <span class="stat-value">{{ toolStats().active }}</span>
         <span class="stat-label">Active</span>
-        <rag-badge variant="solid" color="green" size="sm">{{ toolStats().active }}</rag-badge>
+        <rag-chip variant="solid" color="green" size="sm">{{ toolStats().active }}</rag-chip>
       </div>
       @if (toolStats().error > 0) {
         <div class="stat-item">
           <span class="stat-value">{{ toolStats().error }}</span>
           <span class="stat-label">Errors</span>
-          <rag-badge variant="solid" color="red" size="sm">{{ toolStats().error }}</rag-badge>
+          <rag-chip variant="solid" color="red" size="sm">{{ toolStats().error }}</rag-chip>
         </div>
       }
       @if (toolStats().inactive > 0) {
         <div class="stat-item">
           <span class="stat-value">{{ toolStats().inactive }}</span>
           <span class="stat-label">Inactive</span>
-          <rag-badge variant="soft" color="gray" size="sm">{{ toolStats().inactive }}</rag-badge>
+          <rag-chip variant="soft" color="gray" size="sm">{{ toolStats().inactive }}</rag-chip>
         </div>
       }
       @if (toolStats().pending > 0) {
         <div class="stat-item">
           <span class="stat-value">{{ toolStats().pending }}</span>
           <span class="stat-label">Pending</span>
-          <rag-badge variant="solid" color="amber" size="sm">{{ toolStats().pending }}</rag-badge>
+          <rag-chip variant="solid" color="amber" size="sm">{{ toolStats().pending }}</rag-chip>
         </div>
       }
     </div>

@@ -1,7 +1,7 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
-import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
+import { RagChip } from '../../atomic/primitives/rag-chip/rag-chip';
 import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
 import { Activity } from 'lucide-angular';
 
@@ -15,7 +15,7 @@ export interface ActivityLogEntry {
 
 @Component({
   selector: 'rag-recent-activity-log',
-  imports: [CommonModule, RagCard, RagBadge, RagIcon],
+  imports: [CommonModule, RagCard, RagChip, RagIcon],
   templateUrl: './recent-activity-log.html',
   styleUrl: './recent-activity-log.scss'
 })

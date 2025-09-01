@@ -11,35 +11,13 @@
   }
 
   <!-- Page Header -->
-  <div class="page-header">
-    <div class="header-content">
-      <div class="header-info">
-        <div class="page-icon">
-          <rag-icon [img]="GitBranchIcon" size="xl"></rag-icon>
-        </div>
-        <div class="page-details">
-          <h1>Complete Flows</h1>
-          <p>End-to-end RAG processes combining tools, knowledge bases, and pipelines</p>
-        </div>
-      </div>
-      <div class="header-actions">
-        <rag-button 
-          [variant]="'outline'" 
-          [size]="'md'"
-          (click)="openDesigner()">
-          <rag-icon [img]="LayoutIcon" size="sm"></rag-icon>
-          Flow Designer
-        </rag-button>
-        <rag-button 
-          [variant]="'solid'" 
-          [size]="'md'"
-          (click)="openCreateWizard()">
-          <rag-icon [img]="PlusIcon" size="sm"></rag-icon>
-          Create Flow
-        </rag-button>
-      </div>
-    </div>
-  </div>
+  <rag-page-header
+    [title]="'Complete Flows'"
+    [description]="'End-to-end RAG processes combining tools, knowledge bases, and pipelines'"
+    [icon]="GitBranchIcon"
+    [actions]="headerActions"
+    [size]="'md'">
+  </rag-page-header>
 
   <!-- Filters and Search -->
   <div class="filters-section">
@@ -78,9 +56,9 @@
         </span>
         
         @if (statusFilter() !== 'all') {
-          <rag-badge [variant]="'soft'" [color]="getStatusBadgeColor(statusFilter())">
+          <rag-chip [variant]="'soft'" [color]="getStatusBadgeColor(statusFilter())">
             {{ statusFilter() | titlecase }}
-          </rag-badge>
+          </rag-chip>
         }
       }
     </div>

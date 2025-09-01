@@ -19,7 +19,7 @@ Complete quick reference for all RAG Studio components - both atomic and semanti
 ```typescript
 // Atomic components
 import { 
-  RagButton, RagInput, RagSelect, RagBadge, RagAlert,
+  RagButton, RagInput, RagSelect, RagChip, RagAlert,
   RagIcon, RagSpinner, RagProgress, RagSkeleton
 } from './shared/components/atomic';
 
@@ -188,9 +188,9 @@ export class FormComponent {
     <div class="activity-list">
       @for (activity of recentActivities; track activity.id) {
         <div class="activity-item">
-          <rag-badge variant="soft" [color]="activity.type">
+          <rag-chip variant="soft" [color]="activity.type">
             {{ activity.label }}
-          </rag-badge>
+          </rag-chip>
           <span>{{ activity.description }}</span>
           <rag-timestamp [value]="activity.createdAt" format="relative" />
         </div>
@@ -200,36 +200,54 @@ export class FormComponent {
 </div>
 ```
 
-### 3. Navigation with Tabs and Breadcrumbs
+### 3. Navigation with Page Headers, Tabs and Breadcrumbs
 ```html
-<!-- Page navigation -->
-<div class="page-header">
-  <rag-breadcrumb [items]="[
-    { label: 'Dashboard', url: '/' },
-    { label: 'Projects', url: '/projects' },
-    { label: currentProject.name, current: true }
+<!-- Page header with actions -->
+<rag-page-header
+  [title]="'Complete Flows'"
+  [description]="'End-to-end RAG processes combining tools, knowledge bases, and pipelines'"
+  [icon]="GitBranchIcon"
+  [actions]="[
+    {
+      label: 'Flow Designer',
+      icon: LayoutIcon,
+      variant: 'outline',
+      action: () => openDesigner()
+    },
+    {
+      label: 'Create Flow',
+      icon: PlusIcon,
+      variant: 'solid',
+      action: () => openCreateWizard()
+    }
   ]" />
 
-  <!-- App-level navigation (with router links) -->
-  <rag-tab-navigation
-    [items]="[
-      { id: 'dashboard', label: 'Dashboard', icon: 'home', routerLink: '/' },
-      { id: 'projects', label: 'Projects', icon: 'folder', routerLink: '/projects' },
-      { id: 'settings', label: 'Settings', icon: 'settings', routerLink: '/settings' }
-    ]"
-    variant="primary"
-    (itemClick)="onNavigation($event)" />
+<!-- Breadcrumb navigation -->
+<rag-breadcrumb [items]="[
+  { label: 'Dashboard', url: '/' },
+  { label: 'Projects', url: '/projects' },
+  { label: currentProject.name, current: true }
+]" />
 
-  <!-- Page-level tabs (content switching) -->
-  <rag-tabs 
-    [tabs]="[
-      { id: 'overview', label: 'Overview', icon: 'eye' },
-      { id: 'settings', label: 'Settings', icon: 'settings' },
-      { id: 'members', label: 'Members', icon: 'users' }
-    ]"
-    [activeTab]="currentTab()"
-    (tabChange)="switchTab($event)" />
-</div>
+<!-- App-level navigation (with router links) -->
+<rag-tab-navigation
+  [items]="[
+    { id: 'dashboard', label: 'Dashboard', icon: 'home', routerLink: '/' },
+    { id: 'projects', label: 'Projects', icon: 'folder', routerLink: '/projects' },
+    { id: 'settings', label: 'Settings', icon: 'settings', routerLink: '/settings' }
+  ]"
+  variant="primary"
+  (itemClick)="onNavigation($event)" />
+
+<!-- Page-level tabs (content switching) -->
+<rag-tabs 
+  [tabs]="[
+    { id: 'overview', label: 'Overview', icon: 'eye' },
+    { id: 'settings', label: 'Settings', icon: 'settings' },
+    { id: 'members', label: 'Members', icon: 'users' }
+  ]"
+  [activeTab]="currentTab()"
+  (tabChange)="switchTab($event)" />
 
 <!-- Tab content -->
 <div class="tab-content">
@@ -473,7 +491,7 @@ export class ActionsComponent {
 | `<rag-button>` | `<rag-button variant="solid">Save</rag-button>` | `variant`, `loading`, `disabled` |
 | `<rag-input>` | `<rag-input [placeholder]="'Email'" [leftIcon]="'mail'">` | `type`, `error`, `leftIcon` |
 | `<rag-select>` | `<rag-select [options]="items" [searchable]="true">` | `options`, `searchable`, `clearable` |
-| `<rag-badge>` | `<rag-badge color="green">Active</rag-badge>` | `variant`, `color`, `icon` |
+| `<rag-chip>` | `<rag-chip color="green">Active</rag-chip>` | `variant`, `color`, `icon` |
 | `<rag-alert>` | `<rag-alert variant="success">Success!</rag-alert>` | `variant`, `closable`, `title` |
 | `<rag-toast>` | `toastService.success('Done!', 'Success')` | Service-based, `variant`, `actions` |
 | `<rag-icon>` | `<rag-icon [img]="CheckIcon" variant="success">` | `img`, `size`, `variant` |
@@ -486,6 +504,7 @@ export class ActionsComponent {
 | `<rag-form-field>` | `<rag-form-field label="Name" [error]="err">` | `label`, `error`, `required` |
 | `<rag-tabs>` | `<rag-tabs [tabs]="items" (tabChange)="change">` | `tabs`, `activeTab`, `variant` |
 | `<rag-tab-navigation>` | `<rag-tab-navigation [items]="navItems">` | `items`, `variant`, `activeItem` |
+| `<rag-page-header>` | `<rag-page-header [title]="'Page'" [actions]="acts">` | `title`, `description`, `actions` |
 | `<rag-dialog>` | `<rag-dialog [open]="show" title="Edit">` | `open`, `title`, `size` |
 | `<rag-breadcrumb>` | `<rag-breadcrumb [items]="path">` | `items`, `separator`, `maxItems` |
 
@@ -517,19 +536,19 @@ export class ActionsComponent {
 ### Badge Variants  
 ```html
 <!-- Visual styles -->
-<rag-badge variant="solid" color="blue">Solid</rag-badge>
-<rag-badge variant="soft" color="green">Soft</rag-badge>
-<rag-badge variant="outline" color="amber">Outline</rag-badge>
+<rag-chip variant="solid" color="blue">Solid</rag-chip>
+<rag-chip variant="soft" color="green">Soft</rag-chip>
+<rag-chip variant="outline" color="amber">Outline</rag-chip>
 
 <!-- Status colors -->
-<rag-badge color="green">Success</rag-badge>
-<rag-badge color="amber">Warning</rag-badge>
-<rag-badge color="red">Error</rag-badge>
-<rag-badge color="blue">Info</rag-badge>
+<rag-chip color="green">Success</rag-chip>
+<rag-chip color="amber">Warning</rag-chip>
+<rag-chip color="red">Error</rag-chip>
+<rag-chip color="blue">Info</rag-chip>
 
 <!-- With icons -->
-<rag-badge [icon]="'check'" color="green">Completed</rag-badge>
-<rag-badge [dot]="true" color="red">Error</rag-badge>
+<rag-chip [icon]="'check'" color="green">Completed</rag-chip>
+<rag-chip [dot]="true" color="red">Error</rag-chip>
 ```
 
 ### Alert Variants
@@ -825,7 +844,7 @@ async saveData() {
 ### Component Size Scale
 | Size | Typical Use | Example |
 |------|-------------|---------|
-| `xs` | Icons in text, tiny badges | `<rag-icon size="xs">` |
+| `xs` | Icons in text, tiny chips | `<rag-icon size="xs">` |
 | `sm` | Compact interfaces, table cells | `<rag-button size="sm">` |  
 | `md` | Default size (most common) | `<rag-input size="md">` |
 | `lg` | Prominent elements, CTAs | `<rag-button size="lg">` |
@@ -834,13 +853,13 @@ async saveData() {
 ### Semantic Color Meaning
 | Color | Semantic Usage | Component Examples |
 |-------|---------------|-------------------|
-| `gray` | Neutral, default | `<rag-badge color="gray">` |
+| `gray` | Neutral, default | `<rag-chip color="gray">` |
 | `blue` | Primary, information | `<rag-alert variant="info">` |
-| `green` | Success, positive | `<rag-badge color="green">` |
+| `green` | Success, positive | `<rag-chip color="green">` |
 | `amber` | Warning, caution | `<rag-alert variant="warning">` |
 | `red` | Error, destructive | `<rag-button color="red">` |
-| `orange` | Alert, attention | `<rag-badge color="orange">` |
-| `purple` | Special, premium | `<rag-badge color="purple">` |
+| `orange` | Alert, attention | `<rag-chip color="orange">` |
+| `purple` | Special, premium | `<rag-chip color="purple">` |
 
 ### Icon Size Reference
 | Size | Pixels | Use Case |
@@ -926,7 +945,7 @@ it('should have no accessibility violations', async () => {
   <form [formGroup]="userForm" (ngSubmit)="saveUser()">
     <div class="form-header">
       <h2>User Information</h2>
-      <rag-badge color="blue">Required</rag-badge>
+      <rag-chip color="blue">Required</rag-chip>
     </div>
 
     <div class="form-grid">
@@ -964,5 +983,5 @@ it('should have no accessibility violations', async () => {
 
 ---
 
-**Last Updated**: August 30, 2025  
-**Components Covered**: 16 atomic + 16 semantic + composite components
+**Last Updated**: September 1, 2025  
+**Components Covered**: 16 atomic + 17 semantic + composite components

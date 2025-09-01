@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { RagIcon } from '../rag-icon/rag-icon';
 
 @Component({
-  selector: 'rag-badge',
+  selector: 'rag-chip',
   standalone: true,
   imports: [CommonModule, RagIcon],
-  templateUrl: './rag-badge.html',
-  styleUrl: './rag-badge.scss'
+  templateUrl: './rag-chip.html',
+  styleUrl: './rag-chip.scss'
 })
-export class RagBadge {
+export class RagChip {
   // Modern Angular 20: Use input() with proper typing
   readonly variant = input<'solid' | 'soft' | 'outline'>('soft');
   readonly color = input<'gray' | 'blue' | 'green' | 'amber' | 'red' | 'orange' | 'purple'>('gray');
@@ -18,11 +18,11 @@ export class RagBadge {
   readonly dot = input(false);
 
   // Modern Angular 20: Use computed for derived state
-  readonly badgeClasses = computed(() => [
+  readonly chipClasses = computed(() => [
     'rt-Badge',
     `rt-variant-${this.variant()}`,
     `rt-color-${this.color()}`,
     `rt-size-${this.size()}`,
-    this.dot() ? 'rt-badge-dot' : ''
+    this.dot() ? 'rt-chip-dot' : ''
   ].filter(Boolean).join(' '))
 }

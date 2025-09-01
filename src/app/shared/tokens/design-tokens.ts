@@ -312,7 +312,7 @@ export const ComponentArchetypes = {
   },
 
   // Badge archetypes - different intents
-  badge: {
+  chip: {
     primary: { background: cssVarValue('semantic.color.primary.100'), color: cssVarValue('semantic.color.primary.900') },
     success: { background: cssVarValue('semantic.color.success.100'), color: cssVarValue('semantic.color.success.900') },
     warning: { background: cssVarValue('semantic.color.warning.100'), color: cssVarValue('semantic.color.warning.900') },
@@ -633,7 +633,7 @@ export const ComponentArchetypes = {
       default: {
         background: 'transparent',
         color: cssVarValue('semantic.color.text.subtle'),
-        padding: `${cssVarValue('primitive.spacing.sm')} ${cssVarValue('primitive.spacing.md')}`,
+        padding: `${cssVarValue('primitive.spacing.xs')} ${cssVarValue('primitive.spacing.md')}`,
         borderRadius: cssVarValue('primitive.radius.xxl'),
         fontSize: cssVarValue('primitive.fontSize.sm'),
         fontWeight: '500'

@@ -1,0 +1,34 @@
+<div [class]="headerClasses()">
+  <div class="rag-page-header__content">
+    <div class="rag-page-header__info">
+      @if (icon()) {
+        <div class="rag-page-header__icon">
+          <rag-icon [img]="icon()" size="xl"></rag-icon>
+        </div>
+      }
+      <div class="rag-page-header__details">
+        <h1 [class]="titleClasses()">{{ title() }}</h1>
+        @if (description()) {
+          <p class="rag-page-header__description">{{ description() }}</p>
+        }
+      </div>
+    </div>
+    @if (actions().length > 0) {
+      <div class="rag-page-header__actions">
+        @for (action of actions(); track action.label) {
+          <rag-button 
+            [variant]="action.variant || 'outline'"
+            [size]="action.size || 'md'"
+            [disabled]="action.disabled || false"
+            [loading]="action.loading || false"
+            (onClick)="onActionClick(action)">
+            @if (action.icon) {
+              <rag-icon [img]="action.icon" size="sm"></rag-icon>
+            }
+            {{ action.label }}
+          </rag-button>
+        }
+      </div>
+    }
+  </div>
+</div>

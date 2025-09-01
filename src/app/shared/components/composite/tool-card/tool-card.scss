@@ -59,7 +59,7 @@
   border-radius: var(--rag-primitive-radius-sm);
 }
 
-.status-badge {
+.status-chip {
   flex-shrink: 0;
 }
 
@@ -136,7 +136,7 @@
     width: 100%;
   }
   
-  .status-badge {
+  .status-chip {
     align-self: flex-start;
   }
   

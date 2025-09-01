@@ -1,7 +1,7 @@
 <div class="pipeline-flow">
   @for (step of steps(); track step.name; let isLast = $last) {
     <div class="pipeline-step">
-      <rag-badge variant="soft">{{ step.name }}</rag-badge>
+      <rag-chip variant="soft">{{ step.name }}</rag-chip>
       <span class="step-description">{{ step.type }}</span>
     </div>
     

@@ -7,7 +7,8 @@ import { McpServerStatus } from '../../shared/components/composite/mcp-server-st
 import { RagAlert } from '../../shared/components/atomic/feedback/rag-alert/rag-alert';
 import { RagCard } from '../../shared/components/semantic/data-display/rag-card/rag-card';
 import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
-import { Loader2 } from 'lucide-angular';
+import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
+import { Loader2, BarChart3, Settings } from 'lucide-angular';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,7 +20,8 @@ import { Loader2 } from 'lucide-angular';
     McpServerStatus,
     RagAlert,
     RagCard,
-    RagIcon
+    RagIcon,
+    RagPageHeader
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
@@ -30,6 +32,24 @@ export class Dashboard implements OnInit {
 
   // Icon components
   readonly Loader2Icon = Loader2;
+  readonly BarChart3Icon = BarChart3;
+  readonly SettingsIcon = Settings;
+
+  // Page header actions
+  readonly headerActions = signal([
+    {
+      label: 'Settings',
+      icon: Settings,
+      variant: 'outline' as const,
+      action: () => this.openSettings()
+    },
+    {
+      label: 'Analytics',
+      icon: BarChart3,
+      variant: 'solid' as const,
+      action: () => this.openAnalytics()
+    }
+  ]);
 
   ngOnInit(): void {
     // Simulate initial loading
@@ -41,5 +61,15 @@ export class Dashboard implements OnInit {
 
   dismissMaintenanceAlert(): void {
     this.showMaintenanceAlert.set(false);
+  }
+
+  openSettings(): void {
+    // Navigate to settings
+    console.log('Opening settings...');
+  }
+
+  openAnalytics(): void {
+    // Navigate to analytics
+    console.log('Opening analytics...');
   }
 }

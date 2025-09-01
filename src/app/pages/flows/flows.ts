@@ -18,8 +18,9 @@ import { FlowCard } from '../../shared/components/composite/flow-card/flow-card'
 import { CreateFlowWizard } from '../../shared/components/composite/create-flow-wizard/create-flow-wizard';
 import { FlowDesigner } from '../../shared/components/composite/flow-designer/flow-designer';
 import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
-import { RagAlert, RagBadge, RagButton, RagInput, RagSelect } from '../../shared/components';
+import { RagAlert, RagChip, RagButton, RagInput, RagSelect } from '../../shared/components';
 import { RagDialogService } from '../../shared/components/semantic/overlay/rag-dialog/rag-dialog.service';
+import { RagPageHeader, type PageHeaderAction } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
 
 @Component({
   selector: 'app-flows',
@@ -32,8 +33,9 @@ import { RagDialogService } from '../../shared/components/semantic/overlay/rag-d
     RagButton,
     RagInput,
     RagSelect,
-    RagBadge,
-    RagAlert
+    RagChip,
+    RagAlert,
+    RagPageHeader
   ],
   templateUrl: './flows.html',
   styleUrl: './flows.scss'
@@ -81,6 +83,23 @@ export class Flows implements OnInit {
     { value: 'draft', label: 'Draft' },
     { value: 'error', label: 'Error' },
     { value: 'archived', label: 'Archived' }
+  ];
+
+  readonly headerActions: PageHeaderAction[] = [
+    {
+      label: 'Flow Designer',
+      icon: LayoutIcon,
+      variant: 'outline',
+      size: 'md',
+      action: () => this.openDesigner()
+    },
+    {
+      label: 'Create Flow',
+      icon: PlusIcon,
+      variant: 'solid',
+      size: 'md',
+      action: () => this.openCreateWizard()
+    }
   ];
 
   constructor(

@@ -20,7 +20,7 @@ All atomic components leverage the **RAG Studio Design Token System** with three
 ## Table of Contents
 
 - [Primitive Components](#primitive-components)
-  - [RagBadge](#ragbadge)
+  - [RagChip](#ragchip)
   - [RagButton](#ragbutton)
   - [RagCheckbox](#ragcheckbox)
   - [RagIcon](#ragicon)
@@ -42,11 +42,11 @@ All atomic components leverage the **RAG Studio Design Token System** with three
 
 ## Primitive Components
 
-### RagBadge
+### RagChip
 
-A versatile badge component for displaying status, counts, or labels.
+A versatile chip component for displaying status, counts, or labels.
 
-**Selector:** `rag-badge`
+**Selector:** `rag-chip`
 
 #### Properties
 
@@ -54,25 +54,25 @@ A versatile badge component for displaying status, counts, or labels.
 |----------|------|---------|-------------|
 | `variant` | `'solid' \| 'soft' \| 'outline'` | `'soft'` | Visual style variant |
 | `color` | `'gray' \| 'blue' \| 'green' \| 'amber' \| 'red' \| 'orange' \| 'purple'` | `'gray'` | Color theme |
-| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Size of the badge |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Size of the chip |
 | `icon` | `string \| undefined` | `undefined` | Lucide icon name to display |
 | `dot` | `boolean` | `false` | Show as a status dot instead of text |
 
 #### Usage Examples
 
 ```html
-<!-- Basic badge -->
-<rag-badge>New</rag-badge>
+<!-- Basic chip -->
+<rag-chip>New</rag-chip>
 
 <!-- Badge with icon -->
-<rag-badge [icon]="'star'" [color]="'amber'">Featured</rag-badge>
+<rag-chip [icon]="'star'" [color]="'amber'">Featured</rag-chip>
 
 <!-- Status dot -->
-<rag-badge [dot]="true" [color]="'green'"></rag-badge>
+<rag-chip [dot]="true" [color]="'green'"></rag-chip>
 
 <!-- Different variants -->
-<rag-badge [variant]="'solid'" [color]="'blue'">Solid</rag-badge>
-<rag-badge [variant]="'outline'" [color]="'red'">Outline</rag-badge>
+<rag-chip [variant]="'solid'" [color]="'blue'">Solid</rag-chip>
+<rag-chip [variant]="'outline'" [color]="'red'">Outline</rag-chip>
 ```
 
 ---
@@ -350,7 +350,7 @@ export class IconExampleComponent {
 }
 ```
 
-> **Note:** Other components like `RagBadge`, `RagInput`, and `RagAlert` that have `icon` properties still use string icon names internally (e.g., `[icon]="'star'"`, `[leftIcon]="'search'"`). The new `[img]` pattern is specifically for direct usage of the `<rag-icon>` component.
+> **Note:** Other components like `RagChip`, `RagInput`, and `RagAlert` that have `icon` properties still use string icon names internally (e.g., `[icon]="'star'"`, `[leftIcon]="'search'"`). The new `[img]` pattern is specifically for direct usage of the `<rag-icon>` component.
 
 ---
 

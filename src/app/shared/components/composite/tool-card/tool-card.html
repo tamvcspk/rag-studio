@@ -12,12 +12,12 @@
           <code class="tool-endpoint">{{ tool().endpoint }}</code>
         </div>
       </div>
-      <rag-badge 
+      <rag-chip 
         [variant]="getStatusBadgeVariant()"
         [color]="getStatusBadgeColor()"
-        class="status-badge">
+        class="status-chip">
         {{ getStatusBadgeText() }}
-      </rag-badge>
+      </rag-chip>
     </div>
 
     @if (tool().errorMessage) {
@@ -70,32 +70,32 @@
           <code class="tool-endpoint">{{ tool().endpoint }}</code>
         </div>
       </div>
-      <rag-badge 
+      <rag-chip 
         [variant]="getStatusBadgeVariant()"
         [color]="getStatusBadgeColor()"
-        class="status-badge">
+        class="status-chip">
         {{ getStatusBadgeText() }}
-      </rag-badge>
+      </rag-chip>
     </div>
 
     <p class="tool-description">{{ tool().description }}</p>
 
     <div class="tool-metadata">
-      <rag-badge variant="outline" size="sm">
+      <rag-chip variant="outline" size="sm">
         KB: {{ tool().knowledgeBase.name }}@{{ tool().knowledgeBase.version }}
-      </rag-badge>
-      <rag-badge variant="outline" size="sm">
+      </rag-chip>
+      <rag-chip variant="outline" size="sm">
         Type: {{ tool().baseOperation }}
-      </rag-badge>
+      </rag-chip>
       @if (tool().baseOperation === 'rag.search') {
-        <rag-badge variant="outline" size="sm">
+        <rag-chip variant="outline" size="sm">
           Top-K: {{ tool().config.topK }}
-        </rag-badge>
+        </rag-chip>
       }
       @if (tool().baseOperation === 'rag.answer') {
-        <rag-badge variant="outline" size="sm">
+        <rag-chip variant="outline" size="sm">
           Top-N: {{ tool().config.topN }}
-        </rag-badge>
+        </rag-chip>
       }
     </div>
 

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Globe, FileText, RefreshCw, Download, Trash2, Pause, X, LoaderCircle } from 'lucide-angular';
 import { KnowledgeBase, KnowledgeBaseStatus } from '../../../types';
 import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
-import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
+import { RagChip } from '../../atomic/primitives/rag-chip/rag-chip';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 import { RagProgress } from '../../atomic/primitives/rag-progress/rag-progress';
 import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
@@ -15,7 +15,7 @@ import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
     CommonModule,
     RagIcon,
     RagCard,
-    RagBadge,
+    RagChip,
     RagButton,
     RagProgress
   ],
@@ -35,23 +35,23 @@ export class KnowledgeBaseCard {
   readonly statusConfig = computed(() => {
     const status = this.knowledgeBase().status;
     const configs: Record<KnowledgeBaseStatus, { 
-      badge: { variant: 'solid' | 'soft' | 'outline'; color: 'gray' | 'blue' | 'green' | 'amber' | 'red' | 'orange' | 'purple'; icon?: any }; 
+      chip: { variant: 'solid' | 'soft' | 'outline'; color: 'gray' | 'blue' | 'green' | 'amber' | 'red' | 'orange' | 'purple'; icon?: any }; 
       icon: { component: any; color: string } 
     }> = {
       'indexed': {
-        badge: { variant: 'solid' as const, color: 'green' as const },
+        chip: { variant: 'solid' as const, color: 'green' as const },
         icon: { component: Globe, color: 'var(--blue-9)' }
       },
       'indexing': {
-        badge: { variant: 'solid' as const, color: 'amber' as const, icon: LoaderCircle },
+        chip: { variant: 'solid' as const, color: 'amber' as const, icon: LoaderCircle },
         icon: { component: FileText, color: 'var(--amber-9)' }
       },
       'failed': {
-        badge: { variant: 'solid' as const, color: 'red' as const },
+        chip: { variant: 'solid' as const, color: 'red' as const },
         icon: { component: FileText, color: 'var(--red-9)' }
       },
       'pending': {
-        badge: { variant: 'soft' as const, color: 'gray' as const },
+        chip: { variant: 'soft' as const, color: 'gray' as const },
         icon: { component: FileText, color: 'var(--gray-9)' }
       }
     };

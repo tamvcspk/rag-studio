@@ -15,6 +15,7 @@ import { RagButton } from '../../shared/components/atomic/primitives/rag-button/
 import { RagSearchInput } from '../../shared/components/semantic/forms/rag-search-input/rag-search-input';
 import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
 import { RagSelect } from '../../shared/components/atomic/primitives/rag-select/rag-select';
+import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
 import { RagDialogService } from '../../shared/components/semantic/overlay/rag-dialog/rag-dialog.service';
 
 type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
@@ -29,7 +30,8 @@ type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
     EmptyStatePanel,
     RagButton,
     RagSearchInput,
-    RagSelect
+    RagSelect,
+    RagPageHeader
   ],
   templateUrl: './knowledge-bases.html',
   styleUrl: './knowledge-bases.scss'
@@ -96,6 +98,22 @@ export class KnowledgeBases implements OnInit {
     Plus,
     Upload
   };
+
+  // Page header actions
+  readonly headerActions = computed(() => [
+    {
+      label: 'Import KB',
+      icon: Upload,
+      variant: 'outline' as const,
+      action: () => this.onImportKB()
+    },
+    {
+      label: 'Create KB',
+      icon: Plus,
+      variant: 'solid' as const,
+      action: () => this.openCreateWizard()
+    }
+  ]);
 
   constructor(
     private kbService: MockKnowledgeBasesService,

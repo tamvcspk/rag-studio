@@ -65,7 +65,7 @@ RagTokens = {
     button: { solid, outline, ghost, soft },
     input: { default, focus, error, disabled },
     card: { flat, elevated, floating },
-    badge: { primary, success, warning, danger, neutral },
+    chip: { primary, success, warning, danger, neutral },
     size: { xs, sm, md, lg, xl }
   }
 }

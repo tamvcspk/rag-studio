@@ -6,7 +6,7 @@
         <p class="pipeline-card__description">{{ pipeline().description }}</p>
       </div>
     </div>
-    <rag-badge 
+    <rag-chip 
       [variant]="getBadgeVariant(pipeline().status)"
       [color]="getBadgeColor(pipeline().status)"
       class="pipeline-card__status">
@@ -23,7 +23,7 @@
         <rag-icon [img]="ClockIcon" class="status-icon"></rag-icon>
         {{ pipeline().status | titlecase }}
       }
-    </rag-badge>
+    </rag-chip>
   </div>
 
   <div class="pipeline-card__flow">

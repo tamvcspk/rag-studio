@@ -1,4 +1,13 @@
 <div class="dashboard-page">
+  <!-- Page Header -->
+  <rag-page-header
+    [title]="'Dashboard'"
+    [description]="'Monitor and manage your RAG Studio instance'"
+    [icon]="BarChart3Icon"
+    [actions]="headerActions()"
+    size="lg">
+  </rag-page-header>
+
   <!-- System Alert -->
   @if (showMaintenanceAlert()) {
     <rag-alert 

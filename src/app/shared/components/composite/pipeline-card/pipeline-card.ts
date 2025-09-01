@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Play, Pause, Edit, Calendar, Clock, CheckCircle } from 'lucide-angular';
-import { RagBadge } from '../../atomic/primitives/rag-badge/rag-badge';
+import { RagChip } from '../../atomic/primitives/rag-chip/rag-chip';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
 import { RagIcon } from '../../atomic';
@@ -33,7 +33,7 @@ export interface PipelineStep {
   standalone: true,
   imports: [
     CommonModule,
-    RagBadge,
+    RagChip,
     RagButton,
     RagCard,
     RagIcon,

@@ -10,11 +10,20 @@
 
 .app-header {
   background-color: var(--rag-semantic-color-background-default);
-  border-bottom: var(--rag-primitive-borderWidth-1) solid var(--rag-semantic-color-border-default);
   position: sticky;
   top: 0;
   z-index: var(--rag-primitive-zIndex-sticky);
   backdrop-filter: blur(8px);
+
+  &::after{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--rag-primitive-borderWidth-1);
+    background: var(--rag-semantic-color-border-default);
+  }
 }
 
 .logo {
@@ -22,8 +31,8 @@
 }
 
 .header-content {
-  height: var(--rag-primitive-size-16);
-  padding: 0 var(--rag-primitive-spacing-lg);
+  height: var(--rag-primitive-size-9);
+  padding: 0 var(--rag-primitive-spacing-xl);
 }
 
 .app-title {
@@ -48,14 +57,13 @@
   background-color: var(--rag-semantic-color-background-default);
   padding: var(--rag-primitive-spacing-lg) var(--rag-primitive-spacing-xl) 0 var(--rag-primitive-spacing-xl);
   backdrop-filter: blur(8px);
-
   position: sticky;
-  top: (var(--rag-primitive-size-16));
+  top: var(--rag-primitive-size-9);
   z-index: var(--rag-primitive-zIndex-sticky);
 }
 
 .content-area {
-  padding: var(--rag-primitive-spacing-xl);
+  padding: 0 var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl);
   flex: 1 1 auto;
 }
 

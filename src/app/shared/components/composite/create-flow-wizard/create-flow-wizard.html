@@ -78,12 +78,12 @@
             </div>
             <div class="tags-list" *ngIf="formData().tags.length > 0">
               @for (tag of formData().tags; track tag) {
-                <rag-badge [variant]="'soft'" class="tag-item">
+                <rag-chip [variant]="'soft'" class="tag-item">
                   {{ tag }}
                   <button class="remove-tag" (click)="removeTag(tag)">
                     <rag-icon [img]="xIcon" [size]="12"></rag-icon>
                   </button>
-                </rag-badge>
+                </rag-chip>
               }
             </div>
           </div>
@@ -129,10 +129,10 @@
             <h4>Selected Components ({{ selectedComponents().length }})</h4>
             <div class="selected-list">
               @for (component of selectedComponents(); track component.id) {
-                <rag-badge [variant]="'outline'">
+                <rag-chip [variant]="'outline'">
                   <rag-icon [img]="getComponentIcon(component.type)" [size]="12"></rag-icon>
                   {{ component.name }}
-                </rag-badge>
+                </rag-chip>
               }
             </div>
           </div>
@@ -194,7 +194,7 @@
                 <span class="label">Tags:</span>
                 <div class="tags-list">
                   @for (tag of formData().tags; track tag) {
-                    <rag-badge [variant]="'soft'">{{ tag }}</rag-badge>
+                    <rag-chip [variant]="'soft'">{{ tag }}</rag-chip>
                   }
                 </div>
               </div>

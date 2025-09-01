@@ -29,7 +29,7 @@
       }
     }
 
-    .status-badge {
+    .status-chip {
       flex-shrink: 0;
     }
   }
@@ -93,7 +93,7 @@
     }
   }
 
-  .metadata-badges {
+  .metadata-chips {
     display: flex;
     gap: var(--rag-primitive-spacing-sm);
     flex-wrap: wrap;

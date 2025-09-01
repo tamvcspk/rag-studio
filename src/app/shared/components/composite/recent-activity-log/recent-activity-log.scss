@@ -48,7 +48,7 @@
     line-height: var(--rag-primitive-lineHeight-md);
   }
 
-  rag-badge {
+  rag-chip {
     flex-shrink: 0;
   }
 
@@ -61,7 +61,7 @@
       min-width: auto;
     }
     
-    .badge-and-message {
+    .chip-and-message {
       display: flex;
       align-items: center;
       gap: var(--rag-primitive-spacing-md);
