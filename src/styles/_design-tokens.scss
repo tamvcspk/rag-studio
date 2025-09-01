@@ -143,6 +143,7 @@
   --rag-primitive-radius-md: 6px;
   --rag-primitive-radius-lg: 8px;
   --rag-primitive-radius-xl: 12px;
+  --rag-primitive-radius-xxl: 24px;
 
   // Border width scale
   --rag-primitive-borderWidth-1: 1px;
@@ -204,11 +205,11 @@
   // Semantic tokens
   --rag-semantic-color-background-default: var(--rag-primitive-color-white);
   --rag-semantic-color-background-subtle: var(--rag-primitive-color-gray-50);
-  --rag-semantic-color-background-muted: var(--rag-primitive-color-gray-100);
+  --rag-semantic-color-background-muted: var(--rag-primitive-color-gray-4 00);
   
-  --rag-semantic-color-border-default: var(--rag-primitive-color-gray-300);
-  --rag-semantic-color-border-subtle: var(--rag-primitive-color-gray-200);
-  --rag-semantic-color-border-muted: var(--rag-primitive-color-gray-400);
+  --rag-semantic-color-border-default: var(--rag-primitive-color-gray-500);
+  --rag-semantic-color-border-subtle: var(--rag-primitive-color-gray-400);
+  --rag-semantic-color-border-muted: var(--rag-primitive-color-gray-600);
   
   --rag-semantic-color-text-default: var(--rag-primitive-color-gray-1000);
   --rag-semantic-color-text-subtle: var(--rag-primitive-color-gray-950);
@@ -301,342 +302,342 @@
   --rag-semantic-color-neutral-1000: var(--rag-primitive-color-gray-1000);
 
   // Component patterns - Button variants
-  --rag-semantic-component-button-solid-background: var(--rag-semantic-color-text-default);
-  --rag-semantic-component-button-solid-color: var(--rag-semantic-color-text-inverse);
-  --rag-semantic-component-button-solid-border: none;
+  --rag-archetypes-button-solid-background: var(--rag-semantic-color-text-default);
+  --rag-archetypes-button-solid-color: var(--rag-semantic-color-text-inverse);
+  --rag-archetypes-button-solid-border: none;
 
-  --rag-semantic-component-button-outline-background: var(--rag-semantic-color-background-default);
-  --rag-semantic-component-button-outline-color: var(--rag-semantic-color-text-default);
-  --rag-semantic-component-button-outline-border: 1px solid var(--rag-semantic-color-border-default);
+  --rag-archetypes-button-outline-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-button-outline-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-button-outline-border: 1px solid var(--rag-semantic-color-border-default);
 
-  --rag-semantic-component-button-ghost-background: transparent;
-  --rag-semantic-component-button-ghost-color: var(--rag-semantic-color-text-default);
-  --rag-semantic-component-button-ghost-border: none;
+  --rag-archetypes-button-ghost-background: transparent;
+  --rag-archetypes-button-ghost-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-button-ghost-border: none;
 
-  --rag-semantic-component-button-soft-background: var(--rag-semantic-color-background-muted);
-  --rag-semantic-component-button-soft-color: var(--rag-semantic-color-text-default);
-  --rag-semantic-component-button-soft-border: none;
+  --rag-archetypes-button-soft-background: var(--rag-semantic-color-background-muted);
+  --rag-archetypes-button-soft-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-button-soft-border: none;
 
   // Component patterns - Size variants (standard components)
-  --rag-semantic-component-size-xs-height: 24px;
-  --rag-semantic-component-size-xs-padding: 0 var(--rag-primitive-spacing-xs);
-  --rag-semantic-component-size-xs-fontSize: var(--rag-primitive-fontSize-xs);
-  --rag-semantic-component-size-xs-borderRadius: var(--rag-primitive-radius-xs);
+  --rag-archetypes-size-xs-height: 24px;
+  --rag-archetypes-size-xs-padding: 0 var(--rag-primitive-spacing-xs);
+  --rag-archetypes-size-xs-fontSize: var(--rag-primitive-fontSize-xs);
+  --rag-archetypes-size-xs-borderRadius: var(--rag-primitive-radius-xs);
 
-  --rag-semantic-component-size-sm-height: 28px;
-  --rag-semantic-component-size-sm-padding: 0 var(--rag-primitive-spacing-sm);
-  --rag-semantic-component-size-sm-fontSize: var(--rag-primitive-fontSize-sm);
-  --rag-semantic-component-size-sm-borderRadius: var(--rag-primitive-radius-sm);
+  --rag-archetypes-size-sm-height: 28px;
+  --rag-archetypes-size-sm-padding: 0 var(--rag-primitive-spacing-sm);
+  --rag-archetypes-size-sm-fontSize: var(--rag-primitive-fontSize-sm);
+  --rag-archetypes-size-sm-borderRadius: var(--rag-primitive-radius-sm);
 
-  --rag-semantic-component-size-md-height: 32px;
-  --rag-semantic-component-size-md-padding: 0 var(--rag-primitive-spacing-md);
-  --rag-semantic-component-size-md-fontSize: var(--rag-primitive-fontSize-md);
-  --rag-semantic-component-size-md-borderRadius: var(--rag-primitive-radius-md);
+  --rag-archetypes-size-md-height: 32px;
+  --rag-archetypes-size-md-padding: 0 var(--rag-primitive-spacing-md);
+  --rag-archetypes-size-md-fontSize: var(--rag-primitive-fontSize-md);
+  --rag-archetypes-size-md-borderRadius: var(--rag-primitive-radius-md);
 
-  --rag-semantic-component-size-lg-height: 40px;
-  --rag-semantic-component-size-lg-padding: 0 var(--rag-primitive-spacing-lg);
-  --rag-semantic-component-size-lg-fontSize: var(--rag-primitive-fontSize-lg);
-  --rag-semantic-component-size-lg-borderRadius: var(--rag-primitive-radius-md);
+  --rag-archetypes-size-lg-height: 40px;
+  --rag-archetypes-size-lg-padding: 0 var(--rag-primitive-spacing-lg);
+  --rag-archetypes-size-lg-fontSize: var(--rag-primitive-fontSize-lg);
+  --rag-archetypes-size-lg-borderRadius: var(--rag-primitive-radius-md);
 
-  --rag-semantic-component-size-xl-height: 48px;
-  --rag-semantic-component-size-xl-padding: 0 var(--rag-primitive-spacing-xl);
-  --rag-semantic-component-size-xl-fontSize: var(--rag-primitive-fontSize-xl);
-  --rag-semantic-component-size-xl-borderRadius: var(--rag-primitive-radius-lg);
+  --rag-archetypes-size-xl-height: 48px;
+  --rag-archetypes-size-xl-padding: 0 var(--rag-primitive-spacing-xl);
+  --rag-archetypes-size-xl-fontSize: var(--rag-primitive-fontSize-xl);
+  --rag-archetypes-size-xl-borderRadius: var(--rag-primitive-radius-lg);
 
   // Component patterns - Badge sizes (smaller scale)
-  --rag-semantic-component-badge-xs-height: 16px;
-  --rag-semantic-component-badge-xs-padding: 0 var(--rag-primitive-spacing-xs);
-  --rag-semantic-component-badge-xs-fontSize: var(--rag-primitive-fontSize-xs);
-  --rag-semantic-component-badge-xs-borderRadius: var(--rag-primitive-radius-xs);
+  --rag-archetypes-badge-xs-height: 16px;
+  --rag-archetypes-badge-xs-padding: 0 var(--rag-primitive-spacing-xs);
+  --rag-archetypes-badge-xs-fontSize: var(--rag-primitive-fontSize-xs);
+  --rag-archetypes-badge-xs-borderRadius: var(--rag-primitive-radius-xs);
 
-  --rag-semantic-component-badge-sm-height: 20px;
-  --rag-semantic-component-badge-sm-padding: 0 var(--rag-primitive-spacing-xs);
-  --rag-semantic-component-badge-sm-fontSize: var(--rag-primitive-fontSize-xs);
-  --rag-semantic-component-badge-sm-borderRadius: var(--rag-primitive-radius-sm);
+  --rag-archetypes-badge-sm-height: 20px;
+  --rag-archetypes-badge-sm-padding: 0 var(--rag-primitive-spacing-xs);
+  --rag-archetypes-badge-sm-fontSize: var(--rag-primitive-fontSize-xs);
+  --rag-archetypes-badge-sm-borderRadius: var(--rag-primitive-radius-sm);
 
-  --rag-semantic-component-badge-md-height: 24px;
-  --rag-semantic-component-badge-md-padding: 0 var(--rag-primitive-spacing-sm);
-  --rag-semantic-component-badge-md-fontSize: var(--rag-primitive-fontSize-sm);
-  --rag-semantic-component-badge-md-borderRadius: var(--rag-primitive-radius-sm);
+  --rag-archetypes-badge-md-height: 24px;
+  --rag-archetypes-badge-md-padding: 0 var(--rag-primitive-spacing-sm);
+  --rag-archetypes-badge-md-fontSize: var(--rag-primitive-fontSize-sm);
+  --rag-archetypes-badge-md-borderRadius: var(--rag-primitive-radius-sm);
 
-  --rag-semantic-component-badge-lg-height: 28px;
-  --rag-semantic-component-badge-lg-padding: 0 var(--rag-primitive-spacing-md);
-  --rag-semantic-component-badge-lg-fontSize: var(--rag-primitive-fontSize-md);
-  --rag-semantic-component-badge-lg-borderRadius: var(--rag-primitive-radius-md);
+  --rag-archetypes-badge-lg-height: 28px;
+  --rag-archetypes-badge-lg-padding: 0 var(--rag-primitive-spacing-md);
+  --rag-archetypes-badge-lg-fontSize: var(--rag-primitive-fontSize-md);
+  --rag-archetypes-badge-lg-borderRadius: var(--rag-primitive-radius-md);
 
-  --rag-semantic-component-badge-xl-height: 32px;
-  --rag-semantic-component-badge-xl-padding: 0 var(--rag-primitive-spacing-lg);
-  --rag-semantic-component-badge-xl-fontSize: var(--rag-primitive-fontSize-md);
-  --rag-semantic-component-badge-xl-borderRadius: var(--rag-primitive-radius-md);
+  --rag-archetypes-badge-xl-height: 32px;
+  --rag-archetypes-badge-xl-padding: 0 var(--rag-primitive-spacing-lg);
+  --rag-archetypes-badge-xl-fontSize: var(--rag-primitive-fontSize-md);
+  --rag-archetypes-badge-xl-borderRadius: var(--rag-primitive-radius-md);
 
   // Component patterns - Status indicators
-  --rag-semantic-component-status-xs-iconSize: 12px;
-  --rag-semantic-component-status-xs-dotSize: 6px;
+  --rag-archetypes-status-xs-iconSize: 12px;
+  --rag-archetypes-status-xs-dotSize: 6px;
   
-  --rag-semantic-component-status-sm-iconSize: 14px;
-  --rag-semantic-component-status-sm-dotSize: 8px;
+  --rag-archetypes-status-sm-iconSize: 14px;
+  --rag-archetypes-status-sm-dotSize: 8px;
   
-  --rag-semantic-component-status-md-iconSize: 16px;
-  --rag-semantic-component-status-md-dotSize: 10px;
+  --rag-archetypes-status-md-iconSize: 16px;
+  --rag-archetypes-status-md-dotSize: 10px;
   
-  --rag-semantic-component-status-lg-iconSize: 20px;
-  --rag-semantic-component-status-lg-dotSize: 12px;
+  --rag-archetypes-status-lg-iconSize: 20px;
+  --rag-archetypes-status-lg-dotSize: 12px;
   
-  --rag-semantic-component-status-xl-iconSize: 24px;
-  --rag-semantic-component-status-xl-dotSize: 14px;
+  --rag-archetypes-status-xl-iconSize: 24px;
+  --rag-archetypes-status-xl-dotSize: 14px;
 
   // Component patterns - Alert variants
-  --rag-semantic-component-alert-info-background: var(--rag-semantic-color-primary-100);
-  --rag-semantic-component-alert-info-color: var(--rag-semantic-color-primary-950);
-  --rag-semantic-component-alert-info-border: 1px solid var(--rag-semantic-color-primary-300);
-  --rag-semantic-component-alert-info-iconColor: var(--rag-semantic-color-primary-700);
+  --rag-archetypes-alert-info-background: var(--rag-semantic-color-primary-100);
+  --rag-archetypes-alert-info-color: var(--rag-semantic-color-primary-950);
+  --rag-archetypes-alert-info-border: 1px solid var(--rag-semantic-color-primary-300);
+  --rag-archetypes-alert-info-iconColor: var(--rag-semantic-color-primary-700);
 
-  --rag-semantic-component-alert-success-background: var(--rag-semantic-color-success-100);
-  --rag-semantic-component-alert-success-color: var(--rag-semantic-color-success-950);
-  --rag-semantic-component-alert-success-border: 1px solid var(--rag-semantic-color-success-300);
-  --rag-semantic-component-alert-success-iconColor: var(--rag-semantic-color-success-700);
+  --rag-archetypes-alert-success-background: var(--rag-semantic-color-success-100);
+  --rag-archetypes-alert-success-color: var(--rag-semantic-color-success-950);
+  --rag-archetypes-alert-success-border: 1px solid var(--rag-semantic-color-success-300);
+  --rag-archetypes-alert-success-iconColor: var(--rag-semantic-color-success-700);
 
-  --rag-semantic-component-alert-warning-background: var(--rag-semantic-color-warning-100);
-  --rag-semantic-component-alert-warning-color: var(--rag-semantic-color-warning-950);
-  --rag-semantic-component-alert-warning-border: 1px solid var(--rag-semantic-color-warning-300);
-  --rag-semantic-component-alert-warning-iconColor: var(--rag-semantic-color-warning-700);
+  --rag-archetypes-alert-warning-background: var(--rag-semantic-color-warning-100);
+  --rag-archetypes-alert-warning-color: var(--rag-semantic-color-warning-950);
+  --rag-archetypes-alert-warning-border: 1px solid var(--rag-semantic-color-warning-300);
+  --rag-archetypes-alert-warning-iconColor: var(--rag-semantic-color-warning-700);
 
-  --rag-semantic-component-alert-error-background: var(--rag-semantic-color-danger-100);
-  --rag-semantic-component-alert-error-color: var(--rag-semantic-color-danger-950);
-  --rag-semantic-component-alert-error-border: 1px solid var(--rag-semantic-color-danger-300);
-  --rag-semantic-component-alert-error-iconColor: var(--rag-semantic-color-danger-700);
+  --rag-archetypes-alert-error-background: var(--rag-semantic-color-danger-100);
+  --rag-archetypes-alert-error-color: var(--rag-semantic-color-danger-950);
+  --rag-archetypes-alert-error-border: 1px solid var(--rag-semantic-color-danger-300);
+  --rag-archetypes-alert-error-iconColor: var(--rag-semantic-color-danger-700);
 
   // Component patterns - Select variants
-  --rag-semantic-component-select-default-background: var(--rag-semantic-color-background-default);
-  --rag-semantic-component-select-default-border: 1px solid var(--rag-semantic-color-border-default);
-  --rag-semantic-component-select-default-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-select-default-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-select-default-border: 1px solid var(--rag-semantic-color-border-default);
+  --rag-archetypes-select-default-color: var(--rag-semantic-color-text-default);
 
-  --rag-semantic-component-select-focus-background: var(--rag-semantic-color-background-default);
-  --rag-semantic-component-select-focus-border: 1px solid var(--rag-semantic-color-primary-500);
-  --rag-semantic-component-select-focus-boxShadow: 0 0 0 3px var(--rag-semantic-color-primary-100);
-  --rag-semantic-component-select-focus-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-select-focus-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-select-focus-border: 1px solid var(--rag-semantic-color-primary-500);
+  --rag-archetypes-select-focus-boxShadow: 0 0 0 3px var(--rag-semantic-color-primary-100);
+  --rag-archetypes-select-focus-color: var(--rag-semantic-color-text-default);
 
-  --rag-semantic-component-select-error-background: var(--rag-semantic-color-background-default);
-  --rag-semantic-component-select-error-border: 1px solid var(--rag-semantic-color-danger-500);
-  --rag-semantic-component-select-error-boxShadow: 0 0 0 3px var(--rag-semantic-color-danger-100);
-  --rag-semantic-component-select-error-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-select-error-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-select-error-border: 1px solid var(--rag-semantic-color-danger-500);
+  --rag-archetypes-select-error-boxShadow: 0 0 0 3px var(--rag-semantic-color-danger-100);
+  --rag-archetypes-select-error-color: var(--rag-semantic-color-text-default);
 
-  --rag-semantic-component-select-disabled-background: var(--rag-semantic-color-background-muted);
-  --rag-semantic-component-select-disabled-border: 1px solid var(--rag-semantic-color-border-subtle);
-  --rag-semantic-component-select-disabled-color: var(--rag-semantic-color-text-disabled);
+  --rag-archetypes-select-disabled-background: var(--rag-semantic-color-background-muted);
+  --rag-archetypes-select-disabled-border: 1px solid var(--rag-semantic-color-border-subtle);
+  --rag-archetypes-select-disabled-color: var(--rag-semantic-color-text-disabled);
 
   // Component patterns - Progress variants
-  --rag-semantic-component-progress-primary-background: var(--rag-semantic-color-primary-200);
-  --rag-semantic-component-progress-primary-fill: var(--rag-semantic-color-primary-600);
-  --rag-semantic-component-progress-primary-text: var(--rag-semantic-color-primary-900);
+  --rag-archetypes-progress-primary-background: var(--rag-semantic-color-primary-200);
+  --rag-archetypes-progress-primary-fill: var(--rag-semantic-color-primary-600);
+  --rag-archetypes-progress-primary-text: var(--rag-semantic-color-primary-900);
 
-  --rag-semantic-component-progress-success-background: var(--rag-semantic-color-success-200);
-  --rag-semantic-component-progress-success-fill: var(--rag-semantic-color-success-600);
-  --rag-semantic-component-progress-success-text: var(--rag-semantic-color-success-900);
+  --rag-archetypes-progress-success-background: var(--rag-semantic-color-success-200);
+  --rag-archetypes-progress-success-fill: var(--rag-semantic-color-success-600);
+  --rag-archetypes-progress-success-text: var(--rag-semantic-color-success-900);
 
-  --rag-semantic-component-progress-warning-background: var(--rag-semantic-color-warning-200);
-  --rag-semantic-component-progress-warning-fill: var(--rag-semantic-color-warning-600);
-  --rag-semantic-component-progress-warning-text: var(--rag-semantic-color-warning-900);
+  --rag-archetypes-progress-warning-background: var(--rag-semantic-color-warning-200);
+  --rag-archetypes-progress-warning-fill: var(--rag-semantic-color-warning-600);
+  --rag-archetypes-progress-warning-text: var(--rag-semantic-color-warning-900);
 
-  --rag-semantic-component-progress-danger-background: var(--rag-semantic-color-danger-200);
-  --rag-semantic-component-progress-danger-fill: var(--rag-semantic-color-danger-600);
-  --rag-semantic-component-progress-danger-text: var(--rag-semantic-color-danger-900);
+  --rag-archetypes-progress-danger-background: var(--rag-semantic-color-danger-200);
+  --rag-archetypes-progress-danger-fill: var(--rag-semantic-color-danger-600);
+  --rag-archetypes-progress-danger-text: var(--rag-semantic-color-danger-900);
 
   // Component patterns - Switch variants
-  --rag-semantic-component-switch-default-track-background: var(--rag-semantic-color-neutral-300);
-  --rag-semantic-component-switch-default-track-borderColor: var(--rag-semantic-color-neutral-400);
-  --rag-semantic-component-switch-default-thumb-background: var(--rag-semantic-color-background-default);
-  --rag-semantic-component-switch-default-thumb-borderColor: var(--rag-semantic-color-neutral-300);
+  --rag-archetypes-switch-default-track-background: var(--rag-semantic-color-neutral-300);
+  --rag-archetypes-switch-default-track-borderColor: var(--rag-semantic-color-neutral-400);
+  --rag-archetypes-switch-default-thumb-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-switch-default-thumb-borderColor: var(--rag-semantic-color-neutral-300);
 
-  --rag-semantic-component-switch-checked-track-background: var(--rag-semantic-color-primary-500);
-  --rag-semantic-component-switch-checked-track-borderColor: var(--rag-semantic-color-primary-600);
-  --rag-semantic-component-switch-checked-thumb-background: var(--rag-semantic-color-background-default);
-  --rag-semantic-component-switch-checked-thumb-borderColor: var(--rag-semantic-color-primary-600);
+  --rag-archetypes-switch-checked-track-background: var(--rag-semantic-color-primary-500);
+  --rag-archetypes-switch-checked-track-borderColor: var(--rag-semantic-color-primary-600);
+  --rag-archetypes-switch-checked-thumb-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-switch-checked-thumb-borderColor: var(--rag-semantic-color-primary-600);
 
-  --rag-semantic-component-switch-disabled-track-background: var(--rag-semantic-color-neutral-200);
-  --rag-semantic-component-switch-disabled-track-borderColor: var(--rag-semantic-color-neutral-300);
-  --rag-semantic-component-switch-disabled-thumb-background: var(--rag-semantic-color-neutral-100);
-  --rag-semantic-component-switch-disabled-thumb-borderColor: var(--rag-semantic-color-neutral-200);
+  --rag-archetypes-switch-disabled-track-background: var(--rag-semantic-color-neutral-200);
+  --rag-archetypes-switch-disabled-track-borderColor: var(--rag-semantic-color-neutral-300);
+  --rag-archetypes-switch-disabled-thumb-background: var(--rag-semantic-color-neutral-100);
+  --rag-archetypes-switch-disabled-thumb-borderColor: var(--rag-semantic-color-neutral-200);
 
   // Component patterns - Icon sizes and colors
-  --rag-semantic-component-icon-size-xs: 12px;
-  --rag-semantic-component-icon-size-sm: 14px;
-  --rag-semantic-component-icon-size-md: 16px;
-  --rag-semantic-component-icon-size-lg: 20px;
-  --rag-semantic-component-icon-size-xl: 24px;
+  --rag-archetypes-icon-size-xs: 12px;
+  --rag-archetypes-icon-size-sm: 14px;
+  --rag-archetypes-icon-size-md: 16px;
+  --rag-archetypes-icon-size-lg: 20px;
+  --rag-archetypes-icon-size-xl: 24px;
 
-  --rag-semantic-component-icon-color-default: var(--rag-semantic-color-text-default);
-  --rag-semantic-component-icon-color-subtle: var(--rag-semantic-color-text-subtle);
-  --rag-semantic-component-icon-color-muted: var(--rag-semantic-color-text-muted);
-  --rag-semantic-component-icon-color-primary: var(--rag-semantic-color-primary-600);
-  --rag-semantic-component-icon-color-success: var(--rag-semantic-color-success-600);
-  --rag-semantic-component-icon-color-warning: var(--rag-semantic-color-warning-600);
-  --rag-semantic-component-icon-color-danger: var(--rag-semantic-color-danger-600);
+  --rag-archetypes-icon-color-default: var(--rag-semantic-color-text-default);
+  --rag-archetypes-icon-color-subtle: var(--rag-semantic-color-text-subtle);
+  --rag-archetypes-icon-color-muted: var(--rag-semantic-color-text-muted);
+  --rag-archetypes-icon-color-primary: var(--rag-semantic-color-primary-600);
+  --rag-archetypes-icon-color-success: var(--rag-semantic-color-success-600);
+  --rag-archetypes-icon-color-warning: var(--rag-semantic-color-warning-600);
+  --rag-archetypes-icon-color-danger: var(--rag-semantic-color-danger-600);
 
   // Component patterns - Skeleton variants
-  --rag-semantic-component-skeleton-text-background: var(--rag-semantic-color-neutral-200);
-  --rag-semantic-component-skeleton-text-borderRadius: var(--rag-primitive-radius-xs);
+  --rag-archetypes-skeleton-text-background: var(--rag-semantic-color-neutral-200);
+  --rag-archetypes-skeleton-text-borderRadius: var(--rag-primitive-radius-xs);
 
-  --rag-semantic-component-skeleton-circular-background: var(--rag-semantic-color-neutral-200);
-  --rag-semantic-component-skeleton-circular-borderRadius: 50%;
+  --rag-archetypes-skeleton-circular-background: var(--rag-semantic-color-neutral-200);
+  --rag-archetypes-skeleton-circular-borderRadius: 50%;
 
-  --rag-semantic-component-skeleton-rectangular-background: var(--rag-semantic-color-neutral-200);
-  --rag-semantic-component-skeleton-rectangular-borderRadius: var(--rag-primitive-radius-sm);
+  --rag-archetypes-skeleton-rectangular-background: var(--rag-semantic-color-neutral-200);
+  --rag-archetypes-skeleton-rectangular-borderRadius: var(--rag-primitive-radius-sm);
 
   // Component patterns - Tooltip variants
-  --rag-semantic-component-tooltip-default-background: var(--rag-semantic-color-text-default);
-  --rag-semantic-component-tooltip-default-color: var(--rag-semantic-color-text-inverse);
-  --rag-semantic-component-tooltip-default-borderRadius: var(--rag-primitive-radius-sm);
-  --rag-semantic-component-tooltip-default-boxShadow: var(--rag-primitive-shadow-lg);
-  --rag-semantic-component-tooltip-default-fontSize: var(--rag-primitive-fontSize-sm);
-  --rag-semantic-component-tooltip-default-padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+  --rag-archetypes-tooltip-default-background: var(--rag-semantic-color-text-default);
+  --rag-archetypes-tooltip-default-color: var(--rag-semantic-color-text-inverse);
+  --rag-archetypes-tooltip-default-borderRadius: var(--rag-primitive-radius-sm);
+  --rag-archetypes-tooltip-default-boxShadow: var(--rag-primitive-shadow-lg);
+  --rag-archetypes-tooltip-default-fontSize: var(--rag-primitive-fontSize-sm);
+  --rag-archetypes-tooltip-default-padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
 
   // Component patterns - Focus states
-  --rag-semantic-component-focus-ring-primary: 0 0 0 2px var(--rag-semantic-color-background-default), 0 0 0 4px var(--rag-semantic-color-primary-500);
-  --rag-semantic-component-focus-ring-danger: 0 0 0 2px var(--rag-semantic-color-background-default), 0 0 0 4px var(--rag-semantic-color-danger-500);
-  --rag-semantic-component-focus-ring-success: 0 0 0 2px var(--rag-semantic-color-background-default), 0 0 0 4px var(--rag-semantic-color-success-500);
+  --rag-archetypes-focus-ring-primary: 0 0 0 2px var(--rag-semantic-color-background-default), 0 0 0 4px var(--rag-semantic-color-primary-500);
+  --rag-archetypes-focus-ring-danger: 0 0 0 2px var(--rag-semantic-color-background-default), 0 0 0 4px var(--rag-semantic-color-danger-500);
+  --rag-archetypes-focus-ring-success: 0 0 0 2px var(--rag-semantic-color-background-default), 0 0 0 4px var(--rag-semantic-color-success-500);
 
   // Component patterns - Dialog/Modal variants
-  --rag-semantic-component-dialog-backdrop-background: rgba(0, 0, 0, 0.5);
-  --rag-semantic-component-dialog-backdrop-backdropFilter: blur(4px);
+  --rag-archetypes-dialog-backdrop-background: rgba(0, 0, 0, 0.5);
+  --rag-archetypes-dialog-backdrop-backdropFilter: blur(4px);
 
-  --rag-semantic-component-dialog-container-background: var(--rag-semantic-color-background-default);
-  --rag-semantic-component-dialog-container-borderRadius: var(--rag-primitive-radius-lg);
-  --rag-semantic-component-dialog-container-boxShadow: var(--rag-primitive-shadow-xl);
-  --rag-semantic-component-dialog-container-border: 1px solid var(--rag-semantic-color-border-subtle);
+  --rag-archetypes-dialog-container-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-dialog-container-borderRadius: var(--rag-primitive-radius-lg);
+  --rag-archetypes-dialog-container-boxShadow: var(--rag-primitive-shadow-xl);
+  --rag-archetypes-dialog-container-border: 1px solid var(--rag-semantic-color-border-subtle);
 
-  --rag-semantic-component-dialog-header-borderBottom: 1px solid var(--rag-semantic-color-border-subtle);
-  --rag-semantic-component-dialog-header-padding: var(--rag-primitive-spacing-lg) var(--rag-primitive-spacing-xl);
-  --rag-semantic-component-dialog-description-padding: 0 var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl);
+  --rag-archetypes-dialog-header-borderBottom: 1px solid var(--rag-semantic-color-border-subtle);
+  --rag-archetypes-dialog-header-padding: var(--rag-primitive-spacing-lg) var(--rag-primitive-spacing-xl);
+  --rag-archetypes-dialog-description-padding: 0 var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl);
 
-  --rag-semantic-component-dialog-content-padding: var(--rag-primitive-spacing-xl);
+  --rag-archetypes-dialog-content-padding: var(--rag-primitive-spacing-xl);
 
-  --rag-semantic-component-dialog-footer-borderTop: 1px solid var(--rag-semantic-color-border-subtle);
-  --rag-semantic-component-dialog-footer-padding: var(--rag-primitive-spacing-lg) var(--rag-primitive-spacing-xl);
+  --rag-archetypes-dialog-footer-borderTop: 1px solid var(--rag-semantic-color-border-subtle);
+  --rag-archetypes-dialog-footer-padding: var(--rag-primitive-spacing-lg) var(--rag-primitive-spacing-xl);
 
   // Component patterns - Dropdown/Menu variants
-  --rag-semantic-component-dropdown-container-background: var(--rag-semantic-color-background-default);
-  --rag-semantic-component-dropdown-container-borderRadius: var(--rag-primitive-radius-md);
-  --rag-semantic-component-dropdown-container-boxShadow: var(--rag-primitive-shadow-lg);
-  --rag-semantic-component-dropdown-container-border: 1px solid var(--rag-semantic-color-border-default);
-  --rag-semantic-component-dropdown-container-padding: var(--rag-primitive-spacing-xs);
+  --rag-archetypes-dropdown-container-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-dropdown-container-borderRadius: var(--rag-primitive-radius-md);
+  --rag-archetypes-dropdown-container-boxShadow: var(--rag-primitive-shadow-lg);
+  --rag-archetypes-dropdown-container-border: 1px solid var(--rag-semantic-color-border-default);
+  --rag-archetypes-dropdown-container-padding: var(--rag-primitive-spacing-xs);
 
-  --rag-semantic-component-dropdown-item-default-background: transparent;
-  --rag-semantic-component-dropdown-item-default-color: var(--rag-semantic-color-text-default);
-  --rag-semantic-component-dropdown-item-default-padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+  --rag-archetypes-dropdown-item-default-background: transparent;
+  --rag-archetypes-dropdown-item-default-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-dropdown-item-default-padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
 
-  --rag-semantic-component-dropdown-item-hover-background: var(--rag-semantic-color-background-subtle);
-  --rag-semantic-component-dropdown-item-hover-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-dropdown-item-hover-background: var(--rag-semantic-color-background-subtle);
+  --rag-archetypes-dropdown-item-hover-color: var(--rag-semantic-color-text-default);
 
-  --rag-semantic-component-dropdown-item-active-background: var(--rag-semantic-color-primary-100);
-  --rag-semantic-component-dropdown-item-active-color: var(--rag-semantic-color-primary-900);
+  --rag-archetypes-dropdown-item-active-background: var(--rag-semantic-color-primary-100);
+  --rag-archetypes-dropdown-item-active-color: var(--rag-semantic-color-primary-900);
 
-  --rag-semantic-component-dropdown-item-disabled-background: transparent;
-  --rag-semantic-component-dropdown-item-disabled-color: var(--rag-semantic-color-text-disabled);
+  --rag-archetypes-dropdown-item-disabled-background: transparent;
+  --rag-archetypes-dropdown-item-disabled-color: var(--rag-semantic-color-text-disabled);
 
-  --rag-semantic-component-dropdown-separator-background: var(--rag-semantic-color-border-subtle);
-  --rag-semantic-component-dropdown-separator-height: 1px;
-  --rag-semantic-component-dropdown-separator-margin: var(--rag-primitive-spacing-xs) 0;
+  --rag-archetypes-dropdown-separator-background: var(--rag-semantic-color-border-subtle);
+  --rag-archetypes-dropdown-separator-height: 1px;
+  --rag-archetypes-dropdown-separator-margin: var(--rag-primitive-spacing-xs) 0;
 
   // Component patterns - Toast/Notification variants
-  --rag-semantic-component-toast-container-background: var(--rag-semantic-color-background-default);
-  --rag-semantic-component-toast-container-borderRadius: var(--rag-primitive-radius-md);
-  --rag-semantic-component-toast-container-boxShadow: var(--rag-primitive-shadow-lg);
-  --rag-semantic-component-toast-container-border: 1px solid var(--rag-semantic-color-border-default);
-  --rag-semantic-component-toast-container-padding: var(--rag-primitive-spacing-md);
+  --rag-archetypes-toast-container-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-toast-container-borderRadius: var(--rag-primitive-radius-md);
+  --rag-archetypes-toast-container-boxShadow: var(--rag-primitive-shadow-lg);
+  --rag-archetypes-toast-container-border: 1px solid var(--rag-semantic-color-border-default);
+  --rag-archetypes-toast-container-padding: var(--rag-primitive-spacing-md);
 
-  --rag-semantic-component-toast-success-background: var(--rag-semantic-color-success-50);
-  --rag-semantic-component-toast-success-border: 1px solid var(--rag-semantic-color-success-200);
-  --rag-semantic-component-toast-success-color: var(--rag-semantic-color-success-900);
-  --rag-semantic-component-toast-success-iconColor: var(--rag-semantic-color-success-600);
+  --rag-archetypes-toast-success-background: var(--rag-semantic-color-success-50);
+  --rag-archetypes-toast-success-border: 1px solid var(--rag-semantic-color-success-200);
+  --rag-archetypes-toast-success-color: var(--rag-semantic-color-success-900);
+  --rag-archetypes-toast-success-iconColor: var(--rag-semantic-color-success-600);
 
-  --rag-semantic-component-toast-warning-background: var(--rag-semantic-color-warning-50);
-  --rag-semantic-component-toast-warning-border: 1px solid var(--rag-semantic-color-warning-200);
-  --rag-semantic-component-toast-warning-color: var(--rag-semantic-color-warning-900);
-  --rag-semantic-component-toast-warning-iconColor: var(--rag-semantic-color-warning-600);
+  --rag-archetypes-toast-warning-background: var(--rag-semantic-color-warning-50);
+  --rag-archetypes-toast-warning-border: 1px solid var(--rag-semantic-color-warning-200);
+  --rag-archetypes-toast-warning-color: var(--rag-semantic-color-warning-900);
+  --rag-archetypes-toast-warning-iconColor: var(--rag-semantic-color-warning-600);
 
-  --rag-semantic-component-toast-error-background: var(--rag-semantic-color-danger-50);
-  --rag-semantic-component-toast-error-border: 1px solid var(--rag-semantic-color-danger-200);
-  --rag-semantic-component-toast-error-color: var(--rag-semantic-color-danger-900);
-  --rag-semantic-component-toast-error-iconColor: var(--rag-semantic-color-danger-600);
+  --rag-archetypes-toast-error-background: var(--rag-semantic-color-danger-50);
+  --rag-archetypes-toast-error-border: 1px solid var(--rag-semantic-color-danger-200);
+  --rag-archetypes-toast-error-color: var(--rag-semantic-color-danger-900);
+  --rag-archetypes-toast-error-iconColor: var(--rag-semantic-color-danger-600);
 
-  --rag-semantic-component-toast-info-background: var(--rag-semantic-color-primary-50);
-  --rag-semantic-component-toast-info-border: 1px solid var(--rag-semantic-color-primary-200);
-  --rag-semantic-component-toast-info-color: var(--rag-semantic-color-primary-900);
-  --rag-semantic-component-toast-info-iconColor: var(--rag-semantic-color-primary-600);
+  --rag-archetypes-toast-info-background: var(--rag-semantic-color-primary-50);
+  --rag-archetypes-toast-info-border: 1px solid var(--rag-semantic-color-primary-200);
+  --rag-archetypes-toast-info-color: var(--rag-semantic-color-primary-900);
+  --rag-archetypes-toast-info-iconColor: var(--rag-semantic-color-primary-600);
 
   // Component patterns - Form Field variants
-  --rag-semantic-component-formField-label-color: var(--rag-semantic-color-text-default);
-  --rag-semantic-component-formField-label-fontSize: var(--rag-primitive-fontSize-sm);
-  --rag-semantic-component-formField-label-fontWeight: 500;
-  --rag-semantic-component-formField-label-marginBottom: var(--rag-primitive-spacing-xs);
+  --rag-archetypes-formField-label-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-formField-label-fontSize: var(--rag-primitive-fontSize-sm);
+  --rag-archetypes-formField-label-fontWeight: 500;
+  --rag-archetypes-formField-label-marginBottom: var(--rag-primitive-spacing-xs);
 
-  --rag-semantic-component-formField-description-color: var(--rag-semantic-color-text-muted);
-  --rag-semantic-component-formField-description-fontSize: var(--rag-primitive-fontSize-xs);
-  --rag-semantic-component-formField-description-marginTop: var(--rag-primitive-spacing-xs);
+  --rag-archetypes-formField-description-color: var(--rag-semantic-color-text-muted);
+  --rag-archetypes-formField-description-fontSize: var(--rag-primitive-fontSize-xs);
+  --rag-archetypes-formField-description-marginTop: var(--rag-primitive-spacing-xs);
 
-  --rag-semantic-component-formField-error-color: var(--rag-semantic-color-danger-700);
-  --rag-semantic-component-formField-error-fontSize: var(--rag-primitive-fontSize-xs);
-  --rag-semantic-component-formField-error-marginTop: var(--rag-primitive-spacing-xs);
+  --rag-archetypes-formField-error-color: var(--rag-semantic-color-danger-700);
+  --rag-archetypes-formField-error-fontSize: var(--rag-primitive-fontSize-xs);
+  --rag-archetypes-formField-error-marginTop: var(--rag-primitive-spacing-xs);
 
-  --rag-semantic-component-formField-required-color: var(--rag-semantic-color-danger-600);
+  --rag-archetypes-formField-required-color: var(--rag-semantic-color-danger-600);
 
   // Component patterns - Tab Navigation variants
-  --rag-semantic-component-tabs-container-background: var(--rag-semantic-color-background-muted);
-  --rag-semantic-component-tabs-container-borderRadius: var(--rag-primitive-radius-lg);
-  --rag-semantic-component-tabs-container-padding: var(--rag-primitive-spacing-xs);
-  --rag-semantic-component-tabs-container-gap: var(--rag-primitive-spacing-xs);
+  --rag-archetypes-tabs-container-background: var(--rag-semantic-color-background-muted);
+  --rag-archetypes-tabs-container-borderRadius: var(--rag-primitive-radius-lg);
+  --rag-archetypes-tabs-container-padding: var(--rag-primitive-spacing-xs);
+  --rag-archetypes-tabs-container-gap: var(--rag-primitive-spacing-xs);
 
-  --rag-semantic-component-tabs-trigger-default-background: transparent;
-  --rag-semantic-component-tabs-trigger-default-color: var(--rag-semantic-color-text-subtle);
-  --rag-semantic-component-tabs-trigger-default-padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
-  --rag-semantic-component-tabs-trigger-default-borderRadius: var(--rag-primitive-radius-md);
-  --rag-semantic-component-tabs-trigger-default-fontSize: var(--rag-primitive-fontSize-sm);
-  --rag-semantic-component-tabs-trigger-default-fontWeight: 500;
+  --rag-archetypes-tabs-trigger-default-background: transparent;
+  --rag-archetypes-tabs-trigger-default-color: var(--rag-semantic-color-text-subtle);
+  --rag-archetypes-tabs-trigger-default-padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+  --rag-archetypes-tabs-trigger-default-borderRadius: var(--rag-primitive-radius-xxl);
+  --rag-archetypes-tabs-trigger-default-fontSize: var(--rag-primitive-fontSize-sm);
+  --rag-archetypes-tabs-trigger-default-fontWeight: 500;
 
-  --rag-semantic-component-tabs-trigger-hover-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-tabs-trigger-hover-color: var(--rag-semantic-color-text-default);
 
-  --rag-semantic-component-tabs-trigger-active-background: var(--rag-semantic-color-background-default);
-  --rag-semantic-component-tabs-trigger-active-color: var(--rag-semantic-color-text-default);
-  --rag-semantic-component-tabs-trigger-active-boxShadow: var(--rag-primitive-shadow-xs);
+  --rag-archetypes-tabs-trigger-active-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-tabs-trigger-active-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-tabs-trigger-active-boxShadow: var(--rag-primitive-shadow-xs);
 
-  --rag-semantic-component-tabs-trigger-disabled-opacity: 0.5;
-  --rag-semantic-component-tabs-trigger-disabled-cursor: not-allowed;
+  --rag-archetypes-tabs-trigger-disabled-opacity: 0.5;
+  --rag-archetypes-tabs-trigger-disabled-cursor: not-allowed;
 
   // Component patterns - Breadcrumb Navigation variants
-  --rag-semantic-component-breadcrumb-container-gap: var(--rag-primitive-spacing-xs);
-  --rag-semantic-component-breadcrumb-container-fontSize: var(--rag-primitive-fontSize-sm);
+  --rag-archetypes-breadcrumb-container-gap: var(--rag-primitive-spacing-xs);
+  --rag-archetypes-breadcrumb-container-fontSize: var(--rag-primitive-fontSize-sm);
 
-  --rag-semantic-component-breadcrumb-item-default-color: var(--rag-semantic-color-text-muted);
-  --rag-semantic-component-breadcrumb-item-default-textDecoration: none;
+  --rag-archetypes-breadcrumb-item-default-color: var(--rag-semantic-color-text-muted);
+  --rag-archetypes-breadcrumb-item-default-textDecoration: none;
 
-  --rag-semantic-component-breadcrumb-item-hover-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-breadcrumb-item-hover-color: var(--rag-semantic-color-text-default);
 
-  --rag-semantic-component-breadcrumb-item-current-color: var(--rag-semantic-color-text-default);
-  --rag-semantic-component-breadcrumb-item-current-fontWeight: 500;
+  --rag-archetypes-breadcrumb-item-current-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-breadcrumb-item-current-fontWeight: 500;
 
-  --rag-semantic-component-breadcrumb-separator-color: var(--rag-semantic-color-text-muted);
-  --rag-semantic-component-breadcrumb-separator-opacity: 0.6;
+  --rag-archetypes-breadcrumb-separator-color: var(--rag-semantic-color-text-muted);
+  --rag-archetypes-breadcrumb-separator-opacity: 0.6;
 
   // Component patterns - Navigation Bar variants
-  --rag-semantic-component-nav-container-background: var(--rag-semantic-color-background-default);
-  --rag-semantic-component-nav-container-borderBottom: 1px solid var(--rag-semantic-color-border-default);
-  --rag-semantic-component-nav-container-padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
-  --rag-semantic-component-nav-container-gap: var(--rag-primitive-spacing-sm);
+  --rag-archetypes-nav-container-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-nav-container-borderBottom: 1px solid var(--rag-semantic-color-border-default);
+  --rag-archetypes-nav-container-padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+  --rag-archetypes-nav-container-gap: var(--rag-primitive-spacing-sm);
 
-  --rag-semantic-component-nav-item-default-background: transparent;
-  --rag-semantic-component-nav-item-default-color: var(--rag-semantic-color-text-subtle);
-  --rag-semantic-component-nav-item-default-padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
-  --rag-semantic-component-nav-item-default-borderRadius: var(--rag-primitive-radius-md);
-  --rag-semantic-component-nav-item-default-fontSize: var(--rag-primitive-fontSize-sm);
-  --rag-semantic-component-nav-item-default-fontWeight: 500;
+  --rag-archetypes-nav-item-default-background: transparent;
+  --rag-archetypes-nav-item-default-color: var(--rag-semantic-color-text-subtle);
+  --rag-archetypes-nav-item-default-padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+  --rag-archetypes-nav-item-default-borderRadius: var(--rag-primitive-radius-md);
+  --rag-archetypes-nav-item-default-fontSize: var(--rag-primitive-fontSize-sm);
+  --rag-archetypes-nav-item-default-fontWeight: 500;
 
-  --rag-semantic-component-nav-item-hover-background: var(--rag-semantic-color-background-subtle);
-  --rag-semantic-component-nav-item-hover-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-nav-item-hover-background: var(--rag-semantic-color-background-subtle);
+  --rag-archetypes-nav-item-hover-color: var(--rag-semantic-color-text-default);
 
-  --rag-semantic-component-nav-item-active-background: var(--rag-semantic-color-background-subtle);
-  --rag-semantic-component-nav-item-active-color: var(--rag-semantic-color-primary-700);
+  --rag-archetypes-nav-item-active-background: var(--rag-semantic-color-background-subtle);
+  --rag-archetypes-nav-item-active-color: var(--rag-semantic-color-primary-700);
 
-  --rag-semantic-component-nav-item-disabled-opacity: 0.5;
-  --rag-semantic-component-nav-item-disabled-cursor: not-allowed;
+  --rag-archetypes-nav-item-disabled-opacity: 0.5;
+  --rag-archetypes-nav-item-disabled-cursor: not-allowed;
 }

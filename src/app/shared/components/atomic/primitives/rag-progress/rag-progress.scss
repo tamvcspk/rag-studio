@@ -30,34 +30,34 @@
 
 // Variant styles using archetype system
 .rt-Progress.rt-variant-primary {
-  background: var(--rag-semantic-component-progress-primary-background);
+  background: var(--rag-archetypes-progress-primary-background);
 
   .rt-ProgressIndicator {
-    background: var(--rag-semantic-component-progress-primary-fill);
+    background: var(--rag-archetypes-progress-primary-fill);
   }
 }
 
 .rt-Progress.rt-variant-success {
-  background: var(--rag-semantic-component-progress-success-background);
+  background: var(--rag-archetypes-progress-success-background);
 
   .rt-ProgressIndicator {
-    background: var(--rag-semantic-component-progress-success-fill);
+    background: var(--rag-archetypes-progress-success-fill);
   }
 }
 
 .rt-Progress.rt-variant-warning {
-  background: var(--rag-semantic-component-progress-warning-background);
+  background: var(--rag-archetypes-progress-warning-background);
 
   .rt-ProgressIndicator {
-    background: var(--rag-semantic-component-progress-warning-fill);
+    background: var(--rag-archetypes-progress-warning-fill);
   }
 }
 
 .rt-Progress.rt-variant-danger {
-  background: var(--rag-semantic-component-progress-danger-background);
+  background: var(--rag-archetypes-progress-danger-background);
 
   .rt-ProgressIndicator {
-    background: var(--rag-semantic-component-progress-danger-fill);
+    background: var(--rag-archetypes-progress-danger-fill);
   }
 }
 

@@ -9,21 +9,21 @@
   transition: all 0.15s ease;
 
   &--default {
-    background: var(--rag-semantic-component-card-flat-background);
-    border: var(--rag-semantic-component-card-flat-border);
-    box-shadow: var(--rag-semantic-component-card-flat-boxShadow);
+    background: var(--rag-archetypes-card-flat-background);
+    border: var(--rag-archetypes-card-flat-border);
+    box-shadow: var(--rag-archetypes-card-flat-boxShadow);
   }
 
   &--elevated {
-    background: var(--rag-semantic-component-card-elevated-background);
-    border: var(--rag-semantic-component-card-elevated-border);
-    box-shadow: var(--rag-semantic-component-card-elevated-boxShadow);
+    background: var(--rag-archetypes-card-elevated-background);
+    border: var(--rag-archetypes-card-elevated-border);
+    box-shadow: var(--rag-archetypes-card-elevated-boxShadow);
   }
 
-  &--outlined {
-    background: var(--rag-semantic-component-card-flat-background);
-    border: var(--rag-semantic-component-card-flat-border);
-    box-shadow: none;
+  &--floating {
+    background: var(--rag-archetypes-card-floating-background);
+    border: var(--rag-archetypes-card-floating-border);
+    box-shadow: var(--rag-archetypes-card-floating-boxShadow);
   }
 
   &--padded {
@@ -34,8 +34,8 @@
     cursor: pointer;
 
     &:hover {
-      background: var(--rag-semantic-component-card-elevated-background);
-      box-shadow: var(--rag-semantic-component-card-floating-boxShadow);
+      background: var(--rag-archetypes-card-elevated-background);
+      box-shadow: var(--rag-archetypes-card-floating-boxShadow);
       transform: translateY(-1px);
     }
 
@@ -44,7 +44,7 @@
     }
 
     &:focus-visible {
-      box-shadow: var(--rag-semantic-component-focus-ring-primary);
+      box-shadow: var(--rag-archetypes-focus-ring-primary);
       outline: none;
     }
   }
@@ -54,7 +54,7 @@
   .rag-card {
     background: var(--rag-semantic-color-background-subtle);
     
-    &--outlined {
+    &--floating {
       border-color: var(--rag-semantic-color-border-muted);
     }
   }

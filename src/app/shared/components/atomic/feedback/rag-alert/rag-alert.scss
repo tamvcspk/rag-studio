@@ -48,41 +48,41 @@
 
 // Variant styles
 .rt-Alert.rt-variant-info {
-  background: var(--rag-semantic-component-alert-info-background);
-  border: var(--rag-semantic-component-alert-info-border);
-  color: var(--rag-semantic-component-alert-info-color);
+  background: var(--rag-archetypes-alert-info-background);
+  border: var(--rag-archetypes-alert-info-border);
+  color: var(--rag-archetypes-alert-info-color);
 
   .rt-alert-icon {
-    color: var(--rag-semantic-component-alert-info-iconColor);
+    color: var(--rag-archetypes-alert-info-iconColor);
   }
 }
 
 .rt-Alert.rt-variant-success {
-  background: var(--rag-semantic-component-alert-success-background);
-  border: var(--rag-semantic-component-alert-success-border);
-  color: var(--rag-semantic-component-alert-success-color);
+  background: var(--rag-archetypes-alert-success-background);
+  border: var(--rag-archetypes-alert-success-border);
+  color: var(--rag-archetypes-alert-success-color);
 
   .rt-alert-icon {
-    color: var(--rag-semantic-component-alert-success-iconColor);
+    color: var(--rag-archetypes-alert-success-iconColor);
   }
 }
 
 .rt-Alert.rt-variant-warning {
-  background: var(--rag-semantic-component-alert-warning-background);
-  border: var(--rag-semantic-component-alert-warning-border);
-  color: var(--rag-semantic-component-alert-warning-color);
+  background: var(--rag-archetypes-alert-warning-background);
+  border: var(--rag-archetypes-alert-warning-border);
+  color: var(--rag-archetypes-alert-warning-color);
 
   .rt-alert-icon {
-    color: var(--rag-semantic-component-alert-warning-iconColor);
+    color: var(--rag-archetypes-alert-warning-iconColor);
   }
 }
 
 .rt-Alert.rt-variant-error {
-  background: var(--rag-semantic-component-alert-error-background);
-  border: var(--rag-semantic-component-alert-error-border);
-  color: var(--rag-semantic-component-alert-error-color);
+  background: var(--rag-archetypes-alert-error-background);
+  border: var(--rag-archetypes-alert-error-border);
+  color: var(--rag-archetypes-alert-error-color);
 
   .rt-alert-icon {
-    color: var(--rag-semantic-component-alert-error-iconColor);
+    color: var(--rag-archetypes-alert-error-iconColor);
   }
 }

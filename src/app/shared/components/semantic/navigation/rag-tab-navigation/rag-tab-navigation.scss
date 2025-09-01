@@ -13,10 +13,10 @@
 
   // Primary variant (default) - with border and background
   &.rt-variant-primary {
-    background: var(--rag-semantic-component-tabs-container-background);
-    border-radius: var(--rag-semantic-component-tabs-container-borderRadius);
-    padding: var(--rag-semantic-component-tabs-container-padding);
-    gap: var(--rag-semantic-component-tabs-container-gap);
+    background: var(--rag-archetypes-tabs-container-background);
+    border-radius: var(--rag-archetypes-tabs-container-borderRadius);
+    padding: var(--rag-archetypes-tabs-container-padding);
+    gap: var(--rag-archetypes-tabs-container-gap);
   }
 
   // Secondary variant - border bottom only
@@ -55,12 +55,12 @@
   white-space: nowrap;
 
   // Base tab trigger styles
-  background: var(--rag-semantic-component-tabs-trigger-default-background);
-  color: var(--rag-semantic-component-tabs-trigger-default-color);
-  padding: var(--rag-semantic-component-tabs-trigger-default-padding);
-  border-radius: var(--rag-semantic-component-tabs-trigger-default-borderRadius);
-  font-size: var(--rag-semantic-component-tabs-trigger-default-fontSize);
-  font-weight: var(--rag-semantic-component-tabs-trigger-default-fontWeight);
+  background: var(--rag-archetypes-tabs-trigger-default-background);
+  color: var(--rag-archetypes-tabs-trigger-default-color);
+  padding: var(--rag-archetypes-tabs-trigger-default-padding);
+  border-radius: var(--rag-archetypes-tabs-trigger-default-borderRadius);
+  font-size: var(--rag-archetypes-tabs-trigger-default-fontSize);
+  font-weight: var(--rag-archetypes-tabs-trigger-default-fontWeight);
   text-decoration: none;
   border: none;
   cursor: pointer;
@@ -68,20 +68,20 @@
 
   // Hover state
   &:hover:not(.rt-disabled):not(.rt-active) {
-    color: var(--rag-semantic-component-tabs-trigger-hover-color);
+    color: var(--rag-archetypes-tabs-trigger-hover-color);
   }
 
   // Active state
   &.rt-active {
-    background: var(--rag-semantic-component-tabs-trigger-active-background);
-    color: var(--rag-semantic-component-tabs-trigger-active-color);
-    box-shadow: var(--rag-semantic-component-tabs-trigger-active-boxShadow);
+    background: var(--rag-archetypes-tabs-trigger-active-background);
+    color: var(--rag-archetypes-tabs-trigger-active-color);
+    box-shadow: var(--rag-archetypes-tabs-trigger-active-boxShadow);
   }
 
   // Disabled state
   &.rt-disabled {
-    opacity: var(--rag-semantic-component-tabs-trigger-disabled-opacity);
-    cursor: var(--rag-semantic-component-tabs-trigger-disabled-cursor);
+    opacity: var(--rag-archetypes-tabs-trigger-disabled-opacity);
+    cursor: var(--rag-archetypes-tabs-trigger-disabled-cursor);
     pointer-events: none;
   }
 

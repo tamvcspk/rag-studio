@@ -47,6 +47,7 @@ export class DesignTokenService {
 
   updateTokens(overrides: DesignTokenOverrides): void {
     this._overrides.set({ ...this._overrides(), ...overrides });
+    this.injectTokensToDOM();
   }
 
   resetTokens(): void {

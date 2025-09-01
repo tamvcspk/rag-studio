@@ -442,9 +442,9 @@ export class RagAlertComponent {
 
 // SCSS using archetype system
 .rt-Alert.rt-variant-info {
-  background: var(--rag-semantic-component-alert-info-background);
-  border: var(--rag-semantic-component-alert-info-border);
-  color: var(--rag-semantic-component-alert-info-color);
+  background: var(--rag-archetypes-alert-info-background);
+  border: var(--rag-archetypes-alert-info-border);
+  color: var(--rag-archetypes-alert-info-color);
 }
 ```
 
@@ -485,12 +485,12 @@ export class RagIconComponent {
 
 // SCSS using archetype system
 .rag-icon--md {
-  width: var(--rag-semantic-component-icon-size-md);
-  height: var(--rag-semantic-component-icon-size-md);
+  width: var(--rag-archetypes-icon-size-md);
+  height: var(--rag-archetypes-icon-size-md);
 }
 
 .rag-icon--primary {
-  color: var(--rag-semantic-component-icon-color-primary);
+  color: var(--rag-archetypes-icon-color-primary);
 }
 ```
 

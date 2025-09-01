@@ -1,7 +1,5 @@
 .dashboard-page {
-  min-height: 100vh;
-  padding: var(--rag-primitive-spacing-xl);
-  background-color: var(--rag-semantic-color-background-subtle);
+  min-height: 100%;
 }
 
 .dashboard-section {
@@ -42,7 +40,7 @@
 
 .loading-content {
   text-align: center;
-  
+
   p {
     margin: var(--rag-primitive-spacing-md) 0 0 0;
     color: var(--rag-semantic-color-text-muted);
@@ -79,6 +77,7 @@
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }
@@ -92,6 +91,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -113,34 +113,40 @@
     grid-template-columns: 2fr 1fr;
     grid-template-rows: auto auto auto auto;
     gap: 1.5rem;
-    grid-template-areas: 
+    grid-template-areas:
       "alert alert"
       "stats server"
       "metrics metrics"
       "activity activity";
   }
 
-  .dashboard-section:nth-child(1) { // Alert
+  .dashboard-section:nth-child(1) {
+    // Alert
     grid-area: alert;
   }
 
-  .dashboard-section:nth-child(2) { // Stats
+  .dashboard-section:nth-child(2) {
+    // Stats
     grid-area: stats;
   }
 
-  .dashboard-section:nth-child(3) { // Server Status
+  .dashboard-section:nth-child(3) {
+    // Server Status
     grid-area: server;
   }
 
-  .dashboard-section:nth-child(4) { // Metrics
+  .dashboard-section:nth-child(4) {
+    // Metrics
     grid-area: metrics;
   }
 
-  .dashboard-section:nth-child(5) { // Loading Example
+  .dashboard-section:nth-child(5) {
+    // Loading Example
     grid-area: metrics;
   }
 
-  .dashboard-section:nth-child(6) { // Activity
+  .dashboard-section:nth-child(6) {
+    // Activity
     grid-area: activity;
   }
 }

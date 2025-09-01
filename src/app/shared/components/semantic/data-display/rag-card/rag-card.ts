@@ -1,7 +1,7 @@
 import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-export type RagCardVariant = 'default' | 'elevated' | 'outlined';
+export type RagCardVariant = 'default' | 'elevated' | 'floating';
 
 @Component({
   selector: 'rag-card',

@@ -19,9 +19,9 @@
   padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
   font-size: var(--rag-primitive-fontSize-md);
   line-height: var(--rag-primitive-lineHeight-md);
-  color: var(--rag-semantic-component-input-default-color);
-  background: var(--rag-semantic-component-input-default-background);
-  border: var(--rag-semantic-component-input-default-border);
+  color: var(--rag-archetypes-input-default-color);
+  background: var(--rag-archetypes-input-default-background);
+  border: var(--rag-archetypes-input-default-border);
   border-radius: var(--rag-primitive-radius-md);
   outline: none;
   transition: all 0.15s;
@@ -32,10 +32,10 @@
   }
 
   &:focus {
-    background: var(--rag-semantic-component-input-focus-background);
-    border: var(--rag-semantic-component-input-focus-border);
-    box-shadow: var(--rag-semantic-component-input-focus-boxShadow);
-    color: var(--rag-semantic-component-input-focus-color);
+    background: var(--rag-archetypes-input-focus-background);
+    border: var(--rag-archetypes-input-focus-border);
+    box-shadow: var(--rag-archetypes-input-focus-boxShadow);
+    color: var(--rag-archetypes-input-focus-color);
   }
 
   &::placeholder {
@@ -43,10 +43,10 @@
   }
 
   &:disabled {
-    background: var(--rag-semantic-component-input-disabled-background);
-    border: var(--rag-semantic-component-input-disabled-border);
-    color: var(--rag-semantic-component-input-disabled-color);
-    cursor: var(--rag-semantic-component-input-disabled-cursor);
+    background: var(--rag-archetypes-input-disabled-background);
+    border: var(--rag-archetypes-input-disabled-border);
+    color: var(--rag-archetypes-input-disabled-color);
+    cursor: var(--rag-archetypes-input-disabled-cursor);
 
     &::placeholder {
       color: var(--rag-semantic-color-text-disabled);
@@ -58,12 +58,12 @@
   }
 
   &.rt-error {
-    background: var(--rag-semantic-component-input-error-background);
-    border: var(--rag-semantic-component-input-error-border);
-    color: var(--rag-semantic-component-input-error-color);
+    background: var(--rag-archetypes-input-error-background);
+    border: var(--rag-archetypes-input-error-border);
+    color: var(--rag-archetypes-input-error-color);
 
     &:focus {
-      box-shadow: var(--rag-semantic-component-input-error-boxShadow);
+      box-shadow: var(--rag-archetypes-input-error-boxShadow);
     }
   }
 

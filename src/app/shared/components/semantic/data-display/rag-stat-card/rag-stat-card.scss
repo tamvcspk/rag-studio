@@ -3,10 +3,10 @@
 }
 
 .rag-stat-card {
-  background: var(--rag-semantic-component-card-default-background);
-  border-radius: var(--rag-semantic-component-card-default-borderRadius);
-  box-shadow: var(--rag-semantic-component-card-default-boxShadow);
-  border: var(--rag-semantic-component-card-default-border);
+  background: var(--rag-archetypes-card-default-background);
+  border-radius: var(--rag-archetypes-card-default-borderRadius);
+  box-shadow: var(--rag-archetypes-card-default-boxShadow);
+  border: var(--rag-archetypes-card-default-border);
   overflow: hidden;
 
   &--default {

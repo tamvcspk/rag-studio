@@ -12,8 +12,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--rag-semantic-component-dialog-backdrop-background);
-  backdrop-filter: var(--rag-semantic-component-dialog-backdrop-backdropFilter);
+  background: var(--rag-archetypes-dialog-backdrop-background);
+  backdrop-filter: var(--rag-archetypes-dialog-backdrop-backdropFilter);
   animation: overlayShow 0.15s ease-out;
   z-index: 1000;
   
@@ -66,10 +66,10 @@
 }
 
 .rt-DialogContent {
-  background: var(--rag-semantic-component-dialog-container-background);
-  border-radius: var(--rag-semantic-component-dialog-container-borderRadius);
-  box-shadow: var(--rag-semantic-component-dialog-container-boxShadow);
-  border: var(--rag-semantic-component-dialog-container-border);
+  background: var(--rag-archetypes-dialog-container-background);
+  border-radius: var(--rag-archetypes-dialog-container-borderRadius);
+  box-shadow: var(--rag-archetypes-dialog-container-boxShadow);
+  border: var(--rag-archetypes-dialog-container-border);
   max-height: 85vh;
   overflow: hidden;
   display: flex;
@@ -116,8 +116,8 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: var(--rag-semantic-component-dialog-header-padding);
-  border-bottom: var(--rag-semantic-component-dialog-header-borderBottom);
+  padding: var(--rag-archetypes-dialog-header-padding);
+  border-bottom: var(--rag-archetypes-dialog-header-borderBottom);
   gap: var(--rag-primitive-spacing-lg);
 }
 
@@ -134,7 +134,7 @@
   color: var(--rag-semantic-color-text-subtle);
   font-size: var(--rag-primitive-fontSize-sm);
   line-height: var(--rag-primitive-lineHeight-md);
-  padding: var(--rag-semantic-component-dialog-description-padding);
+  padding: var(--rag-archetypes-dialog-description-padding);
 }
 
 .rt-DialogCloseButton {
@@ -169,7 +169,7 @@
 .rt-DialogBody {
   flex: 1;
   overflow-y: auto;
-  padding: var(--rag-semantic-component-dialog-content-padding);
+  padding: var(--rag-archetypes-dialog-content-padding);
 
   &:last-child {
     margin-bottom: 0;
@@ -181,8 +181,8 @@
   align-items: center;
   justify-content: flex-end;
   gap: var(--rag-primitive-spacing-md);
-  padding: var(--rag-semantic-component-dialog-footer-padding);
-  border-top: var(--rag-semantic-component-dialog-footer-borderTop);
+  padding: var(--rag-archetypes-dialog-footer-padding);
+  border-top: var(--rag-archetypes-dialog-footer-borderTop);
   margin-top: auto;
   
   &:empty {

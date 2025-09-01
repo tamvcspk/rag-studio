@@ -14,55 +14,55 @@
 
 // Size variants using archetype system
 .rag-icon--xs {
-  width: var(--rag-semantic-component-icon-size-xs);
-  height: var(--rag-semantic-component-icon-size-xs);
+  width: var(--rag-archetypes-icon-size-xs);
+  height: var(--rag-archetypes-icon-size-xs);
 }
 
 .rag-icon--sm {
-  width: var(--rag-semantic-component-icon-size-sm);
-  height: var(--rag-semantic-component-icon-size-sm);
+  width: var(--rag-archetypes-icon-size-sm);
+  height: var(--rag-archetypes-icon-size-sm);
 }
 
 .rag-icon--md {
-  width: var(--rag-semantic-component-icon-size-md);
-  height: var(--rag-semantic-component-icon-size-md);
+  width: var(--rag-archetypes-icon-size-md);
+  height: var(--rag-archetypes-icon-size-md);
 }
 
 .rag-icon--lg {
-  width: var(--rag-semantic-component-icon-size-lg);
-  height: var(--rag-semantic-component-icon-size-lg);
+  width: var(--rag-archetypes-icon-size-lg);
+  height: var(--rag-archetypes-icon-size-lg);
 }
 
 .rag-icon--xl {
-  width: var(--rag-semantic-component-icon-size-xl);
-  height: var(--rag-semantic-component-icon-size-xl);
+  width: var(--rag-archetypes-icon-size-xl);
+  height: var(--rag-archetypes-icon-size-xl);
 }
 
 // Color variants using archetype system
 .rag-icon--default {
-  color: var(--rag-semantic-component-icon-color-default);
+  color: var(--rag-archetypes-icon-color-default);
 }
 
 .rag-icon--subtle {
-  color: var(--rag-semantic-component-icon-color-subtle);
+  color: var(--rag-archetypes-icon-color-subtle);
 }
 
 .rag-icon--muted {
-  color: var(--rag-semantic-component-icon-color-muted);
+  color: var(--rag-archetypes-icon-color-muted);
 }
 
 .rag-icon--primary {
-  color: var(--rag-semantic-component-icon-color-primary);
+  color: var(--rag-archetypes-icon-color-primary);
 }
 
 .rag-icon--success {
-  color: var(--rag-semantic-component-icon-color-success);
+  color: var(--rag-archetypes-icon-color-success);
 }
 
 .rag-icon--warning {
-  color: var(--rag-semantic-component-icon-color-warning);
+  color: var(--rag-archetypes-icon-color-warning);
 }
 
 .rag-icon--danger {
-  color: var(--rag-semantic-component-icon-color-danger);
+  color: var(--rag-archetypes-icon-color-danger);
 }

@@ -132,7 +132,8 @@ export const PrimitiveTokens = {
     sm: '4px',
     md: '6px',
     lg: '8px',
-    xl: '12px'
+    xl: '12px',
+    xxl: '24px'
   },
 
   // Box shadow scale
@@ -217,13 +218,13 @@ export const SemanticTokens = {
     background: {
       default: PrimitiveTokens.color.white,
       subtle: PrimitiveTokens.color.gray[50],
-      muted: PrimitiveTokens.color.gray[100]
+      muted: PrimitiveTokens.color.gray[400]
     },
     
     border: {
-      default: PrimitiveTokens.color.gray[300],
-      subtle: PrimitiveTokens.color.gray[200],
-      muted: PrimitiveTokens.color.gray[400]
+      default: PrimitiveTokens.color.gray[500],
+      subtle: PrimitiveTokens.color.gray[400],
+      muted: PrimitiveTokens.color.gray[600]
     },
     
     text: {
@@ -624,7 +625,7 @@ export const ComponentArchetypes = {
   tabs: {
     container: {
       background: cssVarValue('semantic.color.background.muted'),
-      borderRadius: cssVarValue('primitive.radius.lg'),
+      borderRadius: cssVarValue('primitive.radius.xxl'),
       padding: cssVarValue('primitive.spacing.xs'),
       gap: cssVarValue('primitive.spacing.xs')
     },
@@ -633,7 +634,7 @@ export const ComponentArchetypes = {
         background: 'transparent',
         color: cssVarValue('semantic.color.text.subtle'),
         padding: `${cssVarValue('primitive.spacing.sm')} ${cssVarValue('primitive.spacing.md')}`,
-        borderRadius: cssVarValue('primitive.radius.md'),
+        borderRadius: cssVarValue('primitive.radius.xxl'),
         fontSize: cssVarValue('primitive.fontSize.sm'),
         fontWeight: '500'
       },
@@ -674,61 +675,6 @@ export const ComponentArchetypes = {
     separator: {
       color: cssVarValue('semantic.color.text.muted'),
       opacity: '0.6'
-    }
-  },
-
-  // Navigation archetypes - router-based navigation component patterns
-  navigation: {
-    container: {
-      primary: {
-        background: cssVarValue('semantic.color.background.default'),
-        border: `1px solid ${cssVarValue('semantic.color.border.default')}`,
-        borderRadius: cssVarValue('primitive.radius.lg'),
-        padding: cssVarValue('primitive.spacing.xs'),
-        gap: cssVarValue('primitive.spacing.xs')
-      },
-      secondary: {
-        background: 'transparent',
-        border: 'none',
-        borderRadius: '0',
-        padding: '0',
-        gap: cssVarValue('primitive.spacing.sm'),
-        borderBottom: `1px solid ${cssVarValue('semantic.color.border.subtle')}`
-      },
-      minimal: {
-        background: 'transparent',
-        border: 'none',
-        borderRadius: '0',
-        padding: '0',
-        gap: cssVarValue('primitive.spacing.md')
-      }
-    },
-    item: {
-      default: {
-        background: 'transparent',
-        color: cssVarValue('semantic.color.text.subtle'),
-        padding: `${cssVarValue('primitive.spacing.sm')} ${cssVarValue('primitive.spacing.md')}`,
-        borderRadius: cssVarValue('primitive.radius.md'),
-        fontSize: cssVarValue('primitive.fontSize.sm'),
-        fontWeight: '500',
-        textDecoration: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease'
-      },
-      hover: {
-        background: cssVarValue('semantic.color.background.subtle'),
-        color: cssVarValue('semantic.color.text.default')
-      },
-      active: {
-        background: cssVarValue('semantic.color.primary.100'),
-        color: cssVarValue('semantic.color.primary.900')
-      },
-      disabled: {
-        opacity: '0.5',
-        cursor: 'not-allowed',
-        pointerEvents: 'none'
-      }
     }
   }
 } as const;

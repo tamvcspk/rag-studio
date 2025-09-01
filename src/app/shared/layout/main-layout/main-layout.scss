@@ -1,11 +1,13 @@
 // Main Layout Styles using Design Tokens
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
 }
+
 .app-header {
   background-color: var(--rag-semantic-color-background-default);
   border-bottom: var(--rag-primitive-borderWidth-1) solid var(--rag-semantic-color-border-default);
@@ -13,6 +15,10 @@
   top: 0;
   z-index: var(--rag-primitive-zIndex-sticky);
   backdrop-filter: blur(8px);
+}
+
+.logo {
+  color: var(--rag-primitive-color-blue-500);
 }
 
 .header-content {
@@ -34,30 +40,23 @@
 }
 
 .app-main {
-  min-height: calc(100vh - var(--rag-primitive-size-16));
+  flex: 1 1 100%;
   background-color: var(--rag-semantic-color-background-subtle);
 }
 
 .navigation-wrapper {
   background-color: var(--rag-semantic-color-background-default);
-  border-bottom: var(--rag-primitive-borderWidth-1) solid var(--rag-semantic-color-border-subtle);
-  padding: 0 var(--rag-primitive-spacing-lg);
+  padding: var(--rag-primitive-spacing-lg) var(--rag-primitive-spacing-xl) 0 var(--rag-primitive-spacing-xl);
   backdrop-filter: blur(8px);
 
-  rag-tab-navigation {
-    position: sticky;
-    top: var(--rag-primitive-size-16);
-    z-index: var(--rag-primitive-zIndex-sticky);
-  }
+  position: sticky;
+  top: (var(--rag-primitive-size-16));
+  z-index: var(--rag-primitive-zIndex-sticky);
 }
 
 .content-area {
   padding: var(--rag-primitive-spacing-xl);
-  background-color: var(--rag-semantic-color-background-default);
-  min-height: calc(100vh - var(--rag-primitive-size-16) - var(--rag-primitive-size-12));
-  border-radius: var(--rag-primitive-radius-lg) var(--rag-primitive-radius-lg) 0 0;
-  margin-top: var(--rag-primitive-spacing-sm);
-  box-shadow: var(--rag-primitive-shadow-sm);
+  flex: 1 1 auto;
 }
 
 // Responsive styles using design tokens

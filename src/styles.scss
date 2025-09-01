@@ -48,28 +48,13 @@ html, body {
   max-width: 1440px;
 }
 
-.rt-Flex {
-  display: flex;
-}
-
-.rt-Grid {
-  display: grid;
-}
-
-.rt-BaseCard {
-  background: var(--rag-semantic-color-background-default);
-  border-radius: var(--rag-primitive-radius-lg);
-  box-shadow: var(--rag-primitive-shadow-sm);
-  overflow: hidden;
-}
-
 // Typography utilities
-.rt-Heading {
+.heading {
   font-weight: var(--rag-primitive-fontWeight-semibold);
   line-height: var(--rag-primitive-lineHeight-tight);
 }
 
-.rt-Text {
+.text {
   font-size: var(--rag-primitive-fontSize-md);
   line-height: var(--rag-primitive-lineHeight-md);
 }

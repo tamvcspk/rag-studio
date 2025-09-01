@@ -5,10 +5,10 @@
 
 .rt-TabsList {
   display: flex;
-  gap: var(--rag-semantic-component-tabs-container-gap);
-  padding: var(--rag-semantic-component-tabs-container-padding);
-  background: var(--rag-semantic-component-tabs-container-background);
-  border-radius: var(--rag-semantic-component-tabs-container-borderRadius);
+  gap: var(--rag-archetypes-tabs-container-gap);
+  padding: var(--rag-archetypes-tabs-container-padding);
+  background: var(--rag-archetypes-tabs-container-background);
+  border-radius: var(--rag-archetypes-tabs-container-borderRadius);
   margin-bottom: var(--rag-primitive-spacing-xl);
 
   // Size variants
@@ -49,20 +49,20 @@
   align-items: center;
   justify-content: center;
   gap: var(--rag-primitive-spacing-sm);
-  padding: var(--rag-semantic-component-tabs-trigger-default-padding);
-  background: var(--rag-semantic-component-tabs-trigger-default-background);
+  padding: var(--rag-archetypes-tabs-trigger-default-padding);
+  background: var(--rag-archetypes-tabs-trigger-default-background);
   border: none;
-  border-radius: var(--rag-semantic-component-tabs-trigger-default-borderRadius);
-  font-size: var(--rag-semantic-component-tabs-trigger-default-fontSize);
-  font-weight: var(--rag-semantic-component-tabs-trigger-default-fontWeight);
-  color: var(--rag-semantic-component-tabs-trigger-default-color);
+  border-radius: var(--rag-archetypes-tabs-trigger-default-borderRadius);
+  font-size: var(--rag-archetypes-tabs-trigger-default-fontSize);
+  font-weight: var(--rag-archetypes-tabs-trigger-default-fontWeight);
+  color: var(--rag-archetypes-tabs-trigger-default-color);
   cursor: pointer;
   transition: all 0.15s;
   outline: none;
   position: relative;
 
   &:hover:not(.rt-disabled) {
-    color: var(--rag-semantic-component-tabs-trigger-hover-color);
+    color: var(--rag-archetypes-tabs-trigger-hover-color);
   }
 
   &:focus-visible {
@@ -70,14 +70,14 @@
   }
 
   &.rt-active {
-    background: var(--rag-semantic-component-tabs-trigger-active-background);
-    color: var(--rag-semantic-component-tabs-trigger-active-color);
-    box-shadow: var(--rag-semantic-component-tabs-trigger-active-boxShadow);
+    background: var(--rag-archetypes-tabs-trigger-active-background);
+    color: var(--rag-archetypes-tabs-trigger-active-color);
+    box-shadow: var(--rag-archetypes-tabs-trigger-active-boxShadow);
   }
 
   &.rt-disabled {
-    opacity: var(--rag-semantic-component-tabs-trigger-disabled-opacity);
-    cursor: var(--rag-semantic-component-tabs-trigger-disabled-cursor);
+    opacity: var(--rag-archetypes-tabs-trigger-disabled-opacity);
+    cursor: var(--rag-archetypes-tabs-trigger-disabled-cursor);
     color: var(--rag-semantic-color-text-disabled);
   }
 

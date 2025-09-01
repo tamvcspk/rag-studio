@@ -21,9 +21,9 @@
   padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
   font-size: var(--rag-primitive-fontSize-sm);
   line-height: var(--rag-primitive-lineHeight-sm);
-  background: var(--rag-semantic-component-select-default-background);
-  border: var(--rag-semantic-component-select-default-border);
-  color: var(--rag-semantic-component-select-default-color);
+  background: var(--rag-archetypes-select-default-background);
+  border: var(--rag-archetypes-select-default-border);
+  color: var(--rag-archetypes-select-default-color);
   border-radius: var(--rag-primitive-radius-md);
   outline: none;
   cursor: pointer;
@@ -37,27 +37,27 @@
 
   &:focus,
   &.rt-open {
-    background: var(--rag-semantic-component-select-focus-background);
-    border: var(--rag-semantic-component-select-focus-border);
-    box-shadow: var(--rag-semantic-component-select-focus-boxShadow);
-    color: var(--rag-semantic-component-select-focus-color);
+    background: var(--rag-archetypes-select-focus-background);
+    border: var(--rag-archetypes-select-focus-border);
+    box-shadow: var(--rag-archetypes-select-focus-boxShadow);
+    color: var(--rag-archetypes-select-focus-color);
   }
 
   &:disabled {
-    background: var(--rag-semantic-component-select-disabled-background);
-    border: var(--rag-semantic-component-select-disabled-border);
-    color: var(--rag-semantic-component-select-disabled-color);
+    background: var(--rag-archetypes-select-disabled-background);
+    border: var(--rag-archetypes-select-disabled-border);
+    color: var(--rag-archetypes-select-disabled-color);
     cursor: not-allowed;
   }
 
   &.rt-error {
-    background: var(--rag-semantic-component-select-error-background);
-    border: var(--rag-semantic-component-select-error-border);
-    color: var(--rag-semantic-component-select-error-color);
+    background: var(--rag-archetypes-select-error-background);
+    border: var(--rag-archetypes-select-error-border);
+    color: var(--rag-archetypes-select-error-color);
 
     &:focus,
     &.rt-open {
-      box-shadow: var(--rag-semantic-component-select-error-boxShadow);
+      box-shadow: var(--rag-archetypes-select-error-boxShadow);
     }
   }
 }

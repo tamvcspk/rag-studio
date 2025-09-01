@@ -114,11 +114,11 @@
   z-index: 50;
   min-width: 200px;
   max-width: 400px;
-  background: var(--rag-semantic-component-dropdown-container-background);
-  border: var(--rag-semantic-component-dropdown-container-border);
-  border-radius: var(--rag-semantic-component-dropdown-container-borderRadius);
-  box-shadow: var(--rag-semantic-component-dropdown-container-boxShadow);
-  padding: var(--rag-semantic-component-dropdown-container-padding);
+  background: var(--rag-archetypes-dropdown-container-background);
+  border: var(--rag-archetypes-dropdown-container-border);
+  border-radius: var(--rag-archetypes-dropdown-container-borderRadius);
+  box-shadow: var(--rag-archetypes-dropdown-container-boxShadow);
+  padding: var(--rag-archetypes-dropdown-container-padding);
   animation: dropdownShow 0.15s ease-out;
   max-height: 300px;
   overflow-y: auto;
@@ -181,10 +181,10 @@
   display: flex;
   align-items: center;
   width: 100%;
-  padding: var(--rag-semantic-component-dropdown-item-default-padding);
+  padding: var(--rag-archetypes-dropdown-item-default-padding);
   border: none;
-  background: var(--rag-semantic-component-dropdown-item-default-background);
-  color: var(--rag-semantic-component-dropdown-item-default-color);
+  background: var(--rag-archetypes-dropdown-item-default-background);
+  color: var(--rag-archetypes-dropdown-item-default-color);
   text-decoration: none;
   border-radius: var(--rag-primitive-radius-sm);
   cursor: pointer;
@@ -194,23 +194,23 @@
   text-align: left;
 
   &:hover:not(.rt-disabled) {
-    background: var(--rag-semantic-component-dropdown-item-hover-background);
-    color: var(--rag-semantic-component-dropdown-item-hover-color);
+    background: var(--rag-archetypes-dropdown-item-hover-background);
+    color: var(--rag-archetypes-dropdown-item-hover-color);
   }
 
   &.rt-focused {
-    background: var(--rag-semantic-component-dropdown-item-active-background);
-    color: var(--rag-semantic-component-dropdown-item-active-color);
+    background: var(--rag-archetypes-dropdown-item-active-background);
+    color: var(--rag-archetypes-dropdown-item-active-color);
   }
 
   &.rt-disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    background: var(--rag-semantic-component-dropdown-item-disabled-background);
-    color: var(--rag-semantic-component-dropdown-item-disabled-color);
+    background: var(--rag-archetypes-dropdown-item-disabled-background);
+    color: var(--rag-archetypes-dropdown-item-disabled-color);
 
     &:hover {
-      background: var(--rag-semantic-component-dropdown-item-disabled-background);
+      background: var(--rag-archetypes-dropdown-item-disabled-background);
     }
   }
 
@@ -251,9 +251,9 @@
 }
 
 .rt-DropdownSeparator {
-  height: var(--rag-semantic-component-dropdown-separator-height);
-  background: var(--rag-semantic-component-dropdown-separator-background);
-  margin: var(--rag-semantic-component-dropdown-separator-margin);
+  height: var(--rag-archetypes-dropdown-separator-height);
+  background: var(--rag-archetypes-dropdown-separator-background);
+  margin: var(--rag-archetypes-dropdown-separator-margin);
 }
 
 .rt-DropdownEmpty {

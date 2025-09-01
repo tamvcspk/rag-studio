@@ -29,7 +29,7 @@
   z-index: 1;
 
   &:focus + .rt-switch-track {
-    box-shadow: var(--rag-semantic-component-focus-ring-primary);
+    box-shadow: var(--rag-archetypes-focus-ring-primary);
   }
 
   &:disabled {
@@ -40,46 +40,46 @@
 .rt-switch-track {
   width: 44px;
   height: 24px;
-  background: var(--rag-semantic-component-switch-default-track-background);
+  background: var(--rag-archetypes-switch-default-track-background);
   border-radius: 12px;
   position: relative;
   transition: all 0.2s ease;
-  border: 1px solid var(--rag-semantic-component-switch-default-track-borderColor);
+  border: 1px solid var(--rag-archetypes-switch-default-track-borderColor);
 }
 
 .rt-switch-thumb {
   width: 20px;
   height: 20px;
-  background: var(--rag-semantic-component-switch-default-thumb-background);
+  background: var(--rag-archetypes-switch-default-thumb-background);
   border-radius: 50%;
   position: absolute;
   top: 1px;
   left: 1px;
   transition: all 0.2s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--rag-semantic-component-switch-default-thumb-borderColor);
+  border: 1px solid var(--rag-archetypes-switch-default-thumb-borderColor);
 }
 
 // Checked state
 .rt-Switch:checked + .rt-switch-track {
-  background: var(--rag-semantic-component-switch-checked-track-background);
-  border-color: var(--rag-semantic-component-switch-checked-track-borderColor);
+  background: var(--rag-archetypes-switch-checked-track-background);
+  border-color: var(--rag-archetypes-switch-checked-track-borderColor);
 
   .rt-switch-thumb {
     transform: translateX(20px);
-    background: var(--rag-semantic-component-switch-checked-thumb-background);
-    border-color: var(--rag-semantic-component-switch-checked-thumb-borderColor);
+    background: var(--rag-archetypes-switch-checked-thumb-background);
+    border-color: var(--rag-archetypes-switch-checked-thumb-borderColor);
   }
 }
 
 // Disabled state
 .rt-Switch:disabled + .rt-switch-track {
-  background: var(--rag-semantic-component-switch-disabled-track-background);
-  border-color: var(--rag-semantic-component-switch-disabled-track-borderColor);
+  background: var(--rag-archetypes-switch-disabled-track-background);
+  border-color: var(--rag-archetypes-switch-disabled-track-borderColor);
 
   .rt-switch-thumb {
-    background: var(--rag-semantic-component-switch-disabled-thumb-background);
-    border-color: var(--rag-semantic-component-switch-disabled-thumb-borderColor);
+    background: var(--rag-archetypes-switch-disabled-thumb-background);
+    border-color: var(--rag-archetypes-switch-disabled-thumb-borderColor);
   }
 }
 

@@ -34,32 +34,32 @@
 }
 
 .rag-form-field__label {
-  font-size: var(--rag-semantic-component-formField-label-fontSize);
-  font-weight: var(--rag-semantic-component-formField-label-fontWeight);
-  color: var(--rag-semantic-component-formField-label-color);
+  font-size: var(--rag-archetypes-formField-label-fontSize);
+  font-weight: var(--rag-archetypes-formField-label-fontWeight);
+  color: var(--rag-archetypes-formField-label-color);
   line-height: var(--rag-primitive-lineHeight-md);
-  margin-bottom: var(--rag-semantic-component-formField-label-marginBottom);
+  margin-bottom: var(--rag-archetypes-formField-label-marginBottom);
   display: flex;
   align-items: center;
   gap: var(--rag-primitive-spacing-xs);
 
   &--required {
     .rag-form-field__required {
-      color: var(--rag-semantic-component-formField-required-color);
+      color: var(--rag-archetypes-formField-required-color);
     }
   }
 }
 
 .rag-form-field__required {
-  color: var(--rag-semantic-component-formField-required-color);
+  color: var(--rag-archetypes-formField-required-color);
   margin-left: var(--rag-primitive-spacing-xs);
 }
 
 .rag-form-field__description {
-  font-size: var(--rag-semantic-component-formField-description-fontSize);
-  color: var(--rag-semantic-component-formField-description-color);
+  font-size: var(--rag-archetypes-formField-description-fontSize);
+  color: var(--rag-archetypes-formField-description-color);
   line-height: var(--rag-primitive-lineHeight-md);
-  margin-top: var(--rag-semantic-component-formField-description-marginTop);
+  margin-top: var(--rag-archetypes-formField-description-marginTop);
 }
 
 .rag-form-field__input {
@@ -70,10 +70,10 @@
   display: flex;
   align-items: center;
   gap: var(--rag-primitive-spacing-sm);
-  font-size: var(--rag-semantic-component-formField-error-fontSize);
-  color: var(--rag-semantic-component-formField-error-color);
+  font-size: var(--rag-archetypes-formField-error-fontSize);
+  color: var(--rag-archetypes-formField-error-color);
   line-height: var(--rag-primitive-lineHeight-md);
-  margin-top: var(--rag-semantic-component-formField-error-marginTop);
+  margin-top: var(--rag-archetypes-formField-error-marginTop);
 
   rag-icon {
     flex-shrink: 0;

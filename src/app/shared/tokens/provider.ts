@@ -1,23 +1,19 @@
-import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
+import { EnvironmentProviders, makeEnvironmentProviders, APP_INITIALIZER } from '@angular/core';
 import { DesignTokenService, DesignTokenConfig } from './design-tokens.service';
 
 export function provideDesignTokens(config?: DesignTokenConfig): EnvironmentProviders {
   return makeEnvironmentProviders([
     DesignTokenService,
     {
-      provide: 'DESIGN_TOKEN_CONFIG',
-      useValue: config || {}
-    },
-    {
-      provide: 'DESIGN_TOKEN_INITIALIZER',
-      useFactory: (tokenService: DesignTokenService, tokenConfig: DesignTokenConfig) => {
+      provide: APP_INITIALIZER,
+      useFactory: (tokenService: DesignTokenService) => {
         return () => {
-          if (tokenConfig.overrides) {
-            tokenService.updateTokens(tokenConfig.overrides);
+          if (config?.overrides) {
+            tokenService.updateTokens(config.overrides);
           }
         };
       },
-      deps: [DesignTokenService, 'DESIGN_TOKEN_CONFIG'],
+      deps: [DesignTokenService],
       multi: true
     }
   ]);
