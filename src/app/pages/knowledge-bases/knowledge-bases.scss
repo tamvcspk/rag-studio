@@ -1,3 +1,5 @@
+@use '../../shared/styles/animations';
+
 .knowledge-bases-page {
   display: flex;
   flex-direction: column;
@@ -28,56 +30,7 @@
   }
 }
 
-// Global styles for better responsive behavior
-@media (max-width: 768px) {
-  .knowledge-bases-page {
-    padding: var(--rag-primitive-spacing-lg);
-  }
-}
-
-@media (max-width: 480px) {
-  .knowledge-bases-page {
-    padding: var(--rag-primitive-spacing-md);
-    
-    .page-header {
-      margin-bottom: var(--rag-primitive-spacing-lg);
-      gap: var(--rag-primitive-spacing-md);
-    }
-  }
-}
-
-// Loading state
-.loading-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-  
-  .loading-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--rag-primitive-spacing-md);
-    
-    .loading-text {
-      color: var(--rag-semantic-color-text-subtle);
-      font-size: var(--rag-primitive-fontSize-sm);
-    }
-  }
-}
-
 // Animation for cards appearing
 .kb-grid app-knowledge-base-card {
-  animation: fadeInUp 0.3s ease-out;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  @extend .animate-fadeInUp;
 }

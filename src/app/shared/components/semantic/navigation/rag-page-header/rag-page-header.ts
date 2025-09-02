@@ -122,7 +122,6 @@ export class RagPageHeader implements AfterViewInit, OnDestroy {
           
           // Only trigger overflow check if width actually changed
           if (currentWidth !== this.lastKnownWidth) {
-            console.log('Header content width changed:', this.lastKnownWidth, '->', currentWidth);
             this.lastKnownWidth = currentWidth;
             this.debouncedCheckOverflow();
           }

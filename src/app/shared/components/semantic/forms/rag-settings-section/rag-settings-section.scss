@@ -1,0 +1,84 @@
+.rag-settings-section {
+  &--spacing-sm {
+    margin-bottom: var(--rag-primitive-spacing-lg);
+  }
+
+  &--spacing-md {
+    margin-bottom: var(--rag-primitive-spacing-xl);
+  }
+
+  &--spacing-lg {
+    margin-bottom: calc(var(--rag-primitive-spacing-xl) * 1.5);
+  }
+
+  &--spacing-xl {
+    margin-bottom: calc(var(--rag-primitive-spacing-xl) * 2);
+  }
+
+  &--card {
+    background-color: var(--rag-semantic-color-background-default);
+    border: 1px solid var(--rag-semantic-color-border-subtle);
+    border-radius: var(--rag-primitive-radius-lg);
+    padding: var(--rag-primitive-spacing-xl);
+    box-shadow: var(--rag-primitive-shadow-xs);
+
+    .rag-settings-section__header {
+      margin-bottom: var(--rag-primitive-spacing-lg);
+    }
+  }
+
+  &--inline {
+    .rag-settings-section__header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--rag-primitive-spacing-lg);
+      margin-bottom: var(--rag-primitive-spacing-md);
+
+      .rag-settings-section__text {
+        flex: 1;
+        min-width: 200px;
+      }
+    }
+
+    .rag-settings-section__content {
+      margin-left: calc(var(--rag-primitive-size-10) + var(--rag-primitive-spacing-lg));
+    }
+  }
+}
+
+.rag-settings-section__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--rag-primitive-spacing-md);
+}
+
+.rag-settings-section__icon {
+  color: var(--rag-semantic-color-primary-600);
+  margin-top: var(--rag-primitive-spacing-xs);
+  flex-shrink: 0;
+}
+
+.rag-settings-section__text {
+  flex: 1;
+}
+
+.rag-settings-section__title {
+  font-size: var(--rag-primitive-fontSize-xl);
+  font-weight: var(--rag-primitive-fontWeight-semibold);
+  color: var(--rag-semantic-color-text-default);
+  margin: 0 0 var(--rag-primitive-spacing-xs) 0;
+  line-height: var(--rag-primitive-lineHeight-tight);
+}
+
+.rag-settings-section__description {
+  font-size: var(--rag-primitive-fontSize-md);
+  color: var(--rag-semantic-color-text-subtle);
+  margin: 0;
+  line-height: var(--rag-primitive-lineHeight-md);
+}
+
+.rag-settings-section__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rag-primitive-spacing-lg);
+}

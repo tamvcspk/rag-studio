@@ -18,13 +18,13 @@
 
     <div class="designer-canvas">
     @if (nodes().length === 0) {
-      <app-empty-state-panel
+      <rag-empty-state-panel
         [icon]="gitBranchIcon"
         [title]="'No Flow Components'"
         [description]="'Add components to your flow to start designing the workflow.'"
         [actionLabel]="'Add Components'"
         (action)="cancel()">
-      </app-empty-state-panel>
+      </rag-empty-state-panel>
     } @else {
       <div class="design-canvas">
         <svg class="connections-layer" width="100%" height="100%">

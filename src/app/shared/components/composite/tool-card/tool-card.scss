@@ -1,6 +1,6 @@
 .tool-card {
   transition: all 0.2s ease-in-out;
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: var(--rag-primitive-shadow-lg);
@@ -23,15 +23,15 @@
 
 .tool-icon {
   flex-shrink: 0;
-  
+
   &.rag\\.search {
     color: var(--rag-semantic-color-primary-600);
   }
-  
+
   &.rag\\.answer {
     color: var(--rag-semantic-color-success-600);
   }
-  
+
   &.error {
     color: var(--rag-semantic-color-danger-600);
   }
@@ -90,7 +90,7 @@
 .usage-metric {
   font-size: var(--rag-primitive-fontSize-xs);
   color: var(--rag-semantic-color-text-muted);
-  
+
   strong {
     color: var(--rag-semantic-color-text-default);
     font-weight: 600;
@@ -101,10 +101,10 @@
   display: flex;
   gap: var(--rag-primitive-spacing-sm);
   flex-wrap: wrap;
-  
+
   .delete-button {
     color: var(--rag-semantic-color-danger-600);
-    
+
     &:hover {
       color: var(--rag-semantic-color-danger-700);
       background-color: var(--rag-semantic-color-danger-50);
@@ -114,11 +114,11 @@
 
 // Error state styles
 .error-card {
-  background-color: var(--rag-semantic-color-danger-50);
-  border: 1px solid var(--rag-semantic-color-danger-200);
-  border-radius: var(--rag-primitive-radius-lg);
-  padding: var(--rag-primitive-spacing-xl);
-  
+  ::ng-deep .rag-card {
+    background-color: var(--rag-semantic-color-danger-50);
+    border-color: var(--rag-semantic-color-danger-200);
+  }
+
   .error-alert {
     margin-bottom: var(--rag-primitive-spacing-md);
   }
@@ -131,20 +131,20 @@
     align-items: flex-start;
     gap: var(--rag-primitive-spacing-sm);
   }
-  
+
   .tool-info {
     width: 100%;
   }
-  
+
   .status-chip {
     align-self: flex-start;
   }
-  
+
   .tool-usage {
     flex-direction: column;
     gap: var(--rag-primitive-spacing-sm);
   }
-  
+
   .tool-actions {
     justify-content: flex-start;
   }

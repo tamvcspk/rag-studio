@@ -44,7 +44,7 @@ export class KnowledgeBaseCard {
         icon: { component: Globe, color: 'var(--blue-9)' }
       },
       'indexing': {
-        chip: { variant: 'solid' as const, color: 'amber' as const, icon: LoaderCircle },
+        chip: { variant: 'solid' as const, color: 'amber' as const },
         icon: { component: FileText, color: 'var(--amber-9)' }
       },
       'failed': {

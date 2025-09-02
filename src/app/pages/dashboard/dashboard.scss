@@ -2,18 +2,13 @@
   max-width: 1400px;
   margin: 0 auto;
   min-height: 100%;
-}
 
-// Spacing between header and content
-.dashboard-page {
   .sticky-header {
     margin-bottom: var(--rag-primitive-spacing-xl);
   }
 }
 
-// Dashboard Content
 .dashboard-content {
-  
   .dashboard-section {
     margin-bottom: var(--rag-primitive-spacing-xl);
 
@@ -23,93 +18,22 @@
   }
 }
 
-// Loading Example Component
-.loading-example {
-  position: relative;
-  min-height: 200px;
-
-  &__title {
-    font-size: var(--rag-primitive-fontSize-lg);
-    font-weight: 600;
-    margin: 0 0 var(--rag-primitive-spacing-lg) 0;
-    color: var(--rag-semantic-color-text-default);
-    opacity: 0.3;
-  }
-
-  .loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: color-mix(in srgb, var(--rag-semantic-color-background-default) 80%, transparent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: inherit;
-    z-index: 10;
-  }
-
-  .loading-content {
-    text-align: center;
-
-    p {
-      margin: var(--rag-primitive-spacing-md) 0 0 0;
-      color: var(--rag-semantic-color-text-muted);
-    }
-  }
-
-  .loading-skeleton {
-    opacity: 0.3;
-  }
-
-  .skeleton-line {
-    height: var(--rag-primitive-spacing-lg);
-    background: linear-gradient(90deg, var(--rag-semantic-color-background-muted) 25%, var(--rag-semantic-color-border-default) 50%, var(--rag-semantic-color-background-muted) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: var(--rag-primitive-radius-xs);
-    margin-bottom: var(--rag-primitive-spacing-sm);
-    width: 100%;
-
-    &--80 {
-      width: 80%;
-    }
-
-    &--60 {
-      width: 60%;
-    }
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
+// Dashboard Sections
+.section-title {
+  font-size: var(--rag-primitive-fontSize-lg);
+  font-weight: 600;
+  margin: 0 0 var(--rag-primitive-spacing-lg) 0;
+  color: var(--rag-semantic-color-text-default);
 }
 
-// Animations
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
+.metrics-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rag-primitive-spacing-sm);
 
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
+  p {
+    margin: 0;
+    color: var(--rag-semantic-color-text-muted);
+    font-size: var(--rag-primitive-fontSize-sm);
   }
 }
-
-// Remove the complex responsive layout - keep components full width
-// Components will naturally be full width within the .dashboard-content container

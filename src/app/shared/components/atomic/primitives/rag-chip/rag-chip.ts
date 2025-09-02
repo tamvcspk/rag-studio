@@ -20,6 +20,7 @@ export class RagChip {
   readonly removable = input(false);
   readonly selectable = input(false);
   readonly disabled = input(false);
+  readonly loading = input(false);
 
   // Modern Angular 20: Signal-based outputs
   readonly removed = output<void>();
@@ -33,21 +34,22 @@ export class RagChip {
 
   // Modern Angular 20: Use computed for derived state
   readonly chipClasses = computed(() => [
-    'rt-Badge',
+    'rt-Chip',
     `rt-variant-${this.variant()}`,
     `rt-color-${this.color()}`,
     `rt-size-${this.size()}`,
     this.dot() ? 'rt-chip-dot' : '',
     this.selectable() ? 'rt-chip-selectable' : '',
     this.selected() ? 'rt-chip-selected' : '',
-    this.disabled() ? 'rt-chip-disabled' : ''
+    this.disabled() ? 'rt-chip-disabled' : '',
+    this.loading() ? 'rt-chip-loading' : ''
   ].filter(Boolean).join(' '));
 
   // Close icon reference
   readonly closeIcon = X;
 
   onChipClick(): void {
-    if (this.disabled() || !this.selectable()) return;
+    if (this.disabled() || this.loading() || !this.selectable()) return;
     
     const newSelected = !this.isSelected();
     this.isSelected.set(newSelected);
@@ -56,7 +58,7 @@ export class RagChip {
 
   onRemoveClick(event: Event): void {
     event.stopPropagation();
-    if (this.disabled()) return;
+    if (this.disabled() || this.loading()) return;
     
     this.removed.emit();
   }

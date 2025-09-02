@@ -13,47 +13,41 @@
     </rag-stats-overview>
   </div>
 
-  <!-- Tools Grid -->
+  <!-- Tools Content -->
   <div class="tools-content">
     @if (filteredTools().length === 0 && searchQuery() === '' && selectedFilters().length === 0) {
     <!-- Empty state - no tools created yet -->
-    <div class="empty-state">
-      <rag-icon [img]="WrenchIcon" size="xl" class="empty-icon" />
-      <h3 class="empty-title">No tools created yet</h3>
-      <p class="empty-description">
-        Create your first dynamic MCP tool to get started with RAG-powered integrations
-      </p>
-      <rag-button variant="solid" size="md" (click)="onCreateTool()">
-        <rag-icon [img]="PlusIcon" size="sm" />
-        Create Your First Tool
-      </rag-button>
-    </div>
+    <rag-empty-state-panel
+      [icon]="WrenchIcon"
+      [title]="'No tools created yet'"
+      [description]="'Create your first dynamic MCP tool to get started with RAG-powered integrations'"
+      [actionLabel]="'Create Your First Tool'"
+      (action)="onCreateTool()">
+    </rag-empty-state-panel>
     } @else if (filteredTools().length === 0) {
     <!-- No results for current filters -->
-    <div class="no-results">
-      <rag-icon [img]="SearchIcon" size="xl" class="no-results-icon" />
-      <h3 class="no-results-title">No tools found</h3>
-      <p class="no-results-description">
-        Try adjusting your search or filter criteria
-      </p>
-      <div class="no-results-actions">
-        <rag-button variant="outline" size="sm" (click)="searchQuery.set(''); selectedFilters.set([])">
-          Clear Filters
-        </rag-button>
-      </div>
-    </div>
+    <rag-empty-state-panel
+      [icon]="SearchIcon"
+      [title]="'No tools found'"
+      [description]="'Try adjusting your search or filter criteria'"
+      [actionLabel]="'Clear Filters'"
+      (action)="onSearchClear()">
+    </rag-empty-state-panel>
     } @else {
     <!-- Tools Grid -->
     <div class="tools-grid">
       @for (tool of filteredTools(); track tool.id) {
-      <app-tool-card [tool]="tool" [loading]="isLoading()" (onActivate)="onToolActivate($event)"
+      <app-tool-card [tool]="tool" (onActivate)="onToolActivate($event)"
         (onDeactivate)="onToolDeactivate($event)" (onEdit)="onToolEdit($event)" (onDelete)="onToolDelete($event)"
         (onRetry)="onToolRetry($event)" (onViewLogs)="onToolViewLogs($event)">
       </app-tool-card>
       } @empty {
-      <div class="no-tools-message">
-        <p>No tools available</p>
-      </div>
+      <rag-empty-state-panel
+        [icon]="WrenchIcon"
+        [title]="'No tools available'"
+        [description]="'This shouldn\'t happen. Please try refreshing the page.'"
+        [showAction]="false">
+      </rag-empty-state-panel>
       }
     </div>
     }

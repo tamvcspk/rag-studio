@@ -6,9 +6,8 @@ import { RecentActivityLog } from '../../shared/components/composite/recent-acti
 import { McpServerStatus } from '../../shared/components/composite/mcp-server-status/mcp-server-status';
 import { RagAlert } from '../../shared/components/atomic/feedback/rag-alert/rag-alert';
 import { RagCard } from '../../shared/components/semantic/data-display/rag-card/rag-card';
-import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
 import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
-import { Loader2, BarChart3, Settings } from 'lucide-angular';
+import { BarChart3, Settings } from 'lucide-angular';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +19,6 @@ import { Loader2, BarChart3, Settings } from 'lucide-angular';
     McpServerStatus,
     RagAlert,
     RagCard,
-    RagIcon,
     RagPageHeader
   ],
   templateUrl: './dashboard.html',
@@ -31,7 +29,6 @@ export class Dashboard implements OnInit {
   readonly isLoading = signal(false);
 
   // Icon components
-  readonly Loader2Icon = Loader2;
   readonly BarChart3Icon = BarChart3;
   readonly SettingsIcon = Settings;
 

@@ -1,0 +1,27 @@
+<div [class]="itemClasses()">
+  <div class="rag-settings-item__info">
+    @if (icon()) {
+      <rag-icon 
+        [img]="icon()!" 
+        [size]="iconSize()" 
+        class="rag-settings-item__icon" />
+    }
+    <div class="rag-settings-item__text">
+      @if (label()) {
+        <label [for]="htmlFor()" class="rag-settings-item__label">
+          {{ label() }}
+          @if (required()) {
+            <span class="rag-settings-item__required" aria-label="required">*</span>
+          }
+        </label>
+      }
+      @if (description()) {
+        <p class="rag-settings-item__description">{{ description() }}</p>
+      }
+    </div>
+  </div>
+  
+  <div class="rag-settings-item__control">
+    <ng-content></ng-content>
+  </div>
+</div>

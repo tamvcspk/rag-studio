@@ -7,7 +7,7 @@ import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 
 @Component({
-  selector: 'app-empty-state-panel',
+  selector: 'rag-empty-state-panel',
   standalone: true,
   imports: [
     CommonModule,

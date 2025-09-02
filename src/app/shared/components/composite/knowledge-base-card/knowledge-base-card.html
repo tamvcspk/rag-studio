@@ -15,18 +15,12 @@
         </p>
       </div>
     </div>
-    
     <rag-chip 
       [variant]="statusConfig().chip.variant"
       [color]="statusConfig().chip.color"
+      [loading]="isIndexing()"
+      [icon]="statusConfig().chip.icon"
       class="status-chip">
-      @if (statusConfig().chip.icon && isIndexing()) {
-        <rag-icon 
-          [img]="statusConfig().chip.icon" 
-          size="xs"
-          class="animate-spin">
-        </rag-icon>
-      }
       {{ knowledgeBase().status | uppercase }}
     </rag-chip>
   </div>

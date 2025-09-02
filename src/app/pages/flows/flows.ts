@@ -4,14 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { Plus, GitBranch, Search, Filter, PlayCircle, PauseCircle, FileEdit, XCircle, CheckCircle, AlertTriangle, Clock, Pause } from 'lucide-angular';
 import { FlowCard } from '../../shared/components/composite/flow-card/flow-card';
 import { CreateFlowWizard } from '../../shared/components/composite/create-flow-wizard/create-flow-wizard';
-import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
 import { RagDialogService } from '../../shared/components/semantic/overlay/rag-dialog/rag-dialog.service';
 import { RagToastService } from '../../shared/components/atomic/feedback/rag-toast/rag-toast.service';
 import { FlowsService } from '../../shared/services/flows';
 import { Flow, FlowStatus } from '../../shared/models/flow.model';
-import { RagButton } from '../../shared/components';
 import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
 import { RagStatsOverview, StatItem } from '../../shared/components/semantic/data-display/rag-stats-overview';
+import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
 
 @Component({
   selector: 'app-flows',
@@ -19,11 +18,10 @@ import { RagStatsOverview, StatItem } from '../../shared/components/semantic/dat
   imports: [
     CommonModule,
     FormsModule,
-    RagIcon,
     FlowCard,
-    RagButton,
     RagPageHeader,
-    RagStatsOverview
+    RagStatsOverview,
+    EmptyStatePanel
   ],
   templateUrl: './flows.html',
   styleUrl: './flows.scss'

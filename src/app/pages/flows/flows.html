@@ -18,31 +18,22 @@
   <div class="flows-content">
     @if (filteredFlows().length === 0 && searchQuery() === '' && selectedFilters().length === 0) {
     <!-- Empty state - no flows created yet -->
-    <div class="empty-state">
-      <rag-icon [img]="GitBranchIcon" size="xl" class="empty-icon" />
-      <h3 class="empty-title">No flows created yet</h3>
-      <p class="empty-description">
-        Create your first complete flow to get started with end-to-end RAG processes
-      </p>
-      <rag-button variant="solid" size="md" (click)="onCreateFlow()">
-        <rag-icon [img]="PlusIcon" size="sm" />
-        Create Your First Flow
-      </rag-button>
-    </div>
+    <rag-empty-state-panel
+      [icon]="GitBranchIcon"
+      [title]="'No flows created yet'"
+      [description]="'Create your first complete flow to get started with end-to-end RAG processes.'"
+      [actionLabel]="'Create Your First Flow'"
+      (action)="onCreateFlow()">
+    </rag-empty-state-panel>
     } @else if (filteredFlows().length === 0) {
     <!-- No results for current filters -->
-    <div class="no-results">
-      <rag-icon [img]="SearchIcon" size="xl" class="no-results-icon" />
-      <h3 class="no-results-title">No flows found</h3>
-      <p class="no-results-description">
-        Try adjusting your search or filter criteria
-      </p>
-      <div class="no-results-actions">
-        <rag-button variant="outline" size="sm" (click)="searchQuery.set(''); selectedFilters.set([])">
-          Clear Filters
-        </rag-button>
-      </div>
-    </div>
+    <rag-empty-state-panel
+      [icon]="SearchIcon"
+      [title]="'No flows found'"
+      [description]="'Try adjusting your search or filter criteria'"
+      [actionLabel]="'Clear Filters'"
+      (action)="onSearchClear()">
+    </rag-empty-state-panel>
     } @else {
     <!-- Flows Grid -->
     <div class="flows-grid">
@@ -52,9 +43,12 @@
         (onResume)="onFlowResume($event)" (onDuplicate)="onFlowDuplicate($event)" (onExport)="onFlowExport($event)">
       </app-flow-card>
       } @empty {
-      <div class="no-flows-message">
-        <p>No flows available</p>
-      </div>
+      <rag-empty-state-panel
+        [icon]="GitBranchIcon"
+        [title]="'No flows available'"
+        [description]="'This shouldn\'t happen. Please try refreshing the page.'"
+        [showAction]="false">
+      </rag-empty-state-panel>
       }
     </div>
     }

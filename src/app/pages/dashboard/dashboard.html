@@ -34,25 +34,20 @@
       <rag-query-performance-metrics />
     </section>
 
-    <!-- Loading State Example -->
-    @if (isLoading()) {
-      <section class="dashboard-section">
-        <rag-card class="loading-example">
-          <div class="loading-overlay">
-            <div class="loading-content">
-              <rag-icon [img]="Loader2Icon" size="lg" class="animate-spin" />
-              <p>Loading metrics...</p>
-            </div>
-          </div>
-          <h2 class="loading-example__title">Resource Usage</h2>
-          <div class="loading-skeleton">
-            <div class="skeleton-line"></div>
-            <div class="skeleton-line skeleton-line--80"></div>
-            <div class="skeleton-line skeleton-line--60"></div>
-          </div>
-        </rag-card>
-      </section>
-    }
+    <!-- Performance Metrics with Loading -->
+    <section class="dashboard-section">
+      <rag-card 
+        [loading]="isLoading()" 
+        loadingText="Loading metrics..."
+        variant="elevated">
+        <h2 class="section-title">Resource Usage</h2>
+        <div class="metrics-content">
+          <p>CPU Usage: 45%</p>
+          <p>Memory: 1.2GB / 4GB</p>
+          <p>Disk Space: 250GB / 500GB</p>
+        </div>
+      </rag-card>
+    </section>
 
     <!-- Recent Activity -->
     <section class="dashboard-section">

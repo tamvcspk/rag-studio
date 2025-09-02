@@ -12,7 +12,7 @@ export interface StatItem {
   /** Lucide icon component for the stat */
   icon: any;
   /** Color scheme for the stat display */
-  color?: 'gray' | 'green' | 'red' | 'amber' | 'blue';
+  color?: 'gray' | 'blue' | 'green' | 'red' | 'amber';
   /** Visual variant for the chip display */
   variant?: 'solid' | 'soft' | 'outline';
   /** Whether the stat item is clickable (default: true) */

@@ -1,3 +1,5 @@
+@use '../../shared/styles/animations';
+
 .pipelines-page {
   min-height: 100%;
 
@@ -18,94 +20,12 @@
         gap: var(--rag-primitive-spacing-md);
       }
     }
-
-    // Loading state styles
-    .loading-state {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-      gap: var(--rag-primitive-spacing-lg);
-
-      .loading-card {
-        background: white;
-        border-radius: var(--rag-primitive-radius-lg);
-        padding: var(--rag-primitive-spacing-xl);
-        box-shadow: var(--rag-primitive-shadow-sm);
-
-        .skeleton-title {
-          height: var(--rag-primitive-lineHeight-lg);
-          background: linear-gradient(90deg, var(--rag-primitive-color-gray-300) 25%, var(--rag-primitive-color-gray-400) 50%, var(--rag-primitive-color-gray-300) 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-          border-radius: var(--rag-primitive-radius-sm);
-          width: 60%;
-          margin-bottom: var(--rag-primitive-spacing-md);
-        }
-
-        .skeleton-description {
-          height: var(--rag-primitive-lineHeight-sm);
-          background: linear-gradient(90deg, var(--rag-primitive-color-gray-300) 25%, var(--rag-primitive-color-gray-400) 50%, var(--rag-primitive-color-gray-300) 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-          border-radius: var(--rag-primitive-radius-sm);
-          width: 80%;
-          margin-bottom: var(--rag-primitive-spacing-lg);
-        }
-
-        .skeleton-content {
-          height: 120px;
-          background: linear-gradient(90deg, var(--rag-primitive-color-gray-300) 25%, var(--rag-primitive-color-gray-400) 50%, var(--rag-primitive-color-gray-300) 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-          border-radius: var(--rag-primitive-radius-sm);
-          width: 100%;
-        }
-      }
-
-      // Responsive adjustments
-      @media (max-width: 768px) {
-        grid-template-columns: 1fr;
-        gap: var(--rag-primitive-spacing-md);
-      }
-    }
   }
-}
-
-// Keyframes for loading animation
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
 }
 
 // Global adjustments for pipeline cards in grid
 .pipelines-grid rag-pipeline-card {
   height: fit-content;
-}
 
-// Container adjustments
-@media (max-width: 1200px) {
-  .pipelines-page {
-    padding: var(--rag-primitive-spacing-lg) var(--rag-primitive-spacing-md);
-  }
-}
-
-@media (max-width: 768px) {
-  .pipelines-page {
-    padding: var(--rag-primitive-spacing-md) var(--rag-primitive-spacing-sm);
-
-    .page-header {
-      margin-bottom: var(--rag-primitive-spacing-lg);
-
-      .header-content {
-        .title-section {
-          .page-title {
-            font-size: var(--rag-primitive-fontSize-lg);
-          }
-
-          .page-description {
-            font-size: var(--rag-primitive-fontSize-md);
-          }
-        }
-      }
-    }
-  }
+  @extend .animate-fadeInUp;
 }

@@ -27,7 +27,7 @@ This change provides better tree-shaking and type safety by only importing icons
 
 ## 📋 Component Index
 
-### 🎯 Primitive Components (12 components)
+### 🎯 Primitive Components (14 components)
 | Component | Purpose | Key Props | Use Case |
 |-----------|---------|-----------|----------|
 | `<rag-button>` | Action triggers | `variant`, `size`, `loading`, `disabled` | Forms, CTAs, navigation |
@@ -42,6 +42,8 @@ This change provides better tree-shaking and type safety by only importing icons
 | `<rag-skeleton>` | Loading placeholder | `width`, `height`, `variant`, `count` | Loading states |
 | `<rag-icon>` | Icon display | `img`, `size`, `variant`, `color` | UI decoration, actions |
 | `<rag-overflow-bar>` | Horizontal scroll navigation | `scrollAmount`, `hideButtons` | Tabs, chips, horizontal lists |
+| `<rag-divider>` | Visual separation | `orientation`, `variant`, `label`, `spacing` | Section dividers, content separation |
+| `<rag-toggle-group>` | Multi-option selection | `options`, `multiple`, `variant`, `size` | Settings, filters, tool selection |
 
 ### 🔔 Feedback Components (4 components)
 | Component | Purpose | Key Props | Use Case |
@@ -89,6 +91,20 @@ type ProgressVariant = 'primary' | 'success' | 'warning' | 'danger';
 // RagIcon
 type IconSize = number | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 type IconVariant = 'default' | 'subtle' | 'muted' | 'primary' | 'success' | 'warning' | 'danger';
+
+// RagDivider
+type RagDividerOrientation = 'horizontal' | 'vertical';
+type RagDividerVariant = 'solid' | 'dashed' | 'dotted';
+
+// RagToggleGroup
+interface RagToggleGroupOption<T = string> {
+  value: T;
+  label: string;
+  icon?: any; // Lucide icon
+  disabled?: boolean;
+}
+type RagToggleGroupSize = 'sm' | 'md' | 'lg';
+type RagToggleGroupVariant = 'default' | 'outline' | 'ghost';
 ```
 
 ### Feedback Component Types
@@ -253,7 +269,76 @@ type StatusVariant = 'dot' | 'chip' | 'text';
 </div>
 ```
 
-### 6. Icon Usage
+### 6. Visual Separation and Layout
+```html
+<!-- Divider with label -->
+<rag-divider [label]="'Settings'"></rag-divider>
+
+<!-- Different orientations -->
+<rag-divider orientation="horizontal"></rag-divider>
+<rag-divider orientation="vertical"></rag-divider>
+
+<!-- Different variants -->
+<rag-divider variant="solid"></rag-divider>
+<rag-divider variant="dashed"></rag-divider>
+<rag-divider variant="dotted"></rag-divider>
+
+<!-- Custom spacing -->
+<rag-divider spacing="lg" [label]="'Advanced Options'"></rag-divider>
+```
+
+### 7. Toggle Groups for Multiple Selection
+```html
+<!-- Single selection toggle group -->
+<rag-toggle-group 
+  [options]="themeOptions"
+  (valueChange)="onThemeChange($event)">
+</rag-toggle-group>
+
+<!-- Multiple selection with icons -->
+<rag-toggle-group 
+  [options]="toolOptions"
+  [multiple]="true"
+  variant="outline"
+  size="lg"
+  (valueChange)="onToolsChange($event)">
+</rag-toggle-group>
+
+<!-- Disabled options -->
+<rag-toggle-group 
+  [options]="statusOptions"
+  [disabled]="isLoading()"
+  (valueChange)="onStatusChange($event)">
+</rag-toggle-group>
+```
+
+```typescript
+// Component must define options
+readonly themeOptions = [
+  { value: 'light', label: 'Light', icon: SunIcon },
+  { value: 'dark', label: 'Dark', icon: MoonIcon },
+  { value: 'system', label: 'System', icon: MonitorIcon }
+];
+
+readonly toolOptions = [
+  { value: 'search', label: 'Search', icon: SearchIcon },
+  { value: 'filter', label: 'Filter', icon: FilterIcon },
+  { value: 'sort', label: 'Sort', icon: ArrowUpDownIcon },
+  { value: 'export', label: 'Export', icon: DownloadIcon, disabled: true }
+];
+
+onThemeChange(theme: string | null) {
+  if (theme) {
+    this.setTheme(theme);
+  }
+}
+
+onToolsChange(tools: string[] | null) {
+  this.activeTools.set(tools || []);
+}
+```
+
+### 8. Icon Usage
 ```html
 <!-- Semantic colors -->
 <rag-icon [img]="CheckCircleIcon" variant="success" />
@@ -688,5 +773,5 @@ Design Tokens (Consistent styling)
 
 ---
 
-**Last Updated**: September 1, 2025  
-**Total Components**: 17 atomic components
+**Last Updated**: September 2, 2025  
+**Total Components**: 19 atomic components

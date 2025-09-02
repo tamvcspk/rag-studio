@@ -98,17 +98,15 @@ export class RagStatsOverview {
     if (stat.color) {
       const colorMap: Record<string, string> = {
         'blue': 'var(--rag-primitive-color-blue-500)',
-        'green': 'var(--rag-primitive-color-green-500)',
-        'red': 'var(--rag-primitive-color-red-500)',
-        'yellow': 'var(--rag-primitive-color-yellow-500)',
-        'purple': 'var(--rag-primitive-color-purple-500)',
-        'gray': 'var(--rag-primitive-color-gray-500)',
-        'orange': 'var(--rag-primitive-color-orange-500)',
+        'green': 'var(--rag-primitive-color-green-700)',
+        'red': 'var(--rag-primitive-color-red-700)',
+        'amber': 'var(--rag-primitive-color-amber-700)',
+        'gray': 'var(--rag-primitive-color-gray-700)',
       };
-      return colorMap[stat.color] || 'var(--rag-semantic-color-background-subtle)';
+      return colorMap[stat.color] || 'var(--rag-primitive-color-gray-700)';
     }
     
     // Default color
-    return 'var(--rag-semantic-color-background-subtle)';
+    return 'var(--rag-primitive-color-gray-700)';
   }
 }

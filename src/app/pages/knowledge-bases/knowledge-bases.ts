@@ -11,10 +11,6 @@ import { MockKnowledgeBasesService } from '../../shared/services/mock-knowledge-
 import { KnowledgeBaseCard } from '../../shared/components/composite/knowledge-base-card/knowledge-base-card';
 import { CreateKBWizard } from '../../shared/components/composite/create-kb-wizard/create-kb-wizard';
 import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
-import { RagButton } from '../../shared/components/atomic/primitives/rag-button/rag-button';
-import { RagSearchInput } from '../../shared/components/semantic/forms/rag-search-input/rag-search-input';
-import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
-import { RagSelect } from '../../shared/components/atomic/primitives/rag-select/rag-select';
 import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
 import { RagStatsOverview, StatItem } from '../../shared/components/semantic/data-display/rag-stats-overview';
 import { RagDialogService } from '../../shared/components/semantic/overlay/rag-dialog/rag-dialog.service';
@@ -27,11 +23,10 @@ type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
   standalone: true,
   imports: [
     CommonModule,
-    RagIcon,
-    RagButton,
     KnowledgeBaseCard,
     RagPageHeader,
-    RagStatsOverview
+    RagStatsOverview,
+    EmptyStatePanel
   ],
   templateUrl: './knowledge-bases.html',
   styleUrl: './knowledge-bases.scss'

@@ -4,12 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { Plus, Wrench, Search, Filter, CheckCircle, AlertTriangle, Clock, Pause } from 'lucide-angular';
 import { ToolCard } from '../../shared/components/composite/tool-card/tool-card';
 import { CreateToolWizard } from '../../shared/components/composite/create-tool-wizard/create-tool-wizard';
-import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
+import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
 import { RagDialogService } from '../../shared/components/semantic/overlay/rag-dialog/rag-dialog.service';
 import { RagToastService } from '../../shared/components/atomic/feedback/rag-toast/rag-toast.service';
 import { MockToolsService } from '../../shared/services/mock-tools.service';
 import { Tool, ToolStatus } from '../../shared/types/tool.types';
-import { RagButton } from '../../shared/components';
 import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
 import { RagStatsOverview, StatItem } from '../../shared/components/semantic/data-display/rag-stats-overview';
 
@@ -19,11 +18,10 @@ import { RagStatsOverview, StatItem } from '../../shared/components/semantic/dat
   imports: [
     CommonModule,
     FormsModule,
-    RagIcon,
     ToolCard,
-    RagButton,
     RagPageHeader,
-    RagStatsOverview
+    RagStatsOverview,
+    EmptyStatePanel
   ],
   templateUrl: './tools.html',
   styleUrl: './tools.scss'

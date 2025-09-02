@@ -1,8 +1,10 @@
+@use '../../../../styles/animations';
+
 :host {
   display: inline-flex;
 }
 
-.rt-Badge {
+.rt-Chip {
   display: inline-flex;
   align-items: center;
   gap: var(--rag-primitive-spacing-xs);
@@ -17,7 +19,7 @@
 }
 
 // Size variants
-.rt-Badge.rt-size-sm {
+.rt-Chip.rt-size-sm {
   height: 16px;
   padding: 0 var(--rag-primitive-spacing-xs);
   font-size: var(--rag-primitive-fontSize-xs);
@@ -25,7 +27,7 @@
   border-radius: var(--rag-primitive-radius-xs);
 }
 
-.rt-Badge.rt-size-md {
+.rt-Chip.rt-size-md {
   height: 20px;
   padding: 0 var(--rag-primitive-spacing-sm);
   font-size: var(--rag-primitive-fontSize-xs);
@@ -34,7 +36,7 @@
 }
 
 // Variant styles
-.rt-Badge.rt-variant-solid {
+.rt-Chip.rt-variant-solid {
   background-color: var(--rag-primitive-color-gray-800);
   color: var(--rag-primitive-color-white);
 
@@ -59,7 +61,7 @@
   }
 }
 
-.rt-Badge.rt-variant-soft {
+.rt-Chip.rt-variant-soft {
   background-color: var(--rag-semantic-color-background-muted);
   color: var(--rag-semantic-color-text-subtle);
 
@@ -84,7 +86,7 @@
   }
 }
 
-.rt-Badge.rt-variant-outline {
+.rt-Chip.rt-variant-outline {
   background-color: var(--rag-primitive-color-transparent);
   border: 1px solid var(--rag-semantic-color-border-default);
   color: var(--rag-semantic-color-text-subtle);
@@ -142,7 +144,7 @@
 }
 
 // Interactive states
-.rt-Badge.rt-chip-selectable {
+.rt-Chip.rt-chip-selectable {
   cursor: pointer;
   transition: all 0.15s ease-in-out;
 
@@ -157,7 +159,7 @@
   }
 }
 
-.rt-Badge.rt-chip-selected {
+.rt-Chip.rt-chip-selected {
   &.rt-variant-soft {
     background-color: var(--rag-semantic-color-primary-100);
     color: var(--rag-semantic-color-primary-600);
@@ -198,7 +200,7 @@
   }
 }
 
-.rt-Badge.rt-chip-disabled {
+.rt-Chip.rt-chip-disabled {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
@@ -249,8 +251,35 @@
   }
 }
 
+.rt-Chip.rt-chip-loading {
+  color: transparent;
+  cursor: not-allowed;
+  pointer-events: none;
+  
+  &.rt-chip-selectable {
+    cursor: not-allowed;
+  }
+}
+
+// Loading spinner
+.rt-chip-spinner {
+  width: 10px;
+  height: 10px;
+  border: 1px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  color: var(--rag-semantic-color-text-subtle);
+}
+
+.rt-Chip.rt-size-sm .rt-chip-spinner {
+  width: 8px;
+  height: 8px;
+  border-width: 1px;
+}
+
 // Size adjustments for close button
-.rt-Badge.rt-size-sm .rt-chip-close {
+.rt-Chip.rt-size-sm .rt-chip-close {
   width: 12px;
   height: 12px;
   margin-left: 2px;

@@ -1,8 +1,6 @@
 import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Plus, Workflow, Search, CheckCircle, AlertTriangle, Clock, Pause } from 'lucide-angular';
-import { RagButton } from '../../shared/components/atomic/primitives/rag-button/rag-button';
-import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
 import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
 import { PipelineCard, type Pipeline } from '../../shared/components/composite/pipeline-card/pipeline-card';
 import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
@@ -14,11 +12,10 @@ import { RagToastService } from '../../shared/components/atomic/feedback/rag-toa
   standalone: true,
   imports: [
     CommonModule,
-    RagButton,
-    RagIcon,
     PipelineCard,
     RagPageHeader,
-    RagStatsOverview
+    RagStatsOverview,
+    EmptyStatePanel
   ],
   templateUrl: './pipelines.html',
   styleUrl: './pipelines.scss'

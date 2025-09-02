@@ -1,3 +1,5 @@
+@use '../../../../styles/animations';
+
 :host {
   display: block;
 }
@@ -7,6 +9,7 @@
   border-radius: var(--rag-primitive-radius-lg);
   border: 1px solid var(--rag-primitive-color-transparent);
   transition: all 0.15s ease;
+  position: relative;
 
   &--default {
     background: var(--rag-archetypes-card-flat-background);
@@ -47,6 +50,29 @@
       box-shadow: var(--rag-archetypes-focus-ring-primary);
       outline: none;
     }
+  }
+
+  &--loading {
+    .rag-card__content {
+      opacity: 0.3;
+    }
+  }
+
+  &__loading-overlay {
+    @include animations.loading-overlay();
+  }
+
+  &__loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-md);
+  }
+
+  &__loading-text {
+    margin: 0;
+    color: var(--rag-semantic-color-text-muted);
+    font-size: var(--rag-primitive-fontSize-sm);
   }
 }
 

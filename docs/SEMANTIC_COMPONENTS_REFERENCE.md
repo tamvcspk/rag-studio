@@ -14,13 +14,15 @@ Quick lookup reference for all RAG Studio semantic components with essential inf
 | `<rag-key-value>` | Data pairs | `pairs: KeyValuePair[]` | Configuration display |
 | `<rag-timestamp>` | Time display | `value`, `format` | Dates, relative time |
 
-### 📝 Forms (4 components)
+### 📝 Forms (6 components)
 | Component | Purpose | Key Props | Use Case |
 |-----------|---------|-----------|----------|
 | `<rag-form-field>` | Field wrapper | `label`, `error`, `required` | Form layouts |
 | `<rag-search-input>` | Search input | `debounceTime`, `showClearButton` | Search functionality |
 | `<rag-version-input>` | Version selector | `allowLatest`, `allowRange` | Package versions |
 | `<rag-cron-input>` | Cron builder | `showPresets` | Scheduling |
+| `<rag-settings-item>` | Settings field layout | `label`, `description`, `icon`, `layout` | Settings pages, configuration |
+| `<rag-settings-section>` | Settings section grouping | `title`, `description`, `icon`, `variant` | Settings organization |
 
 ### 🧭 Navigation (5 components)
 | Component | Purpose | Key Props | Use Case |
@@ -92,6 +94,13 @@ interface CronValue {
   expression: string;
   description: string;
 }
+
+// RagSettingsItem
+type RagSettingsItemLayout = 'horizontal' | 'vertical';
+
+
+// RagSettingsSection
+type RagSettingsSectionVariant = 'default' | 'card' | 'inline';
 ```
 
 ### Navigation Types
@@ -515,5 +524,5 @@ export class FormDialogComponent {
 
 ---
 
-**Last Updated**: September 1, 2025  
-**Total Components**: 17 semantic components
+**Last Updated**: September 2, 2025  
+**Total Components**: 19 semantic components

@@ -20,7 +20,8 @@ Complete quick reference for all RAG Studio components - both atomic and semanti
 // Atomic components
 import { 
   RagButton, RagInput, RagSelect, RagChip, RagAlert,
-  RagIcon, RagSpinner, RagProgress, RagSkeleton, RagOverflowBar
+  RagIcon, RagSpinner, RagProgress, RagSkeleton, RagOverflowBar,
+  RagDivider, RagToggleGroup
 } from './shared/components/atomic';
 
 // Services
@@ -29,7 +30,8 @@ import { ToastService } from './shared/services/toast.service';
 // Semantic components  
 import {
   RagCard, RagStatCard, RagFormField, RagTabs,
-  RagDialog, RagDropdown, RagBreadcrumb
+  RagDialog, RagDropdown, RagBreadcrumb,
+  RagSettingsItem, RagSettingsTabs, RagSettingsSection
 } from './shared/components/semantic';
 
 // Composite components
@@ -496,6 +498,8 @@ export class ActionsComponent {
 | `<rag-toast>` | `toastService.success('Done!', 'Success')` | Service-based, `variant`, `actions` |
 | `<rag-icon>` | `<rag-icon [img]="CheckIcon" variant="success">` | `img`, `size`, `variant` |
 | `<rag-overflow-bar>` | `<rag-overflow-bar><rag-chip>Tag</rag-chip></rag-overflow-bar>` | `scrollAmount`, `hideButtons` |
+| `<rag-divider>` | `<rag-divider [label]="'Settings'" spacing="lg">` | `orientation`, `variant`, `label`, `spacing` |
+| `<rag-toggle-group>` | `<rag-toggle-group [options]="themes" [multiple]="true">` | `options`, `multiple`, `variant`, `size` |
 
 ### 📊 Semantic Components (Business Logic)
 | Component | Quick Example | Most Common Props |
@@ -508,6 +512,8 @@ export class ActionsComponent {
 | `<rag-page-header>` | `<rag-page-header [title]="'Page'" [actions]="acts">` | `title`, `description`, `actions` |
 | `<rag-dialog>` | `<rag-dialog [open]="show" title="Edit">` | `open`, `title`, `size` |
 | `<rag-breadcrumb>` | `<rag-breadcrumb [items]="path">` | `items`, `separator`, `maxItems` |
+| `<rag-settings-item>` | `<rag-settings-item label="Theme" [icon]="icon">` | `label`, `description`, `icon`, `layout` |
+| `<rag-settings-section>` | `<rag-settings-section title="Security" variant="card">` | `title`, `description`, `variant`, `spacing` |
 
 ---
 
@@ -583,6 +589,24 @@ export class ActionsComponent {
   <img src="image.jpg" alt="Full width image">
   <div class="card-content">Content with custom padding</div>
 </rag-card>
+
+<!-- Toggle groups for settings -->
+<rag-toggle-group 
+  [options]="themeOptions"
+  (valueChange)="onThemeChange($event)">
+</rag-toggle-group>
+
+<!-- Multiple selection -->
+<rag-toggle-group 
+  [options]="toolOptions"
+  [multiple]="true"
+  variant="outline"
+  (valueChange)="onToolsChange($event)">
+</rag-toggle-group>
+
+<!-- Section dividers -->
+<rag-divider [label]="'Settings'"></rag-divider>
+<rag-divider variant="dashed" spacing="lg"></rag-divider>
 ```
 
 ---
@@ -669,6 +693,125 @@ export class FormComponent {
     [clearable]="true"
     (valueChange)="filterByTags($event)" />
 </div>
+```
+
+### 9. Settings Pages and Configuration
+
+```html
+<!-- Complete settings page structure -->
+<rag-tabs 
+  [tabs]="settingsTabs"
+  [activeTab]="activeTab()"
+  variant="pills"
+  (tabChange)="onTabChange($event)">
+</rag-tabs>
+  
+<!-- Tab content -->
+@switch (activeTab()) {
+  @case ('general') {
+    <rag-settings-section 
+      title="Appearance"
+      description="Customize the look and feel"
+      [icon]="PaletteIcon">
+      
+      <rag-settings-item 
+        label="Theme"
+        description="Choose your preferred color scheme">
+        <rag-toggle-group 
+          [options]="themeOptions"
+          [formControl]="themeControl">
+        </rag-toggle-group>
+      </rag-settings-item>
+      
+      <rag-divider spacing="lg" />
+      
+      <rag-settings-item 
+        label="Language"
+        description="Select your preferred language">
+        <rag-select 
+          [options]="languageOptions"
+          [formControl]="languageControl">
+        </rag-select>
+      </rag-settings-item>
+    </rag-settings-section>
+    
+    <rag-settings-section 
+      title="Behavior"
+      description="Configure application behavior"
+      [icon]="SettingsIcon"
+      variant="card">
+      
+      <rag-settings-item 
+        label="Auto-save"
+        description="Automatically save your work"
+        layout="vertical">
+        <rag-switch 
+          label="Enable auto-save"
+          [formControl]="autoSaveControl">
+        </rag-switch>
+      </rag-settings-item>
+    </rag-settings-section>
+  }
+  
+  @case ('security') {
+    <rag-settings-section 
+      title="Authentication"
+      description="Manage your security settings"
+      [icon]="ShieldIcon">
+      
+      <rag-settings-item 
+        label="Two-Factor Authentication"
+        description="Add an extra layer of security"
+        [icon]="LockIcon"
+        [required]="true">
+        <rag-switch [formControl]="twoFactorControl">
+      </rag-settings-item>
+    </rag-settings-section>
+  }
+}
+```
+
+```typescript
+// Settings component with all imports
+import { 
+  SunIcon, MoonIcon, MonitorIcon, PaletteIcon, 
+  SettingsIcon, ShieldIcon, LockIcon 
+} from 'lucide-angular';
+
+@Component({
+  imports: [
+    RagTabs, RagSettingsSection, RagSettingsItem,
+    RagToggleGroup, RagSelect, RagSwitch, RagDivider
+  ],
+  template: `<!-- settings template above -->`
+})
+export class SettingsComponent {
+  readonly settingsTabs = [
+    { id: 'general', label: 'General', icon: SettingsIcon },
+    { id: 'security', label: 'Security', icon: ShieldIcon },
+    { id: 'integrations', label: 'Integrations', icon: PlugIcon }
+  ];
+  
+  readonly themeOptions = [
+    { value: 'light', label: 'Light', icon: SunIcon },
+    { value: 'dark', label: 'Dark', icon: MoonIcon },
+    { value: 'system', label: 'System', icon: MonitorIcon }
+  ];
+  
+  readonly activeTab = signal('general');
+  
+  readonly form = this.fb.group({
+    theme: ['system'],
+    language: ['en'],
+    autoSave: [true],
+    twoFactor: [false]
+  });
+  
+  onTabChange(tabId: string) {
+    this.activeTab.set(tabId);
+    this.router.navigate(['/settings', tabId]);
+  }
+}
 ```
 
 ---
@@ -984,5 +1127,5 @@ it('should have no accessibility violations', async () => {
 
 ---
 
-**Last Updated**: September 1, 2025  
-**Components Covered**: 17 atomic + 17 semantic + composite components
+**Last Updated**: September 2, 2025  
+**Components Covered**: 19 atomic + 19 semantic + composite components

@@ -1,3 +1,5 @@
+@use '../../shared/styles/animations';
+
 .flows-page {
   max-width: 1400px;
   margin: 0 auto;
@@ -32,69 +34,9 @@
     }
   }
   
-  // Empty State
-  .empty-state {
-    text-align: center;
-    padding: var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl);
-    background: var(--rag-semantic-color-background-subtle);
-    border: 2px dashed var(--rag-semantic-color-border-muted);
-    border-radius: var(--rag-primitive-radius-xl);
-    
-    .empty-icon {
-      color: var(--rag-semantic-color-text-disabled);
-      margin-bottom: var(--rag-primitive-spacing-lg);
-    }
-    
-    .empty-title {
-      font-size: var(--rag-primitive-fontSize-lg);
-      font-weight: 600;
-      color: var(--rag-semantic-color-text-default);
-      margin: 0 0 var(--rag-primitive-spacing-sm) 0;
-    }
-    
-    .empty-description {
-      color: var(--rag-semantic-color-text-muted);
-      font-size: var(--rag-primitive-fontSize-md);
-      line-height: var(--rag-primitive-lineHeight-md);
-      margin: 0 0 var(--rag-primitive-spacing-xl) 0;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-  
-  // No Results State
-  .no-results {
-    text-align: center;
-    padding: var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl);
-    
-    .no-results-icon {
-      color: var(--rag-semantic-color-text-disabled);
-      margin-bottom: var(--rag-primitive-spacing-lg);
-    }
-    
-    .no-results-title {
-      font-size: var(--rag-primitive-fontSize-lg);
-      font-weight: 600;
-      color: var(--rag-semantic-color-text-default);
-      margin: 0 0 var(--rag-primitive-spacing-sm) 0;
-    }
-    
-    .no-results-description {
-      color: var(--rag-semantic-color-text-muted);
-      font-size: var(--rag-primitive-fontSize-md);
-      margin: 0 0 var(--rag-primitive-spacing-lg) 0;
-    }
-    
-    .no-results-actions {
-      display: flex;
-      justify-content: center;
-    }
-  }
-  
-  .no-flows-message {
-    text-align: center;
-    padding: var(--rag-primitive-spacing-xl);
-    color: var(--rag-semantic-color-text-muted);
-  }
+}
+
+// Animation for cards appearing
+.flows-grid app-flow-card {
+  @extend .animate-fadeInUp;
 }

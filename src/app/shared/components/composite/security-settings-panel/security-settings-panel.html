@@ -1,0 +1,86 @@
+<form [formGroup]="securityForm" (ngSubmit)="onSave()">
+  <!-- Network Security -->
+  <rag-settings-section title="Network Security" description="Control network access and external connections"
+    [icon]="NetworkIcon" variant="card">
+
+    <rag-settings-item label="Air-Gapped Mode"
+      description="Block all outbound network connections after setup. Ensures complete data isolation."
+      layout="horizontal">
+      <rag-switch formControlName="airGappedMode" />
+    </rag-settings-item>
+
+    @if (securityForm.get('airGappedMode')?.value) {
+    <rag-alert variant="warning" title="Air-Gapped Mode Active">
+      All external network access will be blocked. You won't be able to download new models or updates.
+    </rag-alert>
+    }
+
+    <rag-settings-item label="Network Policy" description="Define which network operations are allowed"
+      layout="horizontal">
+      <rag-select formControlName="networkPolicy" [options]="networkPolicyOptions()"
+        [disabled]="securityForm.get('airGappedMode')?.value" placeholder="Select policy" />
+    </rag-settings-item>
+  </rag-settings-section>
+
+  <!-- Data Protection -->
+  <rag-settings-section title="Data Protection" description="Encryption and data security settings" [icon]="LockIcon"
+    variant="card">
+
+    <rag-settings-item label="Encrypt Data at Rest"
+      description="Encrypt knowledge bases and sensitive data stored on disk" layout="horizontal">
+      <rag-switch formControlName="encryptData" />
+    </rag-settings-item>
+
+    <rag-settings-item label="Citation Policy"
+      description="Require citations for all RAG responses (recommended for transparency)" layout="horizontal">
+      <rag-switch formControlName="citationPolicy" />
+    </rag-settings-item>
+
+    @if (!securityForm.get('citationPolicy')?.value) {
+    <rag-alert variant="info" title="Citation Policy Disabled">
+      RAG responses may be generated without source citations. Consider enabling for better transparency.
+    </rag-alert>
+    }
+  </rag-settings-section>
+
+  <!-- Access Control -->
+  <rag-settings-section title="Access Control" description="Manage permissions and access levels" [icon]="ShieldIcon"
+    variant="card">
+
+    <rag-settings-item label="Default Permission Level"
+      description="Default access level for file system and process operations" layout="horizontal">
+      <rag-toggle-group formControlName="permissionLevel" [options]="permissionLevelOptions()" size="md" />
+    </rag-settings-item>
+
+    <rag-settings-item label="Audit Logging"
+      description="Log all security-related operations and permission escalations" layout="horizontal">
+      <rag-switch formControlName="auditLogging" />
+    </rag-settings-item>
+  </rag-settings-section>
+
+  <!-- Privacy & Logging -->
+  <rag-settings-section title="Privacy & Logging" description="Control what information is logged and retained"
+    [icon]="EyeIcon" variant="card">
+
+    <rag-settings-item label="Log Redaction" description="Automatically redact sensitive information from log files"
+      layout="horizontal">
+      <rag-switch formControlName="logRedaction" />
+    </rag-settings-item>
+
+    <rag-settings-item label="Log Retention (Days)" description="How long to keep log files before automatic deletion"
+      layout="horizontal">
+      <rag-select formControlName="logRetention" [options]="logRetentionOptions()"
+        placeholder="Select retention period" />
+    </rag-settings-item>
+  </rag-settings-section>
+
+  <!-- Actions -->
+  <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+    <rag-button variant="outline" type="button" (click)="onReset()">
+      Reset to Defaults
+    </rag-button>
+    <rag-button variant="solid" type="submit" [loading]="isSaving()" [disabled]="!securityForm.valid">
+      Save Security Settings
+    </rag-button>
+  </div>
+</form>

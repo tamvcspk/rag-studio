@@ -33,6 +33,8 @@ All atomic components leverage the **RAG Studio Design Token System** with three
   - [RagSwitch](#ragswitch)
   - [RagTextarea](#ragtextarea)
   - [RagOverflowBar](#ragoverflowbar)
+  - [RagDivider](#ragdivider)
+  - [RagToggleGroup](#ragtogglegroup)
 - [Feedback Components](#feedback-components)
   - [RagAlert](#ragalert)
   - [RagStatusIndicator](#ragstatusindicator)
@@ -61,6 +63,7 @@ A versatile chip component for displaying status, counts, or labels with interac
 | `removable` | `boolean` | `false` | Show close button for removal functionality |
 | `selectable` | `boolean` | `false` | Enable click selection functionality |
 | `disabled` | `boolean` | `false` | Disabled state (affects removable and selectable) |
+| `loading` | `boolean` | `false` | Loading state with spinner (disables interactions) |
 
 #### Events
 
@@ -111,6 +114,17 @@ A versatile chip component for displaying status, counts, or labels with interac
   [selectable]="true"
   [disabled]="true">
   Disabled
+</rag-chip>
+
+<!-- Loading chip -->
+<rag-chip [loading]="true">Loading...</rag-chip>
+
+<!-- Loading with removable (close disabled) -->
+<rag-chip 
+  [loading]="true"
+  [removable]="true"
+  [color]="'blue'">
+  Processing
 </rag-chip>
 
 <!-- Different variants -->
@@ -345,7 +359,7 @@ interface RagSelectOption<T = any> {
 
 ### RagSpinner
 
-A loading spinner component with customizable size and color.
+A loading spinner component with customizable size, color, diameter, stroke width, and mode for both determinate and indeterminate loading states.
 
 **Selector:** `rag-spinner`
 
@@ -353,23 +367,39 @@ A loading spinner component with customizable size and color.
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the spinner |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Predefined size of the spinner |
 | `color` | `string \| undefined` | `undefined` | Custom color (CSS color value) |
+| `diameter` | `number \| undefined` | `undefined` | Custom diameter in pixels (overrides size) |
+| `mode` | `'determinate' \| 'indeterminate'` | `'indeterminate'` | Loading mode - indeterminate (spinning) or determinate (static) |
+| `strokeWidth` | `number` | `2` | Border width in pixels |
 
 #### Usage Examples
 
 ```html
-<!-- Basic spinner -->
+<!-- Basic indeterminate spinner -->
 <rag-spinner></rag-spinner>
 
 <!-- Large spinner with custom color -->
 <rag-spinner [size]="'lg'" [color]="'#3b82f6'"></rag-spinner>
+
+<!-- Custom diameter and stroke width -->
+<rag-spinner [diameter]="40" [strokeWidth]="3"></rag-spinner>
+
+<!-- Determinate spinner (static) -->
+<rag-spinner [mode]="'determinate'" [color]="'#10b981'"></rag-spinner>
 
 <!-- Inline with text -->
 <div class="loading-state">
   <rag-spinner [size]="'sm'"></rag-spinner>
   <span>Loading...</span>
 </div>
+
+<!-- Custom sized spinner for specific use case -->
+<rag-spinner 
+  [diameter]="24" 
+  [strokeWidth]="2" 
+  [color]="'var(--rag-semantic-color-primary-500)'">
+</rag-spinner>
 ```
 
 ---
@@ -707,6 +737,183 @@ The component uses design tokens for consistent theming:
   }
 }
 ```
+
+---
+
+### RagDivider
+
+A visual separator component for dividing sections with customizable orientation, style, and spacing.
+
+**Selector:** `rag-divider`
+
+#### Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Divider orientation |
+| `variant` | `'solid' \| 'dashed' \| 'dotted'` | `'solid'` | Line style variant |
+| `label` | `string \| undefined` | `undefined` | Optional label text |
+| `spacing` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Spacing around divider |
+
+#### Usage Examples
+
+```html
+<!-- Basic horizontal divider -->
+<rag-divider></rag-divider>
+
+<!-- Divider with label -->
+<rag-divider [label]="'Settings'"></rag-divider>
+
+<!-- Vertical divider -->
+<rag-divider orientation="vertical"></rag-divider>
+
+<!-- Dashed divider with custom spacing -->
+<rag-divider 
+  variant="dashed" 
+  spacing="lg" 
+  [label]="'Advanced Options'">
+</rag-divider>
+
+<!-- Section separation -->
+<rag-divider variant="dotted" spacing="xl"></rag-divider>
+```
+
+#### Accessibility
+- Uses proper `role="separator"` for screen readers
+- Includes `aria-orientation` attribute for orientation information
+- Label text is properly accessible when provided
+
+---
+
+### RagToggleGroup
+
+A multi-option selection component that allows single or multiple selection with support for icons and form integration.
+
+**Selector:** `rag-toggle-group`
+
+#### Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `options` | `RagToggleGroupOption<T>[]` | `[]` | Array of options |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Component size |
+| `variant` | `'default' \| 'outline' \| 'ghost'` | `'default'` | Visual style variant |
+| `disabled` | `boolean` | `false` | Disabled state |
+| `multiple` | `boolean` | `false` | Allow multiple selection |
+| `value` | `T \| T[] \| null` | `null` | Current value(s) |
+
+#### Events
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `valueChange` | `EventEmitter<T \| T[] \| null>` | Emitted when selection changes |
+
+#### Types
+
+```typescript
+interface RagToggleGroupOption<T = string> {
+  value: T;
+  label: string;
+  icon?: any; // Lucide icon component
+  disabled?: boolean;
+}
+```
+
+#### Usage Examples
+
+```html
+<!-- Single selection theme toggle -->
+<rag-toggle-group 
+  [options]="themeOptions"
+  (valueChange)="onThemeChange($event)">
+</rag-toggle-group>
+
+<!-- Multiple selection with icons -->
+<rag-toggle-group 
+  [options]="toolOptions"
+  [multiple]="true"
+  variant="outline"
+  size="lg"
+  (valueChange)="onToolsChange($event)">
+</rag-toggle-group>
+
+<!-- Form integration -->
+<rag-toggle-group 
+  [formControl]="preferencesControl"
+  [options]="preferenceOptions"
+  [multiple]="true">
+</rag-toggle-group>
+
+<!-- Disabled state -->
+<rag-toggle-group 
+  [options]="statusOptions"
+  [disabled]="isLoading()"
+  (valueChange)="onStatusChange($event)">
+</rag-toggle-group>
+```
+
+```typescript
+// Component setup with icon imports
+import { SunIcon, MoonIcon, MonitorIcon } from 'lucide-angular';
+
+@Component({
+  selector: 'app-example',
+  imports: [RagToggleGroup],
+  template: `
+    <rag-toggle-group 
+      [options]="themeOptions"
+      (valueChange)="onThemeChange($event)">
+    </rag-toggle-group>
+  `
+})
+export class ExampleComponent {
+  readonly themeOptions = [
+    { value: 'light', label: 'Light', icon: SunIcon },
+    { value: 'dark', label: 'Dark', icon: MoonIcon },
+    { value: 'system', label: 'System', icon: MonitorIcon }
+  ];
+
+  onThemeChange(theme: string | null) {
+    if (theme) {
+      this.setTheme(theme);
+    }
+  }
+}
+```
+
+#### Form Integration
+Implements `ControlValueAccessor` for seamless reactive forms integration:
+
+```typescript
+// Reactive form integration
+const form = this.fb.group({
+  tools: [['search', 'filter']], // Pre-selected multiple values
+  theme: ['light'] // Single selection
+});
+```
+
+```html
+<form [formGroup]="form">
+  <rag-toggle-group 
+    formControlName="tools"
+    [options]="toolOptions"
+    [multiple]="true">
+  </rag-toggle-group>
+  
+  <rag-toggle-group 
+    formControlName="theme"
+    [options]="themeOptions">
+  </rag-toggle-group>
+</form>
+```
+
+#### Features
+- **Single/Multiple Selection**: Toggle between single and multi-select modes
+- **Icon Support**: Display Lucide icons alongside labels
+- **Form Integration**: Full `ControlValueAccessor` support
+- **Keyboard Navigation**: Arrow keys and Enter/Space selection
+- **Accessibility**: Proper ARIA states and screen reader support
+- **Disabled States**: Individual options and entire component can be disabled
 
 ---
 

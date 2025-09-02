@@ -1,1 +1,102 @@
-<span>Settings page - Coming soon</span>
+<div class="settings-page">
+  <div class="sticky-header">
+    <!-- Page Header -->
+    <rag-page-header
+      [title]="'Settings'"
+      [description]="'Configure your RAG Studio instance and security preferences'"
+      [icon]="SettingsIcon"
+      size="lg">
+    </rag-page-header>
+    <rag-tabs
+      [tabs]="settingsTabs()"
+      [activeTab]="activeTab()"
+      variant="pills"
+      size="md"
+      (tabChange)="onTabChange($event)">
+    </rag-tabs>
+  </div>
+
+  <!-- Settings Content -->
+  <div class="settings-content">
+    <!-- Settings Navigation Tabs -->
+    
+
+    <!-- Tab Content -->
+    <div class="settings-tab-content">
+      <!-- General Settings Tab -->
+      @if (activeTab() === 'general') {
+        <rag-general-settings-panel
+          [settings]="generalSettings()"
+          (settingsChange)="onGeneralSettingsChange($event)"
+          (directorySelect)="selectDataDirectory()" />
+      }
+
+      <!-- Security Settings Tab -->
+      @if (activeTab() === 'security') {
+        <rag-security-settings-panel
+          [settings]="securitySettings()"
+          (settingsChange)="onSecuritySettingsChange($event)" />
+      }
+
+      <!-- Performance Settings Tab -->
+      @if (activeTab() === 'performance') {
+        <div class="coming-soon-panel">
+          <rag-empty-state-panel
+            [title]="'Performance Settings'"
+            [description]="'Configure RAG performance, caching, and resource limits'"
+            [icon]="ZapIcon">
+            <rag-button variant="outline" size="lg">
+              Coming Soon
+            </rag-button>
+          </rag-empty-state-panel>
+        </div>
+      }
+
+      <!-- Advanced Settings Tab -->
+      @if (activeTab() === 'advanced') {
+        <div class="coming-soon-panel">
+          <rag-empty-state-panel
+            [title]="'Advanced Settings'"
+            [description]="'Expert configuration options and developer settings'"
+            [icon]="CodeIcon">
+            <rag-button variant="outline" size="lg">
+              Coming Soon
+            </rag-button>
+          </rag-empty-state-panel>
+        </div>
+      }
+
+      <!-- About Tab -->
+      @if (activeTab() === 'about') {
+        <div class="about-panel">
+          <rag-card variant="elevated">
+            <div style="padding: 24px; text-align: center;">
+              <rag-icon [img]="DatabaseIcon" size="xl" style="color: var(--rag-semantic-color-primary-600); margin-bottom: 16px;" />
+              <h2 style="font-size: var(--rag-primitive-fontSize-xl); font-weight: var(--rag-primitive-fontWeight-semibold); margin-bottom: 8px;">RAG Studio</h2>
+              <p style="color: var(--rag-semantic-color-text-muted); margin-bottom: 24px;">Personal RAG & MCP Server</p>
+              
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 400px; margin: 0 auto;">
+                <div>
+                  <div style="font-weight: var(--rag-primitive-fontWeight-medium);">Version</div>
+                  <div style="color: var(--rag-semantic-color-text-muted);">{{ appVersion() }}</div>
+                </div>
+                <div>
+                  <div style="font-weight: var(--rag-primitive-fontWeight-medium);">Platform</div>
+                  <div style="color: var(--rag-semantic-color-text-muted);">{{ platform() }}</div>
+                </div>
+                <div>
+                  <div style="font-weight: var(--rag-primitive-fontWeight-medium);">Data Directory</div>
+                  <div style="color: var(--rag-semantic-color-text-muted); font-family: monospace; font-size: var(--rag-primitive-fontSize-sm);">{{ dataDirectory() }}</div>
+                </div>
+                <div>
+                  <div style="font-weight: var(--rag-primitive-fontWeight-medium);">Uptime</div>
+                  <div style="color: var(--rag-semantic-color-text-muted);">{{ uptime() }}</div>
+                </div>
+              </div>
+            </div>
+          </rag-card>
+        </div>
+      }
+    </div>
+  </div>
+</div>

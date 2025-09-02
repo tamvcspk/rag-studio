@@ -3,10 +3,10 @@
 }
 
 .rag-stat-card {
-  background: var(--rag-archetypes-card-default-background);
-  border-radius: var(--rag-archetypes-card-default-borderRadius);
-  box-shadow: var(--rag-archetypes-card-default-boxShadow);
-  border: var(--rag-archetypes-card-default-border);
+  background: var(--rag-archetypes-card-flat-background);
+  border-radius: var(--rag-primitive-radius-lg);
+  box-shadow: var(--rag-archetypes-card-flat-boxShadow);
+  border: var(--rag-archetypes-card-flat-border);
   overflow: hidden;
 
   &--default {
@@ -29,8 +29,8 @@
 
   &--md {
     .rag-stat-card__value {
-      font-size: 28px;
-      line-height: 36px;
+      font-size: var(--rag-primitive-fontSize-xl);
+      line-height: var(--rag-primitive-lineHeight-xl);
     }
   }
 
@@ -38,8 +38,8 @@
     padding: var(--rag-primitive-spacing-xl);
     
     .rag-stat-card__value {
-      font-size: 35px;
-      line-height: 40px;
+      font-size: var(--rag-primitive-fontSize-xl);
+      line-height: var(--rag-primitive-lineHeight-xl);
     }
   }
 
@@ -53,22 +53,22 @@
   &__label {
     font-size: var(--rag-primitive-fontSize-sm);
     line-height: var(--rag-primitive-lineHeight-sm);
-    font-weight: 500;
-    color: var(--rag-semantic-color-text-muted);
+    font-weight: var(--rag-primitive-fontWeight-medium);
+    color: var(--rag-semantic-color-text-subtle);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   &__icon {
-    width: 16px;
-    height: 16px;
-    color: var(--rag-primitive-color-gray-800);
+    width: var(--rag-archetypes-icon-size-md);
+    height: var(--rag-archetypes-icon-size-md);
+    color: var(--rag-archetypes-icon-color-subtle);
     flex-shrink: 0;
   }
 
   &__value {
-    font-weight: 600;
-    line-height: 1;
+    font-weight: var(--rag-primitive-fontWeight-semibold);
+    line-height: var(--rag-primitive-lineHeight-tight);
     margin-bottom: var(--rag-primitive-spacing-sm);
     color: var(--rag-semantic-color-text-default);
   }
@@ -78,14 +78,14 @@
     align-items: center;
     gap: var(--rag-primitive-spacing-xs);
     font-size: var(--rag-primitive-fontSize-sm);
-    font-weight: 500;
+    font-weight: var(--rag-primitive-fontWeight-medium);
 
     &--up {
-      color: var(--rag-semantic-color-success-700);
+      color: var(--rag-archetypes-icon-color-success);
     }
 
     &--down {
-      color: var(--rag-semantic-color-danger-700);
+      color: var(--rag-archetypes-icon-color-danger);
     }
 
     &--neutral {
@@ -100,15 +100,15 @@
 
 @media (prefers-color-scheme: dark) {
   .rag-stat-card {
-    background: var(--rag-primitive-color-gray-950);
-    border-color: var(--rag-primitive-color-gray-800);
+    /* background: var(--rag-semantic-color-background-subtle);
+    border-color: var(--rag-semantic-color-border-muted); */
 
-    &--minimal {
+    /* &--minimal {
       background: transparent;
     }
 
     &__value {
-      color: var(--rag-primitive-color-white);
-    }
+      color: var(--rag-semantic-color-text-inverse);
+    } */
   }
 }

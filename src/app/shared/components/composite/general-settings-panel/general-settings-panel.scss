@@ -1,0 +1,33 @@
+.general-settings-panel {
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--rag-primitive-spacing-md);
+    margin-top: var(--rag-primitive-spacing-xl);
+    padding-top: var(--rag-primitive-spacing-lg);
+    border-top: 1px solid var(--rag-semantic-color-border-subtle);
+  }
+
+  .directory-selector {
+    display: flex;
+    gap: var(--rag-primitive-spacing-sm);
+
+    rag-input {
+      flex: 1;
+    }
+  }
+
+  .conditional-settings {
+    margin-left: var(--rag-primitive-spacing-lg);
+    padding-left: var(--rag-primitive-spacing-lg);
+    border-left: 2px solid var(--rag-semantic-color-border-subtle);
+  }
+}
+
+// Form validation styling
+rag-input[error="true"],
+rag-select[error="true"] {
+  --input-border-color: var(--rag-semantic-color-danger-500);
+  --input-focus-border-color: var(--rag-semantic-color-danger-600);
+  --input-focus-box-shadow: 0 0 0 3px var(--rag-semantic-color-danger-100);
+}

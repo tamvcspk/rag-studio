@@ -1,3 +1,5 @@
+@use '../../../../styles/animations';
+
 :host {
   display: inline-flex;
   align-items: center;
@@ -9,7 +11,15 @@
   border: 2px solid var(--rag-primitive-color-gray-300);
   border-top-color: var(--rag-semantic-color-primary-500);
   border-radius: 50%;
+}
+
+.rt-Spinner.rt-mode-indeterminate {
   animation: spin 0.6s linear infinite;
+}
+
+.rt-Spinner.rt-mode-determinate {
+  animation: none;
+  transform: rotate(-90deg);
 }
 
 .rt-Spinner.rt-size-sm {
@@ -25,9 +35,4 @@
 .rt-Spinner.rt-size-lg {
   width: 32px;
   height: 32px;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }

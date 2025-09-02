@@ -39,7 +39,7 @@ Components for presenting data:
 - **Card**: Content containers using card archetype variants
 - **Stat Card**: Metrics display with card archetype foundation
 - **Code Block**: Code presentation
-- **Stats Overview**: Statistics display with filtering functionality
+- **Stats Overview**: Statistics display with comprehensive archetype styling for containers, items, icons, and loading states
 
 ### � Form Archetype
 Components for data input:
@@ -74,7 +74,7 @@ For detailed archetype documentation and implementation details, see [ARCHETYPE_
 | Category | Components | Purpose |
 |----------|------------|---------|
 | **Data Display** | 6 components | Presenting information and data visualization |
-| **Forms** | 4 components | Advanced form controls and input patterns |
+| **Forms** | 7 components | Advanced form controls and input patterns |
 | **Navigation** | 4 components | User navigation and wayfinding |
 | **Overlay** | 3 components | Modal dialogs, dropdowns, and layered content |
 
@@ -88,9 +88,11 @@ For detailed archetype documentation and implementation details, see [ARCHETYPE_
 #### Props
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `variant` | `'default' \| 'elevated' \| 'outlined'` | `'default'` | Visual style variant |
+| `variant` | `'default' \| 'elevated' \| 'floating'` | `'default'` | Visual style variant |
 | `padding` | `boolean` | `true` | Apply internal padding |
 | `interactive` | `boolean` | `false` | Enable hover/focus interactions |
+| `loading` | `boolean` | `false` | Show loading overlay with spinner |
+| `loadingText` | `string` | `'Loading...'` | Text displayed during loading state |
 
 #### Usage
 ```html
@@ -105,16 +107,30 @@ For detailed archetype documentation and implementation details, see [ARCHETYPE_
   <div>Clickable card content</div>
 </rag-card>
 
-<!-- Outlined card without padding -->
-<rag-card variant="outlined" [padding]="false">
+<!-- Floating card without padding -->
+<rag-card variant="floating" [padding]="false">
   <img src="image.jpg" alt="Full width image">
+</rag-card>
+
+<!-- Loading card with custom text -->
+<rag-card [loading]="isLoading()" loadingText="Processing data...">
+  <h3>Data Processing</h3>
+  <p>This content will be dimmed while loading</p>
 </rag-card>
 ```
 
 #### Variants
 - **Default**: Subtle shadow, standard appearance
 - **Elevated**: Prominent shadow, elevated appearance  
-- **Outlined**: Border only, minimal shadow
+- **Floating**: Enhanced shadow with floating effect
+
+#### Loading States
+The RagCard component includes built-in loading functionality:
+- **Loading Overlay**: Semi-transparent overlay with centered spinner
+- **Content Dimming**: Card content becomes dimmed (opacity 0.3) during loading
+- **Custom Loading Text**: Configurable loading message
+- **Smooth Transitions**: Loading states fade in/out smoothly
+- **No Skeleton**: Uses spinner overlay instead of skeleton placeholders for cleaner UX
 
 ---
 
@@ -406,6 +422,202 @@ interface VersionValue {
   [formControl]="cronControl"
   [showPresets]="true"
   (cronChange)="onCronChange($event)" />
+```
+
+---
+
+### RagSettingsItem
+
+A specialized form field wrapper designed for settings pages with flexible layout options and icon support.
+
+**Selector:** `rag-settings-item`
+
+#### Props
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `label` | `string` | | Setting label text |
+| `description` | `string` | | Optional description text |
+| `icon` | `any` | | Lucide icon component |
+| `required` | `boolean` | `false` | Show required indicator |
+| `layout` | `'horizontal' \| 'vertical'` | `'horizontal'` | Field layout orientation |
+| `htmlFor` | `string` | | Label association for form controls |
+
+#### Usage
+
+```html
+<!-- Basic settings item -->
+<rag-settings-item 
+  label="Theme Preference"
+  description="Choose your preferred color scheme">
+  <rag-toggle-group 
+    [options]="themeOptions"
+    [formControl]="themeControl">
+  </rag-toggle-group>
+</rag-settings-item>
+
+<!-- With icon and vertical layout -->
+<rag-settings-item 
+  label="Notifications"
+  description="Configure your notification preferences"
+  [icon]="BellIcon"
+  layout="vertical">
+  <rag-switch 
+    label="Email notifications"
+    [formControl]="emailNotificationsControl">
+  </rag-switch>
+  <rag-switch 
+    label="Push notifications"
+    [formControl]="pushNotificationsControl">
+  </rag-switch>
+</rag-settings-item>
+
+<!-- Required field -->
+<rag-settings-item 
+  label="API Key"
+  description="Your OpenAI API key for model access"
+  [icon]="KeyIcon"
+  [required]="true">
+  <rag-input 
+    type="password"
+    [formControl]="apiKeyControl"
+    placeholder="sk-...">
+  </rag-input>
+</rag-settings-item>
+```
+
+---
+
+
+### RagSettingsSection
+
+A section container component for organizing settings into logical groups with optional headers and dividers.
+
+**Selector:** `rag-settings-section`
+
+#### Props
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `title` | `string` | | Section title |
+| `description` | `string` | | Optional section description |
+| `icon` | `any` | | Lucide icon component |
+| `variant` | `'default' \| 'card' \| 'inline'` | `'default'` | Visual style variant |
+| `spacing` | `'sm' \| 'md' \| 'lg' \| 'xl'` | `'lg'` | Section spacing |
+
+#### Usage
+
+```html
+<!-- Default section with divider -->
+<rag-settings-section 
+  title="Account Settings"
+  description="Manage your account preferences and profile information"
+  [icon]="UserIcon">
+  
+  <rag-settings-item label="Display Name">
+    <rag-input [formControl]="displayNameControl">
+  </rag-settings-item>
+  
+  <rag-settings-item label="Email Address">
+    <rag-input type="email" [formControl]="emailControl">
+  </rag-settings-item>
+</rag-settings-section>
+
+<!-- Card variant for visual separation -->
+<rag-settings-section 
+  title="Privacy & Security"
+  description="Configure your privacy settings and security preferences"
+  [icon]="ShieldIcon"
+  variant="card">
+  
+  <rag-settings-item 
+    label="Two-Factor Authentication"
+    description="Add an extra layer of security to your account">
+    <rag-switch [formControl]="twoFactorControl">
+  </rag-settings-item>
+  
+  <rag-settings-item 
+    label="Session Timeout"
+    description="Automatically log out after period of inactivity">
+    <rag-select 
+      [options]="timeoutOptions"
+      [formControl]="sessionTimeoutControl">
+  </rag-select>
+  </rag-settings-item>
+</rag-settings-section>
+
+<!-- Inline variant for compact sections -->
+<rag-settings-section 
+  title="Quick Actions"
+  variant="inline"
+  spacing="sm">
+  
+  <div class="action-buttons">
+    <rag-button variant="outline">Export Data</rag-button>
+    <rag-button variant="outline">Clear Cache</rag-button>
+    <rag-button variant="outline" color="red">Delete Account</rag-button>
+  </div>
+</rag-settings-section>
+```
+
+#### Variants
+
+- **Default**: Section with header and divider separator
+- **Card**: Section wrapped in elevated card container
+- **Inline**: Compact section without divider, minimal spacing
+
+#### Integration Example
+
+```typescript
+// Complete settings page component
+@Component({
+  selector: 'app-settings',
+  imports: [
+    RagTabs, RagSettingsSection, RagSettingsItem,
+    RagInput, RagSwitch, RagSelect, RagToggleGroup
+  ],
+  template: `
+    <rag-tabs 
+      [tabs]="tabs"
+      [activeTab]="activeTab()"
+      variant="pills"
+      (tabChange)="setActiveTab($event)">
+    </rag-tabs>
+      
+    @switch (activeTab()) {
+      @case ('general') {
+        <rag-settings-section 
+          title="Appearance"
+          description="Customize the look and feel"
+          [icon]="PaletteIcon">
+          
+          <rag-settings-item 
+            label="Theme"
+            description="Choose your preferred color scheme">
+            <rag-toggle-group 
+              [options]="themeOptions"
+              [formControl]="themeControl">
+            </rag-toggle-group>
+          </rag-settings-item>
+        </rag-settings-section>
+      }
+    }
+  `
+})
+export class SettingsComponent {
+  readonly tabs = [
+    { id: 'general', label: 'General', icon: SettingsIcon },
+    { id: 'privacy', label: 'Privacy', icon: ShieldIcon }
+  ];
+  
+  readonly activeTab = signal('general');
+  
+  readonly themeOptions = [
+    { value: 'light', label: 'Light', icon: SunIcon },
+    { value: 'dark', label: 'Dark', icon: MoonIcon },
+    { value: 'system', label: 'System', icon: MonitorIcon }
+  ];
+}
 ```
 
 ---
@@ -1091,6 +1303,6 @@ These components form the building blocks for complex RAG Studio interfaces, pro
 
 ---
 
-**Last Updated**: September 1, 2025  
+**Last Updated**: September 2, 2025  
 **Version**: 2.1.0  
-**Total Components**: 17 semantic components
+**Total Components**: 19 semantic components

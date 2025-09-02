@@ -9,11 +9,13 @@
         variant="soft" 
         size="sm" 
         [disabled]="isRefreshing()"
+        [loading]="isRefreshing()"
         (click)="refresh()">
-        <rag-icon 
-          [img]="RefreshCwIcon" 
-          [class.animate-spin]="isRefreshing()" 
-          size="xs" />
+        @if (!isRefreshing()) {
+          <rag-icon 
+            [img]="RefreshCwIcon" 
+            size="xs" />
+        }
         Refresh
       </rag-button>
     </div>

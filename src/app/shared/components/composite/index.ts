@@ -15,3 +15,5 @@ export * from './pipeline-flow-visualization/pipeline-flow-visualization';
 export * from './flow-card/flow-card';
 export * from './create-flow-wizard/create-flow-wizard';
 export * from './flow-designer/flow-designer';
+export * from './general-settings-panel/general-settings-panel';
+export * from './security-settings-panel/security-settings-panel';

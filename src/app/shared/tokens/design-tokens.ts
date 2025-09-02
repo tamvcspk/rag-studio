@@ -517,7 +517,7 @@ export const ComponentArchetypes = {
       padding: `${cssVarValue('primitive.spacing.lg')} ${cssVarValue('primitive.spacing.xl')}`
     },
     description: {
-      padding: `0 ${cssVarValue('--rag-primitive-spacing-xl')} ${cssVarValue('--rag-primitive-spacing-xl')} ${cssVarValue('--rag-primitive-spacing-xl')}`
+      padding: `0 ${cssVarValue('primitive.spacing.xl')} ${cssVarValue('primitive.spacing.xl')} ${cssVarValue('primitive.spacing.xl')}`
     },
     content: {
       padding: cssVarValue('primitive.spacing.xl')
