@@ -1,7 +1,7 @@
 import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Plus, Wrench, Search, Filter } from 'lucide-angular';
+import { Plus, Wrench, Search, Filter, CheckCircle, AlertTriangle, Clock, Pause } from 'lucide-angular';
 import { ToolCard } from '../../shared/components/composite/tool-card/tool-card';
 import { CreateToolWizard } from '../../shared/components/composite/create-tool-wizard/create-tool-wizard';
 import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
@@ -9,8 +9,9 @@ import { RagDialogService } from '../../shared/components/semantic/overlay/rag-d
 import { RagToastService } from '../../shared/components/atomic/feedback/rag-toast/rag-toast.service';
 import { MockToolsService } from '../../shared/services/mock-tools.service';
 import { Tool, ToolStatus } from '../../shared/types/tool.types';
-import { RagChip, RagButton, RagSearchInput, RagSelect } from '../../shared/components';
+import { RagButton } from '../../shared/components';
 import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
+import { RagStatsOverview, StatItem } from '../../shared/components/semantic/data-display/rag-stats-overview';
 
 @Component({
   selector: 'app-tools',
@@ -21,10 +22,8 @@ import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-p
     RagIcon,
     ToolCard,
     RagButton,
-    RagSearchInput,
-    RagSelect,
-    RagChip,
-    RagPageHeader
+    RagPageHeader,
+    RagStatsOverview
   ],
   templateUrl: './tools.html',
   styleUrl: './tools.scss'
@@ -39,58 +38,129 @@ export class Tools {
   readonly WrenchIcon = Wrench;
   readonly SearchIcon = Search;
   readonly FilterIcon = Filter;
+  readonly CheckCircleIcon = CheckCircle;
+  readonly AlertTriangleIcon = AlertTriangle;
+  readonly ClockIcon = Clock;
+  readonly PauseIcon = Pause;
   
   // Reactive signals
   readonly tools = this.toolsService.tools;
   readonly searchQuery = signal('');
-  readonly statusFilter = signal<ToolStatus | 'ALL'>('ALL');
+  readonly selectedFilters = signal<string[]>([]);
   readonly isLoading = signal(false);
-  
-  // Lucide icons
-  readonly Plus = Plus;
-  readonly Wrench = Wrench;
-  readonly Search = Search;
-  readonly Filter = Filter;
 
   // Page header actions
   readonly headerActions = computed(() => [
     {
       label: 'Create Tool',
-      icon: Plus,
+      icon: this.PlusIcon,
       variant: 'solid' as const,
       action: () => this.onCreateTool()
     }
   ]);
   
-  // Filter options for dropdown
-  readonly statusFilterOptions = [
-    { value: 'ALL', label: 'All Statuses' },
-    { value: 'ACTIVE', label: 'Active' },
-    { value: 'INACTIVE', label: 'Inactive' },
-    { value: 'ERROR', label: 'Error' },
-    { value: 'PENDING', label: 'Pending' }
-  ];
-  
   // Computed filtered tools
   readonly filteredTools = computed(() => {
     const tools = this.tools();
     const query = this.searchQuery().toLowerCase().trim();
-    const statusFilter = this.statusFilter();
+    const selectedFilters = this.selectedFilters();
+    console.log('Filtering tools with query:', query, 'selectedFilters:', selectedFilters);
     
-    return tools.filter(tool => {
-      const matchesSearch = !query || 
-        tool.name.toLowerCase().includes(query) ||
-        tool.endpoint.toLowerCase().includes(query) ||
-        tool.description.toLowerCase().includes(query);
-      
-      const matchesStatus = statusFilter === 'ALL' || tool.status === statusFilter;
-      
-      return matchesSearch && matchesStatus;
+    if (!tools || tools.length === 0) {
+      return [];
+    }
+    
+    // First filter by search query
+    let filteredTools = !query ? tools : tools.filter(tool => {
+      if (!tool) return false;
+
+      // Check if query matches any searchable field
+      return [
+        tool.name?.toLowerCase() || '',
+        tool.endpoint?.toLowerCase() || '',
+        tool.description?.toLowerCase() || ''
+      ].some(field => field.includes(query));
     });
+    
+    // Then filter by selected status filters if any
+    if (selectedFilters.length > 0) {
+      // Map stat IDs to tool statuses
+      const statusMapping: Record<string, ToolStatus> = {
+        'active': 'ACTIVE',
+        'error': 'ERROR',
+        'inactive': 'INACTIVE',
+        'pending': 'PENDING'
+      };
+      
+      filteredTools = filteredTools.filter(tool => {
+        if (!tool.status) return false;
+        
+        // Check if tool status matches any selected filter
+        return selectedFilters.some(filterId => {
+          const mappedStatus = statusMapping[filterId];
+          return mappedStatus && tool.status === mappedStatus;
+        });
+      });
+    }
+    
+    return filteredTools;
   });
   
   // Computed statistics
   readonly toolStats = computed(() => this.toolsService.getToolStats());
+  
+  // Computed statistics for overview component
+  readonly toolStatsItems = computed(() => {
+    const stats = this.toolStats();
+    const items: StatItem[] = [
+      {
+        id: 'total',
+        label: 'Total Tools',
+        value: stats.total,
+        icon: this.WrenchIcon,
+        color: 'blue',
+        variant: 'solid',
+        clickable: true
+      },
+      {
+        id: 'active',
+        label: 'Active',
+        value: stats.active,
+        icon: this.CheckCircleIcon,
+        color: 'green',
+        variant: 'solid',
+        clickable: true
+      },
+      {
+        id: 'error',
+        label: 'Errors',
+        value: stats.error,
+        icon: this.AlertTriangleIcon,
+        color: 'red',
+        variant: 'solid',
+        clickable: true
+      },
+      {
+        id: 'inactive',
+        label: 'Inactive',
+        value: stats.inactive,
+        icon: this.PauseIcon,
+        color: 'gray',
+        variant: 'soft',
+        clickable: true
+      },
+      {
+        id: 'pending',
+        label: 'Pending',
+        value: stats.pending,
+        icon: this.ClockIcon,
+        color: 'amber',
+        variant: 'solid',
+        clickable: true
+      }
+    ];
+    return items;
+  });
   
   // Event handlers
   onCreateTool() {
@@ -174,8 +244,15 @@ export class Tools {
     this.searchQuery.set(query);
   }
   
-  onStatusFilterChange(status: ToolStatus | 'ALL' | null) {
-    this.statusFilter.set(status || 'ALL');
+  onSearchClear() {
+    this.searchQuery.set('');
+    this.selectedFilters.set([]);
   }
+
+  onFilterChange(selectedFilters: string[]) {
+    console.log('Filter change received:', selectedFilters);
+    this.selectedFilters.set(selectedFilters);
+  }
+
   
 }

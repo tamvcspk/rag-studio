@@ -20,7 +20,7 @@ Complete quick reference for all RAG Studio components - both atomic and semanti
 // Atomic components
 import { 
   RagButton, RagInput, RagSelect, RagChip, RagAlert,
-  RagIcon, RagSpinner, RagProgress, RagSkeleton
+  RagIcon, RagSpinner, RagProgress, RagSkeleton, RagOverflowBar
 } from './shared/components/atomic';
 
 // Services
@@ -495,6 +495,7 @@ export class ActionsComponent {
 | `<rag-alert>` | `<rag-alert variant="success">Success!</rag-alert>` | `variant`, `closable`, `title` |
 | `<rag-toast>` | `toastService.success('Done!', 'Success')` | Service-based, `variant`, `actions` |
 | `<rag-icon>` | `<rag-icon [img]="CheckIcon" variant="success">` | `img`, `size`, `variant` |
+| `<rag-overflow-bar>` | `<rag-overflow-bar><rag-chip>Tag</rag-chip></rag-overflow-bar>` | `scrollAmount`, `hideButtons` |
 
 ### 📊 Semantic Components (Business Logic)
 | Component | Quick Example | Most Common Props |
@@ -984,4 +985,4 @@ it('should have no accessibility violations', async () => {
 ---
 
 **Last Updated**: September 1, 2025  
-**Components Covered**: 16 atomic + 17 semantic + composite components
+**Components Covered**: 17 atomic + 17 semantic + composite components

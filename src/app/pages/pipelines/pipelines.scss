@@ -1,67 +1,7 @@
 .pipelines-page {
   min-height: 100%;
 
-  .page-header {
-    margin-bottom: var(--rag-primitive-spacing-xl);
-
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: var(--rag-primitive-spacing-lg);
-
-      .title-section {
-        flex: 1;
-
-        .page-title {
-          font-size: var(--rag-primitive-fontSize-xl);
-          font-weight: 600;
-          color: var(--rag-semantic-color-text-default);
-          margin: 0 0 var(--rag-primitive-spacing-sm) 0;
-          line-height: var(--rag-primitive-lineHeight-xl);
-        }
-
-        .page-description {
-          font-size: var(--rag-primitive-fontSize-lg);
-          color: var(--rag-semantic-color-text-muted);
-          margin: 0;
-          line-height: var(--rag-primitive-lineHeight-lg);
-        }
-      }
-
-      .header-actions {
-        flex-shrink: 0;
-
-        rag-button {
-          display: flex;
-          align-items: center;
-          gap: var(--rag-primitive-spacing-sm);
-
-          rag-icon {
-            width: var(--rag-primitive-fontSize-md);
-            height: var(--rag-primitive-fontSize-md);
-          }
-        }
-      }
-
-      // Responsive adjustments
-      @media (max-width: 768px) {
-        flex-direction: column;
-        align-items: stretch;
-
-        .header-actions {
-          align-self: stretch;
-
-          rag-button {
-            justify-content: center;
-            width: 100%;
-          }
-        }
-      }
-    }
-  }
-
-  .page-content {
+  .pipelines-content {
     .pipelines-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));

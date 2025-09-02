@@ -1,12 +1,13 @@
 import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RagStatCard, StatCardData } from '../../semantic/data-display/rag-stat-card/rag-stat-card';
-import { ServerIcon, WrenchIcon, BookOpenIcon, WorkflowIcon } from 'lucide-angular';
+import { GitBranchIcon, WrenchIcon, BookOpenIcon, WorkflowIcon } from 'lucide-angular';
 
 export interface DashboardStats {
-  mcpServer: {
-    status: 'active' | 'inactive' | 'error';
-    port: number;
+  flows: {
+    total: number;
+    active: number;
+    draft: number;
   };
   activeTools: {
     total: number;
@@ -31,17 +32,13 @@ export interface DashboardStats {
 })
 export class DashboardStatsGrid {
   // Icon components
-  readonly serverIcon = ServerIcon;
+  readonly gitBranchIcon = GitBranchIcon;
   readonly wrenchIcon = WrenchIcon;
   readonly bookOpenIcon = BookOpenIcon;
   readonly workflowIcon = WorkflowIcon;
 
   // Mock data - in real app this would come from a service
   readonly stats = signal<DashboardStats>({
-    mcpServer: {
-      status: 'active',
-      port: 3000
-    },
     activeTools: {
       total: 7,
       search: 3,
@@ -54,18 +51,18 @@ export class DashboardStatsGrid {
     activePipelines: {
       total: 3,
       nextRun: '2h 15m'
-    }
+    },
+    flows: {
+      total: 8,
+      active: 5,
+      draft: 3
+    },
   });
 
   readonly statCards = computed((): StatCardData[] => {
     const currentStats = this.stats();
     
     return [
-      {
-        label: 'MCP Server',
-        value: currentStats.mcpServer.status === 'active' ? 'Active' : 'Inactive',
-        icon: this.serverIcon
-      },
       {
         label: 'Active Tools',
         value: currentStats.activeTools.total,
@@ -80,7 +77,12 @@ export class DashboardStatsGrid {
         label: 'Active Pipelines',
         value: currentStats.activePipelines.total,
         icon: this.workflowIcon
-      }
+      },
+      {
+        label: 'Flows',
+        value: currentStats.flows.total,
+        icon: this.gitBranchIcon
+      },
     ];
   });
 }

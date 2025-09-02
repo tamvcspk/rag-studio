@@ -27,7 +27,7 @@ This change provides better tree-shaking and type safety by only importing icons
 
 ## 📋 Component Index
 
-### 🎯 Primitive Components (11 components)
+### 🎯 Primitive Components (12 components)
 | Component | Purpose | Key Props | Use Case |
 |-----------|---------|-----------|----------|
 | `<rag-button>` | Action triggers | `variant`, `size`, `loading`, `disabled` | Forms, CTAs, navigation |
@@ -41,6 +41,7 @@ This change provides better tree-shaking and type safety by only importing icons
 | `<rag-progress>` | Progress indication | `value`, `max`, `variant`, `indeterminate` | Loading, completion |
 | `<rag-skeleton>` | Loading placeholder | `width`, `height`, `variant`, `count` | Loading states |
 | `<rag-icon>` | Icon display | `img`, `size`, `variant`, `color` | UI decoration, actions |
+| `<rag-overflow-bar>` | Horizontal scroll navigation | `scrollAmount`, `hideButtons` | Tabs, chips, horizontal lists |
 
 ### 🔔 Feedback Components (4 components)
 | Component | Purpose | Key Props | Use Case |
@@ -687,5 +688,5 @@ Design Tokens (Consistent styling)
 
 ---
 
-**Last Updated**: August 30, 2025  
-**Total Components**: 16 atomic components
+**Last Updated**: September 1, 2025  
+**Total Components**: 17 atomic components

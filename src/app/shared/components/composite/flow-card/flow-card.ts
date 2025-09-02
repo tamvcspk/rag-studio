@@ -60,7 +60,9 @@ export class FlowCard {
   readonly onPause = output<Flow>();
   readonly onResume = output<Flow>();
   readonly onDuplicate = output<Flow>();
-  readonly onExport = output<Flow>();  onEditClick() {
+  readonly onExport = output<Flow>();
+
+  onEditClick() {
     this.onEdit.emit(this.flow());
   }
 

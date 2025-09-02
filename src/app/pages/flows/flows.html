@@ -1,146 +1,64 @@
 <div class="flows-page">
-  <!-- Error Alert -->
-  @if (error()) {
-    <rag-alert 
-      [variant]="'error'" 
-      [closable]="true"
-      (onClose)="dismissError()"
-      class="error-alert">
-      {{ error() }}
-    </rag-alert>
-  }
+  <div class="sticky-header">
+    <!-- Page Header with Search -->
+    <rag-page-header [title]="'Complete Flows'"
+      [description]="'End-to-end RAG processes combining tools, knowledge bases, and pipelines'" [icon]="GitBranchIcon"
+      [actions]="headerActions()" [showSearch]="true"
+      [searchPlaceholder]="'Search flows by name, description, or tags...'" [searchValue]="searchQuery()"
+      (searchChange)="onSearchChange($event)" (searchClear)="onSearchClear()" size="lg">
+    </rag-page-header>
 
-  <!-- Page Header -->
-  <rag-page-header
-    [title]="'Complete Flows'"
-    [description]="'End-to-end RAG processes combining tools, knowledge bases, and pipelines'"
-    [icon]="GitBranchIcon"
-    [actions]="headerActions"
-    [size]="'md'">
-  </rag-page-header>
-
-  <!-- Filters and Search -->
-  <div class="filters-section">
-    <div class="search-controls">
-      <div class="search-input">
-        <rag-input
-          [value]="searchQuery()"
-          [placeholder]="'Search flows by name, description, or tags...'"
-          (valueChange)="onSearchChange($event)">
-          <rag-icon [img]="SearchIcon" size="sm" slot="prefix"></rag-icon>
-        </rag-input>
-      </div>
-      
-      <div class="filter-controls">
-        <rag-select
-          [value]="statusFilter()"
-          [placeholder]="'Filter by status'"
-          (valueChange)="onStatusFilterChange($event)">
-          @for (option of statusOptions; track option.value) {
-            <option [value]="option.value">{{ option.label }}</option>
-          }
-        </rag-select>
-      </div>
-    </div>
-
-    <div class="results-summary">
-      @if (loading()) {
-        <span class="loading-text">Loading flows...</span>
-      } @else {
-        <span class="results-count">
-          {{ filteredFlows().length }} 
-          {{ filteredFlows().length === 1 ? 'flow' : 'flows' }}
-          @if (flows().length !== filteredFlows().length) {
-            of {{ flows().length }} total
-          }
-        </span>
-        
-        @if (statusFilter() !== 'all') {
-          <rag-chip [variant]="'soft'" [color]="getStatusBadgeColor(statusFilter())">
-            {{ statusFilter() | titlecase }}
-          </rag-chip>
-        }
-      }
-    </div>
+    <!-- Statistics Overview -->
+    <rag-stats-overview [stats]="flowStatsItems()" [loading]="isLoading()" (filterChange)="onFilterChange($event)">
+    </rag-stats-overview>
   </div>
 
-  <!-- Flows Content -->
+
+  <!-- Flows Grid -->
   <div class="flows-content">
-    @if (loading()) {
-      <!-- Loading State -->
-      <div class="loading-state">
-        <div class="loading-grid">
-          @for (item of [1,2,3,4]; track item) {
-            <div class="loading-card">
-              <div class="loading-skeleton"></div>
-            </div>
-          }
-        </div>
-      </div>
+    @if (filteredFlows().length === 0 && searchQuery() === '' && selectedFilters().length === 0) {
+    <!-- Empty state - no flows created yet -->
+    <div class="empty-state">
+      <rag-icon [img]="GitBranchIcon" size="xl" class="empty-icon" />
+      <h3 class="empty-title">No flows created yet</h3>
+      <p class="empty-description">
+        Create your first complete flow to get started with end-to-end RAG processes
+      </p>
+      <rag-button variant="solid" size="md" (click)="onCreateFlow()">
+        <rag-icon [img]="PlusIcon" size="sm" />
+        Create Your First Flow
+      </rag-button>
+    </div>
     } @else if (filteredFlows().length === 0) {
-      <!-- Empty State -->
-      @if (flows().length === 0) {
-        <!-- No flows at all -->
-        <app-empty-state-panel
-          [icon]="GitBranchIcon"
-          [title]="'No flows created yet'"
-          [description]="'Flows combine multiple components into complete RAG processes. Create your first flow to get started.'"
-          [actionLabel]="'Create Your First Flow'"
-          (action)="openCreateWizard()">
-        </app-empty-state-panel>
-      } @else {
-        <!-- No results for current filters -->
-        <app-empty-state-panel
-          [icon]="FilterXIcon"
-          [title]="'No flows match your filters'"
-          [description]="'Try adjusting your search query or status filter to find flows.'"
-          [actionLabel]="'Clear Filters'"
-          (action)="clearFilters()">
-        </app-empty-state-panel>
-      }
-    } @else {
-      <!-- Flows Grid -->
-      <div class="flows-grid">
-        @for (flow of filteredFlows(); track flow.id) {
-          <app-flow-card
-            [flow]="flow"
-            (onEdit)="onFlowEdit($event)"
-            (onDelete)="onFlowDelete($event)"
-            (onExecute)="onFlowExecute($event)"
-            (onPause)="onFlowPause($event)"
-            (onResume)="onFlowResume($event)"
-            (onDuplicate)="onFlowDuplicate($event)"
-            (onExport)="onFlowExport($event)">
-          </app-flow-card>
-        }
+    <!-- No results for current filters -->
+    <div class="no-results">
+      <rag-icon [img]="SearchIcon" size="xl" class="no-results-icon" />
+      <h3 class="no-results-title">No flows found</h3>
+      <p class="no-results-description">
+        Try adjusting your search or filter criteria
+      </p>
+      <div class="no-results-actions">
+        <rag-button variant="outline" size="sm" (click)="searchQuery.set(''); selectedFilters.set([])">
+          Clear Filters
+        </rag-button>
       </div>
+    </div>
+    } @else {
+    <!-- Flows Grid -->
+    <div class="flows-grid">
+      @for (flow of filteredFlows(); track flow.id) {
+      <app-flow-card [flow]="flow" (onEdit)="onFlowEdit($event)"
+        (onDelete)="onFlowDelete($event)" (onExecute)="onFlowExecute($event)" (onPause)="onFlowPause($event)"
+        (onResume)="onFlowResume($event)" (onDuplicate)="onFlowDuplicate($event)" (onExport)="onFlowExport($event)">
+      </app-flow-card>
+      } @empty {
+      <div class="no-flows-message">
+        <p>No flows available</p>
+      </div>
+      }
+    </div>
     }
   </div>
 
-  <!-- Quick Stats -->
-  @if (flows().length > 0 && !loading()) {
-    <div class="quick-stats">
-      <div class="stat-item">
-        <rag-icon [img]="PlayCircleIcon" size="sm"></rag-icon>
-        <span class="stat-value">{{ activeFlowsCount() }}</span>
-        <span class="stat-label">Active</span>
-      </div>
-      <div class="stat-item">
-        <rag-icon [img]="PauseCircleIcon" size="sm"></rag-icon>
-        <span class="stat-value">{{ pausedFlowsCount() }}</span>
-        <span class="stat-label">Paused</span>
-      </div>
-      <div class="stat-item">
-        <rag-icon [img]="FileEditIcon" size="sm"></rag-icon>
-        <span class="stat-value">{{ draftFlowsCount() }}</span>
-        <span class="stat-label">Drafts</span>
-      </div>
-      <div class="stat-item">
-        <rag-icon [img]="XCircleIcon" size="sm"></rag-icon>
-        <span class="stat-value">{{ errorFlowsCount() }}</span>
-        <span class="stat-label">Errors</span>
-      </div>
-    </div>
-  }
 </div>
 

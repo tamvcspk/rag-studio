@@ -32,6 +32,7 @@ All atomic components leverage the **RAG Studio Design Token System** with three
   - [RagSpinner](#ragspinner)
   - [RagSwitch](#ragswitch)
   - [RagTextarea](#ragtextarea)
+  - [RagOverflowBar](#ragoverflowbar)
 - [Feedback Components](#feedback-components)
   - [RagAlert](#ragalert)
   - [RagStatusIndicator](#ragstatusindicator)
@@ -44,7 +45,7 @@ All atomic components leverage the **RAG Studio Design Token System** with three
 
 ### RagChip
 
-A versatile chip component for displaying status, counts, or labels.
+A versatile chip component for displaying status, counts, or labels with interactive functionality including selection and removal.
 
 **Selector:** `rag-chip`
 
@@ -55,8 +56,18 @@ A versatile chip component for displaying status, counts, or labels.
 | `variant` | `'solid' \| 'soft' \| 'outline'` | `'soft'` | Visual style variant |
 | `color` | `'gray' \| 'blue' \| 'green' \| 'amber' \| 'red' \| 'orange' \| 'purple'` | `'gray'` | Color theme |
 | `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Size of the chip |
-| `icon` | `string \| undefined` | `undefined` | Lucide icon name to display |
+| `icon` | `any \| undefined` | `undefined` | Lucide icon component to display |
 | `dot` | `boolean` | `false` | Show as a status dot instead of text |
+| `removable` | `boolean` | `false` | Show close button for removal functionality |
+| `selectable` | `boolean` | `false` | Enable click selection functionality |
+| `disabled` | `boolean` | `false` | Disabled state (affects removable and selectable) |
+
+#### Events
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `removed` | `EventEmitter<void>` | Emitted when chip is removed via close button |
+| `selectionChange` | `EventEmitter<boolean>` | Emitted when chip selection state changes |
 
 #### Usage Examples
 
@@ -65,15 +76,87 @@ A versatile chip component for displaying status, counts, or labels.
 <rag-chip>New</rag-chip>
 
 <!-- Badge with icon -->
-<rag-chip [icon]="'star'" [color]="'amber'">Featured</rag-chip>
+<rag-chip [icon]="StarIcon" [color]="'amber'">Featured</rag-chip>
 
 <!-- Status dot -->
 <rag-chip [dot]="true" [color]="'green'"></rag-chip>
+
+<!-- Removable chip -->
+<rag-chip [removable]="true" (removed)="onChipRemoved()">
+  Remove me
+</rag-chip>
+
+<!-- Selectable chip -->
+<rag-chip 
+  [selectable]="true" 
+  [color]="'blue'"
+  (selectionChange)="onSelectionChange($event)">
+  Click to select
+</rag-chip>
+
+<!-- Combined functionality -->
+<rag-chip 
+  [removable]="true"
+  [selectable]="true"
+  [color]="'green'"
+  [icon]="TagIcon"
+  (removed)="removeTag()"
+  (selectionChange)="selectTag($event)">
+  Interactive Tag
+</rag-chip>
+
+<!-- Disabled chip -->
+<rag-chip 
+  [removable]="true"
+  [selectable]="true"
+  [disabled]="true">
+  Disabled
+</rag-chip>
 
 <!-- Different variants -->
 <rag-chip [variant]="'solid'" [color]="'blue'">Solid</rag-chip>
 <rag-chip [variant]="'outline'" [color]="'red'">Outline</rag-chip>
 ```
+
+```typescript
+// Component using interactive chips
+import { StarIcon, TagIcon } from 'lucide-angular';
+
+@Component({
+  selector: 'app-chip-example',
+  imports: [RagChip],
+  template: `
+    <rag-chip 
+      [removable]="true"
+      [selectable]="true"
+      [icon]="TagIcon"
+      (removed)="removeChip()"
+      (selectionChange)="onChipSelect($event)">
+      Interactive Chip
+    </rag-chip>
+  `
+})
+export class ChipExampleComponent {
+  readonly StarIcon = StarIcon;
+  readonly TagIcon = TagIcon;
+
+  removeChip(): void {
+    console.log('Chip removed!');
+  }
+
+  onChipSelect(selected: boolean): void {
+    console.log('Chip selection:', selected);
+  }
+}
+```
+
+#### Interactive Features
+
+- **Removable**: When `removable` is `true`, displays a close button (X icon) that emits `removed` event
+- **Selectable**: When `selectable` is `true`, chip becomes clickable and toggles selected state
+- **Visual Feedback**: Selected chips have enhanced styling with borders and background changes
+- **Disabled State**: When `disabled` is `true`, prevents interaction with both removable and selectable functionality
+- **Accessibility**: Includes proper ARIA labels and keyboard navigation support
 
 ---
 
@@ -500,6 +583,129 @@ Skeleton loading component for content placeholders with consistent styling.
 
 <!-- Multiple skeletons -->
 <rag-skeleton [count]="3"></rag-skeleton>
+```
+
+---
+
+### RagOverflowBar
+
+A horizontal scroll container with navigation buttons that appear on hover for managing overflow content.
+
+**Selector:** `rag-overflow-bar`
+
+#### Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `scrollAmount` | `number` | `200` | Pixels to scroll when navigation buttons are clicked |
+| `hideButtons` | `boolean` | `false` | Hide navigation buttons completely |
+
+#### Events
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `onNavigate` | `EventEmitter<'left' \| 'right'>` | Emitted when navigation buttons are clicked |
+
+#### Usage Examples
+
+```html
+<!-- Basic overflow bar with chips -->
+<rag-overflow-bar>
+  <rag-chip>Tag 1</rag-chip>
+  <rag-chip>Tag 2</rag-chip>
+  <rag-chip>Tag 3</rag-chip>
+  <rag-chip>Long tag name that might cause overflow</rag-chip>
+  <rag-chip>Tag 5</rag-chip>
+  <rag-chip>Tag 6</rag-chip>
+</rag-overflow-bar>
+
+<!-- Tab navigation with overflow -->
+<rag-overflow-bar [scrollAmount]="150">
+  <button class="tab-button active">Dashboard</button>
+  <button class="tab-button">Analytics</button>
+  <button class="tab-button">Reports</button>
+  <button class="tab-button">Settings</button>
+  <button class="tab-button">Users</button>
+  <button class="tab-button">Billing</button>
+</rag-overflow-bar>
+
+<!-- Horizontal list of cards -->
+<rag-overflow-bar [scrollAmount]="250" (onNavigate)="onCardNavigation($event)">
+  <rag-card class="inline-card">Card 1</rag-card>
+  <rag-card class="inline-card">Card 2</rag-card>
+  <rag-card class="inline-card">Card 3</rag-card>
+  <rag-card class="inline-card">Card 4</rag-card>
+</rag-overflow-bar>
+
+<!-- Hide navigation buttons -->
+<rag-overflow-bar [hideButtons]="true">
+  <div>Content without navigation buttons</div>
+</rag-overflow-bar>
+```
+
+```typescript
+// Component using overflow bar
+@Component({
+  selector: 'app-tag-filter',
+  imports: [RagOverflowBar, RagChip],
+  template: `
+    <rag-overflow-bar (onNavigate)="onTagNavigate($event)">
+      @for (tag of tags; track tag.id) {
+        <rag-chip 
+          [color]="tag.selected ? 'blue' : 'gray'"
+          [selectable]="true"
+          (selectionChange)="toggleTag(tag, $event)">
+          {{ tag.name }}
+        </rag-chip>
+      }
+    </rag-overflow-bar>
+  `
+})
+export class TagFilterComponent {
+  tags = signal([
+    { id: 1, name: 'React', selected: false },
+    { id: 2, name: 'Angular', selected: true },
+    { id: 3, name: 'Vue', selected: false },
+    // ... more tags
+  ]);
+
+  onTagNavigate(direction: 'left' | 'right') {
+    console.log(`Navigated ${direction}`);
+  }
+
+  toggleTag(tag: any, selected: boolean) {
+    // Update tag selection logic
+  }
+}
+```
+
+#### Features
+
+- **Hover-triggered Navigation**: Navigation buttons only appear when hovering over the container
+- **Smooth Scrolling**: Uses smooth scroll behavior for better UX
+- **Gradient Overlay**: Navigation buttons have gradient background for visual integration
+- **Auto-detection**: Automatically detects when scrolling is possible and shows/hides buttons
+- **Flexible Content**: Works with any horizontal content (chips, tabs, cards, etc.)
+- **Responsive**: Adapts button size for mobile devices
+- **Accessibility**: Includes proper ARIA labels and keyboard navigation
+
+#### Styling Integration
+
+The component uses design tokens for consistent theming:
+
+```scss
+.rag-overflow-bar {
+  // Uses CSS custom properties from design token system
+  .rag-overflow-nav {
+    background: var(--color-background);
+    color: var(--color-text);
+    border-radius: var(--radius-md);
+    
+    &:hover {
+      background: var(--color-surface-hover);
+    }
+  }
+}
 ```
 
 ---

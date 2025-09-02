@@ -4,109 +4,10 @@
   min-height: 100%;
 }
 
-// Page Header
-.page-header {
-  margin-bottom: var(--rag-primitive-spacing-xl);
-  
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+// Spacing between overview component and content
+.tools-page {
+  rag-stats-overview {
     margin-bottom: var(--rag-primitive-spacing-xl);
-    
-    .header-info {
-      flex: 1;
-    }
-    
-    .title-section {
-      display: flex;
-      align-items: center;
-      gap: var(--rag-primitive-spacing-md);
-      margin-bottom: var(--rag-primitive-spacing-sm);
-      
-      .page-icon {
-        color: var(--blue-9);
-        flex-shrink: 0;
-      }
-      
-      .page-title {
-        font-size: var(--rag-primitive-fontSize-xl);
-        font-weight: 600;
-        color: var(--rag-semantic-color-text-default);
-        margin: 0;
-        line-height: 1.2;
-      }
-    }
-    
-    .page-description {
-      color: var(--rag-semantic-color-text-muted);
-      font-size: var(--rag-primitive-fontSize-md);
-      line-height: var(--rag-primitive-lineHeight-md);
-      margin: 0;
-    }
-  }
-  
-  // Statistics overview
-  .stats-overview {
-    display: flex;
-    gap: var(--rag-primitive-spacing-xl);
-    padding: var(--rag-primitive-spacing-xl);
-    background: var(--rag-semantic-color-background-subtle);
-    border: 1px solid var(--rag-semantic-color-border-default);
-    border-radius: var(--rag-primitive-radius-lg);
-    
-    .stat-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--rag-primitive-spacing-xs);
-      min-width: 80px;
-      
-      .stat-value {
-        font-size: var(--rag-primitive-fontSize-xl);
-        font-weight: 700;
-        color: var(--rag-semantic-color-text-default);
-        line-height: 1;
-      }
-      
-      .stat-label {
-        font-size: var(--rag-primitive-fontSize-xs);
-        color: var(--rag-semantic-color-text-muted);
-        text-align: center;
-      }
-    }
-  }
-}
-
-// Filters Section
-.filters-section {
-  display: flex;
-  gap: var(--rag-primitive-spacing-lg);
-  margin-bottom: var(--rag-primitive-spacing-lg);
-  align-items: center;
-  
-  .search-container {
-    flex: 1;
-    max-width: 400px;
-    
-    .search-input {
-      width: 100%;
-    }
-  }
-  
-  .filter-container {
-    display: flex;
-    align-items: center;
-    gap: var(--rag-primitive-spacing-sm);
-    
-    .filter-icon {
-      color: var(--rag-semantic-color-text-subtle);
-      flex-shrink: 0;
-    }
-    
-    .status-filter {
-      min-width: 180px;
-    }
   }
 }
 
@@ -191,84 +92,9 @@
     }
   }
   
-  // Results Summary
-  .results-summary {
-    padding: var(--rag-primitive-spacing-md) 0;
-    border-top: 1px solid var(--rag-semantic-color-border-default);
-    
-    .results-text {
-      font-size: var(--rag-primitive-fontSize-xs);
-      color: var(--rag-semantic-color-text-muted);
-      margin: 0;
-      text-align: center;
-      
-      .filter-indication {
-        font-style: italic;
-      }
-    }
-  }
-  
   .no-tools-message {
     text-align: center;
     padding: var(--rag-primitive-spacing-xl);
     color: var(--rag-semantic-color-text-muted);
-  }
-}
-
-// Responsive Design
-@media (max-width: 768px) {
-  .tools-page {
-    padding: var(--rag-primitive-spacing-lg);
-  }
-  
-  .page-header {
-    .header-content {
-      flex-direction: column;
-      align-items: stretch;
-      gap: var(--rag-primitive-spacing-lg);
-    }
-    
-    .stats-overview {
-      flex-wrap: wrap;
-      gap: var(--rag-primitive-spacing-lg);
-      justify-content: center;
-      
-      .stat-item {
-        min-width: 60px;
-      }
-    }
-  }
-  
-  .filters-section {
-    flex-direction: column;
-    align-items: stretch;
-    
-    .search-container {
-      max-width: none;
-    }
-    
-    .filter-container {
-      justify-content: center;
-      
-      .status-filter {
-        min-width: 200px;
-      }
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .stats-overview {
-    .stat-item {
-      .stat-value {
-        font-size: var(--rag-primitive-fontSize-lg);
-      }
-    }
-  }
-  
-  .page-header .title-section {
-    .page-title {
-      font-size: var(--rag-primitive-fontSize-lg);
-    }
   }
 }

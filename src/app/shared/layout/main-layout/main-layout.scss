@@ -15,7 +15,7 @@
   z-index: var(--rag-primitive-zIndex-sticky);
   backdrop-filter: blur(8px);
 
-  &::after{
+  &::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -65,6 +65,13 @@
 .content-area {
   padding: 0 var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl);
   flex: 1 1 auto;
+
+  ::ng-deep .sticky-header {
+    background-color: var(--rag-semantic-color-background-subtle);
+    position: sticky;
+    top: calc(var(--rag-primitive-size-9) + var(--rag-primitive-size-9) + var(--rag-primitive-spacing-lg));
+    z-index: var(--rag-primitive-zIndex-sticky);
+  }
 }
 
 // Responsive styles using design tokens

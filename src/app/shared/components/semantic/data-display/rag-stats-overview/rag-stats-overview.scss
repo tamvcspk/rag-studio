@@ -1,0 +1,176 @@
+// Using CSS custom properties from design tokens
+
+.rag-stats-overview {
+  min-height: 80px; // Prevent layout shift during loading
+  
+  &__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--rag-primitive-spacing-md);
+    padding: var(--rag-primitive-spacing-xl);
+    border: 1px solid var(--rag-semantic-color-border-subtle);
+    border-radius: var(--rag-primitive-radius-lg);
+    background: var(--rag-semantic-color-background-subtle);
+  }
+
+  &__loading-text {
+    font-size: var(--rag-primitive-fontSize-sm);
+    color: var(--rag-semantic-color-text-subtle);
+  }
+
+  &__stats-overflow {
+    width: 100%;
+    max-width: 100%;
+    
+    // Override RagOverflowBar default styles to show stats in a single row
+    :global(.rag-overflow-content) {
+      display: flex;
+      gap: var(--rag-primitive-spacing-lg);
+      align-items: flex-start;
+      
+      @media (max-width: 768px) {
+        gap: var(--rag-primitive-spacing-md);
+      }
+    }
+  }
+
+  &__stat-item {
+    // Removed borders as requested
+    background: var(--rag-semantic-color-background-default);
+    border-radius: var(--rag-primitive-radius-lg);
+    padding: var(--rag-primitive-spacing-lg);
+    transition: all 0.15s ease-out;
+    min-width: 200px; // Ensure consistent minimum width in horizontal layout
+    flex-shrink: 1; // Allow shrinking when needed
+    
+    // Hover/focus states
+    &:hover {
+      background: var(--rag-semantic-color-background-subtle);
+    }
+
+    &--clickable {
+      cursor: pointer;
+      
+      &:hover {
+        background: var(--rag-semantic-color-background-subtle);
+        box-shadow: var(--rag-primitive-shadow-sm);
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: var(--rag-primitive-shadow-xs);
+      }
+    }
+
+    &--selected {
+      background: var(--rag-semantic-color-primary-100);
+      
+      &:hover {
+        background: var(--rag-semantic-color-primary-200);
+      }
+    }
+  }
+
+  &__stat-content {
+    display: flex;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-md);
+  }
+
+  &__stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px; // Fixed width as requested
+    height: 32px;
+    border-radius: 50%; // Circle background
+    color: white; // White icon on colored background
+    flex-shrink: 0;
+    
+    // Icon will be styled with dynamic background color via component
+  }
+
+  &__stat-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0; // Prevent text overflow
+  }
+
+  &__stat-value {
+    font-size: var(--rag-primitive-fontSize-xl);
+    font-weight: var(--rag-primitive-fontWeight-semibold);
+    line-height: var(--rag-primitive-lineHeight-tight);
+    color: var(--rag-semantic-color-text-default);
+  }
+
+  &__stat-label {
+    font-size: var(--rag-primitive-fontSize-sm);
+    color: var(--rag-semantic-color-text-subtle);
+    line-height: var(--rag-primitive-lineHeight-tight);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
+  &__no-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--rag-primitive-spacing-xl);
+    border: 1px dashed var(--rag-semantic-color-border-subtle);
+    border-radius: var(--rag-primitive-radius-lg);
+    background: var(--rag-semantic-color-background-subtle);
+    min-width: 300px; // Ensure visibility in horizontal layout
+  }
+
+  &__no-stats-text {
+    font-size: var(--rag-primitive-fontSize-sm);
+    color: var(--rag-semantic-color-text-subtle);
+  }
+
+}
+
+// Component-specific responsive utilities
+@media (max-width: 640px) {
+  .rag-stats-overview {
+    gap: var(--rag-primitive-spacing-lg);
+    
+    &__stat-item {
+      min-width: 180px; // Smaller minimum width on mobile
+    }
+    
+    &__stat-content {
+      gap: var(--rag-primitive-spacing-sm);
+    }
+    
+    &__stat-value {
+      font-size: var(--rag-primitive-fontSize-lg);
+    }
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .rag-stats-overview {
+    &__stat-icon {
+      border: 2px solid white;
+    }
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .rag-stats-overview {
+    &__stat-item {
+      transition: none;
+      
+      &--clickable:hover {
+        transform: none;
+      }
+    }
+  }
+}

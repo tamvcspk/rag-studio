@@ -1,393 +1,295 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { 
-  GitBranchIcon,
-  LayoutIcon,
-  PlusIcon,
-  SearchIcon,
-  PlayCircleIcon,
-  PauseCircleIcon,
-  FileEditIcon,
-  XCircleIcon,
-  FilterXIcon
-} from 'lucide-angular';
-import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
-import { Flow } from '../../shared/models/flow.model';
-import { FlowsService } from '../../shared/services/flows';
+import { FormsModule } from '@angular/forms';
+import { Plus, GitBranch, Search, Filter, PlayCircle, PauseCircle, FileEdit, XCircle, CheckCircle, AlertTriangle, Clock, Pause } from 'lucide-angular';
 import { FlowCard } from '../../shared/components/composite/flow-card/flow-card';
 import { CreateFlowWizard } from '../../shared/components/composite/create-flow-wizard/create-flow-wizard';
-import { FlowDesigner } from '../../shared/components/composite/flow-designer/flow-designer';
-import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
-import { RagAlert, RagChip, RagButton, RagInput, RagSelect } from '../../shared/components';
+import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
 import { RagDialogService } from '../../shared/components/semantic/overlay/rag-dialog/rag-dialog.service';
-import { RagPageHeader, type PageHeaderAction } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
+import { RagToastService } from '../../shared/components/atomic/feedback/rag-toast/rag-toast.service';
+import { FlowsService } from '../../shared/services/flows';
+import { Flow, FlowStatus } from '../../shared/models/flow.model';
+import { RagButton } from '../../shared/components';
+import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
+import { RagStatsOverview, StatItem } from '../../shared/components/semantic/data-display/rag-stats-overview';
 
 @Component({
   selector: 'app-flows',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     RagIcon,
     FlowCard,
-    EmptyStatePanel,
     RagButton,
-    RagInput,
-    RagSelect,
-    RagChip,
-    RagAlert,
-    RagPageHeader
+    RagPageHeader,
+    RagStatsOverview
   ],
   templateUrl: './flows.html',
   styleUrl: './flows.scss'
 })
 export class Flows implements OnInit {
+  private readonly flowsService = inject(FlowsService);
+  private readonly dialogService = inject(RagDialogService);
+  private readonly toastService = inject(RagToastService);
+  
   // Icon components
-  readonly GitBranchIcon = GitBranchIcon;
-  readonly LayoutIcon = LayoutIcon;
-  readonly PlusIcon = PlusIcon;
-  readonly SearchIcon = SearchIcon;
-  readonly PlayCircleIcon = PlayCircleIcon;
-  readonly PauseCircleIcon = PauseCircleIcon;
-  readonly FileEditIcon = FileEditIcon;
-  readonly XCircleIcon = XCircleIcon;
-  readonly FilterXIcon = FilterXIcon;
+  readonly PlusIcon = Plus;
+  readonly GitBranchIcon = GitBranch;
+  readonly SearchIcon = Search;
+  readonly FilterIcon = Filter;
+  readonly CheckCircleIcon = CheckCircle;
+  readonly AlertTriangleIcon = AlertTriangle;
+  readonly ClockIcon = Clock;
+  readonly PauseIcon = Pause;
+  readonly PlayCircleIcon = PlayCircle;
+  readonly PauseCircleIcon = PauseCircle;
+  readonly FileEditIcon = FileEdit;
+  readonly XCircleIcon = XCircle;
 
+  // Reactive signals
   readonly flows = signal<Flow[]>([]);
-  readonly filteredFlows = signal<Flow[]>([]);
-  readonly loading = signal(false);
-  readonly error = signal<string | null>(null);
   readonly searchQuery = signal('');
-  readonly statusFilter = signal<'all' | Flow['status']>('all');
-  readonly showCreateWizard = signal(false);
-  readonly showDesigner = signal(false);
-  readonly selectedFlow = signal<Flow | null>(null);
+  readonly selectedFilters = signal<string[]>([]);
+  readonly isLoading = signal(false);
 
-  // Computed stats
-  readonly activeFlowsCount = computed(() => 
-    this.flows().filter(f => f.status === 'active').length
-  );
-  readonly pausedFlowsCount = computed(() => 
-    this.flows().filter(f => f.status === 'paused').length
-  );
-  readonly draftFlowsCount = computed(() => 
-    this.flows().filter(f => f.status === 'draft').length
-  );
-  readonly errorFlowsCount = computed(() => 
-    this.flows().filter(f => f.status === 'error').length
-  );
-
-  readonly statusOptions = [
-    { value: 'all', label: 'All Flows' },
-    { value: 'active', label: 'Active' },
-    { value: 'paused', label: 'Paused' },
-    { value: 'draft', label: 'Draft' },
-    { value: 'error', label: 'Error' },
-    { value: 'archived', label: 'Archived' }
-  ];
-
-  readonly headerActions: PageHeaderAction[] = [
-    {
-      label: 'Flow Designer',
-      icon: LayoutIcon,
-      variant: 'outline',
-      size: 'md',
-      action: () => this.openDesigner()
-    },
+  // Page header actions
+  readonly headerActions = computed(() => [
     {
       label: 'Create Flow',
-      icon: PlusIcon,
-      variant: 'solid',
-      size: 'md',
-      action: () => this.openCreateWizard()
+      icon: this.PlusIcon,
+      variant: 'solid' as const,
+      action: () => this.onCreateFlow()
     }
-  ];
-
-  constructor(
-    private flowsService: FlowsService,
-    private dialogService: RagDialogService
-  ) {}
-
-  ngOnInit(): void {
-    this.loadFlows();
+  ]);
+  
+  // Computed filtered flows
+  readonly filteredFlows = computed(() => {
+    const flows = this.flows();
+    const query = this.searchQuery().toLowerCase().trim();
+    const selectedFilters = this.selectedFilters();
     
-    // Set up reactive filtering
-    this.setupFiltering();
-  }
+    if (!flows || flows.length === 0) {
+      return [];
+    }
+    
+    // First filter by search query
+    let filteredFlows = !query ? flows : flows.filter(flow => {
+      if (!flow) return false;
 
-  private setupFiltering(): void {
-    // Update filtered flows when search query or status filter changes
-    // In a real app, this would be handled with computed signals or RxJS
-    const updateFilters = () => {
-      const flows = this.flows();
-      const query = this.searchQuery().toLowerCase().trim();
-      const status = this.statusFilter();
-
-      let filtered = flows;
-
-      // Status filter
-      if (status !== 'all') {
-        filtered = filtered.filter(flow => flow.status === status);
+      // Check if query matches any searchable field
+      return [
+        flow.name?.toLowerCase() || '',
+        flow.description?.toLowerCase() || '',
+        flow.tags?.join(' ').toLowerCase() || ''
+      ].some(field => field.includes(query));
+    });
+    
+    // Then filter by selected status filters if any
+    if (selectedFilters.length > 0) {
+      // Map stat IDs to flow statuses
+      const statusMapping: Record<string, FlowStatus> = {
+        'active': 'active',
+        'error': 'error',
+        'paused': 'paused',
+        'draft': 'draft',
+        'archived': 'archived'
+      };
+      
+      filteredFlows = filteredFlows.filter(flow => {
+        if (!flow.status) return false;
+        
+        // Check if flow status matches any selected filter
+        return selectedFilters.some(filterId => {
+          const mappedStatus = statusMapping[filterId];
+          return mappedStatus && flow.status === mappedStatus;
+        });
+      });
+    }
+    
+    return filteredFlows;
+  });
+  
+  // Computed statistics
+  readonly flowStats = computed(() => this.getFlowStats());
+  
+  // Computed statistics for overview component
+  readonly flowStatsItems = computed(() => {
+    const stats = this.flowStats();
+    const items: StatItem[] = [
+      {
+        id: 'total',
+        label: 'Total Flows',
+        value: stats.total,
+        icon: this.GitBranchIcon,
+        color: 'blue',
+        variant: 'solid',
+        clickable: true
+      },
+      {
+        id: 'active',
+        label: 'Active',
+        value: stats.active,
+        icon: this.CheckCircleIcon,
+        color: 'green',
+        variant: 'solid',
+        clickable: true
+      },
+      {
+        id: 'error',
+        label: 'Errors',
+        value: stats.error,
+        icon: this.AlertTriangleIcon,
+        color: 'red',
+        variant: 'solid',
+        clickable: true
+      },
+      {
+        id: 'paused',
+        label: 'Paused',
+        value: stats.paused,
+        icon: this.PauseIcon,
+        color: 'amber',
+        variant: 'solid',
+        clickable: true
+      },
+      {
+        id: 'draft',
+        label: 'Draft',
+        value: stats.draft,
+        icon: this.ClockIcon,
+        color: 'gray',
+        variant: 'soft',
+        clickable: true
       }
+    ];
+    return items;
+  });
 
-      // Search filter
-      if (query) {
-        filtered = filtered.filter(flow =>
-          flow.name.toLowerCase().includes(query) ||
-          flow.description.toLowerCase().includes(query) ||
-          flow.tags.some(tag => tag.toLowerCase().includes(query))
-        );
+  // Event handlers
+  onCreateFlow() {
+    const dialogRef = this.dialogService.open(CreateFlowWizard, {
+      title: 'Create Complete Flow',
+      size: 'lg'
+    });
+
+    dialogRef.closed.subscribe(result => {
+      if (result) {
+        this.toastService.success('Flow created successfully!', 'Success');
+        this.loadFlows();
       }
-
-      this.filteredFlows.set(filtered);
-    };
-
-    // Call initially and whenever signals change
-    updateFilters();
-    
-    // Set up watchers (in a real app, you'd use effect() or RxJS)
-    this.searchQuery.set = (value: string) => {
-      this.searchQuery.set(value);
-      updateFilters();
-    };
-    
-    this.statusFilter.set = (value: 'all' | Flow['status']) => {
-      this.statusFilter.set(value);
-      updateFilters();
-    };
+    });
   }
 
   private loadFlows(): void {
-    this.loading.set(true);
-    this.error.set(null);
+    this.isLoading.set(true);
 
     this.flowsService.getAllFlows().subscribe({
       next: (flows) => {
         this.flows.set(flows);
-        this.filteredFlows.set(flows);
-        this.loading.set(false);
+        this.isLoading.set(false);
       },
       error: (error) => {
-        this.error.set('Failed to load flows');
-        this.loading.set(false);
+        this.toastService.error('Failed to load flows', 'Error');
+        this.isLoading.set(false);
         console.error('Error loading flows:', error);
       }
     });
   }
 
-  onSearchChange(query: string): void {
-    this.searchQuery.set(query);
-    this.updateFilters();
-  }
-
-  onStatusFilterChange(status: 'all' | Flow['status'] | null): void {
-    this.statusFilter.set(status || 'all');
-    this.updateFilters();
-  }
-
-  updateFilters(): void {
+  getFlowStats() {
     const flows = this.flows();
-    const query = this.searchQuery().toLowerCase().trim();
-    const status = this.statusFilter();
-
-    let filtered = flows;
-
-    if (status !== 'all') {
-      filtered = filtered.filter(flow => flow.status === status);
-    }
-
-    if (query) {
-      filtered = filtered.filter(flow =>
-        flow.name.toLowerCase().includes(query) ||
-        flow.description.toLowerCase().includes(query) ||
-        flow.tags.some(tag => tag.toLowerCase().includes(query))
-      );
-    }
-
-    this.filteredFlows.set(filtered);
-  }
-
-  clearFilters(): void {
-    this.searchQuery.set('');
-    this.statusFilter.set('all');
-    this.updateFilters();
-  }
-
-  openCreateWizard(): void {
-    const dialogRef = this.dialogService.open(CreateFlowWizard, {
-      size: 'lg'
-    });
-
-    dialogRef.closed.subscribe((result: any) => {
-      if (result) {
-        this.onFlowCreated(result);
-      }
-    });
-  }
-
-  closeCreateWizard(): void {
-    // No longer needed - handled by dialog service
-  }
-
-  openDesigner(flow?: Flow): void {
-    const config: any = {
-      size: 'xl'
+    return {
+      total: flows.length,
+      active: flows.filter(f => f.status === 'active').length,
+      paused: flows.filter(f => f.status === 'paused').length,
+      draft: flows.filter(f => f.status === 'draft').length,
+      error: flows.filter(f => f.status === 'error').length,
+      archived: flows.filter(f => f.status === 'archived').length
     };
-    
-    if (flow) {
-      config.data = { flow };
-    }
-    
-    const dialogRef = this.dialogService.open(FlowDesigner, config);
-
-    dialogRef.closed.subscribe((result: any) => {
-      if (result) {
-        this.onFlowSaved(result);
-      }
-    });
   }
 
-  closeDesigner(): void {
-    // No longer needed - handled by dialog service
+  onSearchChange(query: string) {
+    this.searchQuery.set(query);
+  }
+  
+  onSearchClear() {
+    this.searchQuery.set('');
+    this.selectedFilters.set([]);
+  }
+
+  onFilterChange(selectedFilters: string[]) {
+    this.selectedFilters.set(selectedFilters);
+  }
+
+  // Initialize the component by loading flows
+  ngOnInit(): void {
+    this.loadFlows();
   }
 
   // Flow card event handlers
   onFlowEdit(flow: Flow): void {
-    this.openDesigner(flow);
+    // In a real app, this would open an edit form
+    console.log('Edit flow:', flow.id);
+    this.toastService.info('Edit functionality coming soon!', 'Info');
   }
 
-  onFlowDelete(flow: Flow): void {
-    if (confirm(`Are you sure you want to delete "${flow.name}"?`)) {
-      this.flowsService.deleteFlow(flow.id).subscribe({
-        next: (success) => {
-          if (success) {
-            this.loadFlows();
-          }
-        },
-        error: (error) => {
-          this.error.set('Failed to delete flow');
-          console.error('Error deleting flow:', error);
-        }
-      });
+  async onFlowDelete(flow: Flow) {
+    // In a real app, this would show a confirmation dialog first
+    if (flow && confirm(`Are you sure you want to delete "${flow.name}"?`)) {
+      try {
+        await this.flowsService.deleteFlow(flow.id).toPromise();
+        this.toastService.success('Flow deleted successfully.', 'Success');
+        this.loadFlows();
+      } catch (error) {
+        this.toastService.error('Failed to delete flow.', 'Error');
+      }
     }
   }
 
-  onFlowExecute(flow: Flow): void {
-    this.flowsService.executeFlow(flow.id).subscribe({
-      next: (execution) => {
-        console.log('Flow execution started:', execution);
-        // In a real app, you might show a toast or navigate to execution details
-        this.loadFlows(); // Refresh to show updated execution stats
-      },
-      error: (error) => {
-        this.error.set('Failed to execute flow');
-        console.error('Error executing flow:', error);
-      }
-    });
-  }
-
-  onFlowPause(flow: Flow): void {
-    this.flowsService.pauseFlow(flow.id).subscribe({
-      next: (updatedFlow) => {
-        if (updatedFlow) {
-          this.loadFlows();
-        }
-      },
-      error: (error) => {
-        this.error.set('Failed to pause flow');
-        console.error('Error pausing flow:', error);
-      }
-    });
-  }
-
-  onFlowResume(flow: Flow): void {
-    this.flowsService.resumeFlow(flow.id).subscribe({
-      next: (updatedFlow) => {
-        if (updatedFlow) {
-          this.loadFlows();
-        }
-      },
-      error: (error) => {
-        this.error.set('Failed to resume flow');
-        console.error('Error resuming flow:', error);
-      }
-    });
-  }
-
-  onFlowDuplicate(flow: Flow): void {
-    this.flowsService.duplicateFlow(flow.id).subscribe({
-      next: (duplicatedFlow) => {
-        if (duplicatedFlow) {
-          this.loadFlows();
-        }
-      },
-      error: (error) => {
-        this.error.set('Failed to duplicate flow');
-        console.error('Error duplicating flow:', error);
-      }
-    });
-  }
-
-  onFlowExport(flow: Flow): void {
-    this.flowsService.exportFlow(flow.id).subscribe({
-      next: (exportData) => {
-        // Create and download file
-        const blob = new Blob([exportData], { type: 'application/json' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${flow.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_flow.json`;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      },
-      error: (error) => {
-        this.error.set('Failed to export flow');
-        console.error('Error exporting flow:', error);
-      }
-    });
-  }
-
-  // Wizard event handlers
-  onFlowCreated(flow: Flow): void {
-    this.loadFlows();
-    console.log('Flow created:', flow);
-  }
-
-  onWizardCancel(): void {
-    // No longer needed - handled by dialog service
-  }
-
-  // Designer event handlers
-  onFlowSaved(flow: Flow): void {
-    this.flowsService.updateFlow(flow.id, flow).subscribe({
-      next: (updatedFlow) => {
-        if (updatedFlow) {
-          this.loadFlows();
-        }
-      },
-      error: (error) => {
-        this.error.set('Failed to save flow');
-        console.error('Error saving flow:', error);
-      }
-    });
-  }
-
-  onDesignerCancel(): void {
-    // No longer needed - handled by dialog service
-  }
-
-  dismissError(): void {
-    this.error.set(null);
-  }
-
-  getStatusBadgeColor(status: Flow['status'] | 'all'): 'gray' | 'blue' | 'green' | 'amber' | 'red' | 'orange' | 'purple' {
-    switch (status) {
-      case 'active': return 'green';
-      case 'paused': return 'amber';
-      case 'error': return 'red';
-      case 'draft': return 'gray';
-      case 'archived': return 'gray';
-      case 'all': return 'blue';
-      default: return 'gray';
+  async onFlowExecute(flow: Flow) {
+    try {
+      await this.flowsService.executeFlow(flow.id).toPromise();
+      this.toastService.success('Flow execution started!', 'Success');
+      this.loadFlows();
+    } catch (error) {
+      this.toastService.error('Failed to execute flow.', 'Error');
     }
+  }
+
+  async onFlowPause(flow: Flow) {
+    try {
+      await this.flowsService.pauseFlow(flow.id).toPromise();
+      this.toastService.info('Flow paused.', 'Info');
+      this.loadFlows();
+    } catch (error) {
+      this.toastService.error('Failed to pause flow.', 'Error');
+    }
+  }
+
+  async onFlowResume(flow: Flow) {
+    try {
+      await this.flowsService.resumeFlow(flow.id).toPromise();
+      this.toastService.success('Flow resumed!', 'Success');
+      this.loadFlows();
+    } catch (error) {
+      this.toastService.error('Failed to resume flow.', 'Error');
+    }
+  }
+
+  async onFlowDuplicate(flow: Flow) {
+    try {
+      await this.flowsService.duplicateFlow(flow.id).toPromise();
+      this.toastService.success('Flow duplicated successfully!', 'Success');
+      this.loadFlows();
+    } catch (error) {
+      this.toastService.error('Failed to duplicate flow.', 'Error');
+    }
+  }
+
+  onFlowExport(flow: Flow) {
+    // In a real app, this would open an export dialog
+    console.log('Export flow:', flow.id);
+    this.toastService.info('Export functionality coming soon!', 'Info');
   }
 }

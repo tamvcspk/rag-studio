@@ -25,6 +25,7 @@ import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
 export class KnowledgeBaseCard {
   readonly knowledgeBase = input.required<KnowledgeBase>();
   readonly showActions = input(true);
+  readonly loading = input(false);
 
   readonly reindex = output<string>();
   readonly export = output<string>();

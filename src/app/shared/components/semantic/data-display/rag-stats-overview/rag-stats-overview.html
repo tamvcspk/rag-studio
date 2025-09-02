@@ -1,0 +1,41 @@
+<!-- Stats Overview Component -->
+<div class="rag-stats-overview">
+  
+  <!-- Statistics Overview Section -->
+  @if (loading()) {
+    <div class="rag-stats-overview__loading">
+      <rag-spinner size="sm" />
+      <span class="rag-stats-overview__loading-text">Loading statistics...</span>
+    </div>
+  } @else {
+    <rag-overflow-bar class="rag-stats-overview__stats-overflow">
+      @for (stat of visibleStats(); track stat.id) {
+        <div 
+          class="rag-stats-overview__stat-item"
+          [class.rag-stats-overview__stat-item--clickable]="isStatClickable(stat)"
+          [class.rag-stats-overview__stat-item--selected]="isStatSelected(stat.id)"
+          (click)="onStatClick(stat.id)">
+          
+          <div class="rag-stats-overview__stat-content">
+            <!-- Icon with Circle Background -->
+            <div class="rag-stats-overview__stat-icon" 
+                 [style.background-color]="getStatIconColor(stat)">
+              <rag-icon [img]="stat.icon" size="sm" />
+            </div>
+            
+            <!-- Value and Label -->
+            <div class="rag-stats-overview__stat-info">
+              <span class="rag-stats-overview__stat-value">{{ stat.value }}</span>
+              <span class="rag-stats-overview__stat-label">{{ stat.label }}</span>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="rag-stats-overview__no-stats">
+          <span class="rag-stats-overview__no-stats-text">No statistics available</span>
+        </div>
+      }
+    </rag-overflow-bar>
+  }
+  
+</div>

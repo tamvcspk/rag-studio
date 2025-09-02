@@ -66,7 +66,9 @@ RagTokens = {
     input: { default, focus, error, disabled },
     card: { flat, elevated, floating },
     chip: { primary, success, warning, danger, neutral },
-    size: { xs, sm, md, lg, xl }
+    size: { xs, sm, md, lg, xl },
+    statsOverview: { container, item, content, icon, info, value, label, loading, noStats },
+    overflowBar: { container, content, navButton, icon }
   }
 }
 ```
@@ -301,6 +303,138 @@ ComponentArchetypes.size = {
 }
 ```
 
+### Stats Overview Archetype
+```typescript
+ComponentArchetypes.statsOverview = {
+  container: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: 'var(--rag-primitive-spacing-xl)',
+    minHeight: '80px'
+  },
+  item: {
+    default: {
+      background: 'var(--rag-semantic-color-background-default)',
+      borderRadius: 'var(--rag-primitive-radius-lg)',
+      padding: 'var(--rag-primitive-spacing-lg)',
+      transition: 'all 0.15s ease-out',
+      minWidth: '200px',
+      flexShrink: '1'
+    },
+    hover: {
+      background: 'var(--rag-semantic-color-background-subtle)'
+    },
+    clickable: {
+      cursor: 'pointer'
+    },
+    selected: {
+      background: 'var(--rag-semantic-color-primary-100)'
+    }
+  },
+  content: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'var(--rag-primitive-spacing-md)'
+  },
+  icon: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '32px',
+    height: '32px',
+    borderRadius: '50%',
+    color: 'white',
+    flexShrink: '0'
+  },
+  value: {
+    fontSize: 'var(--rag-primitive-fontSize-xl)',
+    fontWeight: 'var(--rag-primitive-fontWeight-semibold)',
+    color: 'var(--rag-semantic-color-text-default)'
+  },
+  label: {
+    fontSize: 'var(--rag-primitive-fontSize-sm)',
+    color: 'var(--rag-semantic-color-text-subtle)'
+  },
+  loading: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 'var(--rag-primitive-spacing-xl)',
+    border: '1px solid var(--rag-semantic-color-border-subtle)',
+    borderRadius: 'var(--rag-primitive-radius-lg)',
+    background: 'var(--rag-semantic-color-background-subtle)'
+  },
+  noStats: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 'var(--rag-primitive-spacing-xl)',
+    border: '1px dashed var(--rag-semantic-color-border-subtle)',
+    borderRadius: 'var(--rag-primitive-radius-lg)',
+    background: 'var(--rag-semantic-color-background-subtle)',
+    minWidth: '300px'
+  }
+}
+```
+
+### Overflow Bar Archetype
+```typescript
+ComponentArchetypes.overflowBar = {
+  container: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%'
+  },
+  content: {
+    flex: '1',
+    overflowX: 'auto',
+    overflowY: 'hidden',
+    scrollBehavior: 'smooth',
+    scrollbarWidth: 'none',
+    whiteSpace: 'nowrap',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'var(--rag-primitive-spacing-sm)'
+  },
+  navButton: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '32px',
+    height: '32px',
+    border: 'none',
+    borderRadius: 'var(--rag-primitive-radius-md)',
+    background: 'var(--rag-semantic-color-background-default)',
+    color: 'var(--rag-semantic-color-text-default)',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    zIndex: '10',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1), 0 0 0 1px var(--rag-semantic-color-border-default)'
+  },
+  navButtonHover: {
+    background: 'var(--rag-semantic-color-background-subtle)',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15), 0 0 0 1px var(--rag-semantic-color-border-default)'
+  },
+  navButtonLeft: {
+    left: '8px'
+  },
+  navButtonRight: {
+    right: '8px'
+  },
+  icon: {
+    color: 'var(--rag-semantic-color-text-subtle)',
+    transition: 'color 0.2s ease'
+  },
+  iconHover: {
+    color: 'var(--rag-semantic-color-text-default)'
+  }
+}
+```
+
 ## 🧱 Primitive Token Reference
 
 ### Border Width Scale
@@ -445,6 +579,8 @@ type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'soft';
 type InputState = 'default' | 'focus' | 'error' | 'disabled';
 type CardVariant = 'flat' | 'elevated' | 'floating';
 type BadgeVariant = 'primary' | 'success' | 'warning' | 'danger' | 'neutral';
+type StatsOverviewVariant = 'default' | 'hover' | 'clickable' | 'selected';
+type OverflowBarElement = 'container' | 'content' | 'navButton' | 'icon';
 ```
 
 ### Service Types

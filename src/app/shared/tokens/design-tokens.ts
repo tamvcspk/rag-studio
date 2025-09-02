@@ -112,6 +112,7 @@ export const PrimitiveTokens = {
   },
 
   lineHeight: {
+    tight: '1.25',
     xs: '16px',
     sm: '16px',
     md: '20px',
@@ -676,6 +677,161 @@ export const ComponentArchetypes = {
       color: cssVarValue('semantic.color.text.muted'),
       opacity: '0.6'
     }
+  },
+
+  // Stats Overview archetypes - data display component patterns
+  statsOverview: {
+    container: {
+      display: 'flex',
+      alignItems: 'flex-start',
+      gap: cssVarValue('primitive.spacing.xl'),
+      minHeight: '80px'
+    },
+    item: {
+      default: {
+        background: cssVarValue('semantic.color.background.default'),
+        borderRadius: cssVarValue('primitive.radius.lg'),
+        padding: cssVarValue('primitive.spacing.lg'),
+        transition: 'all 0.15s ease-out',
+        minWidth: '200px',
+        flexShrink: '1'
+      },
+      hover: {
+        background: cssVarValue('semantic.color.background.subtle')
+      },
+      clickable: {
+        cursor: 'pointer'
+      },
+      clickableHover: {
+        background: cssVarValue('semantic.color.background.subtle'),
+        boxShadow: cssVarValue('primitive.shadow.sm'),
+        transform: 'translateY(-1px)'
+      },
+      clickableActive: {
+        transform: 'translateY(0)',
+        boxShadow: cssVarValue('primitive.shadow.xs')
+      },
+      selected: {
+        background: cssVarValue('semantic.color.primary.100')
+      },
+      selectedHover: {
+        background: cssVarValue('semantic.color.primary.200')
+      }
+    },
+    content: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: cssVarValue('primitive.spacing.md')
+    },
+    icon: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '32px',
+      height: '32px',
+      borderRadius: '50%',
+      color: 'white',
+      flexShrink: '0'
+    },
+    info: {
+      display: 'flex',
+      flexDirection: 'column',
+      flex: '1',
+      minWidth: '0'
+    },
+    value: {
+      fontSize: cssVarValue('primitive.fontSize.xl'),
+      fontWeight: cssVarValue('primitive.fontWeight.semibold'),
+      lineHeight: cssVarValue('primitive.lineHeight.tight'),
+      color: cssVarValue('semantic.color.text.default')
+    },
+    label: {
+      fontSize: cssVarValue('primitive.fontSize.sm'),
+      color: cssVarValue('semantic.color.text.subtle'),
+      lineHeight: cssVarValue('primitive.lineHeight.tight'),
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
+    },
+    loading: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: cssVarValue('primitive.spacing.md'),
+      padding: cssVarValue('primitive.spacing.xl'),
+      border: `1px solid ${cssVarValue('semantic.color.border.subtle')}`,
+      borderRadius: cssVarValue('primitive.radius.lg'),
+      background: cssVarValue('semantic.color.background.subtle')
+    },
+    noStats: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: cssVarValue('primitive.spacing.xl'),
+      border: `1px dashed ${cssVarValue('semantic.color.border.subtle')}`,
+      borderRadius: cssVarValue('primitive.radius.lg'),
+      background: cssVarValue('semantic.color.background.subtle'),
+      minWidth: '300px'
+    }
+  },
+
+  // Overflow Bar archetypes - horizontal scrolling component patterns
+  overflowBar: {
+    container: {
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      width: '100%'
+    },
+    content: {
+      flex: '1',
+      overflowX: 'auto',
+      overflowY: 'hidden',
+      scrollBehavior: 'smooth',
+      scrollbarWidth: 'none',
+      whiteSpace: 'nowrap',
+      display: 'flex',
+      alignItems: 'center',
+      gap: cssVarValue('primitive.spacing.sm')
+    },
+    navButton: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '32px',
+      height: '32px',
+      border: 'none',
+      borderRadius: cssVarValue('primitive.radius.md'),
+      background: cssVarValue('semantic.color.background.default'),
+      color: cssVarValue('semantic.color.text.default'),
+      cursor: 'pointer',
+      transition: 'all 0.2s ease',
+      position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      zIndex: '10',
+      boxShadow: `0 2px 4px rgba(0, 0, 0, 0.1), 0 0 0 1px ${cssVarValue('semantic.color.border.default')}`
+    },
+    navButtonHover: {
+      background: cssVarValue('semantic.color.background.subtle'),
+      boxShadow: `0 4px 8px rgba(0, 0, 0, 0.15), 0 0 0 1px ${cssVarValue('semantic.color.border.default')}`
+    },
+    navButtonActive: {
+      transform: 'translateY(-50%) scale(0.95)'
+    },
+    navButtonLeft: {
+      left: '8px'
+    },
+    navButtonRight: {
+      right: '8px'
+    },
+    icon: {
+      color: cssVarValue('semantic.color.text.subtle'),
+      transition: 'color 0.2s ease'
+    },
+    iconHover: {
+      color: cssVarValue('semantic.color.text.default')
+    }
   }
 } as const;
 
@@ -770,3 +926,5 @@ export type ToastVariant = 'success' | 'warning' | 'error' | 'info';
 export type DropdownItemState = 'default' | 'hover' | 'active' | 'disabled';
 export type NavigationVariant = 'primary' | 'secondary' | 'minimal';
 export type TabNavItemState = 'default' | 'hover' | 'active' | 'disabled';
+export type StatsOverviewVariant = 'default' | 'hover' | 'clickable' | 'selected';
+export type OverflowBarElement = 'container' | 'content' | 'navButton' | 'icon';

@@ -1,0 +1,29 @@
+<div class="rag-overflow-bar" 
+     (mouseenter)="onMouseEnter()" 
+     (mouseleave)="onMouseLeave()">
+  
+  <!-- Left Navigation Button -->
+  @if (showLeftButton()) {
+    <button class="rag-overflow-nav rag-overflow-nav--left"
+            (click)="scrollLeft()"
+            aria-label="Scroll left">
+      <rag-icon [img]="ChevronLeftIcon" size="lg"></rag-icon>
+    </button>
+  }
+
+  <!-- Scrollable Content Container -->
+  <div #scrollContainer 
+       class="rag-overflow-content"
+       (scroll)="onScroll()">
+    <ng-content></ng-content>
+  </div>
+
+  <!-- Right Navigation Button -->
+  @if (showRightButton()) {
+    <button class="rag-overflow-nav rag-overflow-nav--right"
+            (click)="scrollRight()"
+            aria-label="Scroll right">
+      <rag-icon [img]="ChevronRightIcon" size="lg"></rag-icon>
+    </button>
+  }
+</div>

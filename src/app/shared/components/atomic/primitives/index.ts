@@ -5,6 +5,7 @@ export { RagSpinner } from './rag-spinner/rag-spinner';
 export { RagSkeleton } from './rag-skeleton/rag-skeleton';
 export { RagProgress } from './rag-progress/rag-progress';
 export { RagIcon } from './rag-icon/rag-icon';
+export { RagOverflowBar } from './rag-overflow-bar/rag-overflow-bar';
 
 // Form Primitives
 export { RagCheckbox } from './rag-checkbox/rag-checkbox';

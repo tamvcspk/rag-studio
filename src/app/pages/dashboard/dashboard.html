@@ -1,61 +1,62 @@
 <div class="dashboard-page">
-  <!-- Page Header -->
-  <rag-page-header
-    [title]="'Dashboard'"
-    [description]="'Monitor and manage your RAG Studio instance'"
-    [icon]="BarChart3Icon"
-    [actions]="headerActions()"
-    size="lg">
-  </rag-page-header>
+  <div class="sticky-header">
+    <!-- Page Header -->
+    <rag-page-header
+      [title]="'Dashboard'"
+      [description]="'Monitor and manage your RAG Studio instance'"
+      [icon]="BarChart3Icon"
+      [actions]="headerActions()"
+      size="lg">
+    </rag-page-header>
 
-  <!-- System Alert -->
-  @if (showMaintenanceAlert()) {
-    <rag-alert 
-      variant="warning" 
-      title="Scheduled Maintenance"
-      [closable]="true"
-      (onClose)="dismissMaintenanceAlert()">
-      System will undergo maintenance at 2:00 AM. Background jobs will be paused.
-    </rag-alert>
-  }
+    <!-- System Alert -->
+    @if (showMaintenanceAlert()) {
+      <rag-alert 
+        variant="warning" 
+        title="Scheduled Maintenance"
+        [closable]="true"
+        (onClose)="dismissMaintenanceAlert()">
+        System will undergo maintenance at 2:00 AM. Background jobs will be paused.
+      </rag-alert>
+    }
+  </div>
 
-  <!-- Stats Overview -->
-  <section class="dashboard-section">
-    <rag-dashboard-stats-grid />
-  </section>
-
-  <!-- MCP Server Status (Compact) -->
-  <section class="dashboard-section">
-    <rag-mcp-server-status />
-  </section>
-
-  <!-- Performance Metrics -->
-  <section class="dashboard-section">
-    <rag-query-performance-metrics />
-  </section>
-
-  <!-- Loading State Example -->
-  @if (isLoading()) {
-    <section class="dashboard-section">
-      <rag-card class="loading-example">
-        <div class="loading-overlay">
-          <div class="loading-content">
-            <rag-icon [img]="Loader2Icon" size="lg" class="animate-spin" />
-            <p>Loading metrics...</p>
-          </div>
-        </div>
-        <h2 class="loading-example__title">Resource Usage</h2>
-        <div class="loading-skeleton">
-          <div class="skeleton-line"></div>
-          <div class="skeleton-line skeleton-line--80"></div>
-          <div class="skeleton-line skeleton-line--60"></div>
-        </div>
-      </rag-card>
+  <!-- Dashboard Content -->
+  <div class="dashboard-content">
+    <!-- Stats Overview & MCP Server Status Grid -->
+    <section class="dashboard-section dashboard-grid">
+      <rag-dashboard-stats-grid />
+      <rag-mcp-server-status />
     </section>
-  }
 
-  <!-- Recent Activity -->
-  <section class="dashboard-section">
-    <rag-recent-activity-log />
-  </section>
+    <!-- Performance Metrics -->
+    <section class="dashboard-section">
+      <rag-query-performance-metrics />
+    </section>
+
+    <!-- Loading State Example -->
+    @if (isLoading()) {
+      <section class="dashboard-section">
+        <rag-card class="loading-example">
+          <div class="loading-overlay">
+            <div class="loading-content">
+              <rag-icon [img]="Loader2Icon" size="lg" class="animate-spin" />
+              <p>Loading metrics...</p>
+            </div>
+          </div>
+          <h2 class="loading-example__title">Resource Usage</h2>
+          <div class="loading-skeleton">
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line skeleton-line--80"></div>
+            <div class="skeleton-line skeleton-line--60"></div>
+          </div>
+        </rag-card>
+      </section>
+    }
+
+    <!-- Recent Activity -->
+    <section class="dashboard-section">
+      <rag-recent-activity-log />
+    </section>
+  </div>
 </div>

@@ -8,9 +8,8 @@
   width: 100%;
 
   // Override base input styles for search-specific styling
-  :deep(.rt-TextFieldInput[type="search"]) {
-    padding-left: 48px; // Space for search icon
-    
+  ::ng-deep(.rt-TextFieldInput[type="search"]) {
+
     // Hide browser search input specific styling
     &::-webkit-search-decoration,
     &::-webkit-search-cancel-button,
@@ -22,12 +21,12 @@
   }
 
   // Search icon styling
-  :deep(.rt-input-left-icon) {
+  ::ng-deep(.rt-input-left-icon) {
     color: var(--rag-primitive-color-gray-800);
   }
 
   // Clear button styling when visible
-  :deep(.rt-input-right-icon) {
+  ::ng-deep(.rt-input-right-icon) {
     color: var(--rag-primitive-color-gray-800);
     opacity: 0;
     transform: scale(0.9);
@@ -41,14 +40,14 @@
   // Show clear button when input has value and is focused/hovered
   &:hover,
   &:focus-within {
-    :deep(.rt-input-right-icon) {
+    ::ng-deep(.rt-input-right-icon) {
       opacity: 1;
       transform: scale(1);
     }
   }
 
   // Disabled state
-  :deep(.rt-TextField.rt-disabled) {
+  ::ng-deep(.rt-TextField.rt-disabled) {
     .rt-input-left-icon {
       color: var(--rag-primitive-color-gray-700);
     }

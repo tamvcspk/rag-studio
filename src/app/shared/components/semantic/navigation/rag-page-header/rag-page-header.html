@@ -1,5 +1,5 @@
 <div [class]="headerClasses()">
-  <div class="rag-page-header__content">
+  <div #headerContent class="rag-page-header__content">
     <div class="rag-page-header__info">
       @if (icon()) {
         <div class="rag-page-header__icon">
@@ -13,22 +13,84 @@
         }
       </div>
     </div>
-    @if (actions().length > 0) {
-      <div class="rag-page-header__actions">
-        @for (action of actions(); track action.label) {
+
+    <div class="rag-page-header__spacer"></div>
+    
+    <div #rightSection class="rag-page-header__right-section">
+      @if (showSearch() && !isOverflowing()) {
+        <div class="rag-page-header__search">
+          <rag-search-input
+            [placeholder]="searchPlaceholder()"
+            [ngModel]="searchValue()"
+            (ngModelChange)="onSearchChange($event)"
+            (search)="onSearchChange($event)"
+            (clear)="onSearchClear()">
+          </rag-search-input>
+        </div>
+      }
+      
+      @if (visibleActions().length > 0) {
+        <div #actionsContainer class="rag-page-header__actions">
+          @for (action of visibleActions(); track action.label) {
+            <rag-button 
+              [variant]="action.variant || 'outline'"
+              [size]="action.size || 'md'"
+              [disabled]="action.disabled || false"
+              [loading]="action.loading || false"
+              (onClick)="onActionClick(action)">
+              @if (action.icon) {
+                <rag-icon [img]="action.icon" size="sm"></rag-icon>
+              }
+              {{ action.label }}
+            </rag-button>
+          }
+        </div>
+      }
+      
+      @if (isOverflowing()) {
+        <div class="rag-page-header__overflow" #moreButton>
           <rag-button 
-            [variant]="action.variant || 'outline'"
-            [size]="action.size || 'md'"
-            [disabled]="action.disabled || false"
-            [loading]="action.loading || false"
-            (onClick)="onActionClick(action)">
+            variant="outline" 
+            size="md"
+            (onClick)="toggleMoreMenu()"
+            [class]="'rag-page-header__more-button' + (showMoreMenu() ? ' rag-page-header__more-button--active' : '')">
+            <rag-icon [img]="MoreHorizontal" size="sm"></rag-icon>
+          </rag-button>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- CDK Overlay Template -->
+<ng-template #overflowMenuTemplate>
+  <div class="rag-page-header__overflow-menu">
+    @if (showSearch()) {
+      <div class="rag-page-header__overflow-search">
+        <rag-search-input
+          [placeholder]="searchPlaceholder()"
+          [ngModel]="searchValue()"
+          (ngModelChange)="onSearchChange($event)"
+          (search)="onSearchChange($event)"
+          (clear)="onSearchClear()">
+        </rag-search-input>
+      </div>
+    }
+    
+    @if (overflowActions().length > 0) {
+      <div class="rag-page-header__overflow-actions">
+        @for (action of overflowActions(); track action.label) {
+          <button 
+            class="rag-page-header__overflow-action"
+            [disabled]="action.disabled || action.loading"
+            (click)="onOverflowActionClick(action)">
             @if (action.icon) {
               <rag-icon [img]="action.icon" size="sm"></rag-icon>
             }
             {{ action.label }}
-          </rag-button>
+          </button>
         }
       </div>
     }
   </div>
-</div>
+</ng-template>

@@ -1,16 +1,29 @@
 .dashboard-page {
+  max-width: 1400px;
+  margin: 0 auto;
   min-height: 100%;
 }
 
-.dashboard-section {
-  margin-bottom: var(--rag-primitive-spacing-xl);
-
-  &:last-child {
-    margin-bottom: 0;
+// Spacing between header and content
+.dashboard-page {
+  .sticky-header {
+    margin-bottom: var(--rag-primitive-spacing-xl);
   }
 }
 
-// Loading state example styles
+// Dashboard Content
+.dashboard-content {
+  
+  .dashboard-section {
+    margin-bottom: var(--rag-primitive-spacing-xl);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Loading Example Component
 .loading-example {
   position: relative;
   min-height: 200px;
@@ -22,57 +35,58 @@
     color: var(--rag-semantic-color-text-default);
     opacity: 0.3;
   }
-}
 
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: color-mix(in srgb, var(--rag-semantic-color-background-default) 80%, transparent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: inherit;
-  z-index: 10;
-}
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: color-mix(in srgb, var(--rag-semantic-color-background-default) 80%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit;
+    z-index: 10;
+  }
 
-.loading-content {
-  text-align: center;
+  .loading-content {
+    text-align: center;
 
-  p {
-    margin: var(--rag-primitive-spacing-md) 0 0 0;
-    color: var(--rag-semantic-color-text-muted);
+    p {
+      margin: var(--rag-primitive-spacing-md) 0 0 0;
+      color: var(--rag-semantic-color-text-muted);
+    }
+  }
+
+  .loading-skeleton {
+    opacity: 0.3;
+  }
+
+  .skeleton-line {
+    height: var(--rag-primitive-spacing-lg);
+    background: linear-gradient(90deg, var(--rag-semantic-color-background-muted) 25%, var(--rag-semantic-color-border-default) 50%, var(--rag-semantic-color-background-muted) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--rag-primitive-radius-xs);
+    margin-bottom: var(--rag-primitive-spacing-sm);
+    width: 100%;
+
+    &--80 {
+      width: 80%;
+    }
+
+    &--60 {
+      width: 60%;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }
 
-.loading-skeleton {
-  opacity: 0.3;
-}
-
-.skeleton-line {
-  height: var(--rag-primitive-spacing-lg);
-  background: linear-gradient(90deg, var(--rag-semantic-color-background-muted) 25%, var(--rag-semantic-color-border-default) 50%, var(--rag-semantic-color-background-muted) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: var(--rag-primitive-radius-xs);
-  margin-bottom: var(--rag-primitive-spacing-sm);
-  width: 100%;
-
-  &--80 {
-    width: 80%;
-  }
-
-  &--60 {
-    width: 60%;
-  }
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
+// Animations
 @keyframes shimmer {
   0% {
     background-position: 200% 0;
@@ -97,56 +111,5 @@
   }
 }
 
-// Utility classes
-.w-8 {
-  width: 2rem;
-}
-
-.h-8 {
-  height: 2rem;
-}
-
-// Responsive layout
-@media (min-width: 1024px) {
-  .dashboard-page {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    grid-template-rows: auto auto auto auto;
-    gap: 1.5rem;
-    grid-template-areas:
-      "alert alert"
-      "stats server"
-      "metrics metrics"
-      "activity activity";
-  }
-
-  .dashboard-section:nth-child(1) {
-    // Alert
-    grid-area: alert;
-  }
-
-  .dashboard-section:nth-child(2) {
-    // Stats
-    grid-area: stats;
-  }
-
-  .dashboard-section:nth-child(3) {
-    // Server Status
-    grid-area: server;
-  }
-
-  .dashboard-section:nth-child(4) {
-    // Metrics
-    grid-area: metrics;
-  }
-
-  .dashboard-section:nth-child(5) {
-    // Loading Example
-    grid-area: metrics;
-  }
-
-  .dashboard-section:nth-child(6) {
-    // Activity
-    grid-area: activity;
-  }
-}
+// Remove the complex responsive layout - keep components full width
+// Components will naturally be full width within the .dashboard-content container

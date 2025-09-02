@@ -31,7 +31,6 @@ interface NavItem {
     CommonModule,
     RouterOutlet,
     RagIcon,
-    RagButton,
     RagChip,
     RagTabNavigation
   ],

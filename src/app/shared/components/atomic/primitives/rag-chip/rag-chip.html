@@ -1,4 +1,4 @@
-<span [class]="chipClasses()">
+<span [class]="chipClasses()" (click)="onChipClick()">
   @if (dot()) {
     <span class="status-indicator"></span>
   }
@@ -6,4 +6,14 @@
     <rag-icon [img]="icon()!" size="xs" />
   }
   <ng-content></ng-content>
+  @if (removable()) {
+    <button 
+      type="button"
+      class="rt-chip-close"
+      (click)="onRemoveClick($event)"
+      [disabled]="disabled()"
+      aria-label="Remove chip">
+      <rag-icon [img]="closeIcon" size="xs" />
+    </button>
+  }
 </span>

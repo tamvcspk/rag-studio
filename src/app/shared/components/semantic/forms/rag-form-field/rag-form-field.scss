@@ -16,12 +16,12 @@
 
   &--error {
     .rag-form-field__input {
-      :deep(input),
-      :deep(textarea),
-      :deep(select),
-      :deep(.rt-TextFieldInput),
-      :deep(.rt-TextArea),
-      :deep(.rt-SelectTrigger) {
+      ::ng-deep(input),
+      ::ng-deep(textarea),
+      ::ng-deep(select),
+      ::ng-deep(.rt-TextFieldInput),
+      ::ng-deep(.rt-TextArea),
+      ::ng-deep(.rt-SelectTrigger) {
         border-color: var(--rag-semantic-color-danger-700);
 
         &:focus {

@@ -44,6 +44,7 @@ export interface PipelineStep {
 })
 export class PipelineCard {
   readonly pipeline = input.required<Pipeline>();
+  readonly loading = input(false);
   
   readonly onPause = output<Pipeline>();
   readonly onPlay = output<Pipeline>();

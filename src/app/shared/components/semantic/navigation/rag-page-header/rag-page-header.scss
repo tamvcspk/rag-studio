@@ -40,6 +40,7 @@
     justify-content: space-between;
     width: 100%;
     gap: var(--rag-primitive-spacing-lg);
+    overflow: hidden;
     
     // Responsive behavior
     @media (max-width: var(--rag-primitive-breakpoint-md)) {
@@ -53,6 +54,9 @@
     display: flex;
     align-items: center;
     gap: var(--rag-primitive-spacing-md);
+  }
+
+  &__spacer {
     flex: 1;
   }
 
@@ -108,6 +112,32 @@
     }
   }
 
+  &__right-section {
+    display: flex;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-lg);
+    flex-shrink: 0;
+    
+    // Stack on mobile
+    @media (max-width: var(--rag-primitive-breakpoint-md)) {
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--rag-primitive-spacing-md);
+    }
+  }
+
+  &__search {
+    // Ensure search input fits properly
+    min-width: 280px; // Minimum width for search input
+    flex-shrink: 1;
+    
+    @media (max-width: var(--rag-primitive-breakpoint-md)) {
+      width: 100%;
+      min-width: 0;
+    }
+  }
+
   &__actions {
     display: flex;
     align-items: center;
@@ -127,6 +157,80 @@
       rag-button {
         width: 100%;
       }
+    }
+  }
+
+  // Overflow handling styles
+  &__overflow {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  &__more-button {    
+    &--active {
+      background: var(--rag-semantic-color-background-subtle);
+    }
+  }
+
+  &__overflow-menu {
+    min-width: 280px;
+    background: var(--rag-semantic-color-background-default);
+    border: var(--rag-primitive-borderWidth-1) solid var(--rag-semantic-color-border-default);
+    border-radius: var(--rag-primitive-radius-lg);
+    box-shadow: var(--rag-semantic-shadow-lg);
+    padding: var(--rag-primitive-spacing-sm);
+    
+    // Animation for smooth appearance
+    animation: slideDown 0.2s ease-out;
+    
+    @media (max-width: var(--rag-primitive-breakpoint-sm)) {
+      min-width: 240px;
+      max-width: 90vw;
+    }
+  }
+
+  &__overflow-search {
+    margin-bottom: var(--rag-primitive-spacing-sm);
+  }
+
+  &__overflow-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--rag-primitive-spacing-xs);
+  }
+
+  &__overflow-action {
+    display: flex;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-sm);
+    padding: var(--rag-primitive-spacing-sm);
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: var(--rag-primitive-radius-md);
+    font-size: var(--rag-primitive-fontSize-sm);
+    font-weight: var(--rag-primitive-fontWeight-medium);
+    color: var(--rag-semantic-color-text-default);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    
+    &:hover:not(:disabled) {
+      background: var(--rag-semantic-color-background-subtle);
+      color: var(--rag-semantic-color-text-emphasis);
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  // Overflowing state adjustments
+  &--overflowing {
+    .rag-page-header__right-section {
+      justify-content: flex-end;
     }
   }
 }
@@ -154,3 +258,15 @@
 
 // Dark mode considerations (handled by design tokens automatically)
 // The component will automatically adapt when design tokens are updated
+
+// Animations
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

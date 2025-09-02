@@ -39,6 +39,7 @@ Components for presenting data:
 - **Card**: Content containers using card archetype variants
 - **Stat Card**: Metrics display with card archetype foundation
 - **Code Block**: Code presentation
+- **Stats Overview**: Statistics display with filtering functionality
 
 ### � Form Archetype
 Components for data input:
@@ -505,7 +506,7 @@ interface BreadcrumbItem {
 ---
 
 ### RagPageHeader
-**Purpose**: Reusable page header component with title, description, icon, and action buttons for consistent page layouts.
+**Purpose**: Reusable page header component with title, description, icon, action buttons, and integrated search input for consistent page layouts.
 
 #### Props
 | Property | Type | Default | Description |
@@ -515,6 +516,9 @@ interface BreadcrumbItem {
 | `icon` | `any` | | Lucide icon component for page icon |
 | `actions` | `PageHeaderAction[]` | `[]` | Action buttons configuration |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Component size |
+| `showSearch` | `boolean` | `false` | Enable search input functionality |
+| `searchPlaceholder` | `string` | `'Search...'` | Search input placeholder text |
+| `searchValue` | `string` | `''` | Current search value binding |
 
 #### PageHeaderAction Interface
 ```typescript
@@ -533,6 +537,8 @@ interface PageHeaderAction {
 | Event | Type | Description |
 |-------|------|-------------|
 | `actionClick` | `PageHeaderAction` | Emitted when action button clicked |
+| `searchChange` | `string` | Emitted when search query changes |
+| `searchClear` | `void` | Emitted when search is cleared |
 
 #### Usage
 ```html
@@ -564,13 +570,36 @@ interface PageHeaderAction {
   ]"
   [size]="'lg'">
 </rag-page-header>
+
+<!-- Page header with search functionality -->
+<rag-page-header
+  [title]="'Tools Overview'"
+  [description]="'Manage and monitor your RAG tools'"
+  [icon]="WrenchIcon"
+  [showSearch]="true"
+  [searchPlaceholder]="'Search tools by name or endpoint...'"
+  [searchValue]="currentSearchQuery()"
+  [actions]="headerActions()"
+  (searchChange)="onSearchChange($event)"
+  (searchClear)="onSearchClear()"
+  (actionClick)="onActionClick($event)">
+</rag-page-header>
 ```
 
 #### Responsive Behavior
-- Actions stack vertically on mobile devices
-- Title truncates with ellipsis on narrow screens
+- Search and actions stack vertically on mobile devices
+- Title truncates with ellipsis on narrow screens  
 - Description shows up to 2-3 lines based on screen size
-- Icon and actions maintain proper spacing across breakpoints
+- Icon, search, and actions maintain proper spacing across breakpoints
+- Search input has a minimum width of 280px on desktop, full width on mobile
+
+#### Search Integration
+The RagPageHeader uses the RagSearchInput component to provide:
+- **Positioned Search**: Search input appears on the right side, before action buttons
+- **Debounced Input**: Built-in search debouncing (300ms default)
+- **Clear Functionality**: Clear button with dedicated event
+- **Responsive Layout**: Search and actions adapt to different screen sizes
+- **Clean Integration**: Direct search input without statistics overlay
 
 ---
 
@@ -747,6 +776,117 @@ export class CreateItemDialogComponent {
   Right-click for context menu
 </div>
 ```
+
+---
+
+## 📊 Composite Components
+
+### RagStatsOverview
+**Purpose**: Statistics overview display with interactive filtering for data-heavy pages. This component provides a clean solution for displaying key metrics with clickable filtering capabilities.
+
+#### Props
+| Property | Type | Required | Default | Description |
+|----------|------|----------|---------|-------------|
+| `stats` | `StatItem[]` | ✅ | | Array of statistical items to display |
+| `loading` | `boolean` | | `false` | Loading state for all statistics |
+
+#### Interfaces
+
+**StatItem Interface**
+```typescript
+interface StatItem {
+  id: string;                          // Unique identifier
+  label: string;                       // Display label  
+  value: number | string;              // Statistical value
+  icon: any;                          // Lucide icon component
+  color?: 'gray' | 'green' | 'red' | 'amber' | 'blue'; // Color scheme
+  variant?: 'solid' | 'soft' | 'outline'; // Chip variant
+  clickable?: boolean;                 // Whether item is clickable (default: true)
+}
+```
+
+
+#### Events
+| Event | Type | Description |
+|-------|------|-------------|
+| `filterChange` | `string[]` | Emitted when filter selection changes |
+| `statClick` | `string` | Emitted when a stat item is clicked (passes stat ID) |
+
+#### Usage
+
+**Basic Usage**
+```html
+<rag-stats-overview
+  [stats]="statisticItems()"
+  (filterChange)="onFilterChange($event)"
+  (statClick)="onStatClick($event)">
+</rag-stats-overview>
+```
+
+**Advanced Usage with Loading State**
+```typescript
+// Component
+readonly toolStats = computed(() => [
+  {
+    id: 'total',
+    label: 'Total Tools',
+    value: this.toolsService.getTotal(),
+    icon: WrenchIcon,
+    color: 'blue'
+  },
+  {
+    id: 'active',
+    label: 'Active',
+    value: this.toolsService.getActive(),
+    icon: CheckCircleIcon,
+    color: 'green',
+    clickable: true
+  },
+  {
+    id: 'errors',
+    label: 'Errors',
+    value: this.toolsService.getErrors(),
+    icon: AlertTriangleIcon,
+    color: 'red',
+    variant: 'solid'
+  }
+]);
+
+onStatClick(statId: string) {
+  // Filter by the clicked statistic
+  if (statId === 'active') {
+    this.filterBy(['ACTIVE']);
+  } else if (statId === 'errors') {
+    this.filterBy(['ERROR']);
+  }
+}
+```
+
+```html
+<rag-stats-overview
+  [stats]="toolStats()"
+  [loading]="isLoading()"
+  (filterChange)="onFilterChange($event)"
+  (statClick)="onStatClick($event)">
+</rag-stats-overview>
+```
+
+#### Features
+- **Interactive Statistics**: Click on stat items to filter data
+- **Multi-selection Filtering**: Support for multiple filter selections
+- **Loading States**: Built-in loading overlay for statistics
+- **Responsive Design**: Mobile-first responsive layout
+- **Color Coding**: Support for semantic color schemes
+- **Icon Integration**: Full Lucide icon support with proper sizing
+- **Accessibility**: Keyboard navigation and screen reader support
+- **Auto-hide Zero Values**: Automatically hide statistics with zero values (except total)
+
+#### Styling
+The component uses the established design token system and follows the card archetype pattern:
+- Statistics use elevated card styling with hover effects
+- Consistent spacing and typography via design tokens
+- Color variants map to semantic color tokens
+- Responsive breakpoints for mobile adaptation
 
 ---
 

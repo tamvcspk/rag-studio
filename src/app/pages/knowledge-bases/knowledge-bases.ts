@@ -1,6 +1,6 @@
-import { Component, signal, computed, OnInit } from '@angular/core';
+import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BookOpen, Plus, Upload } from 'lucide-angular';
+import { BookOpen, Plus, Upload, Search, CheckCircle, AlertTriangle, Clock, Pause } from 'lucide-angular';
 import { Observable, map } from 'rxjs';
 import { 
   KnowledgeBase, 
@@ -16,7 +16,9 @@ import { RagSearchInput } from '../../shared/components/semantic/forms/rag-searc
 import { RagIcon } from '../../shared/components/atomic/primitives/rag-icon/rag-icon';
 import { RagSelect } from '../../shared/components/atomic/primitives/rag-select/rag-select';
 import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
+import { RagStatsOverview, StatItem } from '../../shared/components/semantic/data-display/rag-stats-overview';
 import { RagDialogService } from '../../shared/components/semantic/overlay/rag-dialog/rag-dialog.service';
+import { RagToastService } from '../../shared/components/atomic/feedback/rag-toast/rag-toast.service';
 
 type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
 
@@ -26,70 +28,145 @@ type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
   imports: [
     CommonModule,
     RagIcon,
-    KnowledgeBaseCard,
-    EmptyStatePanel,
     RagButton,
-    RagSearchInput,
-    RagSelect,
-    RagPageHeader
+    KnowledgeBaseCard,
+    RagPageHeader,
+    RagStatsOverview
   ],
   templateUrl: './knowledge-bases.html',
   styleUrl: './knowledge-bases.scss'
 })
 export class KnowledgeBases implements OnInit {
+  private readonly kbService = inject(MockKnowledgeBasesService);
+  private readonly dialogService = inject(RagDialogService);
+  private readonly toastService = inject(RagToastService);
+  
+  // Icon components
+  readonly SearchIcon = Search;
+  readonly CheckCircleIcon = CheckCircle;
+  readonly AlertTriangleIcon = AlertTriangle;
+  readonly ClockIcon = Clock;
+  readonly PauseIcon = Pause;
 
   private allKnowledgeBases = signal<KnowledgeBase[]>([]);
-  private searchQuery = signal('');
+  readonly searchQuery = signal('');
+  readonly selectedFilters = signal<string[]>([]);
   private statusFilter = signal<FilterType>('all');
-  private isLoading = signal(true);
+  readonly isLoading = signal(true);
 
-  readonly knowledgeBases$ = computed(() => {
+  // Computed filtered knowledge bases
+  readonly filteredKBs = computed(() => {
     const kbs = this.allKnowledgeBases();
-    const query = this.searchQuery().toLowerCase();
-    const filter = this.statusFilter();
-
-    let filtered = kbs;
-
-    // Apply status filter
-    if (filter !== 'all') {
-      filtered = filtered.filter(kb => kb.status === filter);
+    const query = this.searchQuery().toLowerCase().trim();
+    const selectedFilters = this.selectedFilters();
+    
+    if (!kbs || kbs.length === 0) {
+      return [];
     }
+    
+    // First filter by search query
+    let filteredKBs = !query ? kbs : kbs.filter(kb => {
+      if (!kb) return false;
 
-    // Apply search filter
-    if (query.trim()) {
-      filtered = filtered.filter(kb => 
-        kb.name.toLowerCase().includes(query) ||
-        kb.product.toLowerCase().includes(query) ||
-        kb.description?.toLowerCase().includes(query) ||
-        kb.version.toLowerCase().includes(query)
-      );
+      // Check if query matches any searchable field
+      return [
+        kb.name?.toLowerCase() || '',
+        kb.product?.toLowerCase() || '',
+        kb.description?.toLowerCase() || '',
+        kb.version?.toLowerCase() || ''
+      ].some(field => field.includes(query));
+    });
+    
+    // Then filter by selected status filters if any
+    if (selectedFilters.length > 0) {
+      // Map stat IDs to KB statuses
+      const statusMapping: Record<string, KnowledgeBaseStatus> = {
+        'indexed': 'indexed',
+        'indexing': 'indexing',
+        'failed': 'failed'
+      };
+      
+      filteredKBs = filteredKBs.filter(kb => {
+        if (!kb.status) return false;
+        
+        // Check if KB status matches any selected filter
+        return selectedFilters.some(filterId => {
+          const mappedStatus = statusMapping[filterId];
+          return mappedStatus && kb.status === mappedStatus;
+        });
+      });
     }
-
-    return filtered;
+    
+    return filteredKBs;
   });
 
   readonly isEmpty = computed(() => this.allKnowledgeBases().length === 0);
-  readonly hasResults = computed(() => this.knowledgeBases$().length > 0);
+  readonly hasResults = computed(() => this.filteredKBs().length > 0);
   readonly totalCount = computed(() => this.allKnowledgeBases().length);
-  readonly filteredCount = computed(() => this.knowledgeBases$().length);
+  readonly filteredCount = computed(() => this.filteredKBs().length);
 
-  readonly statusCounts = computed(() => {
+  // Computed statistics
+  readonly kbStats = computed(() => {
     const kbs = this.allKnowledgeBases();
     return {
-      all: kbs.length,
+      total: kbs.length,
       indexed: kbs.filter(kb => kb.status === 'indexed').length,
       indexing: kbs.filter(kb => kb.status === 'indexing').length,
       failed: kbs.filter(kb => kb.status === 'failed').length
     };
   });
+  
+  // Computed statistics for overview component
+  readonly kbStatsItems = computed(() => {
+    const stats = this.kbStats();
+    const items: StatItem[] = [
+      {
+        id: 'total',
+        label: 'Total KBs',
+        value: stats.total,
+        icon: this.iconComponents.BookOpen,
+        color: 'blue',
+        variant: 'solid',
+        clickable: true
+      },
+      {
+        id: 'indexed',
+        label: 'Indexed',
+        value: stats.indexed,
+        icon: this.CheckCircleIcon,
+        color: 'green',
+        variant: 'solid',
+        clickable: true
+      },
+      {
+        id: 'indexing',
+        label: 'Indexing',
+        value: stats.indexing,
+        icon: this.ClockIcon,
+        color: 'amber',
+        variant: 'solid',
+        clickable: true
+      },
+      {
+        id: 'failed',
+        label: 'Failed',
+        value: stats.failed,
+        icon: this.AlertTriangleIcon,
+        color: 'red',
+        variant: 'solid',
+        clickable: true
+      }
+    ];
+    return items;
+  });
 
   readonly filterOptions = computed(() => {
-    const counts = this.statusCounts();
+    const stats = this.kbStats();
     return [
-      { value: 'all' as FilterType, label: `All (${counts.all})` },
-      { value: 'indexed' as FilterType, label: `Indexed (${counts.indexed})` },
-      { value: 'indexing' as FilterType, label: `Indexing (${counts.indexing})` },
-      { value: 'failed' as FilterType, label: `Failed (${counts.failed})` }
+      { value: 'all' as FilterType, label: `All (${stats.total})` },
+      { value: 'indexed' as FilterType, label: `Indexed (${stats.indexed})` },
+      { value: 'indexing' as FilterType, label: `Indexing (${stats.indexing})` },
+      { value: 'failed' as FilterType, label: `Failed (${stats.failed})` }
     ];
   });
 
@@ -115,10 +192,7 @@ export class KnowledgeBases implements OnInit {
     }
   ]);
 
-  constructor(
-    private kbService: MockKnowledgeBasesService,
-    private dialogService: RagDialogService
-  ) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.loadKnowledgeBases();
@@ -141,10 +215,15 @@ export class KnowledgeBases implements OnInit {
   onSearchChange(query: string): void {
     this.searchQuery.set(query);
   }
+  
+  onSearchClear(): void {
+    this.searchQuery.set('');
+    this.selectedFilters.set([]);
+  }
 
-  onFilterChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    this.statusFilter.set(target.value as FilterType);
+  onFilterChange(selectedFilters: string[]): void {
+    console.log('Filter change received:', selectedFilters);
+    this.selectedFilters.set(selectedFilters);
   }
 
   openCreateWizard(): void {
