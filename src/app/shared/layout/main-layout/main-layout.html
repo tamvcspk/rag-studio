@@ -1,38 +1,9 @@
 <!-- Header -->
-<header class="app-header">
-  <div class="rt-Container">
-    <div class="flex items-center justify-between header-content">
-      <div class="flex items-center gap-lg">
-        <div class="flex items-center gap-xs">
-          <rag-icon class="logo" [img]="DatabaseIcon" variant="primary" size="lg"></rag-icon>
-          <h1 class="heading app-title">RAG Studio</h1>
-        </div>
-        <span class="text text-muted app-subtitle hide-mobile">Personal RAG & MCP Server</span>
-      </div>
-      <div class="flex items-center gap-md">
-        <rag-chip variant="soft" [color]="mcpStatusColor()" [icon]="mcpStatusIcon()">
-          {{ mcpStatusText() }}
-        </rag-chip>
-        <!-- <rag-button variant="ghost" size="md" aria-label="Settings">
-          <rag-icon [img]="SettingsIcon" size="sm"></rag-icon>
-        </rag-button> -->
-      </div>
-    </div>
-  </div>
-</header>
+<app-header></app-header>
 
 <!-- Main Content -->
 <main class="app-main">
-  <div class="rt-Container h-full flex flex-col">
-    <!-- Navigation using RagTabNavigation -->
-    <div class="navigation-wrapper">
-      <rag-tab-navigation [items]="tabItems()" [activeItem]="currentActiveTab()" size="lg" variant="primary"
-        (itemChange)="onTabChange($event)" (indexChange)="onTabIndexChange($event)">
-      </rag-tab-navigation>
-    </div>
-    <!-- Main content area -->
-    <div class="content-area" role="main">
-      <router-outlet />
-    </div>
+  <div class="rt-Container flex flex-col">
+    <router-outlet />
   </div>
 </main>

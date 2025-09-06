@@ -241,30 +241,39 @@ export class FormComponent {
   variant="primary"
   (itemClick)="onNavigation($event)" />
 
-<!-- Page-level tabs (content switching) -->
+<!-- Page-level tabs with directive panels -->
 <rag-tabs 
   [tabs]="[
-    { id: 'overview', label: 'Overview', icon: 'eye' },
-    { id: 'settings', label: 'Settings', icon: 'settings' },
-    { id: 'members', label: 'Members', icon: 'users' }
+    { id: 'overview', label: 'Overview', icon: EyeIcon },
+    { id: 'settings', label: 'Settings', icon: SettingsIcon },
+    { id: 'members', label: 'Members', icon: UsersIcon }
   ]"
-  [activeTab]="currentTab()"
-  (tabChange)="switchTab($event)" />
-
-<!-- Tab content -->
-<div class="tab-content">
-  @switch (currentTab()) {
-    @case ('overview') {
-      <project-overview />
-    }
-    @case ('settings') {
-      <project-settings />
-    }
-    @case ('members') {
-      <project-members />
-    }
-  }
-</div>
+  [selectedIndex]="currentTabIndex()"
+  (selectedIndexChange)="switchTab($event)"
+  variant="primary">
+  
+  <!-- Tab panels with single source of truth! -->
+  <ng-template 
+    ragTabPanel="overview" 
+    [label]="'Overview'" 
+    [icon]="EyeIcon">
+    <project-overview />
+  </ng-template>
+  
+  <ng-template 
+    ragTabPanel="settings" 
+    [label]="'Settings'" 
+    [icon]="SettingsIcon">
+    <project-settings />
+  </ng-template>
+  
+  <ng-template 
+    ragTabPanel="members" 
+    [label]="'Members'" 
+    [icon]="UsersIcon">
+    <project-members />
+  </ng-template>
+</rag-tabs>
 ```
 
 ### 4. Modal Dialogs and Dropdowns
@@ -507,7 +516,7 @@ export class ActionsComponent {
 | `<rag-card>` | `<rag-card variant="elevated">Content</rag-card>` | `variant`, `interactive`, `padding` |
 | `<rag-stat-card>` | `<rag-stat-card [data]="metric">` | `data`, `size`, `variant` |
 | `<rag-form-field>` | `<rag-form-field label="Name" [error]="err">` | `label`, `error`, `required` |
-| `<rag-tabs>` | `<rag-tabs [tabs]="items" (tabChange)="change">` | `tabs`, `activeTab`, `variant` |
+| `<rag-tabs>` | `<rag-tabs [(selectedIndex)]="index">` | `selectedIndex`, `variant` |
 | `<rag-tab-navigation>` | `<rag-tab-navigation [items]="navItems">` | `items`, `variant`, `activeItem` |
 | `<rag-page-header>` | `<rag-page-header [title]="'Page'" [actions]="acts">` | `title`, `description`, `actions` |
 | `<rag-dialog>` | `<rag-dialog [open]="show" title="Edit">` | `open`, `title`, `size` |
@@ -701,78 +710,38 @@ export class FormComponent {
 <!-- Complete settings page structure -->
 <rag-tabs 
   [tabs]="settingsTabs"
-  [activeTab]="activeTab()"
+  [selectedIndex]="activeTabIndex()"
   variant="pills"
-  (tabChange)="onTabChange($event)">
-</rag-tabs>
+  (selectedIndexChange)="onTabChange($event)">
   
-<!-- Tab content -->
-@switch (activeTab()) {
-  @case ('general') {
+  <ng-template 
+    ragTabPanel="general" 
+    [label]="'General'" 
+    [icon]="SettingsIcon">
     <rag-settings-section 
       title="Appearance"
       description="Customize the look and feel"
       [icon]="PaletteIcon">
-      
-      <rag-settings-item 
-        label="Theme"
-        description="Choose your preferred color scheme">
-        <rag-toggle-group 
-          [options]="themeOptions"
-          [formControl]="themeControl">
-        </rag-toggle-group>
-      </rag-settings-item>
-      
-      <rag-divider spacing="lg" />
-      
-      <rag-settings-item 
-        label="Language"
-        description="Select your preferred language">
-        <rag-select 
-          [options]="languageOptions"
-          [formControl]="languageControl">
-        </rag-select>
-      </rag-settings-item>
+      <!-- settings items -->
     </rag-settings-section>
-    
-    <rag-settings-section 
-      title="Behavior"
-      description="Configure application behavior"
-      [icon]="SettingsIcon"
-      variant="card">
-      
-      <rag-settings-item 
-        label="Auto-save"
-        description="Automatically save your work"
-        layout="vertical">
-        <rag-switch 
-          label="Enable auto-save"
-          [formControl]="autoSaveControl">
-        </rag-switch>
-      </rag-settings-item>
-    </rag-settings-section>
-  }
+  </ng-template>
   
-  @case ('security') {
+  <ng-template 
+    ragTabPanel="security" 
+    [label]="'Security'" 
+    [icon]="ShieldIcon">
     <rag-settings-section 
-      title="Authentication"
-      description="Manage your security settings"
+      title="Security"
+      description="Manage security settings"
       [icon]="ShieldIcon">
-      
-      <rag-settings-item 
-        label="Two-Factor Authentication"
-        description="Add an extra layer of security"
-        [icon]="LockIcon"
-        [required]="true">
-        <rag-switch [formControl]="twoFactorControl">
-      </rag-settings-item>
+      <!-- security settings -->
     </rag-settings-section>
-  }
-}
+  </ng-template>
+</rag-tabs>
 ```
 
 ```typescript
-// Settings component with all imports
+// Settings component - much simpler now!
 import { 
   SunIcon, MoonIcon, MonitorIcon, PaletteIcon, 
   SettingsIcon, ShieldIcon, LockIcon 
@@ -780,17 +749,13 @@ import {
 
 @Component({
   imports: [
-    RagTabs, RagSettingsSection, RagSettingsItem,
+    RagTabs, RagTabPanelDirective, RagSettingsSection, RagSettingsItem,
     RagToggleGroup, RagSelect, RagSwitch, RagDivider
   ],
   template: `<!-- settings template above -->`
 })
 export class SettingsComponent {
-  readonly settingsTabs = [
-    { id: 'general', label: 'General', icon: SettingsIcon },
-    { id: 'security', label: 'Security', icon: ShieldIcon },
-    { id: 'integrations', label: 'Integrations', icon: PlugIcon }
-  ];
+  // No more tabs array needed! 🎉
   
   readonly themeOptions = [
     { value: 'light', label: 'Light', icon: SunIcon },
@@ -798,7 +763,7 @@ export class SettingsComponent {
     { value: 'system', label: 'System', icon: MonitorIcon }
   ];
   
-  readonly activeTab = signal('general');
+  readonly activeTabIndex = signal(0);
   
   readonly form = this.fb.group({
     theme: ['system'],
@@ -807,9 +772,10 @@ export class SettingsComponent {
     twoFactor: [false]
   });
   
-  onTabChange(tabId: string) {
-    this.activeTab.set(tabId);
-    this.router.navigate(['/settings', tabId]);
+  onTabChange(index: number) {
+    this.activeTabIndex.set(index);
+    // Tab navigation simplified - no need to look up tab IDs
+    this.router.navigate(['/settings', index]);
   }
 }
 ```

@@ -1,0 +1,43 @@
+// Tabs layout styles will be inherited from main-layout.scss
+// This file is created for potential future customizations
+
+.navigation-wrapper {
+  background-color: var(--rag-semantic-color-background-default);
+  padding: var(--rag-primitive-spacing-lg) var(--rag-primitive-spacing-xl) 0 var(--rag-primitive-spacing-xl);
+  backdrop-filter: blur(8px);
+}
+
+.content-area {
+  padding: 0 var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl);
+  flex: 1 1 auto;
+
+  ::ng-deep .sticky-header {
+    background-color: var(--rag-semantic-color-background-subtle);
+    position: sticky;
+    top: calc(var(--rag-primitive-size-9) + var(--rag-primitive-size-9) + var(--rag-primitive-spacing-lg));
+    z-index: var(--rag-primitive-zIndex-sticky);
+  }
+}
+
+// Responsive styles using design tokens
+@media (max-width: var(--rag-primitive-breakpoint-md)) {
+  .navigation-wrapper {
+    padding: 0 var(--rag-primitive-spacing-md);
+  }
+
+  .content-area {
+    padding: var(--rag-primitive-spacing-lg);
+    margin-top: 0;
+    border-radius: 0;
+  }
+}
+
+@media (max-width: var(--rag-primitive-breakpoint-sm)) {
+  .navigation-wrapper {
+    padding: 0 var(--rag-primitive-spacing-sm);
+  }
+
+  .content-area {
+    padding: var(--rag-primitive-spacing-md);
+  }
+}

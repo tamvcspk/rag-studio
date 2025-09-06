@@ -1,4 +1,6 @@
 // Main Layout Styles using Design Tokens
+$rag-layout-header-height: calc(var(--rag-primitive-size-12) + var(--rag-primitive-lineHeight-md) + var(--rag-primitive-spacing-xs) + var(--rag-primitive-lineHeight-xl) * 1.2);
+
 :host {
   display: flex;
   flex-direction: column;
@@ -8,107 +10,47 @@
   overflow-y: auto;
 }
 
-.app-header {
-  background-color: var(--rag-semantic-color-background-default);
+app-header {
   position: sticky;
   top: 0;
   z-index: var(--rag-primitive-zIndex-sticky);
-  backdrop-filter: blur(8px);
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: var(--rag-primitive-borderWidth-1);
-    background: var(--rag-semantic-color-border-default);
-  }
-}
-
-.logo {
-  color: var(--rag-primitive-color-blue-500);
-}
-
-.header-content {
-  height: var(--rag-primitive-size-9);
-  padding: 0 var(--rag-primitive-spacing-xl);
-}
-
-.app-title {
-  font-size: var(--rag-primitive-fontSize-xl);
-  font-weight: var(--rag-primitive-fontWeight-semibold);
-  color: var(--rag-semantic-color-text-default);
-  margin: 0;
-}
-
-.app-subtitle {
-  font-size: var(--rag-primitive-fontSize-sm);
-  font-weight: var(--rag-primitive-fontWeight-medium);
-  color: var(--rag-semantic-color-text-muted);
 }
 
 .app-main {
-  flex: 1 1 100%;
-  background-color: var(--rag-semantic-color-background-subtle);
-}
-
-.navigation-wrapper {
-  background-color: var(--rag-semantic-color-background-default);
-  padding: var(--rag-primitive-spacing-lg) var(--rag-primitive-spacing-xl) 0 var(--rag-primitive-spacing-xl);
-  backdrop-filter: blur(8px);
-  position: sticky;
-  top: var(--rag-primitive-size-9);
-  z-index: var(--rag-primitive-zIndex-sticky);
-}
-
-.content-area {
-  padding: 0 var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl);
   flex: 1 1 auto;
+  background-color: var(--rag-semantic-color-background-subtle);
 
-  ::ng-deep .sticky-header {
-    background-color: var(--rag-semantic-color-background-subtle);
+  ::ng-deep .navigation-wrapper {
     position: sticky;
-    top: calc(var(--rag-primitive-size-9) + var(--rag-primitive-size-9) + var(--rag-primitive-spacing-lg));
+    top: var(--rag-primitive-size-9);
     z-index: var(--rag-primitive-zIndex-sticky);
+  }
+
+  ::ng-deep .tabs-page {
+    ::ng-deep .rag-page-header.rag-page-header--lg {
+      height: $rag-layout-header-height;
+    }
+
+    ::ng-deep .rt-TabNavList {
+      position: sticky;
+      top: calc(var(--rag-primitive-size-9) + $rag-layout-header-height);
+      z-index: var(--rag-primitive-zIndex-sticky);
+    }
+  }
+
+  ::ng-deep &:not(.content-area) {
+    .sticky-header {
+      top: var(--rag-primitive-size-9);
+      position: sticky;
+      z-index: var(--rag-primitive-zIndex-sticky);
+      background-color: var(--rag-semantic-color-background-subtle);
+    }
   }
 }
 
 // Responsive styles using design tokens
 @media (max-width: var(--rag-primitive-breakpoint-md)) {
-  .hide-mobile {
+  ::ng-deep .hide-mobile {
     display: none;
-  }
-
-  .header-content {
-    padding: 0 var(--rag-primitive-spacing-md);
-  }
-
-  .navigation-wrapper {
-    padding: 0 var(--rag-primitive-spacing-md);
-  }
-
-  .content-area {
-    padding: var(--rag-primitive-spacing-lg);
-    margin-top: 0;
-    border-radius: 0;
-  }
-
-  .app-subtitle {
-    display: none;
-  }
-}
-
-@media (max-width: var(--rag-primitive-breakpoint-sm)) {
-  .header-content {
-    padding: 0 var(--rag-primitive-spacing-sm);
-  }
-
-  .navigation-wrapper {
-    padding: 0 var(--rag-primitive-spacing-sm);
-  }
-
-  .content-area {
-    padding: var(--rag-primitive-spacing-md);
   }
 }

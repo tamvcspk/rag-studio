@@ -27,7 +27,7 @@ Quick lookup reference for all RAG Studio semantic components with essential inf
 ### 🧭 Navigation (5 components)
 | Component | Purpose | Key Props | Use Case |
 |-----------|---------|-----------|----------|
-| `<rag-tabs>` | Tab navigation | `tabs: TabItem[]`, `variant` | Content organization |
+| `<rag-tabs>` | Advanced tab navigation with auto-discovered directive panels | `selectedIndex`, `variant` | Content organization with single source of truth |
 | `<rag-tab-navigation>` | Router navigation | `items: TabNavItem[]`, `variant` | App navigation tabs |
 | `<rag-breadcrumb>` | Path navigation | `items: BreadcrumbItem[]` | Hierarchical navigation |
 | `<rag-page-header>` | Page headers | `title`, `description`, `actions` | Page title sections |
@@ -105,13 +105,17 @@ type RagSettingsSectionVariant = 'default' | 'card' | 'inline';
 
 ### Navigation Types
 ```typescript
-// RagTabs
+// RagTabs - Auto-discovered from directive panels (no tabs array needed!)
 interface TabItem {
   id: string;
   label: string;
-  icon?: string;
+  icon?: any;                      // Lucide icon component
   disabled?: boolean;
 }
+
+// RagTabPanelDirective - Contains tab info AND content
+@Directive({ selector: '[ragTabPanel]' })
+// Usage: <ng-template ragTabPanel="tabId" [label]="'Tab Name'" [icon]="IconComponent">content</ng-template>
 
 // RagTabNavigation
 interface TabNavItem {
@@ -189,11 +193,26 @@ interface PageHeaderAction {
 
 ### 3. Navigation Layout
 ```html
-<!-- Page tabs -->
+<!-- Simplified tabs - auto-discovered from panels! -->
 <rag-tabs 
-  [tabs]="pageTab"
-  [activeTab]="currentTab"
-  (tabChange)="onTabChange($event)" />
+  [selectedIndex]="currentTabIndex()"
+  (selectedIndexChange)="onTabChange($event)"
+  variant="primary">
+  
+  <ng-template 
+    ragTabPanel="overview" 
+    [label]="'Overview'" 
+    [icon]="HomeIcon">
+    <rag-card>Overview content - single source of truth!</rag-card>
+  </ng-template>
+  
+  <ng-template 
+    ragTabPanel="settings" 
+    [label]="'Settings'" 
+    [icon]="SettingsIcon">
+    <rag-card>Settings content</rag-card>  
+  </ng-template>
+</rag-tabs>
 
 <!-- App navigation with router links -->
 <rag-tab-navigation

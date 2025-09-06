@@ -159,7 +159,8 @@ export const PrimitiveTokens = {
     auto: 'auto',
     base: '0',
     raised: '10',
-    sticky: '11'
+    sticky: '11',
+    hidden: '-1',
   },
 
   // Size scale (height/width values)

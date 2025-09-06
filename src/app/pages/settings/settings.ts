@@ -4,7 +4,7 @@ import { Settings as SettingsIcon, Shield, Zap, Code, Database, Info } from 'luc
 
 import { 
   RagTabs, 
-  TabItem 
+  RagTabPanelDirective 
 } from '../../shared/components/semantic/navigation/rag-tabs/rag-tabs';
 import { 
   RagGeneralSettingsPanel,
@@ -47,6 +47,7 @@ interface SecuritySettings {
   imports: [
     CommonModule,
     RagTabs,
+    RagTabPanelDirective,
     RagGeneralSettingsPanel,
     RagSecuritySettingsPanel,
     EmptyStatePanel,
@@ -68,7 +69,7 @@ export class Settings {
   readonly InfoIcon = Info;
 
   // Modern Angular 20: Use signals for reactive state
-  private readonly activeTabSignal = signal<string>('general');
+  private readonly selectedTabIndex = signal<number>(0);
   
   // Settings state
   private readonly generalSettingsSignal = signal<GeneralSettings>({
@@ -95,39 +96,9 @@ export class Settings {
   });
 
   // Computed values
-  readonly activeTab = computed(() => this.activeTabSignal());
+  readonly currentTabIndex = computed(() => this.selectedTabIndex());
   readonly generalSettings = computed(() => this.generalSettingsSignal());
   readonly securitySettings = computed(() => this.securitySettingsSignal());
-
-  readonly settingsTabs = computed<TabItem[]>(() => [
-    {
-      id: 'general',
-      label: 'General',
-      icon: Settings,
-    },
-    {
-      id: 'security',
-      label: 'Security',
-      icon: Shield,
-    },
-    {
-      id: 'performance',
-      label: 'Performance',
-      icon: Zap,
-      disabled: true  // Disabled instead of badge "Soon"
-    },
-    {
-      id: 'advanced',
-      label: 'Advanced',
-      icon: Code,
-      disabled: true  // Disabled instead of badge "Soon"
-    },
-    {
-      id: 'about',
-      label: 'About',
-      icon: Info,
-    }
-  ]);
 
   // App info
   readonly appVersion = computed(() => '1.0.0-beta');
@@ -135,8 +106,8 @@ export class Settings {
   readonly dataDirectory = computed(() => this.generalSettings().dataDirectory);
   readonly uptime = computed(() => '2h 15m');
 
-  onTabChange(tabId: string): void {
-    this.activeTabSignal.set(tabId);
+  onTabIndexChange(index: number): void {
+    this.selectedTabIndex.set(index);
   }
 
   onGeneralSettingsChange(settings: GeneralSettings): void {

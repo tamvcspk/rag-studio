@@ -625,15 +625,13 @@ export class SettingsComponent {
 ## 🧭 Navigation Components
 
 ### RagTabs
-**Purpose**: Tab navigation with keyboard support, icons, and disabled states.
+**Purpose**: Revolutionary single-source-of-truth tab navigation that auto-discovers tabs from directive panels. No need to define tabs separately - everything is declared in the template directives for maximum simplicity and maintainability.
 
 #### Props
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `tabs` | `TabItem[]` | ✅ | Tab configuration |
-| `activeTab` | `string \| null` | `null` | Currently active tab ID |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Tab size |
-| `variant` | `'default' \| 'pills'` | `'default'` | Visual style |
+| `selectedIndex` | `number` | `0` | Currently active tab index (two-way binding) |
+| `variant` | `'primary' \| 'secondary' \| 'minimal'` | `'primary'` | Visual style variant |
 | `disabled` | `boolean` | `false` | Disable all tabs |
 
 #### TabItem Interface
@@ -641,7 +639,7 @@ export class SettingsComponent {
 interface TabItem {
   id: string;
   label: string;
-  icon?: string;                    // Lucide icon name
+  icon?: any;                      // Lucide icon component
   disabled?: boolean;
 }
 ```
@@ -649,26 +647,171 @@ interface TabItem {
 #### Events
 | Event | Type | Description |
 |-------|------|-------------|
-| `tabChange` | `string` | Emitted when tab selection changes |
+| `selectedIndexChange` | `number` | Emitted when tab selection changes (supports two-way binding) |
+
+#### RagTabPanelDirective
+**Purpose**: Enhanced directive that contains BOTH tab metadata and panel content in one place - the ultimate single source of truth.
+
+```typescript
+@Directive({
+  selector: '[ragTabPanel]',
+  standalone: true
+})
+export class RagTabPanelDirective {
+  readonly id = input.required<string>({ alias: 'ragTabPanel' });
+  readonly label = input.required<string>();          // Tab label
+  readonly icon = input<any>();                       // Tab icon
+  readonly disabled = input(false, { transform: Boolean }); // Tab disabled state
+}
+```
+
+#### Key Features
+- **🎯 Single Source of Truth**: Tab info (label, icon, disabled) defined directly on each panel directive
+- **🚀 Auto-Discovery**: No need to define tabs array separately - automatically extracted from directives
+- **⚡ Optimized Rendering**: Tab panels use `position: absolute` with `visibility` and `opacity` for smooth transitions  
+- **🔄 No Re-rendering**: Content stays in DOM, preventing expensive re-creation when switching tabs
+- **📡 Two-way Binding**: Supports `[(selectedIndex)]` syntax for seamless state management
+- **🎨 Shared Styling**: Reuses CSS from `rag-tab-navigation` for consistent appearance
+- **♿ Full Accessibility**: ARIA compliant with proper tab/tabpanel relationships
+- **🧹 Simplified Usage**: Minimal boilerplate - just add directive attributes to your templates
 
 #### Usage
-```html
-<!-- Basic tabs -->
-<rag-tabs 
-  [tabs]="[
-    { id: 'overview', label: 'Overview', icon: 'home' },
-    { id: 'settings', label: 'Settings', icon: 'settings' },
-    { id: 'logs', label: 'Logs', icon: 'file-text', disabled: true }
-  ]"
-  (tabChange)="onTabChange($event)" />
 
-<!-- Pills variant -->
-<rag-tabs
-  variant="pills"
-  size="lg"
-  [tabs]="tabItems"
-  [activeTab]="currentTab" />
+**Revolutionary Simplified Usage - Single Source of Truth!**
+```html
+<!-- ✨ No tabs array needed - everything auto-discovered! -->
+<rag-tabs 
+  [selectedIndex]="selectedIndex()"
+  (selectedIndexChange)="onSelectedIndexChange($event)"
+  variant="primary">
+  
+  <!-- Tab info defined RIGHT HERE with the content - amazing! -->
+  <ng-template 
+    ragTabPanel="overview" 
+    [label]="'Overview'" 
+    [icon]="HomeIcon">
+    <rag-card>
+      <h3>Overview Panel</h3>
+      <p>🎯 Single source of truth - tab label and icon defined here!</p>
+      <p>No need to maintain separate tabs array anymore.</p>
+      <rag-button (onClick)="navigateToSettings()">
+        Go to Settings
+      </rag-button>
+    </rag-card>
+  </ng-template>
+  
+  <ng-template 
+    ragTabPanel="settings" 
+    [label]="'Settings'" 
+    [icon]="SettingsIcon">
+    <rag-card>
+      <h3>Settings Panel</h3>
+      <p>Tab info stays perfectly in sync with content!</p>
+      <rag-form-field label="Theme">
+        <rag-select [options]="themeOptions" />
+      </rag-form-field>
+    </rag-card>
+  </ng-template>
+  
+  <ng-template 
+    ragTabPanel="profile" 
+    [label]="'User Profile'" 
+    [icon]="UserIcon"
+    [disabled]="false">
+    <rag-card>
+      <h3>User Profile</h3>
+      <p>Even disabled state managed right here!</p>
+    </rag-card>
+  </ng-template>
+</rag-tabs>
 ```
+
+**Drastically Simplified Component Setup**
+```typescript
+@Component({
+  imports: [RagTabs, RagTabPanelDirective, RagCard, RagButton],
+  template: `<!-- template above -->`
+})
+export class TabsPageComponent {
+  // Only need icons for template use - no tabs array! 🎉
+  readonly HomeIcon = HomeIcon;
+  readonly SettingsIcon = SettingsIcon;
+  readonly UserIcon = UserIcon;
+  
+  // Just state management - so much cleaner!
+  readonly selectedIndex = signal<number>(0);
+  
+  onSelectedIndexChange(index: number): void {
+    console.log('Tab changed to index:', index);
+    this.selectedIndex.set(index);
+  }
+  
+  navigateToSettings(): void {
+    this.selectedIndex.set(1); // Programmatic navigation
+  }
+}
+```
+
+**Two-way Binding Syntax**
+```html
+<!-- Shorthand two-way binding - even cleaner! -->
+<rag-tabs 
+  [(selectedIndex)]="currentTabIndex"
+  variant="secondary">
+  
+  <ng-template 
+    ragTabPanel="documents" 
+    [label]="'Documents'">
+    <div>First tab content</div>
+  </ng-template>
+  
+  <ng-template 
+    ragTabPanel="settings" 
+    [label]="'Settings'">
+    <div>Second tab content</div>
+  </ng-template>
+</rag-tabs>
+```
+
+#### Variants
+
+**Primary Variant (Default)**
+```html
+<rag-tabs variant="primary" [(selectedIndex)]="index">
+  <ng-template ragTabPanel="tab1" [label]="'Tab 1'">Content 1</ng-template>
+  <ng-template ragTabPanel="tab2" [label]="'Tab 2'">Content 2</ng-template>
+</rag-tabs>
+```
+
+**Secondary Variant** 
+```html
+<rag-tabs variant="secondary" [(selectedIndex)]="index">
+  <ng-template ragTabPanel="tab1" [label]="'Tab 1'">Content 1</ng-template>
+  <ng-template ragTabPanel="tab2" [label]="'Tab 2'">Content 2</ng-template>
+</rag-tabs>
+```
+
+**Minimal Variant**
+```html
+<rag-tabs variant="minimal" [(selectedIndex)]="index">
+  <ng-template ragTabPanel="tab1" [label]="'Tab 1'">Content 1</ng-template>
+  <ng-template ragTabPanel="tab2" [label]="'Tab 2'">Content 2</ng-template>
+</rag-tabs>
+```
+
+#### Performance Benefits
+- **🚀 No DOM Manipulation**: Switching tabs only changes CSS properties, not DOM structure
+- **⚡ Faster Transitions**: Opacity/visibility changes are GPU accelerated  
+- **💾 Form State Preservation**: Form inputs maintain their state when switching tabs
+- **🧠 Memory Efficient**: All content loaded once, then cached in hidden panels
+- **🔄 Zero Re-renders**: Content components never re-initialize when switching tabs
+- **📦 Single Source Management**: Eliminates sync issues between tabs array and content
+
+#### Accessibility Features
+- **Keyboard Navigation**: Arrow keys, Tab, Enter support
+- **Screen Reader Support**: Proper ARIA labels and roles
+- **Focus Management**: Focus is properly managed when switching tabs
+- **High Contrast Mode**: Compatible with system accessibility settings
 
 ---
 

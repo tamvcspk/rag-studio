@@ -1,25 +1,50 @@
-<div class="rt-Tabs">
-  <div [class]="tabsListClasses()" role="tablist">
-    @for (tab of tabs(); track tab.id) {
+<div class="rt-TabNav">
+  <!-- Tab List using shared navigation styles -->
+  <div [class]="navListClasses()" role="tablist">
+    @for (tabPanel of tabPanelsSignal(); track trackByTabId($index, tabPanel)) {
       <button
-        [class]="getTabClasses(tab)"
+        [class]="getTabClasses(tabPanel, $index)"
         role="tab"
-        [attr.aria-selected]="isTabActive(tab.id)"
-        [attr.aria-disabled]="tab.disabled"
-        [disabled]="tab.disabled || disabled()"
-        (click)="onTabClick(tab.id)"
+        [attr.aria-selected]="isTabActive($index)"
+        [attr.aria-disabled]="tabPanel.disabled()"
+        [disabled]="tabPanel.disabled() || disabled()"
+        (click)="onTabClick($index)"
       >
-        @if (tab.icon) {
+        @if (tabPanel.icon()) {
           <rag-icon
-            [img]="tab.icon"
+            [img]="tabPanel.icon()"
             size="sm"
           ></rag-icon>
         }
-        <span>{{ tab.label }}</span>
+        <span class="rt-TabNavItem__label">{{ tabPanel.label() }}</span>
       </button>
     } @empty {
-      <div class="rt-TabsEmpty">No tabs available</div>
+      <div class="rt-TabNavEmpty" role="alert">
+        No tab panels available
+      </div>
     }
   </div>
-  <ng-content></ng-content>
+
+  <!-- Tab Panels Container -->
+  <div class="rt-TabPanels" #tabPanelsContainer>
+    @for (tabPanel of tabPanelsSignal(); track trackByTabId($index, tabPanel)) {
+      <div 
+        [class]="getTabPanelClasses($index)"
+        role="tabpanel"
+        [attr.aria-labelledby]="'tab-' + tabPanel.id()"
+        [attr.aria-hidden]="!isTabPanelVisible($index)"
+        [attr.tabindex]="isTabPanelVisible($index) ? 0 : -1">
+        <ng-container 
+          [ngTemplateOutlet]="tabPanel.template">
+        </ng-container>
+      </div>
+    }
+  </div>
+
+  <!-- Fallback content when no panels are provided -->
+  @if (tabPanelsSignal().length === 0) {
+    <div class="rt-TabContent">
+      <ng-content></ng-content>
+    </div>
+  }
 </div>

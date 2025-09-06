@@ -1,99 +1,51 @@
 // RagTabs - Semantic Navigation Component
-.rt-Tabs {
+// Reuses rag-tab-navigation styles for consistency
+@use '../rag-tab-navigation/rag-tab-navigation.scss';
+
+.rt-TabNav {
   width: 100%;
 }
 
-.rt-TabsList {
-  display: flex;
-  gap: var(--rag-archetypes-tabs-container-gap);
-  padding: var(--rag-archetypes-tabs-container-padding);
-  background: var(--rag-archetypes-tabs-container-background);
-  border-radius: var(--rag-archetypes-tabs-container-borderRadius);
-  margin-bottom: var(--rag-primitive-spacing-xl);
-
-  // Size variants
-  &.rt-size-sm {
-    padding: var(--rag-primitive-spacing-xs);
-    gap: var(--rag-primitive-spacing-xs);
-  }
-
-  &.rt-size-md {
-    padding: var(--rag-primitive-spacing-xs);
-    gap: var(--rag-primitive-spacing-xs);
-  }
-
-  &.rt-size-lg {
-    padding: var(--rag-primitive-spacing-sm);
-    gap: var(--rag-primitive-spacing-sm);
-  }
-
-  // Variant styles
-  &.rt-variant-pills {
-    background-color: transparent;
-    gap: var(--rag-primitive-spacing-sm);
-
-    .rt-TabsTrigger {
-      border-radius: var(--rag-primitive-radius-xl);
-    }
-  }
-
-  &.rt-disabled {
-    opacity: 0.5;
-    pointer-events: none;
-  }
-}
-
-.rt-TabsTrigger {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--rag-primitive-spacing-sm);
-  padding: var(--rag-archetypes-tabs-trigger-default-padding);
-  background: var(--rag-archetypes-tabs-trigger-default-background);
-  border: none;
-  border-radius: var(--rag-archetypes-tabs-trigger-default-borderRadius);
-  font-size: var(--rag-archetypes-tabs-trigger-default-fontSize);
-  font-weight: var(--rag-archetypes-tabs-trigger-default-fontWeight);
-  color: var(--rag-archetypes-tabs-trigger-default-color);
-  cursor: pointer;
-  transition: all 0.15s;
-  outline: none;
+// Tab Panels Container with visibility-based switching
+.rt-TabPanels {
   position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 200px;
+}
 
-  &:hover:not(.rt-disabled) {
-    color: var(--rag-archetypes-tabs-trigger-hover-color);
+.rt-TabPanel {
+  width: 100%;
+  transition: opacity 0.2s ease-in-out;
+  
+  &--visible {
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+    z-index: var(--rag-primitive-zIndex-raised);
   }
-
-  &:focus-visible {
-    box-shadow: 0 0 0 2px var(--rag-semantic-color-primary-700);
-  }
-
-  &.rt-active {
-    background: var(--rag-archetypes-tabs-trigger-active-background);
-    color: var(--rag-archetypes-tabs-trigger-active-color);
-    box-shadow: var(--rag-archetypes-tabs-trigger-active-boxShadow);
-  }
-
-  &.rt-disabled {
-    opacity: var(--rag-archetypes-tabs-trigger-disabled-opacity);
-    cursor: var(--rag-archetypes-tabs-trigger-disabled-cursor);
-    color: var(--rag-semantic-color-text-disabled);
-  }
-
-  // Icon styling
-  rag-icon {
-    flex-shrink: 0;
-  }
-
-  span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  
+  &--hidden {
+    position: fixed;
+    top: 0;
+    left: 100%;
+    opacity: 0;
+    visibility: hidden;
+    z-index: var(--rag-primitive-zIndex-hidden);
   }
 }
 
-.rt-TabsEmpty {
+// Fallback content styling when no panels are provided
+.rt-TabContent {
+  margin-top: var(--rag-primitive-spacing-md);
+  padding: var(--rag-primitive-spacing-lg);
+  background: var(--rag-semantic-color-background-default);
+  border-radius: var(--rag-primitive-radius-md);
+  border: 1px solid var(--rag-semantic-color-border-subtle);
+}
+
+// Empty state styling (shared with tab-navigation)
+.rt-TabNavEmpty {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -102,33 +54,17 @@
   font-size: var(--rag-primitive-fontSize-sm);
 }
 
-// Responsive behavior
+// Responsive behavior - inherit from rag-tab-navigation
 @media (max-width: 768px) {
-  .rt-TabsList {
-    flex-direction: column;
+  .rt-TabPanels {
+    min-height: 150px;
   }
-
-  .rt-TabsTrigger {
-    justify-content: flex-start;
+  
+  .rt-TabPanel {
+    padding: var(--rag-primitive-spacing-sm);
   }
-}
-
-// Dark mode support
-@media (prefers-color-scheme: dark) {
-  .rt-TabsList {
-    background-color: var(--rag-semantic-color-background-muted);
-  }
-
-  .rt-TabsTrigger {
-    color: var(--rag-semantic-color-text-subtle);
-
-    &:hover:not(.rt-disabled) {
-      color: var(--rag-semantic-color-text-default);
-    }
-
-    &.rt-active {
-      background-color: var(--rag-semantic-color-background-default);
-      color: var(--rag-semantic-color-text-default);
-    }
+  
+  .rt-TabContent {
+    padding: var(--rag-primitive-spacing-md);
   }
 }
