@@ -21,7 +21,17 @@ RAG Studio is a local-first, no-code/low-code application for building and opera
 
 ## Architecture
 
-This is a hybrid Tauri application with two main components:
+RAG Studio is a local-first, secure, high-performance desktop application built on Tauri and Rust, designed to meet both functional (FR) and non-functional (NFR) requirements. The architecture follows a composition root pattern with DI services and subprocess isolation for security and performance.
+
+### Core Architecture Overview
+
+The Manager acts as the composition root, managing DI services (SQLite, LanceDB, PyO3). MCP (Multi-tool Control Plane) runs in a subprocess for sandboxing and hot-swap, communicating via Outbound RPC (UDS/Axum with mTLS). Centralized logging uses tracing, supporting real-time UI and event sourcing.
+
+#### Process Boundaries
+
+- **Main Process (Manager)**: Composition root containing UI Adapter, Orchestrator, Event Router, KB Module, and all DI services
+- **Subprocess (MCP Module)**: Isolated MCP server with optional in-process mode for low-latency operations
+- **Communication**: UDS/Axum with mTLS for secure inter-process communication
 
 ### Frontend (Angular)
 - Located in `src/` directory
@@ -30,13 +40,35 @@ This is a hybrid Tauri application with two main components:
 - Lucide Icons for consistent iconography (3,300+ icons, MIT license, tree-shakeable)
 - Uses SCSS for styling with CSS custom properties for theming
 - Served on port 1420 during development
+- Real-time updates via Tauri IPC streams
 
 ### Backend (Rust/Tauri)
 - Located in `src-tauri/` directory  
 - Tauri v2 application with Rust backend
 - Integration with Python AI components via PyO3
-- SQLite for metadata storage, file-based for indexes/packs
-- Single MCP server for external integrations
+- Manager-owned DI services with hot-reload configuration support
+- Single MCP server for external integrations with subprocess isolation
+
+### DI Services Architecture
+
+The Manager initializes and manages all core services:
+
+1. **SqlService**: SQLite/Diesel with async WAL mode, migrations, backup, atomic transactions
+2. **VectorDbService**: LanceDB embedded/file with async writes, ANN search, BM25 integration
+3. **StorageService**: LocalFS/ZIP packs with quotas (1-5GB), auto-prune functionality
+4. **CacheService**: Memory/Redis-local with TTL eviction, query caching
+5. **Auth/SecretService**: ring crate encryption, mTLS for RPC communications
+6. **EmbeddingService**: PyO3/Sentence-Transformers with async FFI + Rust fallback
+7. **FlowService**: Composition of Tools/KB/Pipelines for end-to-end workflows
+
+### MCP Module (Subprocess)
+
+- **Tool Registry & Handlers**: Behavior-driven with dynamic bindings
+- **JSON-Schema Validation**: Fuzz-resistant input validation with limits
+- **Dispatcher**: Parallel dispatch for hybrid tool calls
+- **OutboundPort Client**: UDS/Axum client with local cache for frequent queries
+- **Transport Support**: MCP stdio (required), HTTP /invoke (optional, air-gapped block)
+- **Logging Integration**: Structured spans forwarded to main process
 
 ## Development Commands
 
@@ -96,6 +128,32 @@ This is a hybrid Tauri application with two main components:
 - **Scheduler**: Tokio-based background job scheduling with cron/rrule support, retry/backoff, and exclusion rules
 - **Pack Management**: ZIP-based export/import system with YAML manifests and checksums for sharing components
 
+## Key Operational Flows
+
+### Retrieval Flow: `doc.search` → KB (Hybrid Search)
+
+The retrieval process combines semantic (LanceDB ANN) and lexical (BM25/tantivy) search with reranking and mandatory citations:
+
+1. **Input Validation**: JSON-Schema validation with limits and tracing spans
+2. **Cache Check**: Local TTL cache for query results (performance optimization)
+3. **Embedding**: Async PyO3 query embedding with Rust fallback for timeouts
+4. **Hybrid Search**: Parallel vector (LanceDB) and BM25 (tantivy) search with merge/scoring
+5. **Reranking**: PyO3 cross-encoder async batch processing for top-N results
+6. **Citation Enrichment**: Mandatory citations with license information from SQLite
+7. **Performance**: <100ms target with P50/P95 latency monitoring
+
+### Ingest & Commit Flow: ETL → KB (Write Path)
+
+The ingest pipeline handles delta-only updates with versioning and rollback support:
+
+1. **Transaction Begin**: Atomic commit with fingerprint-based delta detection
+2. **ETL Processing**: Parallel fetch/parse/chunk/annotate operations with caching
+3. **Embedding**: Batch async embedding with cache skip for unchanged content
+4. **Indexing**: Buffered upserts to SQLite and LanceDB with staging indexes
+5. **Evaluation**: Smoke tests for recall@k, size/drift warnings, quality alerts
+6. **Commit Finalization**: Promote staging to active index with zero-copy when possible
+7. **Event Sourcing**: Full undo/redo support via event replay mechanism
+
 ## Development Notes
 
 - The application is designed to run air-gapped with no internet dependency after setup
@@ -143,6 +201,34 @@ The MCP server exposes tool sets:
 - `kb.*` - Knowledge base management
 - `admin.*` - Administrative functions
 
+### KB API Contract
+
+The Knowledge Base module exposes these key operations via MCP:
+
+- `kb.hybrid_search(collection, query_vec/text, top_k, filters, cache_ttl?)` → Hit[]
+  - Combines vector and lexical search with reranking
+  - Supports filtering by product/version/semverRange
+  - Returns chunks with scores, snippets, citations, and metadata
+
+- `kb.answer(query, filters?, model?)` → {text, citations[], confidence?}
+  - Full RAG answer generation with LLM integration via PyO3/candle
+  - Mandatory citation requirement with configurable policies
+
+- `kb.get_document(doc_id, range?)` → Document {metadata, chunks?, license?}
+  - Document retrieval with optional range selection
+
+- `kb.resolve_citations(chunk_ids)` → Citation[]
+  - Citation resolution with title, anchor/URL, license, version info
+
+- `kb.stats(collection/version)` → Stats {size, versions, embedder_version, health, eval_scores?}
+  - Collection statistics and health metrics
+
+- `kb.list_collections(filters?)` → KB[] {name, version, pinned?, flows?}
+  - Collection enumeration with metadata
+
+- `kb.compose_flow(flow_id, params?)` → {results, citations[]}
+  - Flow composition for complex multi-step operations
+
 ## Performance Considerations
 
 The architecture is designed for optimal performance with significant improvements from migration:
@@ -158,15 +244,31 @@ The architecture is designed for optimal performance with significant improvemen
 - **Concurrent Processing**: Tokio-based async runtime for scheduling and orchestration
 - **Memory Efficiency**: Static caching with `OnceLock` for shared resources
 
+### Performance Targets
+
+- **Retrieval Latency**: <100ms for hybrid search with P50/P95 monitoring
+- **Parallel Processing**: Tokio::join! for vector/BM25 search merge
+- **Async Operations**: SQLite WAL async, LanceDB async writes, PyO3 async FFI
+- **Caching Strategy**: 
+  - Query result caching with TTL based on confidence scores
+  - Python module compilation caching to avoid repeated I/O
+  - Embedding cache for unchanged content (skip re-embedding)
+- **Zero-Copy Operations**: LanceDB index promotion without data duplication
+- **Batch Processing**: Async batch embedding and reranking for efficiency
+- **Circuit Breaker**: Tower-based circuit breakers for resilience and performance
+
 ## Security Features
 
 - **Air-gapped Mode**: Block outbound network connections via Axum hooks when enabled
 - **Default-deny Permissions**: Filesystem, network, and process access controls with escalation prompts
+- **Subprocess Isolation**: MCP runs in sandboxed subprocess with seccomp/AppArmor protection
 - **Local-first**: All operations work without internet connectivity post-setup
 - **Data Privacy**: No external data transmission in air-gapped mode
 - **Mandatory Citations**: All RAG responses include citations with configurable "no citation → no answer" policy
-- **Secrets Management**: Encrypted at rest using Rust `ring` crate (optional)
+- **Secrets Management**: Encrypted at rest using Rust `ring` crate with mTLS cert rotation
 - **Log Redaction**: Comprehensive redaction of sensitive information in logs
+- **Input Validation**: Fuzz-resistant JSON-Schema validation for all MCP inputs
+- **mTLS Communication**: Secure inter-process communication with certificate rotation
 
 ## Testing
 
@@ -188,6 +290,31 @@ The project includes comprehensive testing across both frontend and backend:
 - MCP server initialization and commands
 - Component rendering and interaction
 - Design token system functionality
+
+## Implementation Recommendations
+
+Based on the core design architecture, these are key implementation guidelines:
+
+### MVP Implementation Path
+- **Core Components**: Manager + KB + MCP subprocess (AC-1-3) 
+- **Database Stack**: SQLite/Diesel + LanceDB + PyO3/candle integration
+- **Performance Target**: Benchmark retrieval to achieve <100ms with criterion
+- **Tauri Integration**: Async commands, tray mode, cross-OS path normalization
+
+### Technical Stack Recommendations
+- **Concurrency**: Tokio semaphores for controlled concurrency
+- **Communication**: bincode over UDS for efficient serialization
+- **Caching**: dashmap for TTL-based memory caching
+- **Python Integration**: async PyO3 with pyo3-async crate
+- **Security Testing**: cargo-fuzz for RPC fuzzing, audit PyO3 bindings
+- **Air-gapped Mode**: Block outbound reqwest calls when enabled
+
+### Development Priorities
+1. **Prototype Core Flows**: Implement and benchmark retrieval/ingest flows
+2. **Validation Metrics**: Implement eval metrics (recall@k) validation
+3. **Flow Service**: Implement FR-6 flow composition functionality
+4. **Performance Validation**: Use cargo bench for critical path optimization
+5. **Security Hardening**: Implement comprehensive input validation and sandboxing
 
 ## Development Guidelines
 
@@ -343,6 +470,19 @@ Generate high-quality, idiomatic Rust code adhering to Rust's best practices as 
 - Implement comprehensive error handling with proper error propagation
 - Use Tokio async runtime efficiently for concurrent operations
 - Follow Rust ownership and borrowing principles strictly
+
+#### Architecture-Specific Patterns
+- **DI Services**: Use async_trait for service interfaces, implement hot-reload via notify crate
+- **Manager Pattern**: Composition root initializes all services from TOML config
+- **Circuit Breaker**: Use tower crate for resilience in service calls
+- **Event Sourcing**: Implement tracing-subscriber with JSONL sink for event replay
+- **RPC Communication**: UDS with Axum server, mTLS for inter-process security
+- **Caching Layers**: dashmap for memory TTL, invalidation hooks on commits
+- **Performance Optimization**: 
+  - SQLite WAL async with rusqlite async
+  - LanceDB async writes with zero-copy index promotion
+  - PyO3 async with pyo3-async crate, timeout-based Rust fallbacks
+  - Parallel operations with tokio::join! for hybrid search
 
 #### Code Generation Standards
 Generate complete, compilable code with a main function or lib entry point. If the code is a snippet, wrap it in a minimal example. Ensure it's modular, readable, and efficient. Respond with code only unless explanations are specifically requested.
