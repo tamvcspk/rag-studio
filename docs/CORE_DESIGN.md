@@ -1,6 +1,8 @@
 # Core Design for RAG Studio
 
-RAG Studio is a local-first, secure, high-performance desktop application built on Tauri and Rust to meet both functional (FR) and non-functional (NFR) requirements in SRS/SDD. The Manager acts as the composition root, managing DI services (SQLite, LanceDB, PyO3, StateManager). MCP (Multi-tool Control Plane) runs in a subprocess for sandboxing and hot-swap, communicating via Outbound RPC (UDS/Axum with mTLS). Centralized logging uses tracing, supporting real-time UI and event sourcing. State management is handled by StateManager (S8), the single source of truth for global state, with in-memory buffer cap and pagination for large data.
+RAG Studio is a local-first, secure, high-performance desktop application built on Tauri and Rust, meeting functional (FR) and non-functional (NFR) requirements in SRS/SDD. The design features an isolated embedding worker running out-of-process, simplified UDS authentication, a refactored StateManager using actors, atomic index promotion with epoch garbage collection, and a split SQLite setup (app_meta.db + events.db) for improved concurrency. It includes end-to-end backpressure, cross-process tracing and metrics with histograms and SLIs, layered caching with invalidation, and adaptive RAG flows. Additional enhancements encompass an enhanced MCP sandbox with a policy engine, redaction filters, RPC/IPC schema versioning, and Tauri UX optimizations such as non-blocking IPC and debounce. Logging uses hierarchical events, with critical ACID events (including undo/redo deltas) stored in SQLite (events.db), and non-critical telemetry and spans logged to JSONL files with rotation. This balances durability for event sourcing and simplicity/performance for observability, with offload capabilities to external log systems like ELK or Splunk.
+
+The Manager serves as the composition root, managing dependency injection services. MCP runs in a subprocess for sandboxing and hot-swap, communicating via UDS/Axum with simplified authentication. Centralized logging employs tracing with multi-sinks (SQL for critical events, JSONL for non-critical), supporting real-time UI and event sourcing. State management is handled via an actor-based StateManager, serving as the single source of truth with in-memory buffers and pagination.
 
 ## 1. Architecture Overview and Process Boundaries
 
@@ -9,57 +11,62 @@ RAG Studio is a local-first, secure, high-performance desktop application built 
 ```mermaid
 flowchart LR
   subgraph SVC["DI Services (in-process, Manager-owned pools, Hot-Reload Config)"]
-    S1["SqlService (SQLite/Diesel)<br>(Metadata, Config, Migrations, Backup, WAL Mode Async)"]
-    S2["VectorDbService (LanceDB embedded/file, Async Writes)<br>(Embeddings, ANN Search, BM25 Integration)"]
+    S1["SqlService (SQLite/Diesel Async)<br>(app_meta.db: Metadata/Config/Migrations/Backup; events.db: Critical Events ACID; WAL Async, Split Concurrency)"]
+    S2["VectorDbService (LanceDB embedded/file, Async Writes)<br>(Embeddings, ANN Search, BM25 Integration, Atomic Promote + Epoch GC)"]
     S3["StorageService<br>(LocalFS/ZIP Packs, Quotas 1-5GB, Auto-Prune)"]
-    S4["CacheService<br>(Memory/Redis-local, TTL Eviction, Query Caching)"]
-    S5["Auth/SecretService (ring crate, mTLS for RPC)"]
-    S6["EmbeddingService (PyO3/Sentence-Transformers, Async FFI + Rust Fallback)"]
-    S7["FlowService (Composition of Tools/KB/Pipelines, FR-6 Flows)"]
-    S8["StateManager (Arc<RwLock<AppState>>, Event Bus for Deltas)<br>(Global State: KBs/Runs/Logs, FR-2/3/8)"]
+    S4["CacheService<br>(Memory/Redis-local, TTL Eviction, Layered: Request/Feature/Doc, Invalidation on Gen ID)"]
+    S5["Auth/SecretService (ring crate, UDS SO_PEERCRED + Token Headers)"]
+    S6["EmbeddingService (Out-of-Process Worker UDS/Bincode, Warm-Pool, Health/Rotate, PyO3 Async + Rust Fallback)"]
+    S7["FlowService (Composition of Tools/KB/Pipelines, FR-6 Flows, Checksum Validation)"]
+    S8["StateManager (Actor-based per Domain: KBs/Runs/Metrics, mpsc Channels, Batched Persist)<br>(Global State: KBs/Runs/Logs, FR-2/3/8, Event Bus Deltas)"]
   end
   subgraph P0["Main Process: Manager (Composition Root)"]
     direction TB
-    A1["UI Adapter / API Gateway (Tauri IPC, Async Commands)"]
-    A2["Orchestrator / Scheduler (Tokio-based, Semaphores for Concurrency)"]
-    A3["Event & Log Router (tracing + JSONL sink, Event Sourcing for Undo/Redo)"]
-    A4["KB Module<br>(Read/Write API, Versioning, Citations, Flow Composition)"]
-    A5["Outbound RPC Server<br>(UDS/Axum with mTLS, Circuit Breaker for Resilience)"]
+    A1["UI Adapter / API Gateway (Tauri IPC Async Commands/Streams, Non-Blocking + Debounce 60Hz)"]
+    A2["Orchestrator / Scheduler (Tokio-based, Semaphores + Backpressure Bounds)"]
+    A3["Event & Log Router (tracing Multi-Sinks: SQL Critical Events, JSONL Non-Critical + Rotation/Redaction, Cross-Process Propagate)"]
+    A4["KB Module<br>(Read/Write API, Versioning, Citations, Flow Composition, Adaptive Rerank)"]
+    A5["Outbound RPC Server<br>(UDS/Axum + SO_PEERCRED/Token Auth, Schema Versioning + Compat, Circuit Breaker + Backpressure Limits)"]
     SVC
   end
-  subgraph P1["Subprocess: MCP Module (Optional In-Process Mode for Low-Latency)"]
+  subgraph P1["Subprocess: MCP Module (Sandbox seccomp/JobObject + Policy Engine, Optional In-Process Mode)"]
     direction TB
-    M1["Tool Registry & Handlers<br>(behavior-driven, Dynamic Bindings)"]
+    M1["Tool Registry & Handlers<br>(Behavior-Driven, Dynamic Bindings, Capability Policy)"]
     M2["JSON-Schema Validation & Limits (Fuzz-Resistant)"]
     M3["Dispatcher (Parallel Dispatch for Hybrid Calls)"]
     M4["OutboundPort Client<br>(UDS/Axum Client, Local Cache for Frequent Queries)"]
     M5["Transports:<br>MCP stdio (required)<br>HTTP /invoke (optional, air-gapped block)"]
-    M6["Logging Adapter<br>(tracing → Outbound Port, Structured Spans)"]
+    M6["Logging Adapter<br>(tracing → Outbound Port, Structured Spans, Propagate Trace_ID)"]
   end
-  UI["Angular UI (Tauri WebView, Real-Time Updates via IPC Streams)"] -- Tauri IPC Async Streams --> A1
+  subgraph P2["Subprocess: Embedding Worker (UDS/Bincode, Warm-Pool, Health-Check/Rotate)"]
+    E1["PyO3/Sentence-Transformers Batch, GIL Release + Rust Fallback (candle)"]
+  end
+  UI["Angular UI (Tauri WebView, Real-Time Updates via IPC Streams, Debounce Logs/Metrics)"] -- Tauri IPC Async Streams --> A1
   C["IDE/Agent/Client (MCP Clients)"] -- MCP stdio --> M5
   M5 --> M3
   M3 --> M1
   M3 -- needs data --> M4
-  M4 -- Outbound RPC UDS and mTLS --> A5
+  M4 -- Outbound RPC UDS + Token Auth --> A5
   A5 --> A4
   A4 --> S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8
-  M6 -- Events and Logs Structured JSON --> A3
+  M6 -- Events/Logs JSON/SQL --> A3
   A2 --> A4
   A1 --> A4
   A3 --> S3
+  S6 -- UDS/Bincode Warm-Pool --> E1
 ```
 
 ### Key Points
-- **Manager:** Composition root, initializes/injects DI services (S1-S8), manages pools (SQLite/LanceDB/PyO3/StateManager), supports config hot-reload (TOML via notify crate).
-- **MCP:** Isolated subprocess (stdio, seccomp/AppArmor), hot-swap (AC-1), optional in-process mode (config: low_latency=true). Communicates via UDS/Axum with mTLS; accesses state indirectly via RPC to StateManager.
-- **State Management:** StateManager (S8) is the centralized service for global state (AppState struct based on SDD §4.1), using Arc<RwLock<AppState>> for thread-safe access and broadcast channels for internal events. Modules read/write via injected StateManager; deltas are emitted for UI/MCP sync.
-- **Logging:** Centralized tracing-subscriber, JSONL sink, redaction filters, event sourcing for undo/redo (FR-9).
-- **UI:** Angular WebView, async IPC streams for wizards/drag-drop (FR-3/9), real-time logs/dashboard (FR-8).
+- **Manager**: Composition root, initializes/injects DI services (S1-S8), manages pools (SQLite/LanceDB/StateManager/Embedding Worker). Supports config hot-reload (TOML via notify). Spawns Embedding Worker subprocess.
+- **MCP**: Isolated subprocess (stdio, seccomp/AppArmor/JobObject + policy engine like Cedar-lite for capabilities), hot-swap (AC-1), optional in-process mode. Communicates via UDS/Axum with SO_PEERCRED/token auth; accesses state indirectly via RPC to StateManager.
+- **Embedding Worker**: Out-of-process (UDS/bincode protocol, warm-pool pre-fork, health-check/rotate). Handles embed/rerank to isolate crashes/GIL.
+- **State Management**: Actor-based (per domain: KBs/Runs/Metrics via mpsc channels, batched persist). Broadcast channels for deltas. Modules read/write via injected StateManager; deltas emitted for UI/MCP sync.
+- **Logging**: Tracing-subscriber with multi-sinks: SQL (events.db) for critical ACID events (undo/redo deltas, FR-9), JSONL (with rotation via tracing-appender) for non-critical telemetry/spans (FR-8). Redaction filters, cross-process propagation (trace_id), histograms for SLIs (P50/P95, hit rate). Event sourcing for undo/redo via SQL replay.
+- **UI**: Angular WebView, async IPC streams for wizards/drag-drop (FR-3/9), real-time logs/dashboard (FR-8), with debounce (60Hz cap) and non-blocking.
 
 ## 2. Retrieval Flow: MCP `doc.search` → KB (Hybrid Search with Rerank & Citations)
 
-The retrieval flow processes RAG queries (`doc.search`), combining semantic (LanceDB ANN) and lexical (BM25/tantivy), with rerank, mandatory citations, and caching.
+The retrieval flow processes RAG queries, combining semantic (LanceDB ANN) and lexical (BM25/tantivy), with adaptive rerank, mandatory citations, and layered caching. It includes adaptive candidate sets, backpressure, tracing histograms, and Embedding Worker integration.
 
 ### Retrieval Flow Diagram
 
@@ -69,116 +76,111 @@ sequenceDiagram
     participant MCP as MCP Subprocess
     participant ORPC as Outbound RPC Server (Manager)
     participant KB as KB Module (in-process)
-    participant EMB as EmbeddingService (PyO3 Async)
+    participant EMB as Embedding Worker (Out-of-Process UDS)
     participant SQL as SqlService (SQLite Async WAL)
     participant VDB as VectorDbService (LanceDB Async)
-    participant CACHE as CacheService
-    participant LOG as Log Router (tracing)
-    participant STATE as StateManager (S8)
+    participant CACHE as CacheService (Layered)
+    participant LOG as Log Router (tracing Multi-Sinks)
+    participant STATE as StateManager (Actor-based)
 
     Client->>MCP: invoke tool `doc.search` {q, topK, filters?}
     MCP->>MCP: validate input (JSON-Schema), limits (tracing span)
-    MCP->>ORPC: call op=`kb.hybrid_search` {collection, query, top_k, filters (product/version/semverRange)}
-    ORPC->>KB: kb.hybrid_search(...)
-    KB->>STATE: get_state(scope="kbs")  // Read filtered KB state (versions/pinning FR-2.2)
+    MCP->>ORPC: call op=`kb.hybrid_search` {collection, query, top_k, filters} (Schema Versioned)
+    ORPC->>KB: kb.hybrid_search(...) (Backpressure Limits)
+    KB->>STATE: get_state(scope="kbs")  // Actor mpsc read filtered KB state
     STATE-->>KB: kb_packs (delta/filtered)
-    KB->>SQL: filter/ACL/version pinning (semverRange from state, atomic transaction, no cross-version mix)
-    KB->>CACHE: check cache hit for query (local TTL cache)
+    KB->>SQL: filter/ACL/version pinning (atomic transaction)
+    KB->>CACHE: check layered hit (request/feature/doc, key with gen_id)
     alt Cache Hit
         CACHE-->>KB: cached results
     else Cache Miss
-        KB->>EMB: embed query → query_vec (Async PyO3 FFI, Rust fallback if timeout)
-        Note over KB,EMB: In-process EMB preferred, Rust (candle) for speed
-        EMB-->>KB: query_vec
+        KB->>EMB: embed query → query_vec (UDS Batch, Health-Check)
+        EMB-->>KB: query_vec (Rust fallback if timeout)
         par Vector Search & BM25 Parallel
-            KB->>VDB: vector search (LanceDB ANN async) → candidates
-            KB->>SQL: BM25 lexical search (tantivy integrated, async) → candidates
-        and
-            Note over KB,VDB: Parallel tokio::join! for <100ms merge
+            KB->>VDB: vector search (ANN async) → candidates
+            KB->>SQL: BM25 lexical search (tantivy async) → candidates
         end
-        KB->>KB: merge/score candidates (weighted hybrid)
+        KB->>KB: merge/score candidates (weighted hybrid, adaptive K based overlap)
         alt No results
-            KB->>KB: controlled broaden filters/backfill trigger (async queue, log warning)
+            KB->>KB: broaden filters/backfill (async queue)
         end
-        KB->>EMB: rerank candidates (PyO3 cross-encoder async batch) → topN (default 6-8, configurable per KB)
+        KB->>EMB: rerank candidates (UDS batch=32-64, seq_len guard)
         EMB-->>KB: reranked
-        KB->>SQL: enrich snippets/citations (join chunk/doc, mandatory citations with license)
-        KB-->>ORPC: results [{title, snippet, citation, meta, score, confidence?}]
+        KB->>SQL: enrich snippets/citations (mandatory with license)
+        KB-->>ORPC: results [{title, snippet, citation, meta, score}]
         ORPC-->>MCP: results...
-        KB->>CACHE: store results (TTL based on confidence)
-        KB->>STATE: mutate(StateDelta::MetricsUpdate { latency: 150.0, hit_rate: 0.9 })  // Update state metrics FR-8
+        KB->>CACHE: store layered (TTL on confidence, invalidate on commit)
+        KB->>STATE: mutate(StateDelta::MetricsUpdate { latency: 150.0, hit_rate: 0.9 })  // Actor mpsc
     end
-    MCP->>MCP: validate output schema (citations required, no citation → no answer policy, default on)
-    MCP-->>Client: hits + citations (standard rag.search format)
-    MCP->>LOG: emit events (invoke.received/completed, spans for P50/P95 latency, hit rate)
+    MCP->>MCP: validate output schema (citations required)
+    MCP-->>Client: hits + citations
+    MCP->>LOG: emit events (spans for P50/P95, hit rate, propagate trace_id)
 ```
 
 ### Notes
-- **Hybrid Retrieval:** Combines BM25 (tantivy) + Vector (LanceDB ANN), pre-filtering (FR-5.3), rerank (FR-5.2), mandatory citations (FR-5.4), backfill on no-results (FR-5.5).
-- **State Integration:** KB Module reads from StateManager for KB state (e.g., versions FR-2.2); mutates metrics post-retrieval (FR-8 P50/P95). Delta updates ensure efficiency.
-- **Performance:** Parallel vector/BM25 (tokio::join!), local cache (MCP), async PyO3 FFI (pyo3-async) + Rust fallback (candle), atomic transactions, configurable Top-N (SRS §13.2).
-- **Observability:** Tracing spans for P50/P95 latency, hit rate (FR-8); state mutations logged via event bus.
+- **Hybrid Retrieval**: BM25 + Vector, pre-filtering (FR-5.3), adaptive rerank (FR-5.2), mandatory citations (FR-5.4), backfill (FR-5.5).
+- **State Integration**: Actor-based reads/mutates for efficiency; deltas for UI sync.
+- **Performance**: Parallel joins, layered cache, UDS Embedding Worker, configurable Top-N. Backpressure via semaphores/limits.
+- **Observability**: Tracing histograms for latencies/hit rate; critical events to SQL, non-critical to JSONL.
 
 ## 3. Ingest & Commit Flow: ETL → KB (Write Path with Delta & Eval)
 
-The ingest flow handles the ETL pipeline (fetch/parse/chunk/embed/index/eval/pack), supporting delta-only updates, versioning, and rollback/undo.
+The ingest flow handles ETL, supporting delta-only, versioning, rollback. It includes atomic promote, eval gate with drift, backpressure, and Embedding Worker.
 
 ### Ingest Flow Diagram
 
 ```mermaid
 sequenceDiagram
-  participant ETL as Ingestion/ETL Module (Pipeline Orchestrator)
-  participant ORCH as Orchestrator/Scheduler (Tokio, Retry/Backoff)
+  participant ETL as Ingestion/ETL Module
+  participant ORCH as Orchestrator/Scheduler (Tokio, Retry/Backoff + Bounds)
   participant KB as KB Module
   participant SQL as SqlService (SQLite Async)
-  participant VDB as VectorDbService (LanceDB Async)
-  participant EMB as EmbeddingService (PyO3 Async Batch)
-  participant CACHE as CacheService
+  participant VDB as VectorDbService (LanceDB Async, Gen Promote)
+  participant EMB as Embedding Worker (UDS Batch)
+  participant CACHE as CacheService (Layered)
   participant STORE as StorageService (LocalFS)
-  participant LOG as Log Router (tracing)
-  participant STATE as StateManager (S8)
+  participant LOG as Log Router (tracing Multi-Sinks)
+  participant STATE as StateManager (Actor-based)
 
-  ORCH->>STATE: mutate(StateDelta::RunAdd { status: "starting" })  // Track run FR-3.4
-  ORCH->>KB: begin_commit(collection, version, semverRange, label) (async transaction)
-  KB->>SQL: create commit (state=pending, fingerprint for delta, WAL async)
-  ETL->>STORE: fetch/parse/normalize/chunk/annotate blobs (prebuilt ops: FS/web allow-list/PDF/code, parallel tokio)
-  alt Delta-only update
-    KB->>STATE: get_state(scope="kbs")  // Read fingerprints for delta FR-2.3
-    STATE-->>KB: kb_packs
-    SQL->>SQL: compare fingerprints → changed chunks only (cache skip unchanged)
+  ORCH->>STATE: mutate(StateDelta::RunAdd { status: "starting" })  // Actor mpsc
+  ORCH->>KB: begin_commit(collection, version, label) (async transaction)
+  KB->>SQL: create commit (pending, fingerprint, WAL async)
+  ETL->>STORE: fetch/parse/chunk/annotate (parallel tokio)
+  alt Delta-only
+    KB->>STATE: get_state(scope="kbs")  // Actor read
+    SQL->>SQL: compare fingerprints → changed only
   end
-  ETL->>CACHE: check embed cache hits → skip re-embed
-  ETL->>EMB: batch embed changed chunks (PyO3 async, Rust fallback, GIL release)
-  EMB-->>ETL: embeddings (with timeout fallback)
-  ETL->>KB: upsert_documents(commit_id, docs[] metadata) (batch async)
-  KB->>SQL: write doc metadata (product/version, atomic)
-  ETL->>KB: upsert_chunks(commit_id, doc_id, chunks[] + embeddings) (buffered)
-  KB->>SQL: write chunk records
-  KB->>VDB: async upsert vectors to staging index (LanceDB, batched writes)
-  KB->>VDB: async index BM25 (tantivy, parallel)
-  ETL->>KB: eval (async smoke tests: recall@k, size/drift warnings, quality alerts FR-8)
-  alt Eval Fail
-    KB->>LOG: emit warning (drift > threshold → pause schedule FR-4)
-    KB->>STATE: mutate(StateDelta::Error { run_id: "...", error: "drift high" })  // Track FR-11
+  ETL->>CACHE: check embed hits → skip (feature layer)
+  ETL->>EMB: batch embed changed (UDS, GIL release, fallback)
+  EMB-->>ETL: embeddings
+  ETL->>KB: upsert_documents/commit_id (batch async)
+  KB->>SQL: write metadata (atomic)
+  ETL->>KB: upsert_chunks (buffered)
+  KB->>SQL: write chunks
+  KB->>VDB: upsert vectors staging (batched)
+  KB->>VDB: index BM25 (parallel)
+  ETL->>KB: eval (recall@k, drift detector mean/cov)
+  alt Eval Fail/Drift High
+    KB->>LOG: warning (pause schedule FR-4)
+    KB->>STATE: mutate(StateDelta::Error { error: "drift high" })
   end
-  ORCH->>KB: finalize_commit(commit_id) (rollback if fail)
-  KB->>SQL: mark commit (state=active), create version (pinning support, event source for undo)
-  KB->>VDB: promote staging → active index (alias "current", zero-copy)
-  KB-->>ORCH: success (health metrics: size, embedder version, eval scores)
-  ORCH->>STATE: mutate(StateDelta::RunUpdate { id: "...", status: "completed", metrics: eval_scores })  // Update state FR-3.4/8
-  ORCH->>LOG: emit kb.commit.completed (with eval results, retention policy)
-  Note over KB,LOG: Backfill on missed runs/config changes (async queue, FR-3.4), undo via event replay (FR-9)
+  ORCH->>KB: finalize_commit (rollback if fail, eval gate block promote)
+  KB->>SQL: mark active, create version (event source undo)
+  KB->>VDB: atomic promote staging → active (gen rename/symlink, epoch GC)
+  KB-->>ORCH: success (metrics: size, eval scores)
+  ORCH->>STATE: mutate(StateDelta::RunUpdate { status: "completed", metrics })
+  ORCH->>LOG: emit kb.commit.completed (SQL critical if undo-related, JSONL else; histograms)
 ```
 
 ### Notes
-- **Pipeline:** Prebuilt ops (FR-3.1: fetch/parse/chunk/embed/index/eval/pack), delta-only (FR-2.3), versioning (FR-2).
-- **State Integration:** Orchestrator/KB read/write via StateManager (e.g., track run status FR-3.4, update metrics FR-8). Mutations emit deltas for UI sync and internal events (e.g., pause schedule on eval fail FR-4).
-- **Performance:** Async WAL (SQLite/VDB), buffered upserts, async EMB + cache skip, parallel fetch/parse (tokio), quotas auto-prune (SDD §13.3).
-- **Resilience:** Rollback/undo via event sourcing (FR-9/11), eval alerts (FR-8.3).
+- **Pipeline**: Prebuilt ops (FR-3.1), delta-only (FR-2.3), versioning (FR-2), eval gate with drift.
+- **State Integration**: Actor mpsc for mutates, track runs (FR-3.4), update metrics (FR-8).
+- **Performance**: Async WAL, buffered upserts, backpressure, quotas prune (SDD §13.3).
+- **Resilience**: Rollback/undo via SQL event sourcing (FR-9/11), eval alerts (FR-8.3).
 
 ## 4. DI & Wiring (Service Integration and Dependency Management)
 
-Manager initializes and injects DI services into KB/Orchestrator, MCP only uses Outbound Client for data access.
+Manager initializes/injects DI services into modules; MCP uses RPC for state. It includes Embedding Worker DI, StateManager actors, cache layering, and logging multi-sinks.
 
 ### DI & Wiring Diagram
 
@@ -186,50 +188,40 @@ Manager initializes and injects DI services into KB/Orchestrator, MCP only uses 
 graph TB
   subgraph "Manager (Composition Root)"
     direction TB
-    Cfg["App Config (TOML: dataDir, airGapped, defaults; Hot-Reload via notify)"]
-    S1["SqlService Impl (SQLite/Diesel Async)<br />(Pools, Migrations, Backup/Restore, WAL)"]
-    S2["VectorDbService Impl (LanceDB Async)<br />(Embedded File Indexes, Zero-Copy Promote)"]
-    S3["StorageService Impl (LocalFS/ZIP + ring checksums, Quotas/Auto-Prune)"]
-    S4["CacheService Impl (Memory, TTL; Air-Gapped Only, Invalidation Hooks)"]
-    S5["Auth/SecretService Impl (ring encryption, mTLS Cert Rotation)"]
-    S6["EmbeddingService Impl (PyO3 Async Bundle, GIL Release + Rust Fallback)"]
-    S7["FlowService Impl (Composition: Tools+KB+Pipelines, Checksum Validation FR-6)"]
-    S8["StateManager (Arc<RwLock<AppState>>, Event Bus)<br />(Global State Mutations/Deltas, FR-2/3/8)"]
-    KBMod["KB Module (Async Traits: Inject S1-S8, Circuit Breaker for Calls)"]
-    ORPC["Outbound RPC Server (Axum/UDS + mTLS, Middleware: Limits/Auth/Retry)"]
-    ORCH["Orchestrator/Scheduler (Tokio Timers/Semaphores, Circuit Breaker for ETL)"]
-    LOGR["Log Router (tracing-subscriber, JSONL Sink, Event Sourcing for Undo)"]
-    SUP["Supervisor<br />(tokio::spawn MCP, Backoff/Health Ping, Graceful Shutdown)"]
-    UI["Tauri IPC Adapter (Async Commands + Streams for Angular Real-Time)"]
+    Cfg["App Config (TOML: dataDir, airGapped; Hot-Reload via notify)"]
+    S1["SqlService Impl (SQLite/Diesel Async)<br />(Pools, Migrations, Backup, WAL; app_meta.db + events.db Split)"]
+    S2["VectorDbService Impl (LanceDB Async)<br />(Zero-Copy Promote, Gen Rename/Epoch GC)"]
+    S3["StorageService Impl (LocalFS/ZIP + Checksums, Quotas/Auto-Prune)"]
+    S4["CacheService Impl (Memory TTL, Layered + Invalidation Hooks)"]
+    S5["Auth/SecretService Impl (ring, SO_PEERCRED/Token + Cert Rotation)"]
+    S6["Embedding Worker Impl (UDS/Bincode, Warm-Pool/Health, PyO3 + Candle Fallback)"]
+    S7["FlowService Impl (Composition, Checksum FR-6)"]
+    S8["StateManager (Actors per Domain mpsc, Batched Persist)<br />(Mutations/Deltas, FR-2/3/8)"]
+    KBMod["KB Module (Async Traits, Circuit Breaker)"]
+    ORPC["Outbound RPC Server (Axum/UDS + Token Auth, Middleware: Limits/Retry/Versioning)"]
+    ORCH["Orchestrator/Scheduler (Tokio Semaphores/Backpressure, Circuit Breaker)"]
+    LOGR["Log Router (tracing Multi-Sinks: SQL Critical, JSONL Non-Critical + Rotation/Redaction)"]
+    SUP["Supervisor<br />(tokio::spawn MCP/Embedding Worker, Backoff/Health Ping, Graceful Shutdown)"]
+    UI["Tauri IPC Adapter (Async + Streams, Debounce)"]
   end
 
-  subgraph "MCP (Subprocess, Optional In-Process)"
-    direction TB
-    Tools["Tool Registry + Handlers (Dynamic Register/Activate, Permission Prompts)"]
-    Ctx["ExecCtx<br />(Outbound Client, Default-Deny FS/NET/PROCESS + Escalation)"]
-    ORPCC["MCP OutboundPort Client (Axum UDS, Local Cache Layer)"]
-    LOGM["tracing Layer → Outbound Port (Push Events, Redaction Filters)"]
+  subgraph "MCP (Subprocess, Sandbox Policy)"
+    Tools["Tool Registry (Dynamic, Permissions)"]
+    Ctx["ExecCtx (Outbound Client, Default-Deny + Escalation)"]
+    ORPCC["OutboundPort Client (Axum UDS, Local Cache)"]
+    LOGM["tracing Layer → Outbound Port (Propagate ID)"]
   end
 
   %% DI injections
-  Cfg --> S1
-  Cfg --> S2
-  Cfg --> S3
-  Cfg --> S4
-  Cfg --> S5
-  Cfg --> S6
-  Cfg --> S7
-  Cfg --> S8
-  S1 --> KBMod
+  Cfg --> S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8
+  S1 --> KBMod & ORCH & LOGR
   S2 --> KBMod
-  S3 --> KBMod
+  S3 --> KBMod & LOGR
   S4 --> KBMod
-  S5 --> KBMod
+  S5 --> KBMod & ORPC
   S6 --> KBMod
   S7 --> KBMod
-  S8 --> KBMod
-  S8 --> ORCH
-  S8 --> LOGR
+  S8 --> KBMod & ORCH & LOGR
   KBMod --> ORPC
   ORCH --> KBMod
   LOGR --> S3
@@ -238,277 +230,212 @@ graph TB
   Ctx --> ORPCC
   ORPCC --> ORPC
   LOGM --> ORPC
-  UI --> KBMod
-  UI --> ORCH
+  UI --> KBMod & ORCH
+  %% Embedding Worker
+  SUP --> EmbeddingWorker["Embedding Worker (UDS Warm-Pool)"]
+  S6 --> EmbeddingWorker
   %% Comments
-  %% Hot-reload via notify crate for config updates
-  %% Circuit breaker (tower) for resilience
-  %% Async traits (async_trait) for non-blocking DI
-  %% StateManager injected for shared read/write
+  %% Circuit breaker (tower), async traits, State actors for low contention
 ```
 
 ### Principles
-- **DI Services:** Manager initializes S1-S8 from TOML config (hot-reload via notify), async traits (async_trait), circuit breaker (tower) for resilience. StateManager (S8) is injected into modules (e.g., KBMod, ORCH) for centralized access.
-- **State Interaction:** Modules read via `state_mgr.get_state(scope)` (async RwLock read, filtered for efficiency); mutate via `state_mgr.mutate(delta)` (write lock, emit internal events/broadcast channel). Deltas ensure delta-only sync (e.g., RunAdd FR-3.4).
-- **MCP:** Subprocess or in-process, default-deny permissions (FS/NET/PROCESS), escalation prompts via IPC (FR-1.7). MCP accesses state indirectly via RPC proxy to StateManager (e.g., kb.hybrid_search reads kb_packs).
-- **Logging:** Tracing-subscriber, JSONL sink, redaction filters, event sourcing (FR-9). State mutations trigger log emits (e.g., via broadcast subscribe).
-- **Tauri:** Async IPC commands/streams, Angular real-time (FR-3/9). State deltas pushed via events (e.g., "state_delta") for UI mirror.
+- **DI Services**: Initialized from TOML (hot-reload), async traits, circuit breaker (tower). StateManager actors injected for shared access.
+- **State Interaction**: Actor mpsc for reads (filtered), mutates (delta + emit). Deltas for sync (internal/UI/MCP).
+- **MCP**: Default-deny permissions with policy engine, escalation prompts (FR-1.7). RPC proxies to StateManager with versioning.
+- **Logging**: Multi-sinks (SQL critical events ACID, JSONL non-critical with redaction/rotation). Subscribes StateManager for metrics (histograms).
+- **Tauri**: Portable <100MB, tray mode, IPC streams with debounce/non-blocking. State deltas pushed via events.
 
 ## 5. Boundaries & Implementation Decisions
 
 ### Subprocess
-- **MCP:** stdio, sandbox (seccomp/AppArmor), hot-swap (AC-1), optional in-process mode (low_latency=true). State access via RPC to StateManager (no direct hold).
-- **Heavy Tasks:** Async PyO3 offload (>10k chunks), Rust fallback (candle/rust-bert).
+- **MCP**: Stdio, sandbox (seccomp/AppArmor/JobObject + policy engine), hot-swap. State access via RPC (no direct).
+- **Embedding Worker**: UDS/bincode, warm-pool, health ping/rotate. Offload heavy PyO3 tasks (>10k chunks), Rust fallback.
+- **Heavy Tasks**: Async offload with backpressure.
 
 ### In-Process Modules
-- **KB/Embedding/Flow:** Async calls (SQL/LanceDB/PyO3), circuit breaker (tower). Interact with StateManager for KB state read (e.g., versions FR-2.2) and mutate (e.g., health update FR-2.4).
-- **Orchestrator/Scheduler:** Tokio concurrency (semaphores FR-4.5), retry/backoff (FR-4.2), dry-run/resume (FR-3.3/11). Mutate runs/schedules via StateManager (e.g., RunAdd FR-3.4), subscribe events for triggers (e.g., backfill FR-3.4).
-- **Outbound RPC Server:** Axum UDS + mTLS (rustls), middleware for auth/limits/air-gapped. Proxies state queries/mutations (e.g., MCP calls → StateManager read/write).
-- **Log Router:** Tracing spans (P50/P95/hit rate FR-8), event sourcing (FR-9). Subscribes StateManager events for log/metrics (e.g., commit.completed FR-3).
+- **KB/Embedding/Flow**: Async calls, circuit breaker. Interact with State actors for reads/mutates (e.g., health FR-2.4).
+- **Orchestrator/Scheduler**: Tokio semaphores/backpressure, retry (FR-4.2), dry-run/resume (FR-3.3/11). Mutates via State actors, subscribes events (e.g., backfill FR-3.4).
+- **Outbound RPC Server**: Axum UDS + token auth, middleware (limits, versioning). Proxies state with backpressure.
+- **Log Router**: Tracing multi-sinks (SQL critical, JSONL non-critical), event sourcing (FR-9). Subscribes State for logs/metrics (commit.completed FR-3).
 
 ### DI Services (Manager-owned, Hot-Reloadable)
-- **SqlService:** SQLite WAL async (rusqlite async), migrations/backups (FR-10); auto-vacuum for retention (30d/1GB SDD §13.4). Persists AppState components (e.g., runs FR-3.4).
-- **VectorDbService:** LanceDB async writes/promote (zero-copy), BM25 (tantivy); swappable (config: vdb=lancedb|qdrant-local). StateManager caches index metadata.
-- **StorageService:** LocalFS quotas (1-5GB KB SDD §13.3), auto-prune; ZIP checksums (ring). Stores packs/artifacts; StateManager tracks sizes.
-- **EmbeddingService:** PyO3 async (pyo3-async) + cache; Rust fallback (candle) if timeout (>5s). StateManager logs embedder version (FR-2.4).
-- **Auth/Secrets:** Ring encryption/redaction; mTLS cert rotation (auto-gen if air-gapped). Secures state mutations (e.g., permissions FR-1.7).
-- **Cache:** Memory TTL (dashmap), invalidation on commits. Layers StateManager reads (e.g., frequent KB queries FR-2.5).
-- **FlowService:** Compose tools/KB/pipelines, checksum validation (FR-6/AC-5). Mutates flows in StateManager (e.g., FlowAdd).
-- **StateManager:** Arc<RwLock<AppState>> for global state (SDD §4.1), broadcast channel for events. Read: async filtered get; Write: mutate delta + emit (internal/UI/MCP). Event sourcing for undo (FR-9), persistence via SqlService.
+- **SqlService**: SQLite WAL async, migrations/backups (FR-10); split dbs (app_meta/events, synchronous FULL for events, NORMAL for others, busy_timeout + jitter). Persists AppState (e.g., runs FR-3.4), critical events ACID.
+- **VectorDbService**: LanceDB async, BM25 (tantivy); atomic gen promote/epoch GC. Swappable (config).
+- **StorageService**: LocalFS quotas (1-5GB), auto-prune; ZIP checksums.
+- **EmbeddingService**: UDS worker, PyO3 async + cache; Rust fallback (>5s timeout).
+- **Auth/Secrets**: Ring encryption; token headers, mTLS fallback.
+- **Cache**: Memory TTL (dashmap), layered invalidation on commits/gen.
+- **FlowService**: Compose tools/KB, checksum (FR-6/AC-5). Mutates flows in State actors.
+- **StateManager**: Actors (mpsc per domain), broadcast for events. Read: async filtered; Write: mutate delta + emit. Persistence via SqlService (critical to events.db).
 
 ### Tauri-Specific
-- Portable <100MB (bundle PyO3/candle); tray mode with graceful shutdown; IPC streams for wizards (Angular CDK FR-3/9); cross-OS path normalization (PathBuf). State deltas via events/streams for real-time UI sync.
+- Portable <100MB (bundle PyO3/candle); tray mode; IPC streams (wizards FR-3/9); cross-OS (PathBuf). State deltas via events/streams, debounce.
 
 ## 6. KB API Contract Used by MCP
 
-- `kb.hybrid_search(collection, query_vec/text, top_k, filters: {product?, version?, semverRange?}, cache_ttl?) -> [Hit {chunk_id, score, snippet, citation, meta, confidence?}]` (FR-5)
-- `kb.answer(query, filters?, model?) -> {text, citations[], confidence?}` (rag.answer, async LLM via PyO3/candle)
+- `kb.hybrid_search(collection, query, top_k, filters, cache_ttl?) -> [Hit {chunk_id, score, snippet, citation, meta}]` (Adaptive K, FR-5)
+- `kb.answer(query, filters?, model?) -> {text, citations[], confidence?}` (Async LLM via Worker)
 - `kb.get_document(doc_id, range?) -> Document {metadata, chunks?, license?}`
 - `kb.resolve_citations(chunk_ids) -> [Citation {title, anchor/URL, license?, version?}]` (FR-5.4)
 - `kb.stats(collection/version) -> Stats {size, versions, embedder_version, health, eval_scores?}` (FR-2.4)
 - `kb.list_collections(filters?) -> [KB {name, version, pinned?, flows?}]` (FR-6)
-- `kb.compose_flow(flow_id, params?) -> {results, citations[]}` (FR-6, async composition)
+- `kb.compose_flow(flow_id, params?) -> {results, citations[]}` (FR-6)
 
-*API write/maintenance (begin/finalize_commit async, gc/compact, backfill queue) for ETL/Orchestrator (FR-3/4), enriched error codes (FR-8). APIs proxy through StateManager for state reads/writes (e.g., versions from AppState).*
+*APIs proxy StateManager actors; write/maintenance with eval gate, enriched errors (FR-8). Schema versioning in RPC.*
 
 ## 7. State Scopes: Quantity, Content, Location, and Storage
 
-State is divided into three scopes to balance persistence (backend SQL/in-memory), reactivity (shared), and UX (local). In-memory buffers are capped (e.g., recent logs ~100 entries), with pagination for historical data and automatic pruning.
+State divided into scopes; in-memory caps, pagination. Persistence split (SQL events.db for critical deltas).
 
 ### Table 1: Overview of Scopes and Storage
 
-| Scope Name              | Number of Fields/Key Elements | What's in Scope (Based on SDD §4.1 & SRS FR) | Location (Backend/Frontend) | Storage (SQL Persistent vs. In-Memory Runtime) | Reason for Division & Sync Flow |
-|-------------------------|------------------------------|---------------------------------------------|-----------------------------|------------------------------------------------|-----------------------------|
-| **Global Backend State** (Source of Truth) | 8-10 fields (lean AppState struct, capped buffers) | - Tools (FR-1: active endpoints/bindings).<br>- KB Packs (FR-2: current versions/manifests/health; IDs for historical).<br>- Pipelines (FR-3: active specs/templates; IDs for runs history).<br>- Schedules (FR-4: active cron/rrule/status).<br>- Flows (FR-6: active compositions/checksums).<br>- Settings (FR-10: dataDir/airGapped/profiles).<br>- Recent Logs/Metrics (FR-8: buffer ~100 spans/latency/hit rate/recall@k).<br>- Loading/Errors (FR-11: transient status/diagnostics). | Backend (Rust: StateManager S8) | **SQL Persistent**: Metadata/history (e.g., KB versions FR-2, runs IDs FR-3.4, logs aggregated).<br>**In-Memory Runtime**: Active/need-to-know (Arc<RwLock>, ring buffer for logs; cap ~10MB, auto-flush/prune). | Persistent for durability/backup (FR-10); In-memory for fast operations (e.g., loading FR-11). Sync: Load SQL → In-Memory (on-demand pagination); Mutate → Delta emit + SQL write-back (batch 1s). |
-| **Shared Mirrored State** (Real-Time Sync) | 5-7 fields (subset normalized, paginated subsets) | - KB Packs (FR-2: active list/versions/pinned, paginated by search FR-9).<br>- Runs/Pipelines (FR-3: active runs/metrics; paginated history).<br>- Schedules/Flows (FR-4/6: status/compositions).<br>- Metrics/Recent Logs (FR-8: P50/P95/hit rate, buffer ~50 recent logs).<br>- Errors (FR-11: recent for UI alerts). | Both (Backend owns; Frontend mirrors via NgRx Store) | **SQL Persistent**: Aggregated/historical (e.g., eval scores FR-3.1.8, paged logs).<br>**In-Memory Runtime**: Recent/active (e.g., current metrics FR-8; frontend mirror ephemeral, paginated loads). | Persistent for trends; In-memory for real-time (e.g., hit rate FR-8). Sync: Backend delta push (Tauri events) → Frontend NgRx update; Pull scoped/paginated (commands e.g., "logs?page=1"). |
-| **Local Frontend State** (UI-Reactive) | 4-6 signals/computed (ephemeral) | - UI Filters/Search (FR-9: search term, filtered KBs/runs).<br>- Temp Data (FR-9: wizard steps, drag-drop buffers for pipelines FR-3).<br>- Selected Items (e.g., selected KB ID for detail view FR-2.5).<br>- Optimistic Temp (FR-11: pending mutations before backend confirm). | Frontend Only (Angular 20: Signals for reactivity) | **SQL Persistent**: None (ephemeral).<br>**In-Memory Runtime**: Signals (in-memory, auto-reset). | UI-reactive only (e.g., search FR-9); No persistence required. Sync: Computed from shared (signals); Optimistic mutate → Backend confirm/rollback. |
+| Scope Name              | Number of Fields/Key Elements | What's in Scope (FR) | Location | Storage (SQL vs. In-Memory) | Reason & Sync Flow |
+|-------------------------|------------------------------|----------------------|----------|-----------------------------|--------------------|
+| **Global Backend State** | 8-10 fields (lean AppState, caps) | Tools (FR-1), KB Packs (FR-2), Pipelines (FR-3), Schedules (FR-4), Flows (FR-6), Settings (FR-10), Recent Logs/Metrics (FR-8 buffer ~100), Loading/Errors (FR-11). | Backend (StateManager Actors) | **SQL Persistent**: Metadata/history (app_meta.db), critical events (events.db ACID). **In-Memory Runtime**: Active (mpsc actors, ring buffer; cap ~10MB, auto-flush). | Durability/backup (FR-10); fast ops (FR-11). Sync: Load SQL → In-Memory (paginated); Mutate → Delta + SQL batch (1s). |
+| **Shared Mirrored State** | 5-7 fields (subset paginated) | KB Packs (FR-2), Runs (FR-3.4), Schedules/Flows (FR-4/6), Metrics/Logs (FR-8 ~50), Errors (FR-11). | Both (Backend owns; Frontend NgRx) | **SQL Persistent**: Aggregated (eval scores FR-3.1.8). **In-Memory Runtime**: Recent (frontend ephemeral). | Trends persistent; real-time in-memory. Sync: Delta push (Tauri events) → NgRx; Pull paginated. |
+| **Local Frontend State** | 4-6 signals (ephemeral) | UI Filters/Search (FR-9), Temp Data (FR-9 wizards), Selected Items (FR-2.5), Optimistic (FR-11). | Frontend (Angular Signals) | **In-Memory Runtime**: Signals (auto-reset). | UI-reactive only. Sync: Computed from shared; Optimistic → Backend confirm. |
 
+### Table 2: Storage & Synchronization Process
 
-### Table 2: Storage & Synchronization Process Between Scopes (Flow)
-
-| Flow Step | Description | Involved Components | Storage Mechanism (SQL vs. In-Memory) | Example (SRS/FR) |
-|-----------|-------------|---------------------|---------------------------------------|------------------|
-| **Initialization (Load)** | Load persistent data into in-memory state on startup. | Manager → SqlService (S1) → StateManager (S8). | SQL read (Diesel query, paginated) → Populate AppState RwLock (in-memory buffer cap). | Load recent KB packs/versions (FR-2) from metadata tables → In-memory global (cap 50 active). |
-| **Read Operation** | Modules/UI read state (scoped/filtered/paginated). | Modules/UI → StateManager (read_guard async). | In-memory RwLock read (fast); Cache (S4) layer; Fallback to SQL if miss (with limit/offset). | KB Module get KB health (FR-2.4) → Read kb_packs from in-memory; Paginate logs (FR-8) from SQL. |
-| **Mutation/Write** | Change state (e.g., add KB FR-2). | Business logic (e.g., KB Module) → StateManager.mutate(delta). | In-memory RwLock write (exclusive) → Async write-back to SQL (batch/debounce 1s). | Run pipeline (FR-3) → Mutate RunAdd in-memory (buffer cap) → Persist history to SQL. |
-| **Delta Sync (Internal)** | Share changes between modules. | StateManager emits broadcast event (tokio::sync). | Event bus (channel subscribe); No immediate persistence (in-memory only). | Orchestrator completes run → Emit RunAdd (in-memory) → KB Module subscribes to update health (FR-2.4). |
-| **Delta Sync (External)** | Push to UI/MCP. | StateManager → Tauri IPC (events/streams). | Delta emit (StateDelta enum, serde_json); In-memory source → Shared mirror. | Mutate metrics (FR-8) → Emit "state_delta" (in-memory) → UI NgRx update (ephemeral). |
-| **Persistence & Cleanup** | Persist and prune. | StateManager → SqlService (S1) + StorageService (S3). | Async batch write to SQL (WAL); Auto-prune quotas (S3, cap buffer in-memory). | Logs retention (FR-8) → In-memory buffer (cap 100) → SQL persist → Prune old >30d (SDD §13.4). |
-| **Recovery/Undo (FR-9/11)** | Rollback or replay. | StateManager event sourcing (replay deltas). | Replay from SQL logs/events → Re-mutate in-memory (with buffer cap). | Eval fail (FR-3.1.8) → Reverse delta (in-memory) → Persist error to SQL. |
-
+| Flow Step | Description | Components | Storage | Example (FR) |
+|-----------|-------------|------------|---------|--------------|
+| **Initialization** | Load persistent to in-memory. | Manager → SqlService → State Actors. | SQL read paginated → Populate actors. | Load KB versions (FR-2) → In-memory cap 50. |
+| **Read** | Scoped/filtered/paginated. | Modules/UI → State Actors mpsc. | In-memory priority; SQL fallback. | Get KB health (FR-2.4) → Actor read; Paginate logs (FR-8). |
+| **Mutation** | Change state. | Logic → State.mutate(delta). | Actor mpsc write → Async SQL batch (events.db if critical). | RunAdd (FR-3.4) → In-memory → Persist. |
+| **Delta Sync (Internal)** | Share changes. | State emits broadcast. | Event bus (in-memory). | RunAdd → KB health update (FR-2.4). |
+| **Delta Sync (External)** | Push UI/MCP. | State → Tauri events/streams (debounce). | Delta from in-memory → Mirror. | Metrics (FR-8) → NgRx update. |
+| **Persistence & Cleanup** | Persist/prune. | State → SqlService + Storage. | Batch to SQL (WAL); Prune quotas. | Logs retention (FR-8) → SQL critical, JSONL non-critical prune >30d. |
+| **Recovery/Undo** | Rollback/replay. | State replay from SQL events.db. | Query events → Re-mutate actors. | Eval fail (FR-3.1.8) → Reverse delta. |
 
 ## 8. State Structure Diagram
 
-AppState structure diagram (backend global/in-memory), with storage mapping (SQL persistent vs. in-memory runtime) and scopes.
+AppState structure with storage mapping; actors per domain, multi-sinks logging.
 
 ```mermaid
 graph TD
-  AppState["AppState RwLock (Global Backend S8 - In-Memory Runtime)"]
-  AppState --> Tools["Tools Vec<Tool> FR-1"]
-  AppState --> KBPacks["KB Packs Vec<KB> FR-2 Active Only"]
-  AppState --> Pipelines["Pipelines Vec<Pipeline> FR-3 Active Specs"]
-  AppState --> Schedules["Schedules Vec<Schedule> FR-4 Active"]
-  AppState --> Flows["Flows Vec<Flow> FR-6 Active"]
+  AppState["AppState Actors (Global Backend - In-Memory Runtime)"]
+  AppState --> Tools["Tools Actor FR-1"]
+  AppState --> KBPacks["KB Packs Actor FR-2"]
+  AppState --> Pipelines["Pipelines Actor FR-3"]
+  AppState --> Schedules["Schedules Actor FR-4"]
+  AppState --> Flows["Flows Actor FR-6"]
   AppState --> Settings["Settings FR-10"]
-  AppState --> RecentLogs["Recent Logs VecDeque<LogEntry> FR-8 Buffer Cap 100"]
-  AppState --> Metrics["Metrics HashMap FR-8 Current"]
-  AppState --> Loading["Loading HashMap FR-11 Transient"]
-  AppState --> Errors["Errors Vec FR-11 Recent"]
+  AppState --> RecentLogs["Recent Logs Buffer Cap 100 FR-8"]
+  AppState --> Metrics["Metrics Actor HashMap FR-8"]
+  AppState --> Loading["Loading FR-11"]
+  AppState --> Errors["Errors FR-11"]
 
-  subgraph SQL["SQL Database (Persistent S1)"]
-    Tools -.->|"Metadata/History"| ToolsSQL["Tools Table"]
-    KBPacks -.->|"Manifests/Versions"| KBPacksSQL["KB Table"]
-    Pipelines -.->|"Specs/Runs History"| PipelinesSQL["Pipeline/Run Tables FR-3.4 Paginated"]
-    Schedules -.->|"Cron/Status"| SchedulesSQL["Schedule Table"]
-    Flows -.->|"Compositions"| FlowsSQL["Flow Table FR-6"]
-    Settings -.->|"Configs"| SettingsSQL["Settings Table FR-10"]
-    RecentLogs -.->|"Historical Full"| LogsSQL["Logs Table Retention/Paginated"]
-    Metrics -.->|"Aggregated Trends"| MetricsSQL["Metrics Table FR-8"]
-    Errors -.->|"Diagnostics History"| ErrorsSQL["Errors Table FR-11 Paginated"]
+  subgraph SQL["SQL Database (Persistent)"]
+    Tools -.-> ToolsSQL["Tools Table (app_meta.db)"]
+    KBPacks -.-> KBPacksSQL["KB Table"]
+    Pipelines -.-> PipelinesSQL["Pipeline/Run Tables FR-3.4"]
+    Schedules -.-> SchedulesSQL["Schedule Table"]
+    Flows -.-> FlowsSQL["Flow Table"]
+    Settings -.-> SettingsSQL["Settings Table"]
+    RecentLogs -.-> LogsSQL["Critical Events Table (events.db ACID)"]
+    Metrics -.-> MetricsSQL["Aggregated (app_meta.db)"]
+    Errors -.-> ErrorsSQL["Diagnostics (events.db)"]
   end
 
-  subgraph LocalFS["LocalFS (S3 Artifacts - Semi-Persistent)"]
-    KBPacks -.->|"Packs/Index"| PacksFiles["ZIP Packs FR-6"]
-    Pipelines -.->|"Artifacts"| ArtifactsFiles["Run Artifacts FR-3"]
-    RecentLogs -.->|"JSONL Sink Full"| LogsFiles["Full Logs FR-8 Pruned"]
+  subgraph LocalFS["LocalFS (Semi-Persistent)"]
+    KBPacks -.-> PacksFiles["ZIP Packs FR-6"]
+    Pipelines -.-> ArtifactsFiles["Run Artifacts FR-3"]
+    RecentLogs -.-> LogsFiles["Non-Critical JSONL + Rotation FR-8"]
   end
 
-  subgraph Shared["Shared Mirrored (NgRx Store Frontend - Ephemeral)"]
-    KBPacks -.->|"Delta Sync"| NgRxKBs["EntityState<KB> normalized Active"]
-    Pipelines -.->|"Delta"| NgRxRuns["EntityState<Run> FR-3.4 Recent"]
-    RecentLogs -.->|"Stream"| NgRxLogs["LogEntry[] Recent Buffer"]
-    Metrics -.->|"Event"| NgRxMetrics["HashMap P50/P95"]
-    Errors -.->|"Push"| NgRxErrors["string[] Alerts"]
+  subgraph Shared["Shared Mirrored (NgRx Ephemeral)"]
+    KBPacks -.-> NgRxKBs["EntityState<KB>"]
+    Pipelines -.-> NgRxRuns["EntityState<Run>"]
+    RecentLogs -.-> NgRxLogs["LogEntry[] Buffer"]
+    Metrics -.-> NgRxMetrics["HashMap P50/P95"]
+    Errors -.-> NgRxErrors["Alerts"]
   end
 
-  subgraph Local["Local Frontend (Signals - Ephemeral)"]
-    NgRxKBs -.->|"Selector"| FilteredKBs["computed signal KB[] filtered FR-9"]
-    NgRxLogs -.->|"Subscribe"| SearchFilter["signal string search term"]
-    NgRxErrors -.->|"Effect"| TempData["signal any wizard temp FR-9"]
-    NgRxRuns -.->|"Optimistic"| SelectedRun["signal Run selected ID"]
+  subgraph Local["Local Frontend (Signals Ephemeral)"]
+    NgRxKBs -.-> FilteredKBs["Computed KB[] FR-9"]
+    NgRxLogs -.-> SearchFilter["Search Term"]
+    NgRxErrors -.-> TempData["Wizard Temp FR-9"]
+    NgRxRuns -.-> SelectedRun["Selected ID"]
   end
 
-  %% Sync Arrows
-  AppState -.->|"Async Write-Back Batch"| SQL
+  %% Sync
+  AppState -.->|"Async Batch (Critical ACID)"| SQL
+  AppState -.->|"mpsc Batched (Non-Critical)"| LocalFS
   AppState -.->|"Emit Deltas"| Modules["Modules e.g., KB/Orch"]
-  AppState -.->|"Tauri Events/Streams"| Shared
-  Shared -.->|"Computed/Effects"| Local
+  AppState -.->|"Tauri Events/Streams Debounce"| Shared
+  Shared -.->|"Computed"| Local
   Local -.->|"Dispatch Mutate"| AppState
 ```
 
-- **Explanation**: AppState in-memory (runtime, cap buffer) loads scoped/paginated from SQL (persistent) on init; Mutations write-back async. Artifacts in LocalFS (semi-persistent, e.g., packs FR-6). Shared/local frontend is ephemeral (in-memory mirror/signals).
-
+- **Explanation**: Actors in-memory load from SQL (paginated); mutations batch to SQL (critical) or JSONL (non-critical). Artifacts in LocalFS. Shared/local ephemeral.
 
 ## 9. State Flow Diagram (Lifecycle & Sync with Storage)
 
-State flow diagram from init to mutate/persist, emphasizing SQL vs. in-memory transitions.
+State flow from init to mutate/persist; actor mpsc, multi-sinks.
 
 ```mermaid
 sequenceDiagram
-    participant Manager as Manager (Composition Root)
-    participant StateMgr as StateManager (S8 In-Memory Runtime)
+    participant Manager as Manager
+    participant StateMgr as StateManager (Actors mpsc)
     participant Modules as Modules (KB/Orch)
-    participant SQL as SqlService (S1 Persistent)
+    participant SQL as SqlService (app_meta/events.db)
     participant UI as UI (Tauri IPC)
-    participant MCP as MCP (Subprocess)
+    participant MCP as MCP
 
-    Note over Manager: Startup: Load Persistent to In-Memory (Scoped/Paginated)
-    Manager->>SQL: Query tables paginated (e.g., recent KBs limit 50, migrations FR-10)
-    SQL-->>Manager: Raw data (e.g., KB manifests FR-2 persistent)
-    Manager->>StateMgr: Populate AppState RwLock (in-memory buffer cap, e.g., recent logs 100)
+    Note over Manager: Startup: Load to Actors (Paginated)
+    Manager->>SQL: Query paginated (e.g., recent KBs limit 50)
+    SQL-->>Manager: Data
+    Manager->>StateMgr: Populate actors (in-memory cap)
 
-    Note over Modules: Read Operation (In-Memory Priority, Paginated Fallback)
-    Modules->>StateMgr: get_state(scope="kbs?limit=20") (async read_guard)
-    StateMgr->>StateMgr: RwLock read (filtered from in-memory buffer)
-    alt Buffer Miss or Historical
-        StateMgr->>SQL: Paginated query (limit/offset, e.g., old runs FR-3.4)
-        SQL-->>StateMgr: Data → Update in-memory buffer (cap/prune old)
+    Note over Modules: Read (mpsc Priority, Fallback)
+    Modules->>StateMgr: get_state(scope="kbs?limit=20")
+    StateMgr->>StateMgr: Actor mpsc read (filtered in-memory)
+    alt Miss/Historical
+        StateMgr->>SQL: Paginated query
+        SQL-->>StateMgr: Data → Update actor buffer
     end
-    StateMgr-->>Modules: Partial AppState (in-memory or SQL-paged)
+    StateMgr-->>Modules: Partial state
 
-    Note over Modules: Mutate Operation (In-Memory First, SQL Write-Back)
-    Modules->>StateMgr: mutate(StateDelta::RunAdd FR-3.4) (async write_guard)
-    StateMgr->>StateMgr: RwLock write (apply delta in-memory, emit broadcast event)
-    StateMgr-->>Modules: Result (success/error FR-11)
-    StateMgr->>SQL: Async batch write-back (e.g., insert Run table persistent, debounce 1s)
-    SQL-->>StateMgr: Ack (WAL durable)
+    Note over Modules: Mutate (mpsc First, Persist Back)
+    Modules->>StateMgr: mutate(StateDelta::RunAdd)
+    StateMgr->>StateMgr: Actor mpsc write (apply delta, emit broadcast)
+    StateMgr-->>Modules: Result
+    alt Critical (ACID)
+        StateMgr->>SQL: Batch insert events.db (WAL durable, jitter retry)
+    else Non-Critical
+        StateMgr->>LocalFS: Append JSONL (rotation)
+    end
 
-    Note over StateMgr: Internal Sync (Event Bus - In-Memory)
-    StateMgr->>Modules: Broadcast event (e.g., RunAdd → KB update health FR-2.4 in-memory)
-    Modules-->>StateMgr: Subscribe/Handle (loose coupling, no SQL touch)
+    Note over StateMgr: Internal Sync (mpsc/Event Bus)
+    StateMgr->>Modules: Broadcast event (in-memory)
 
-    Note over StateMgr: External Sync (UI/MCP - Delta from In-Memory)
-    StateMgr->>UI: Emit Tauri event "state_delta" (delta-only from in-memory)
-    UI-->>StateMgr: Mirror update (NgRx action, ephemeral)
-    StateMgr->>MCP: RPC proxy mutate (e.g., kb.stats FR-2.4 read in-memory)
-    MCP-->>StateMgr: Indirect access (no direct hold)
+    Note over StateMgr: External Sync (Delta)
+    StateMgr->>UI: Emit "state_delta" (debounce)
+    UI-->>StateMgr: Mirror update
+    StateMgr->>MCP: RPC proxy (read in-memory)
 
-    Note over StateMgr: Persistence & Cleanup (SQL Focus)
-    StateMgr->>SQL: Periodic batch persist (debounce 1s, e.g., logs FR-8 from in-memory buffer)
-    SQL->>StateMgr: Retention prune (auto-vacuum 30d SDD §13.4 persistent)
-    StateMgr->>StorageService: Prune artifacts (quotas 1-5GB SDD §13.3 semi-persistent)
-    Note over StateMgr: Auto-Flush Buffer (e.g., logs >100 → SQL flush + prune in-memory + cap reset)
+    Note over StateMgr: Persistence & Cleanup
+    StateMgr->>SQL: Batch persist (debounce 1s, vacuum 30d)
+    StateMgr->>LocalFS: Prune JSONL quotas
 
-    Note over All: Recovery/Undo (FR-9/11 - SQL + In-Memory Replay)
-    UI->>StateMgr: Command 'undo(event_id)' (replay reverse delta)
-    StateMgr->>SQL: Query event log (persistent sourcing, paginated if large)
-    StateMgr->>StateMgr: Replay mutate (update in-memory RwLock)
-    StateMgr-->>UI: Emit updated delta (sync mirror from in-memory)
+    Note over All: Recovery/Undo (SQL events.db)
+    UI->>StateMgr: 'undo(event_id)'
+    StateMgr->>SQL: Query events (paginated)
+    StateMgr->>StateMgr: Replay mutate actors
+    StateMgr-->>UI: Updated delta
 ```
 
 ### Flow Notes
-- **Lifecycle**: Load (SQL persistent, paginated → In-Memory runtime buffer) → Read (In-Memory priority, fallback SQL paginated) → Mutate (Write in-memory + SQL async write-back) → Sync (Delta emit from in-memory) → Persist/Cleanup (SQL batch/prune + in-memory auto-flush).
-- **Internal**: Modules inject StateManager (DI Diagram 4), broadcast for notify (in-memory only, fast).
-- **External**: UI pulls scoped/paginated (commands), pushes delta (events); MCP RPC proxy (read in-memory).
-- **Resilience**: Async write-back (non-blocking), event sourcing (SQL logs for replay FR-9), error mutate (track in in-memory + persist FR-11).
-- **Efficiency**: Scoped read (e.g., only "kbs" FR-2.5, in-memory), delta emit (<1KB), cache (S4) for 80% reads; Buffer cap/auto-flush (e.g., logs >100 → SQL) avoids GBs overhead.
+- **Lifecycle**: Load (SQL → Actors in-memory) → Read (mpsc priority) → Mutate (write + persist multi-sink) → Sync (delta emit) → Persist/Cleanup (batch/prune).
+- **Internal**: Modules inject StateManager, broadcast for notify (in-memory).
+- **External**: UI pulls paginated, pushes delta (debounce); MCP RPC proxy.
+- **Resilience**: Async back, event sourcing from SQL events.db (FR-9), error mutate (FR-11).
+- **Efficiency**: Scoped reads, delta <1KB, cache (S4) 80% hits; buffer auto-flush.
 
+## 10. Implementation and Recommendations
 
-## 10. State Structure Diagram
-
-AppState structure diagram (backend global/in-memory), with storage mapping (SQL persistent vs. in-memory runtime) and scopes.
-
-```mermaid
-graph TD
-  AppState["AppState RwLock (Global Backend S8 - In-Memory Runtime)"]
-  AppState --> Tools["Tools Vec<Tool> FR-1"]
-  AppState --> KBPacks["KB Packs Vec<KB> FR-2 Active Only"]
-  AppState --> Pipelines["Pipelines Vec<Pipeline> FR-3 Active Specs"]
-  AppState --> Schedules["Schedules Vec<Schedule> FR-4 Active"]
-  AppState --> Flows["Flows Vec<Flow> FR-6 Active"]
-  AppState --> Settings["Settings FR-10"]
-  AppState --> RecentLogs["Recent Logs VecDeque<LogEntry> FR-8 Buffer Cap 100"]
-  AppState --> Metrics["Metrics HashMap FR-8 Current"]
-  AppState --> Loading["Loading HashMap FR-11 Transient"]
-  AppState --> Errors["Errors Vec FR-11 Recent"]
-
-  subgraph SQL["SQL Database (Persistent S1)"]
-    Tools -.->|"Metadata/History"| ToolsSQL["Tools Table"]
-    KBPacks -.->|"Manifests/Versions"| KBPacksSQL["KB Table"]
-    Pipelines -.->|"Specs/Runs History"| PipelinesSQL["Pipeline/Run Tables FR-3.4 Paginated"]
-    Schedules -.->|"Cron/Status"| SchedulesSQL["Schedule Table"]
-    Flows -.->|"Compositions"| FlowsSQL["Flow Table FR-6"]
-    Settings -.->|"Configs"| SettingsSQL["Settings Table FR-10"]
-    RecentLogs -.->|"Historical Full"| LogsSQL["Logs Table Retention/Paginated"]
-    Metrics -.->|"Aggregated Trends"| MetricsSQL["Metrics Table FR-8"]
-    Errors -.->|"Diagnostics History"| ErrorsSQL["Errors Table FR-11 Paginated"]
-  end
-
-  subgraph LocalFS["LocalFS (S3 Artifacts - Semi-Persistent)"]
-    KBPacks -.->|"Packs/Index"| PacksFiles["ZIP Packs FR-6"]
-    Pipelines -.->|"Artifacts"| ArtifactsFiles["Run Artifacts FR-3"]
-    RecentLogs -.->|"JSONL Sink Full"| LogsFiles["Full Logs FR-8 Pruned"]
-  end
-
-  subgraph Shared["Shared Mirrored (NgRx Store Frontend - Ephemeral)"]
-    KBPacks -.->|"Delta Sync"| NgRxKBs["EntityState<KB> normalized Active"]
-    Pipelines -.->|"Delta"| NgRxRuns["EntityState<Run> FR-3.4 Recent"]
-    RecentLogs -.->|"Stream"| NgRxLogs["LogEntry[] Recent Buffer"]
-    Metrics -.->|"Event"| NgRxMetrics["HashMap P50/P95"]
-    Errors -.->|"Push"| NgRxErrors["string[] Alerts"]
-  end
-
-  subgraph Local["Local Frontend (Signals - Ephemeral)"]
-    NgRxKBs -.->|"Selector"| FilteredKBs["computed signal KB[] filtered FR-9"]
-    NgRxLogs -.->|"Subscribe"| SearchFilter["signal string search term"]
-    NgRxErrors -.->|"Effect"| TempData["signal any wizard temp FR-9"]
-    NgRxRuns -.->|"Optimistic"| SelectedRun["signal Run selected ID"]
-  end
-
-  %% Sync Arrows
-  AppState -.->|"Async Write-Back Batch"| SQL
-  AppState -.->|"Emit Deltas"| Modules["Modules e.g., KB/Orch"]
-  AppState -.->|"Tauri Events/Streams"| Shared
-  Shared -.->|"Computed/Effects"| Local
-  Local -.->|"Dispatch Mutate"| AppState
-```
-
-- **Explanation**: AppState in-memory (runtime, cap buffer) load scoped/paginated từ SQL (persistent) on init; Mutations write-back async. Artifacts ở LocalFS (semi-persistent, e.g., packs FR-6). Shared/local frontend ephemeral (in-memory mirror/signals).
-
-## 11. Implementation and Recommendations
-
-- **MVP:** Manager + KB + MCP subprocess (AC-1-3), SQLite/Diesel + LanceDB + PyO3/candle + StateManager, benchmark retrieval (<100ms) with criterion.
-- **Tauri:** Async commands (tauri::command), tray mode (tauri-plugin-system-tray), cross-OS testing (PathBuf).
-- **Performance:** Tokio semaphores, bincode UDS, cache TTL (dashmap), async PyO3 (pyo3-async). StateManager deltas for low-overhead sync.
-- **Security/Testing:** Fuzz RPC (cargo-fuzz), audit PyO3/StateManager mutations, block outbound reqwest (air-gapped).
-- **Next Steps:** Prototype retrieval/ingest flows (cargo bench), validate eval metrics (recall@k), implement FlowService (FR-6), test state consistency (e.g., concurrent mutate FR-11).
+- **MVP**: Manager + KB + MCP/Embedding Worker (AC-1-3), SQLite/LanceDB/PyO3/candle/State actors, benchmark retrieval (<100ms) with criterion.
+- **Tauri**: Async commands, tray mode (tauri-plugin-system-tray), cross-OS testing. Optimize Angular (tree-shaking).
+- **Performance**: Tokio semaphores/backpressure, bincode UDS, cache layering, async PyO3. State actors for low-overhead.
+- **Security/Testing**: Fuzz RPC (cargo-fuzz), audit PyO3/mutations, block outbound (air-gapped). Property tests (proptest) for deltas/replay, chaos toggles (delays/errors) for resilience.
+- **Next Steps**: Prototype retrieval/ingest (cargo bench), validate eval metrics (recall@k), implement FlowService (FR-6), test state consistency (concurrent mutate FR-11). Use cargo-watch for dev hot-reload.
