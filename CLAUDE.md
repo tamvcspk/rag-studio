@@ -21,17 +21,26 @@ RAG Studio is a local-first, no-code/low-code application for building and opera
 
 ## Architecture
 
-RAG Studio is a local-first, secure, high-performance desktop application built on Tauri and Rust, designed to meet both functional (FR) and non-functional (NFR) requirements. The architecture follows a composition root pattern with DI services and subprocess isolation for security and performance.
+RAG Studio is a local-first, secure, high-performance desktop application built on Tauri and Rust, designed to meet both functional (FR) and non-functional (NFR) requirements. The design features an isolated embedding worker running out-of-process, simplified UDS authentication, a refactored StateManager using actors, atomic index promotion with epoch garbage collection, and a split SQLite setup (app_meta.db + events.db) for improved concurrency.
 
 ### Core Architecture Overview
 
-The Manager acts as the composition root, managing DI services (SQLite, LanceDB, PyO3). MCP (Multi-tool Control Plane) runs in a subprocess for sandboxing and hot-swap, communicating via Outbound RPC (UDS/Axum with mTLS). Centralized logging uses tracing, supporting real-time UI and event sourcing.
+The Manager acts as the composition root, managing DI services (SQLite, LanceDB, PyO3). MCP runs in a subprocess for sandboxing and hot-swap, communicating via UDS/Axum with SO_PEERCRED/token auth. Centralized logging employs tracing with multi-sinks (SQL for critical events, JSONL for non-critical), supporting real-time UI and event sourcing. State management is handled via an actor-based StateManager, serving as the single source of truth with in-memory buffers and pagination.
 
 #### Process Boundaries
 
 - **Main Process (Manager)**: Composition root containing UI Adapter, Orchestrator, Event Router, KB Module, and all DI services
-- **Subprocess (MCP Module)**: Isolated MCP server with optional in-process mode for low-latency operations
-- **Communication**: UDS/Axum with mTLS for secure inter-process communication
+- **Subprocess (MCP Module)**: Isolated MCP server with sandbox (seccomp/AppArmor/JobObject + policy engine), optional in-process mode for low-latency operations
+- **Subprocess (Embedding Worker)**: Out-of-process PyO3/Sentence-Transformers with warm-pool, health-check/rotate, UDS/bincode protocol
+- **Communication**: UDS/Axum with SO_PEERCRED/token auth for secure inter-process communication
+
+#### Key Architectural Patterns
+
+- **Actor-based State Management**: StateManager uses mpsc channels per domain (KBs/Runs/Metrics) with batched persistence
+- **Multi-sink Logging**: Critical ACID events stored in SQLite (events.db), non-critical telemetry in JSONL with rotation
+- **Hybrid Search Architecture**: Parallel vector (LanceDB) and lexical (BM25/tantivy) search with reranking
+- **Event Sourcing**: Full undo/redo support via event replay from events.db
+- **Layered Caching**: Request/Feature/Document levels with TTL eviction and invalidation hooks
 
 ### Frontend (Angular)
 - Located in `src/` directory
@@ -51,24 +60,26 @@ The Manager acts as the composition root, managing DI services (SQLite, LanceDB,
 
 ### DI Services Architecture
 
-The Manager initializes and manages all core services:
+The Manager initializes and manages all core services with hot-reload configuration support:
 
-1. **SqlService**: SQLite/Diesel with async WAL mode, migrations, backup, atomic transactions
-2. **VectorDbService**: LanceDB embedded/file with async writes, ANN search, BM25 integration
-3. **StorageService**: LocalFS/ZIP packs with quotas (1-5GB), auto-prune functionality
-4. **CacheService**: Memory/Redis-local with TTL eviction, query caching
-5. **Auth/SecretService**: ring crate encryption, mTLS for RPC communications
-6. **EmbeddingService**: PyO3/Sentence-Transformers with async FFI + Rust fallback
-7. **FlowService**: Composition of Tools/KB/Pipelines for end-to-end workflows
+1. **SqlService**: SQLite/Diesel with async WAL mode, split databases (app_meta.db + events.db), migrations, backup, atomic transactions
+2. **VectorDbService**: LanceDB embedded/file with async writes, ANN search, BM25 integration, atomic promote + epoch GC
+3. **StorageService**: LocalFS/ZIP packs with quotas (1-5GB), auto-prune functionality, checksums
+4. **CacheService**: Memory TTL (dashmap), layered caching (Request/Feature/Doc), invalidation hooks on commits
+5. **Auth/SecretService**: ring crate encryption, UDS SO_PEERCRED + token headers, cert rotation
+6. **EmbeddingService**: Out-of-process worker via UDS/bincode, warm-pool, health/rotate, PyO3 async + Rust fallback
+7. **FlowService**: Composition of Tools/KB/Pipelines, checksum validation for end-to-end workflows
+8. **StateManager**: Actor-based per domain (KBs/Runs/Metrics), mpsc channels, batched persist, event bus deltas
 
 ### MCP Module (Subprocess)
 
-- **Tool Registry & Handlers**: Behavior-driven with dynamic bindings
-- **JSON-Schema Validation**: Fuzz-resistant input validation with limits
-- **Dispatcher**: Parallel dispatch for hybrid tool calls
-- **OutboundPort Client**: UDS/Axum client with local cache for frequent queries
+- **Sandbox Security**: seccomp/AppArmor/JobObject + policy engine (Cedar-lite) for capabilities, default-deny permissions with escalation prompts
+- **Tool Registry & Handlers**: Behavior-driven with dynamic bindings, capability policy enforcement
+- **JSON-Schema Validation**: Fuzz-resistant input validation with limits and tracing spans
+- **Dispatcher**: Parallel dispatch for hybrid tool calls with backpressure
+- **OutboundPort Client**: UDS/Axum client with local cache for frequent queries, schema versioning + compatibility
 - **Transport Support**: MCP stdio (required), HTTP /invoke (optional, air-gapped block)
-- **Logging Integration**: Structured spans forwarded to main process
+- **Logging Integration**: Structured spans forwarded to main process with trace_id propagation
 
 ## Development Commands
 
@@ -86,6 +97,12 @@ The Manager initializes and manages all core services:
 ### Full Application
 - Development: Run `npm run tauri dev` to start both frontend and backend
 - The Tauri config automatically runs `npm run start` before dev and `npm run build` before build
+
+### Production Setup
+- `scripts/setup-production.bat` - Setup PyOxidizer artifacts for production build
+- `scripts/clean-production.bat` - Clean production build artifacts  
+- Production builds use embedded Python via PyOxidizer for portability
+- Development uses system Python for faster iteration
 
 ## Key Technologies
 
@@ -130,29 +147,69 @@ The Manager initializes and manages all core services:
 
 ## Key Operational Flows
 
-### Retrieval Flow: `doc.search` → KB (Hybrid Search)
+### Retrieval Flow: MCP `doc.search` → KB (Hybrid Search with Rerank & Citations)
 
-The retrieval process combines semantic (LanceDB ANN) and lexical (BM25/tantivy) search with reranking and mandatory citations:
+The retrieval process combines semantic (LanceDB ANN) and lexical (BM25/tantivy) search with adaptive rerank, mandatory citations, and layered caching:
 
-1. **Input Validation**: JSON-Schema validation with limits and tracing spans
-2. **Cache Check**: Local TTL cache for query results (performance optimization)
-3. **Embedding**: Async PyO3 query embedding with Rust fallback for timeouts
-4. **Hybrid Search**: Parallel vector (LanceDB) and BM25 (tantivy) search with merge/scoring
-5. **Reranking**: PyO3 cross-encoder async batch processing for top-N results
-6. **Citation Enrichment**: Mandatory citations with license information from SQLite
-7. **Performance**: <100ms target with P50/P95 latency monitoring
+1. **Input Validation**: JSON-Schema validation with limits and tracing spans in MCP subprocess
+2. **State Access**: Actor-based read from StateManager for filtered KB state via mpsc channels
+3. **Cache Check**: Layered cache hit check (request/feature/doc levels) with generation IDs
+4. **Embedding**: Async PyO3 query embedding via out-of-process Embedding Worker (UDS batch), Rust fallback on timeout
+5. **Hybrid Search**: Parallel vector (LanceDB ANN) and BM25 (tantivy) search with merge/scoring, adaptive candidate sets
+6. **Reranking**: PyO3 cross-encoder async batch processing (32-64 batch size) with sequence length guards
+7. **Citation Enrichment**: Mandatory citations with license information from SQLite, enriched snippets
+8. **Caching**: Store results in layered cache with TTL based on confidence, invalidate on commits
+9. **Metrics**: Update performance metrics (latency, hit rate) via StateManager actor mutations
+10. **Performance**: <100ms target with P50/P95 monitoring, backpressure via semaphores
 
-### Ingest & Commit Flow: ETL → KB (Write Path)
+### Ingest & Commit Flow: ETL → KB (Write Path with Delta & Eval)
 
-The ingest pipeline handles delta-only updates with versioning and rollback support:
+The ingest pipeline handles ETL with delta-only updates, versioning, rollback, and evaluation gates:
 
-1. **Transaction Begin**: Atomic commit with fingerprint-based delta detection
-2. **ETL Processing**: Parallel fetch/parse/chunk/annotate operations with caching
-3. **Embedding**: Batch async embedding with cache skip for unchanged content
-4. **Indexing**: Buffered upserts to SQLite and LanceDB with staging indexes
-5. **Evaluation**: Smoke tests for recall@k, size/drift warnings, quality alerts
-6. **Commit Finalization**: Promote staging to active index with zero-copy when possible
-7. **Event Sourcing**: Full undo/redo support via event replay mechanism
+1. **Transaction Begin**: Atomic commit with fingerprint-based delta detection, StateManager mutation (RunAdd)
+2. **ETL Processing**: Parallel fetch/parse/chunk/annotate operations via Tokio with retry/backoff
+3. **Delta Detection**: Compare fingerprints from StateManager actors → process only changed content
+4. **Cache Check**: Feature-layer embedding cache hits → skip unchanged embeddings
+5. **Embedding**: Batch async embedding via out-of-process Embedding Worker (UDS), GIL release, fallback support
+6. **Indexing**: Buffered upserts to SQLite metadata and LanceDB vectors with staging indexes
+7. **BM25 Indexing**: Parallel BM25 index building via tantivy
+8. **Evaluation**: Smoke tests for recall@k, drift detector (mean/covariance), quality alerts
+9. **Eval Gate**: Block promotion on eval failure or high drift, emit warnings
+10. **Atomic Promotion**: Promote staging → active index with zero-copy (generation rename/symlink), epoch garbage collection
+11. **Event Sourcing**: Store critical events in events.db for undo/redo support, emit completion events
+12. **State Updates**: Update StateManager with run completion, metrics, and emit deltas for UI sync
+
+## State Management Architecture
+
+### State Scopes and Storage Strategy
+
+The application uses a three-tier state management approach:
+
+1. **Global Backend State (StateManager Actors)**
+   - 8-10 fields with lean AppState and caps (~10MB in-memory)
+   - Tools (FR-1), KB Packs (FR-2), Pipelines (FR-3), Schedules (FR-4), Flows (FR-6), Settings (FR-10)
+   - Recent Logs/Metrics buffer (~100 entries), Loading/Errors state
+   - **Storage**: SQL persistent (app_meta.db + events.db ACID), in-memory runtime via mpsc actors
+   - **Sync Flow**: Load SQL → In-Memory (paginated); Mutate → Delta + SQL batch (1s intervals)
+
+2. **Shared Mirrored State (Frontend NgRx)**
+   - 5-7 fields subset with pagination
+   - KB Packs, Runs, Schedules/Flows, Metrics/Logs (~50 entries), Errors
+   - **Storage**: SQL persistent (aggregated), in-memory runtime (frontend ephemeral)
+   - **Sync Flow**: Delta push via Tauri events → NgRx; Pull paginated from backend
+
+3. **Local Frontend State (Angular Signals)**
+   - 4-6 signals (ephemeral)
+   - UI Filters/Search, Temp Data (wizards), Selected Items, Optimistic updates
+   - **Storage**: In-memory runtime with signals (auto-reset)
+   - **Sync Flow**: Computed from shared state; Optimistic → Backend confirmation
+
+### Actor-based State Management
+
+- **Per-Domain Actors**: Separate mpsc channels for KBs, Runs, Metrics
+- **Batched Persistence**: Critical events → events.db (ACID), non-critical → JSONL with rotation
+- **Event Broadcasting**: Delta emission for internal/UI/MCP sync
+- **Recovery/Undo**: Event sourcing via SQL event replay from events.db
 
 ## Development Notes
 
@@ -164,6 +221,8 @@ The ingest pipeline handles delta-only updates with versioning and rollback supp
 - Air-gapped operation supported with no internet dependency post-setup
 - Headless mode via system tray icon (show/hide UI, background operation)
 - One-click portable startup with bundled dependencies
+- **Config Hot-Reload**: TOML configuration via notify crate for development efficiency
+- **Backpressure**: End-to-end backpressure with Tokio semaphores and bounds
 
 ## Python Integration Architecture
 
@@ -171,9 +230,10 @@ The application uses PyO3 for seamless Rust-Python integration:
 
 - **Python Context**: Located in `src-tauri/src/python_integration.rs`
 - **Python Functions**: Located in `src-tauri/python/rag_functions.py`
-- **Caching**: Uses `OnceLock` for thread-safe lazy initialization
-- **Module Loading**: Cached Python code compilation for performance
+- **Caching**: Uses `OnceLock` for thread-safe lazy initialization with `CachedPythonData`
+- **Module Loading**: Cached Python code compilation for performance, avoiding repeated I/O
 - **Error Handling**: Comprehensive error propagation from Python to Rust
+- **Memory Management**: Thread-safe caching using static `OnceLock` instances
 
 Key Python integration patterns:
 - Initialize Python context once using `OnceLock`
@@ -203,31 +263,34 @@ The MCP server exposes tool sets:
 
 ### KB API Contract
 
-The Knowledge Base module exposes these key operations via MCP:
+The Knowledge Base module exposes these key operations via MCP with StateManager actor integration:
 
-- `kb.hybrid_search(collection, query_vec/text, top_k, filters, cache_ttl?)` → Hit[]
-  - Combines vector and lexical search with reranking
-  - Supports filtering by product/version/semverRange
+- `kb.hybrid_search(collection, query, top_k, filters, cache_ttl?)` → Hit[{chunk_id, score, snippet, citation, meta}]
+  - Combines vector and lexical search with adaptive reranking
+  - Supports filtering by product/version/semverRange with pre-filtering
   - Returns chunks with scores, snippets, citations, and metadata
+  - Adaptive candidate sets, backfill on no results, configurable Top-N
 
 - `kb.answer(query, filters?, model?)` → {text, citations[], confidence?}
-  - Full RAG answer generation with LLM integration via PyO3/candle
-  - Mandatory citation requirement with configurable policies
+  - Full RAG answer generation with LLM integration via async Embedding Worker
+  - Mandatory citation requirement with configurable "no citation → no answer" policies
 
 - `kb.get_document(doc_id, range?)` → Document {metadata, chunks?, license?}
   - Document retrieval with optional range selection
 
-- `kb.resolve_citations(chunk_ids)` → Citation[]
+- `kb.resolve_citations(chunk_ids)` → Citation[{title, anchor/URL, license?, version?}]
   - Citation resolution with title, anchor/URL, license, version info
 
 - `kb.stats(collection/version)` → Stats {size, versions, embedder_version, health, eval_scores?}
-  - Collection statistics and health metrics
+  - Collection statistics and health metrics from StateManager actors
 
-- `kb.list_collections(filters?)` → KB[] {name, version, pinned?, flows?}
-  - Collection enumeration with metadata
+- `kb.list_collections(filters?)` → KB[{name, version, pinned?, flows?}]
+  - Collection enumeration with metadata from StateManager
 
 - `kb.compose_flow(flow_id, params?)` → {results, citations[]}
   - Flow composition for complex multi-step operations
+
+*All APIs proxy StateManager actors with schema versioning in RPC, enriched errors, and evaluation gates for write/maintenance operations.*
 
 ## Performance Considerations
 
@@ -277,7 +340,9 @@ The project includes comprehensive testing across both frontend and backend:
 ### Rust Backend Testing
 - Python integration tests in `src-tauri/src/lib.rs` (lines 107-129)
 - Run tests with `cargo test` from the `src-tauri/` directory
+- Run specific test: `cargo test test_python_integration`
 - Tests verify Python context initialization, system info, and library functionality
+- Tests validate PyO3 integration and MCP server functionality
 
 ### Angular Frontend Testing
 - Component tests using Angular Testing Library patterns
@@ -472,17 +537,19 @@ Generate high-quality, idiomatic Rust code adhering to Rust's best practices as 
 - Follow Rust ownership and borrowing principles strictly
 
 #### Architecture-Specific Patterns
-- **DI Services**: Use async_trait for service interfaces, implement hot-reload via notify crate
-- **Manager Pattern**: Composition root initializes all services from TOML config
-- **Circuit Breaker**: Use tower crate for resilience in service calls
-- **Event Sourcing**: Implement tracing-subscriber with JSONL sink for event replay
-- **RPC Communication**: UDS with Axum server, mTLS for inter-process security
-- **Caching Layers**: dashmap for memory TTL, invalidation hooks on commits
+- **DI Services**: Use async_trait for service interfaces, implement hot-reload via notify crate, Manager-owned pools
+- **Manager Pattern**: Composition root initializes all services from TOML config with hot-reload support
+- **Circuit Breaker**: Use tower crate for resilience in service calls, backpressure limits
+- **Event Sourcing**: Implement tracing-subscriber with multi-sinks (SQL events.db ACID + JSONL rotation) for event replay
+- **RPC Communication**: UDS with Axum server, SO_PEERCRED/token auth, schema versioning + compatibility
+- **Caching Layers**: dashmap for memory TTL, layered (Request/Feature/Doc) with invalidation hooks on commits/generation ID
+- **Actor-based State**: StateManager with mpsc channels per domain, batched persistence, delta broadcasting
 - **Performance Optimization**: 
-  - SQLite WAL async with rusqlite async
-  - LanceDB async writes with zero-copy index promotion
-  - PyO3 async with pyo3-async crate, timeout-based Rust fallbacks
-  - Parallel operations with tokio::join! for hybrid search
+  - SQLite split databases (app_meta.db + events.db) with async WAL, busy_timeout + jitter
+  - LanceDB async writes with atomic promote (generation rename/symlink) + epoch garbage collection
+  - PyO3 async with pyo3-async crate, out-of-process Embedding Worker (UDS/bincode), timeout-based Rust fallbacks
+  - Parallel operations with tokio::join! for hybrid search, semaphores for backpressure
+  - Warm-pool pre-fork for Embedding Worker, health-check/rotate
 
 #### Code Generation Standards
 Generate complete, compilable code with a main function or lib entry point. If the code is a snippet, wrap it in a minimal example. Ensure it's modular, readable, and efficient. Respond with code only unless explanations are specifically requested.
