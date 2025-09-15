@@ -570,3 +570,4 @@ Generate complete, compilable code with a main function or lib entry point. If t
 - Minimize Python-Rust boundary crossings where possible
 - Use appropriate data structures for different use cases (SQLite for metadata, file-based for large data)
 - Profile and optimize critical paths in the RAG pipeline
+- to
