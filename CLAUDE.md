@@ -21,26 +21,26 @@ RAG Studio is a local-first, no-code/low-code application for building and opera
 
 ## Architecture
 
-RAG Studio is a local-first, secure, high-performance desktop application built on Tauri and Rust, designed to meet both functional (FR) and non-functional (NFR) requirements. The design features an isolated embedding worker running out-of-process, simplified UDS authentication, a refactored StateManager using actors, atomic index promotion with epoch garbage collection, and a split SQLite setup (app_meta.db + events.db) for improved concurrency.
+RAG Studio is a local-first, secure, high-performance desktop application built on Tauri v2 and Rust, designed with a pragmatic MVP-first approach that balances rapid development with architectural integrity. The MVP features simplified shared state management, JSON-based subprocess communication, and essential RAG functionality, with clear upgrade paths to production features like actor-based state management, UDS communication, and advanced security sandboxing.
 
 ### Core Architecture Overview
 
-The Manager acts as the composition root, managing DI services (SQLite, LanceDB, PyO3). MCP runs in a subprocess for sandboxing and hot-swap, communicating via UDS/Axum with SO_PEERCRED/token auth. Centralized logging employs tracing with multi-sinks (SQL for critical events, JSONL for non-critical), supporting real-time UI and event sourcing. State management is handled via an actor-based StateManager, serving as the single source of truth with in-memory buffers and pagination.
+The Manager acts as the composition root, managing DI services (SQLite, LanceDB, PyO3). For MVP, the MCP runs in a subprocess with basic isolation, communicating via JSON over stdin/stdout for simplicity, with upgrade path to UDS/Axum. State management uses Arc<RwLock<AppState>> shared state pattern for MVP, with clear upgrade path to actor-based StateManager. Centralized logging employs tracing with structured output, preparing for multi-sink architecture (SQL + JSONL) in production.
 
 #### Process Boundaries
 
 - **Main Process (Manager)**: Composition root containing UI Adapter, Orchestrator, Event Router, KB Module, and all DI services
-- **Subprocess (MCP Module)**: Isolated MCP server with sandbox (seccomp/AppArmor/JobObject + policy engine), optional in-process mode for low-latency operations
-- **Subprocess (Embedding Worker)**: Out-of-process PyO3/Sentence-Transformers with warm-pool, health-check/rotate, UDS/bincode protocol
-- **Communication**: UDS/Axum with SO_PEERCRED/token auth for secure inter-process communication
+- **Subprocess (MCP Module)**: Basic subprocess isolation with JSON over stdin/stdout for MVP, upgrade path to full sandbox (seccomp/AppArmor/JobObject)
+- **Subprocess (Embedding Worker)**: Out-of-process PyO3/Sentence-Transformers with JSON communication for MVP, upgrade path to UDS/bincode
+- **Communication**: JSON over stdin/stdout for MVP simplicity, with clear upgrade path to UDS/Axum + SO_PEERCRED auth
 
 #### Key Architectural Patterns
 
-- **Actor-based State Management**: StateManager uses mpsc channels per domain (KBs/Runs/Metrics) with batched persistence
-- **Multi-sink Logging**: Critical ACID events stored in SQLite (events.db), non-critical telemetry in JSONL with rotation
+- **Simplified State Management (MVP)**: Arc<RwLock<AppState>> shared state pattern with clear upgrade path to actor-based StateManager
+- **Structured Logging**: Tracing-based logging with upgrade preparation for multi-sink architecture (SQL + JSONL)
 - **Hybrid Search Architecture**: Parallel vector (LanceDB) and lexical (BM25/tantivy) search with reranking
-- **Event Sourcing**: Full undo/redo support via event replay from events.db
-- **Layered Caching**: Request/Feature/Document levels with TTL eviction and invalidation hooks
+- **Event Sourcing Preparation**: Schema ready for event replay, with upgrade path to full undo/redo support
+- **Basic Caching**: Simple memory caching with dashmap TTL, upgrade path to layered caching architecture
 
 ### Frontend (Angular)
 - Located in `src/` directory
@@ -69,17 +69,17 @@ The Manager initializes and manages all core services with hot-reload configurat
 5. **Auth/SecretService**: ring crate encryption, UDS SO_PEERCRED + token headers, cert rotation
 6. **EmbeddingService**: Out-of-process worker via UDS/bincode, warm-pool, health/rotate, PyO3 async + Rust fallback
 7. **FlowService**: Composition of Tools/KB/Pipelines, checksum validation for end-to-end workflows
-8. **StateManager**: Actor-based per domain (KBs/Runs/Metrics), mpsc channels, batched persist, event bus deltas
+8. **StateManager (MVP)**: Arc<RwLock<AppState>> shared state with service injection, clear upgrade path to actor-based system post-MVP
 
 ### MCP Module (Subprocess)
 
-- **Sandbox Security**: seccomp/AppArmor/JobObject + policy engine (Cedar-lite) for capabilities, default-deny permissions with escalation prompts
-- **Tool Registry & Handlers**: Behavior-driven with dynamic bindings, capability policy enforcement
-- **JSON-Schema Validation**: Fuzz-resistant input validation with limits and tracing spans
-- **Dispatcher**: Parallel dispatch for hybrid tool calls with backpressure
-- **OutboundPort Client**: UDS/Axum client with local cache for frequent queries, schema versioning + compatibility
-- **Transport Support**: MCP stdio (required), HTTP /invoke (optional, air-gapped block)
-- **Logging Integration**: Structured spans forwarded to main process with trace_id propagation
+- **Basic Subprocess Isolation (MVP)**: Process isolation with JSON over stdin/stdout, upgrade path to full sandbox security
+- **Tool Registry & Handlers**: Basic tool registration and validation, with upgrade path to capability policy enforcement
+- **Input Validation**: Basic JSON-Schema validation with clear upgrade path to fuzz-resistant validation
+- **Simple Dispatcher**: Sequential tool dispatch for MVP, upgrade path to parallel dispatch with backpressure
+- **JSON Communication**: stdin/stdout based MCP protocol for MVP, upgrade path to UDS/Axum with caching
+- **Transport Support**: MCP stdio (MVP focus), with upgrade path to HTTP /invoke and UDS transport
+- **Logging Integration**: Basic structured logging with upgrade path to span forwarding and trace_id propagation
 
 ## Development Commands
 
@@ -152,32 +152,32 @@ The Manager initializes and manages all core services with hot-reload configurat
 The retrieval process combines semantic (LanceDB ANN) and lexical (BM25/tantivy) search with adaptive rerank, mandatory citations, and layered caching:
 
 1. **Input Validation**: JSON-Schema validation with limits and tracing spans in MCP subprocess
-2. **State Access**: Actor-based read from StateManager for filtered KB state via mpsc channels
+2. **State Access**: Read from shared AppState via RwLock for filtered KB state (MVP), upgrade path to actor-based access
 3. **Cache Check**: Layered cache hit check (request/feature/doc levels) with generation IDs
-4. **Embedding**: Async PyO3 query embedding via out-of-process Embedding Worker (UDS batch), Rust fallback on timeout
+4. **Embedding**: Async PyO3 query embedding via out-of-process worker (JSON batch for MVP), Rust fallback on timeout
 5. **Hybrid Search**: Parallel vector (LanceDB ANN) and BM25 (tantivy) search with merge/scoring, adaptive candidate sets
 6. **Reranking**: PyO3 cross-encoder async batch processing (32-64 batch size) with sequence length guards
 7. **Citation Enrichment**: Mandatory citations with license information from SQLite, enriched snippets
 8. **Caching**: Store results in layered cache with TTL based on confidence, invalidate on commits
-9. **Metrics**: Update performance metrics (latency, hit rate) via StateManager actor mutations
+9. **Metrics**: Update performance metrics (latency, hit rate) via shared AppState mutations (MVP)
 10. **Performance**: <100ms target with P50/P95 monitoring, backpressure via semaphores
 
 ### Ingest & Commit Flow: ETL → KB (Write Path with Delta & Eval)
 
 The ingest pipeline handles ETL with delta-only updates, versioning, rollback, and evaluation gates:
 
-1. **Transaction Begin**: Atomic commit with fingerprint-based delta detection, StateManager mutation (RunAdd)
+1. **Transaction Begin**: Atomic commit with fingerprint-based delta detection, AppState mutation (RunAdd) for MVP
 2. **ETL Processing**: Parallel fetch/parse/chunk/annotate operations via Tokio with retry/backoff
-3. **Delta Detection**: Compare fingerprints from StateManager actors → process only changed content
+3. **Delta Detection**: Compare fingerprints from AppState → process only changed content
 4. **Cache Check**: Feature-layer embedding cache hits → skip unchanged embeddings
-5. **Embedding**: Batch async embedding via out-of-process Embedding Worker (UDS), GIL release, fallback support
+5. **Embedding**: Batch async embedding via out-of-process worker (JSON for MVP), GIL release, fallback support
 6. **Indexing**: Buffered upserts to SQLite metadata and LanceDB vectors with staging indexes
 7. **BM25 Indexing**: Parallel BM25 index building via tantivy
 8. **Evaluation**: Smoke tests for recall@k, drift detector (mean/covariance), quality alerts
 9. **Eval Gate**: Block promotion on eval failure or high drift, emit warnings
 10. **Atomic Promotion**: Promote staging → active index with zero-copy (generation rename/symlink), epoch garbage collection
 11. **Event Sourcing**: Store critical events in events.db for undo/redo support, emit completion events
-12. **State Updates**: Update StateManager with run completion, metrics, and emit deltas for UI sync
+12. **State Updates**: Update AppState with run completion, metrics, and emit events for UI sync (MVP)
 
 ## State Management Architecture
 
@@ -185,12 +185,12 @@ The ingest pipeline handles ETL with delta-only updates, versioning, rollback, a
 
 The application uses a three-tier state management approach:
 
-1. **Global Backend State (StateManager Actors)**
-   - 8-10 fields with lean AppState and caps (~10MB in-memory)
+1. **Global Backend State (Shared AppState - MVP)**
+   - 8-10 fields with lean AppState using Arc<RwLock<AppState>> pattern
    - Tools (FR-1), KB Packs (FR-2), Pipelines (FR-3), Schedules (FR-4), Flows (FR-6), Settings (FR-10)
    - Recent Logs/Metrics buffer (~100 entries), Loading/Errors state
-   - **Storage**: SQL persistent (app_meta.db + events.db ACID), in-memory runtime via mpsc actors
-   - **Sync Flow**: Load SQL → In-Memory (paginated); Mutate → Delta + SQL batch (1s intervals)
+   - **Storage**: Single app_meta.db for MVP (split to events.db post-MVP), in-memory runtime with periodic saves
+   - **Sync Flow**: Load SQL → In-Memory; Mutate → Direct SQL update, upgrade path to batched operations
 
 2. **Shared Mirrored State (Frontend NgRx)**
    - 5-7 fields subset with pagination
@@ -204,12 +204,12 @@ The application uses a three-tier state management approach:
    - **Storage**: In-memory runtime with signals (auto-reset)
    - **Sync Flow**: Computed from shared state; Optimistic → Backend confirmation
 
-### Actor-based State Management
+### State Management (MVP)
 
-- **Per-Domain Actors**: Separate mpsc channels for KBs, Runs, Metrics
-- **Batched Persistence**: Critical events → events.db (ACID), non-critical → JSONL with rotation
-- **Event Broadcasting**: Delta emission for internal/UI/MCP sync
-- **Recovery/Undo**: Event sourcing via SQL event replay from events.db
+- **Shared State Pattern**: Arc<RwLock<AppState>> for simple MVP state management
+- **Direct Persistence**: SQL writes with periodic saves and load-on-startup pattern
+- **Event Broadcasting**: Tauri events for frontend state sync with debounced updates
+- **Event Sourcing Preparation**: Schema ready for event sourcing, upgrade path to full undo/redo support
 
 ## Development Notes
 
@@ -368,7 +368,7 @@ Based on the core design architecture, these are key implementation guidelines:
 
 ### Technical Stack Recommendations
 - **Concurrency**: Tokio semaphores for controlled concurrency
-- **Communication**: bincode over UDS for efficient serialization
+- **Communication**: JSON over stdin/stdout for MVP simplicity, upgrade path to bincode over UDS
 - **Caching**: dashmap for TTL-based memory caching
 - **Python Integration**: async PyO3 with pyo3-async crate
 - **Security Testing**: cargo-fuzz for RPC fuzzing, audit PyO3 bindings
@@ -543,11 +543,11 @@ Generate high-quality, idiomatic Rust code adhering to Rust's best practices as 
 - **Event Sourcing**: Implement tracing-subscriber with multi-sinks (SQL events.db ACID + JSONL rotation) for event replay
 - **RPC Communication**: UDS with Axum server, SO_PEERCRED/token auth, schema versioning + compatibility
 - **Caching Layers**: dashmap for memory TTL, layered (Request/Feature/Doc) with invalidation hooks on commits/generation ID
-- **Actor-based State**: StateManager with mpsc channels per domain, batched persistence, delta broadcasting
+- **Shared State (MVP)**: Arc<RwLock<AppState>> pattern with service injection, upgrade path to actor-based StateManager
 - **Performance Optimization**: 
   - SQLite split databases (app_meta.db + events.db) with async WAL, busy_timeout + jitter
   - LanceDB async writes with atomic promote (generation rename/symlink) + epoch garbage collection
-  - PyO3 async with pyo3-async crate, out-of-process Embedding Worker (UDS/bincode), timeout-based Rust fallbacks
+  - PyO3 async with basic integration, out-of-process Embedding Worker (JSON for MVP), timeout-based Rust fallbacks
   - Parallel operations with tokio::join! for hybrid search, semaphores for backpressure
   - Warm-pool pre-fork for Embedding Worker, health-check/rotate
 

@@ -8,6 +8,10 @@
 
 This document outlines the Minimum Viable Product (MVP) implementation plan for RAG Studio, a local-first, no-code/low-code application for building and operating personal Retrieval-Augmented Generation (RAG) systems. The MVP focuses on delivering core RAG functionality with a desktop application built on Tauri, Angular 20+, and Rust.
 
+## Project layout
+
+The recommended project layout (workspace) is documented in `docs/designs/CORE_DESIGN.md` under the "Recommended Project Structure" section. That canonical layout includes `src/` (Angular), `src-tauri/` (Tauri Rust), `core/` (shared crate), and subprocess crates (`mcp/`, `embedding-worker/`). Use that layout as the source of truth when implementing the MVP phases in this plan.
+
 ## Current State Analysis ✅
 
 ### COMPLETED FOUNDATIONS
@@ -48,40 +52,43 @@ This document outlines the Minimum Viable Product (MVP) implementation plan for 
   - Forward/backward compatible migrations
   - Data integrity validation
 
-#### 1.2 State Management (Actor-based)
-- [ ] **StateManager**: Actor system with mpsc channels per domain
-  - Separate actors for KBs, Runs, Metrics
-  - Batched persistence (1s intervals)
-  - In-memory buffers with pagination
-- [ ] **Event Sourcing**: Critical events in events.db for undo/redo
-  - ACID event storage in SQLite
-  - Event replay for state reconstruction
-  - Full undo/redo support
-- [ ] **Cache Service**: Memory TTL with dashmap, layered caching strategy
-  - Request/Feature/Document level caching
-  - TTL eviction with invalidation hooks
-  - Generation ID tracking
+#### 1.2 State Management (Simplified MVP)
+- [ ] **AppState**: Shared state with Arc<RwLock<AppState>> pattern
+  - Simple HashMap storage for KBs, Runs, Metrics
+  - Service injection via Manager DI
+  - Clear upgrade path to actor system post-MVP
+- [ ] **Persistence**: Basic SQLite storage with async operations
+  - Single app_meta.db for MVP (split to events.db post-MVP)
+  - Periodic saves and load-on-startup pattern
+  - Event sourcing preparation (schema ready, not implemented)
+- [ ] **Cache Service**: Simple memory caching with dashmap TTL
+  - Basic request-level caching
+  - TTL-based eviction
+  - Upgrade to layered caching post-MVP
 - [ ] **Real-time Updates**: Tauri events for frontend state sync
-  - Delta emission for UI updates
-  - Optimistic updates with rollback
+  - Direct state change notifications
+  - Debounced updates for performance
+  - NgRx store integration
 
-#### 1.3 Python Integration Enhancement
-- [ ] **Embedding Service**: Out-of-process worker via UDS/bincode
-  - Warm-pool pre-fork for performance
-  - Health-check and rotation
-  - Batch processing (32-64 items)
-- [ ] **PyO3 Async**: Implement async patterns with pyo3-async crate
-  - GIL release for concurrent operations
-  - Timeout-based Rust fallbacks
-  - Error propagation improvements
-- [ ] **AI Functions**: Sentence-Transformers, FAISS, reranking models
-  - Cross-encoder batch processing
-  - Sequence length guards
-  - Model warm-up and caching
-- [ ] **Error Handling**: Comprehensive error propagation Python→Rust→Angular
-  - Rich error context
+#### 1.3 Python Integration (Simplified MVP)
+- [ ] **Embedding Service**: Out-of-process worker with JSON communication
+  - Start with stdin/stdout JSON protocol for simplicity
+  - Basic batch processing for embeddings
+  - Health checks and process restart capability
+  - Upgrade to UDS/bincode post-MVP for performance
+- [ ] **PyO3 Integration**: Basic async patterns for MVP
+  - Simple Python function calls via PyO3
+  - Basic GIL management
+  - Timeout-based error handling
+  - Rust fallback implementations where possible
+- [ ] **AI Functions**: Core embedding and search functionality
+  - Sentence-Transformers for embeddings
+  - Basic reranking capabilities
+  - Simple model loading and caching
+- [ ] **Error Handling**: Clear error propagation Python→Rust→Angular
+  - Structured error types with context
   - User-friendly error messages
-  - Recovery suggestions
+  - Basic recovery mechanisms
 
 ### Phase 2: Knowledge Base Core 🎯
 **Priority: HIGH | Estimated: 3-4 weeks**
@@ -104,26 +111,27 @@ This document outlines the Minimum Viable Product (MVP) implementation plan for 
   - Adaptive candidate sets
   - Merge scoring algorithms
 
-#### 2.2 MCP Server Implementation
-- [ ] **Tool Registry**: `kb.*` tools for search, management, stats
-  - `kb.hybrid_search` - Combined vector/lexical search
-  - `kb.answer` - Full RAG with LLM integration
+#### 2.2 MCP Server Implementation (Simplified MVP)
+- [ ] **Tool Registry**: Basic `kb.*` tools via stdio MCP protocol
+  - `kb.hybrid_search` - Vector/lexical search combination
   - `kb.get_document` - Document retrieval
-  - `kb.resolve_citations` - Citation resolution
   - `kb.stats` - Collection statistics
   - `kb.list_collections` - KB enumeration
-- [ ] **Security Sandbox**: Subprocess isolation with seccomp/AppArmor
-  - Default-deny permissions
-  - Capability policy enforcement
-  - Escalation prompts for privileged operations
-- [ ] **JSON Schema Validation**: Fuzz-resistant input validation
-  - Input limits and sanitization
-  - Tracing spans for debugging
-  - Comprehensive error reporting
-- [ ] **Performance**: <100ms retrieval target with monitoring
-  - P50/P95 latency tracking
-  - Backpressure via semaphores
-  - Circuit breaker patterns
+  - Basic tool validation and registration
+- [ ] **Security**: Basic subprocess isolation
+  - Process isolation (no shared memory)
+  - JSON communication over stdio
+  - Basic input validation and sanitization
+  - Upgrade to full sandbox (seccomp/AppArmor) post-MVP
+- [ ] **Communication**: Simple JSON-based protocol
+  - Stdio-based MCP implementation
+  - Schema versioning with serde tags
+  - Basic error handling and recovery
+  - Clear upgrade path to UDS/HTTP post-MVP
+- [ ] **Performance**: Target <100ms retrieval with basic monitoring
+  - Simple latency tracking
+  - Basic performance metrics
+  - Upgrade to full P50/P95 monitoring post-MVP
 
 #### 2.3 Citations & Quality
 - [ ] **Mandatory Citations**: All responses include source citations

@@ -1,8 +1,68 @@
 # Core Design for RAG Studio
 
-RAG Studio is a local-first, secure, high-performance desktop application built on Tauri and Rust, meeting functional (FR) and non-functional (NFR) requirements in SRS/SDD. The design features an isolated embedding worker running out-of-process, simplified UDS authentication, a refactored StateManager using actors, atomic index promotion with epoch garbage collection, and a split SQLite setup (app_meta.db + events.db) for improved concurrency. It includes end-to-end backpressure, cross-process tracing and metrics with histograms and SLIs, layered caching with invalidation, and adaptive RAG flows. Additional enhancements encompass an enhanced MCP sandbox with a policy engine, redaction filters, RPC/IPC schema versioning, and Tauri UX optimizations such as non-blocking IPC and debounce. Logging uses hierarchical events, with critical ACID events (including undo/redo deltas) stored in SQLite (events.db), and non-critical telemetry and spans logged to JSONL files with rotation. This balances durability for event sourcing and simplicity/performance for observability, with offload capabilities to external log systems like ELK or Splunk.
+RAG Studio is a local-first, secure, high-performance desktop application built on Tauri v2 and Rust, meeting functional (FR) and non-functional (NFR) requirements. The design follows a pragmatic MVP-first approach, balancing architectural integrity with rapid delivery.
 
-The Manager serves as the composition root, managing dependency injection services. MCP runs in a subprocess for sandboxing and hot-swap, communicating via UDS/Axum with simplified authentication. Centralized logging employs tracing with multi-sinks (SQL for critical events, JSONL for non-critical), supporting real-time UI and event sourcing. State management is handled via an actor-based StateManager, serving as the single source of truth with in-memory buffers and pagination.
+## Recommended Project Structure
+
+The workspace layout below is recommended for the project. It follows Tauri v2 conventions (frontend in `src/`, Rust backend in `src-tauri/`) and groups shared logic and subprocesses into workspace crates for fast, testable builds and clear separation of responsibilities.
+
+```
+rag-studio/
+├── Cargo.toml                    # Workspace root: [workspace] members = ["src-tauri", "core", "mcp", "embedding-worker"]
+├── package.json                  # Angular deps and scripts (e.g., ng build)
+├── angular.json                  # Angular CLI config (projects, builds)
+├── src/                          # Angular frontend (WebView content)
+│   ├── app/                      # Core app module
+│   │   ├── pages/                # Main pages: dashboard, tools, kb, pipelines, etc.
+│   │   ├── shared/               # Shared modules
+│   │   │   └── components/       # Components: atomic, semantic, composite
+│   │   └── store/                # NgRx state mirror (actions, reducers, effects)
+│   └── main.ts                   # Angular bootstrap
+├── src-tauri/                    # Tauri Rust backend (binary crate)
+│   ├── Cargo.toml                # Depends on tauri, tokio, core, etc.
+│   ├── tauri.conf.json           # Tauri config: app ID, bundle, dev server
+│   └── src/                      # Rust code for Manager and IPC
+│       ├── lib.rs                # Composition root init (Manager, Builder)
+│       ├── main.rs               # Minimal entry: fn main() { lib::run(); }
+│       ├── manager.rs            # Manager: inject services, hold AppState
+│       └── ipc/                  # Tauri commands and streams by domain
+├── core/                         # Shared library crate (utils, services, logic)
+│   ├── Cargo.toml                # Lib crate
+│   └── src/
+│       ├── lib.rs                # Re-export shared types and helpers
+│       ├── state.rs              # AppState: shared patterns for MVP
+│       ├── kb_module.rs          # Hybrid search, ingest/commit logic
+│       └── services/             # Traits + implementations for DI (sql, vector, embedding)
+├── mcp/                          # MCP subprocess (binary crate)
+│   ├── Cargo.toml                # Depends on serde_json, core, etc.
+│   └── src/
+│       ├── main.rs               # Stdio JSON protocol loop for MVP
+│       └── tools/                # Tool implementations (doc_search, etc.)
+└── embedding-worker/             # Embedding subprocess (binary crate)
+  ├── Cargo.toml                # Depends on pyo3 (or candle), serde_json
+  └── src/
+    ├── main.rs               # Batch embedding worker (stdin/stdout JSON for MVP)
+    └── batch.rs              # Batch processing logic
+```
+
+Rationale:
+- Keeps frontend and desktop backend aligned with Tauri v2 conventions (`src/` and `src-tauri/`).
+- Uses a Cargo workspace to allow fast, parallel Rust builds and well-scoped crates for testing.
+- Separates long-running subprocesses (`mcp`, `embedding-worker`) into dedicated crates for isolation and easier CI/testing.
+- `core/` hosts shared types and service traits to make DI and unit testing straightforward.
+- Stdio JSON for subprocesses is simple to debug for MVP; upgrade paths (UDS/bincode, actor-based state) are documented elsewhere in this design.
+
+
+## MVP Architecture Approach
+
+The design prioritizes **pragmatic complexity** - starting simple but future-proofing key foundations:
+
+- **State Management**: Start with Arc<RwLock<AppState>> for MVP, upgrade to full actor system post-MVP
+- **Subprocess Communication**: Begin with JSON over stdin/stdout, upgrade to UDS/bincode for performance-critical paths
+- **Logging**: JSONL-based tracing for MVP, add SQL critical events for production
+- **Services**: Async traits with DI for testability and swappable implementations
+
+The Manager serves as the composition root, managing dependency injection services. MCP and Embedding Worker run in subprocesses for isolation. State management uses a simplified shared state pattern for MVP with clear upgrade path to actor-based system.
 
 ## 1. Architecture Overview and Process Boundaries
 
@@ -57,12 +117,12 @@ flowchart LR
 ```
 
 ### Key Points
-- **Manager**: Composition root, initializes/injects DI services (S1-S8), manages pools (SQLite/LanceDB/StateManager/Embedding Worker). Supports config hot-reload (TOML via notify). Spawns Embedding Worker subprocess.
-- **MCP**: Isolated subprocess (stdio, seccomp/AppArmor/JobObject + policy engine like Cedar-lite for capabilities), hot-swap (AC-1), optional in-process mode. Communicates via UDS/Axum with SO_PEERCRED/token auth; accesses state indirectly via RPC to StateManager.
-- **Embedding Worker**: Out-of-process (UDS/bincode protocol, warm-pool pre-fork, health-check/rotate). Handles embed/rerank to isolate crashes/GIL.
-- **State Management**: Actor-based (per domain: KBs/Runs/Metrics via mpsc channels, batched persist). Broadcast channels for deltas. Modules read/write via injected StateManager; deltas emitted for UI/MCP sync.
-- **Logging**: Tracing-subscriber with multi-sinks: SQL (events.db) for critical ACID events (undo/redo deltas, FR-9), JSONL (with rotation via tracing-appender) for non-critical telemetry/spans (FR-8). Redaction filters, cross-process propagation (trace_id), histograms for SLIs (P50/P95, hit rate). Event sourcing for undo/redo via SQL replay.
-- **UI**: Angular WebView, async IPC streams for wizards/drag-drop (FR-3/9), real-time logs/dashboard (FR-8), with debounce (60Hz cap) and non-blocking.
+- **Manager**: Composition root following Tauri v2 structure (src-tauri/ binary). Initializes/injects DI services with async traits. Manages subprocess lifecycle and IPC coordination.
+- **MCP**: Isolated subprocess using stdio MCP protocol for simplicity. Basic sandbox (process isolation), communicates via JSON messages. Upgrade to UDS/full sandbox post-MVP.
+- **Embedding Worker**: Out-of-process PyO3 worker. Start with JSON over stdin/stdout, upgrade to UDS/bincode for performance. Handles embedding/reranking to isolate GIL and crashes.
+- **State Management**: Simplified Arc<RwLock<AppState>> for MVP with clear interfaces. Services inject shared state. Real-time updates via Tauri events with debounce.
+- **Logging**: JSONL-based tracing-subscriber for MVP. Structured logging with rotation. Add SQL critical events layer post-MVP for event sourcing.
+- **UI**: Angular 20+ with Tauri v2 IPC. Signal-based reactivity, real-time streams for metrics/logs, non-blocking operations with proper error handling.
 
 ## 2. Retrieval Flow: MCP `doc.search` → KB (Hybrid Search with Rerank & Citations)
 
@@ -281,11 +341,11 @@ graph TB
 - `kb.list_collections(filters?) -> [KB {name, version, pinned?, flows?}]` (FR-6)
 - `kb.compose_flow(flow_id, params?) -> {results, citations[]}` (FR-6)
 
-*APIs proxy StateManager actors; write/maintenance with eval gate, enriched errors (FR-8). Schema versioning in RPC.*
+*APIs use simplified shared state for MVP, with service interfaces for testability. Schema versioning via serde tags.*
 
-## 7. State Scopes: Quantity, Content, Location, and Storage
+## 7. State Management: MVP Simplified Approach
 
-State divided into scopes; in-memory caps, pagination. Persistence split (SQL events.db for critical deltas).
+State management follows a pragmatic MVP approach with clear upgrade path to full actor system post-MVP.
 
 ### Table 1: Overview of Scopes and Storage
 
@@ -432,10 +492,22 @@ sequenceDiagram
 - **Resilience**: Async back, event sourcing from SQL events.db (FR-9), error mutate (FR-11).
 - **Efficiency**: Scoped reads, delta <1KB, cache (S4) 80% hits; buffer auto-flush.
 
-## 10. Implementation and Recommendations
+## 10. Implementation Strategy
 
-- **MVP**: Manager + KB + MCP/Embedding Worker (AC-1-3), SQLite/LanceDB/PyO3/candle/State actors, benchmark retrieval (<100ms) with criterion.
-- **Tauri**: Async commands, tray mode (tauri-plugin-system-tray), cross-OS testing. Optimize Angular (tree-shaking).
-- **Performance**: Tokio semaphores/backpressure, bincode UDS, cache layering, async PyO3. State actors for low-overhead.
-- **Security/Testing**: Fuzz RPC (cargo-fuzz), audit PyO3/mutations, block outbound (air-gapped). Property tests (proptest) for deltas/replay, chaos toggles (delays/errors) for resilience.
-- **Next Steps**: Prototype retrieval/ingest (cargo bench), validate eval metrics (recall@k), implement FlowService (FR-6), test state consistency (concurrent mutate FR-11). Use cargo-watch for dev hot-reload.
+### MVP Implementation (Phase 1)
+- **Foundation**: Tauri v2 structure with Manager composition root, simplified shared state, JSON subprocess communication
+- **Core Services**: SQLite/Diesel + LanceDB with async traits for DI and testability
+- **Performance Target**: Benchmark retrieval <100ms with criterion, focus on core RAG flows first
+- **Testing**: Start with unit tests per service, integration tests for end-to-end flows
+
+### Post-MVP Optimization (Phase 2+)
+- **State Upgrade**: Migrate to full actor-based StateManager with mpsc channels and event sourcing
+- **Communication**: Upgrade to UDS/bincode for performance-critical embedding operations
+- **Advanced Features**: Full sandbox, circuit breakers, layered caching with generation invalidation
+- **Monitoring**: P50/P95 metrics, distributed tracing, comprehensive logging
+
+### Development Approach
+- **Start Simple**: Proven patterns (Arc<RwLock>, async traits, Tauri v2 structure)
+- **Future-Proof**: Clear interfaces and upgrade paths for complex features
+- **Performance**: Profile early, optimize bottlenecks incrementally
+- **Security**: Basic process isolation for MVP, comprehensive sandbox post-MVP
