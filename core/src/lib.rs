@@ -10,7 +10,7 @@ pub mod state;
 
 // Re-export commonly used types
 pub use services::sql::{SqlService, SqlConfig, SqlError};
-pub use state::AppState;
+pub use state::{AppState, StateManager};
 
 // Re-export external types that are used throughout the application
 pub use chrono::{DateTime, Utc, NaiveDateTime};

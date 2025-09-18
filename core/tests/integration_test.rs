@@ -5,7 +5,7 @@
  * connections, and basic CRUD operations.
  */
 
-use core::{SqlService, SqlConfig, AppState, StateManager};
+use rag_core::{SqlService, SqlConfig, AppState, StateManager};
 use tempfile::TempDir;
 use tokio;
 
@@ -74,10 +74,12 @@ async fn test_state_manager_integration() {
     let state_manager = StateManager::new();
 
     // Test reading initial state
-    let state = state_manager.read_state();
-    assert!(state.knowledge_bases.is_empty());
-    assert!(state.pipeline_runs.is_empty());
-    assert!(state.tools.is_empty());
+    {
+        let state = state_manager.read_state();
+        assert!(state.knowledge_bases.is_empty());
+        assert!(state.pipeline_runs.is_empty());
+        assert!(state.tools.is_empty());
+    }
 
     // Test state snapshot
     let snapshot = state_manager.get_state_snapshot();
@@ -89,8 +91,10 @@ async fn test_state_manager_integration() {
 
     state_manager.load_state(new_state);
 
-    let loaded_state = state_manager.read_state();
-    assert_eq!(loaded_state.settings.get("test_key"), Some(&"test_value".to_string()));
+    {
+        let loaded_state = state_manager.read_state();
+        assert_eq!(loaded_state.settings.get("test_key"), Some(&"test_value".to_string()));
+    }
 
     println!("✅ State manager integration test passed");
 }
@@ -174,7 +178,11 @@ async fn test_database_configuration() {
 #[tokio::test]
 async fn test_error_handling() {
     // Test with invalid path
-    let invalid_path = "/invalid/path/that/does/not/exist/test.db";
+    let invalid_path = if cfg!(windows) {
+        "Z:\\invalid\\path\\that\\does\\not\\exist\\test.db"
+    } else {
+        "/invalid/path/that/does/not/exist/test.db"
+    };
     let config = SqlConfig::new_mvp(invalid_path);
 
     // This should fail gracefully
@@ -186,7 +194,7 @@ async fn test_error_handling() {
 
 #[tokio::test]
 async fn test_wal_mode_configuration() {
-    use core::services::sql::WalMode;
+    use rag_core::services::sql::WalMode;
 
     // Test WAL mode enum
     assert_eq!(WalMode::Normal.as_str(), "NORMAL");

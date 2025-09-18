@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 diesel = { workspace = true }
 diesel_migrations = { workspace = true }
+libsqlite3-sys = { workspace = true }
 chrono = { workspace = true }
 tokio = { workspace = true }
 thiserror = { workspace = true }

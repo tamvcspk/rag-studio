@@ -4,6 +4,7 @@ resolver = "2"
 
 [workspace.dependencies]
 diesel = { version = "2.1", features = ["sqlite", "chrono", "r2d2"] }
+libsqlite3-sys = { version = "0.35", features = ["bundled"] }
 diesel_migrations = "2.1"
 chrono = { version = "0.4", features = ["serde"] }
 tokio = { version = "1.0", features = ["full"] }
