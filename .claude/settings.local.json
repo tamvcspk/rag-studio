@@ -23,7 +23,8 @@
       "mcp__angular-cli__search_documentation",
       "WebFetch(domain:material.angular.dev)",
       "Bash(ng build)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": [],
