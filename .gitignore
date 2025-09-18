@@ -5,6 +5,7 @@
 /tmp
 /out-tsc
 /bazel-out
+/target
 
 # Node
 /node_modules
@@ -44,3 +45,10 @@ Thumbs.db
 # Python virtual environment
 /venv/
 /.env/
+
+# Database files and backups
+*.db
+*.db-*
+/core/backups/
+*.sqlite
+*.sqlite3

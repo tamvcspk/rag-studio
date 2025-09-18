@@ -24,6 +24,14 @@ pyo3 = { version = "0.22.0", features = ["auto-initialize"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tokio = { version = "1.0", features = ["full"] }
-rmcp = { version = "0.6.0", features = ["server"] }
 chrono = { version = "0.4", features = ["serde"] }
+# Add core crate dependency
+rag-core = { path = "../core" }
+# Additional dependencies for SQL service integration
+diesel = { workspace = true }
+diesel_migrations = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+uuid = { workspace = true }
 

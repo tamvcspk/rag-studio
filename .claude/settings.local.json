@@ -24,7 +24,10 @@
       "WebFetch(domain:material.angular.dev)",
       "Bash(ng build)",
       "Bash(mkdir:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(cargo test)",
+      "Bash(cargo:*)",
+      "Bash(mv:*)"
     ],
     "deny": [],
     "ask": [],

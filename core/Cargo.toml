@@ -1,0 +1,27 @@
+[package]
+name = "rag-core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+diesel = { workspace = true }
+diesel_migrations = { workspace = true }
+libsqlite3-sys = { workspace = true }
+chrono = { workspace = true }
+tokio = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+uuid = { workspace = true }
+dashmap = { workspace = true }
+notify = { workspace = true }
+ring = { workspace = true }
+# Additional dependencies specific to core
+async-trait = "0.1"
+tower = "0.4"
+
+[dev-dependencies]
+tempfile = "3.8"
+tokio-test = "0.4"

@@ -1,0 +1,5 @@
+[print_schema]
+file = "src/services/schema.rs"
+
+[migrations_directory]
+dir = "migrations/app_meta/"
