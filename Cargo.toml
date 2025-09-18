@@ -17,3 +17,9 @@ uuid = { version = "1.0", features = ["v4", "serde"] }
 dashmap = "5.5"
 notify = "6.1"
 ring = "0.17"
+# Vector Database Integration dependencies
+async-trait = "0.1"
+tower = "0.4"
+# Tantivy and LanceDB will be added when dependency conflicts are resolved
+# tantivy = "0.20"
+# lancedb = "0.9"

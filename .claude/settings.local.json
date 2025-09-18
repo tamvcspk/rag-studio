@@ -27,7 +27,10 @@
       "Bash(dir:*)",
       "Bash(cargo test)",
       "Bash(cargo:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(del /Q unit*.rs)",
+      "Bash(del /Q integration*.rs)",
+      "Bash(timeout 30 cargo test --test state_manager_integration)"
     ],
     "deny": [],
     "ask": [],

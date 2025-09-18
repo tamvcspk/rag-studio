@@ -19,8 +19,12 @@ dashmap = { workspace = true }
 notify = { workspace = true }
 ring = { workspace = true }
 # Additional dependencies specific to core
-async-trait = "0.1"
-tower = "0.4"
+async-trait = { workspace = true }
+tower = { workspace = true }
+# Vector Database Integration dependencies
+# Tantivy and LanceDB will be added when dependency conflicts are resolved
+# tantivy = { workspace = true }
+# lancedb = { workspace = true }
 
 [dev-dependencies]
 tempfile = "3.8"

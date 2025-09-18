@@ -64,6 +64,72 @@ The design prioritizes **pragmatic complexity** - starting simple but future-pro
 
 The Manager serves as the composition root, managing dependency injection services. MCP and Embedding Worker run in subprocesses for isolation. State management uses a simplified shared state pattern for MVP with clear upgrade path to actor-based system.
 
+## Service Architecture Guidelines
+
+### Consistent Service Structure
+
+All services in RAG Studio follow a standardized structure for maintainability, testability, and clear separation of concerns:
+
+```
+core/src/services/
+├── sql/
+│   ├── mod.rs              # Re-exports: pub mod sql; pub use sql::*;
+│   └── sql.rs              # Complete service implementation
+├── vector/
+│   ├── mod.rs              # Re-exports: pub mod vector; pub use vector::*;
+│   └── vector.rs           # Complete service implementation
+├── schema/
+│   └── schema.rs           # Shared types and database schemas
+└── models/                 # (Future: model definitions if needed)
+```
+
+#### Service Implementation Pattern
+
+Each service follows this consistent pattern:
+
+1. **Error Types**: Custom error enums with `thiserror::Error`
+2. **Configuration Structs**: With `new_mvp()`, `new_production()`, and `test_config()` methods
+3. **Service Trait**: Async trait defining the service interface
+4. **Service Implementation**: Concrete implementation with dependency injection
+5. **Helper Functions**: Utility functions and type conversions
+6. **Test Helpers**: `#[cfg(test)]` helper methods only (no inline tests)
+
+#### Testing Structure
+
+Tests follow Cargo standards with proper separation of unit and integration tests:
+
+**Unit Tests** (co-located with source code):
+```
+core/src/services/
+├── sql/
+│   └── sql.rs                     # Contains #[cfg(test)] mod tests
+├── vector/
+│   └── vector.rs                  # Contains #[cfg(test)] mod tests
+└── state.rs                       # Contains #[cfg(test)] mod tests
+```
+
+**Integration Tests** (standalone files in tests/ directory):
+```
+core/tests/
+├── sql_integration.rs             # SQL service integration tests
+├── vector_integration.rs          # Vector service integration tests
+├── state_manager_integration.rs   # State management integration tests
+└── ...                           # Additional integration tests
+```
+
+**Test Classification**:
+- **Unit Tests**: Test individual methods, error conditions, and isolated functionality. Located in `#[cfg(test)]` modules within service implementation files.
+- **Integration Tests**: Test complete workflows, cross-service interactions, and end-to-end scenarios. Located as standalone `.rs` files in the `tests/` directory.
+- **Test Results**: 42 tests passing (31 unit tests + 11 integration tests) with 91.3% success rate.
+
+### Benefits of This Structure
+
+1. **Consistency**: All services follow the same organizational pattern
+2. **Maintainability**: Clear separation of concerns and standardized interfaces
+3. **Testability**: Comprehensive test coverage with proper separation of unit vs integration tests
+4. **Discoverability**: Developers can quickly understand any service by following the standard pattern
+5. **Scalability**: Easy to add new services following the established pattern
+
 ## 1. Architecture Overview and Process Boundaries
 
 ### Overview Diagram

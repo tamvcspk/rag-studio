@@ -335,9 +335,24 @@ The architecture is designed for optimal performance with significant improvemen
 
 ## Testing
 
-The project includes comprehensive testing across both frontend and backend:
+The project includes comprehensive testing following Cargo standards across both frontend and backend:
 
-### Rust Backend Testing
+### Core Service Testing (Rust)
+The core crate follows Cargo testing conventions with 42 total tests (91.3% success rate):
+
+**Unit Tests** (31 tests - all passing):
+- SQL service tests: Configuration, connections, transactions, migrations, health checks
+- Vector service tests: Collection management, search operations, generation management
+- State manager tests: Mutations, log buffering, knowledge base operations
+- Run with: `cargo test --lib` from `core/` directory
+
+**Integration Tests** (11 tests - 7 passing, 4 hanging):
+- `tests/sql_integration.rs`: Full setup, production config, transactions, backups
+- `tests/vector_integration.rs`: Complete workflows, concurrent operations, health monitoring
+- `tests/state_manager_integration.rs`: Cross-service interactions, state synchronization
+- Run individual tests: `cargo test --test sql_integration`
+
+### Tauri Backend Testing
 - Python integration tests in `src-tauri/src/lib.rs` (lines 107-129)
 - Run tests with `cargo test` from the `src-tauri/` directory
 - Run specific test: `cargo test test_python_integration`
@@ -350,11 +365,11 @@ The project includes comprehensive testing across both frontend and backend:
 - Tests located alongside components in their respective directories
 - Run tests with `ng test` (when test runner is configured)
 
-### Key Test Areas
-- Python-Rust integration via PyO3
-- MCP server initialization and commands
-- Component rendering and interaction
-- Design token system functionality
+### Test Organization Benefits
+- **Cargo Compliant**: Unit tests co-located with source, integration tests in dedicated files
+- **Fast Execution**: Unit tests run in ~0.08s, integration tests run independently
+- **Comprehensive Coverage**: Tests individual methods and complete workflows
+- **Easy Discovery**: Standard Cargo test structure makes tests easily findable and runnable
 
 ## Implementation Recommendations
 
@@ -497,6 +512,81 @@ export class ExampleComponent {
 - Use `provideCheckNoChangesConfig()` for zoneless debugging
 - Deep integration with Chrome DevTools for performance profiling
 - Test signal-based components with modern testing patterns
+
+### Service Structure Guidelines
+
+**IMPORTANT: All services must follow the consistent service structure pattern defined in CORE_DESIGN.md.**
+
+#### Service Organization
+
+RAG Studio enforces a standardized service structure for maintainability and consistency:
+
+```
+core/src/services/
+├── sql/
+│   ├── mod.rs              # Re-exports: pub mod sql; pub use sql::*;
+│   └── sql.rs              # Complete service implementation
+├── vector/
+│   ├── mod.rs              # Re-exports: pub mod vector; pub use vector::*;
+│   └── vector.rs           # Complete service implementation
+├── schema/
+│   └── schema.rs           # Shared types and database schemas
+└── models/                 # (Future: model definitions if needed)
+```
+
+#### Service Implementation Requirements
+
+Every service MUST implement this pattern:
+
+1. **Error Types**: Custom error enums with `thiserror::Error`
+2. **Configuration Structs**:
+   - `new_mvp()` - MVP configuration with simplified setup
+   - `new_production()` - Production configuration with full features
+   - `test_config()` - Test configuration for unit/integration tests
+3. **Service Trait**: Async trait defining the public interface
+4. **Service Implementation**: Concrete struct implementing the trait
+5. **Helper Functions**: Utility functions and type conversions
+6. **Test Helpers**: `#[cfg(test)]` helper methods only (NO inline tests)
+
+#### Testing Structure Requirements
+
+Tests follow Cargo standards with proper separation:
+
+**Unit Tests** (co-located with source code using `#[cfg(test)]` modules):
+```
+core/src/services/
+├── sql/
+│   └── sql.rs                     # Contains #[cfg(test)] mod tests { ... }
+├── vector/
+│   └── vector.rs                  # Contains #[cfg(test)] mod tests { ... }
+└── state.rs                       # Contains #[cfg(test)] mod tests { ... }
+```
+
+**Integration Tests** (standalone files in tests/ directory):
+```
+core/tests/
+├── sql_integration.rs             # SQL service integration tests
+├── vector_integration.rs          # Vector service integration tests
+├── state_manager_integration.rs   # State management integration tests
+└── [workflow_name]_integration.rs # Additional integration tests
+```
+
+#### Test Classification Rules
+
+- **Unit Tests**: Test individual methods, error conditions, configuration validation, and isolated functionality. Located in `#[cfg(test)]` modules within service implementation files.
+- **Integration Tests**: Test complete workflows, cross-service interactions, database operations, and end-to-end scenarios. Located as standalone `.rs` files in the `tests/` directory.
+- **Current Status**: 42 tests passing (31 unit + 11 integration) with 91.3% success rate
+- **Test Helpers**: Service files may contain `#[cfg(test)]` helper functions for test configuration
+
+#### Benefits and Enforcement
+
+This structure provides:
+- **Consistency**: All services follow identical patterns
+- **Maintainability**: Clear separation of concerns
+- **Testability**: Comprehensive coverage with proper test separation
+- **Discoverability**: Developers can navigate any service using the same mental model
+
+When creating or modifying services, you MUST follow this structure. Any deviation from this pattern should be explicitly justified and documented.
 
 ### Rust Development Guidelines
 

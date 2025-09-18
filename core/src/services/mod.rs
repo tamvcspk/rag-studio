@@ -7,3 +7,4 @@
 pub mod sql;
 pub mod schema;
 pub mod models;
+pub mod vector;

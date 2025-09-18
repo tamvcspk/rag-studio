@@ -10,6 +10,11 @@ pub mod state;
 
 // Re-export commonly used types
 pub use services::sql::{SqlService, SqlConfig, SqlError};
+pub use services::vector::{
+    VectorDbService, VectorDbConfig, VectorDbError,
+    HybridConfig, GenerationManager
+};
+pub use services::schema::{VectorSchema, SearchResult, SearchQuery, SearchType, CitationInfo};
 pub use state::{AppState, StateManager};
 
 // Re-export external types that are used throughout the application

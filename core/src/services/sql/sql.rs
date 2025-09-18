@@ -44,7 +44,7 @@ pub enum SqlError {
 }
 
 /// WAL Mode Configuration
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum WalMode {
     Normal,  // app_meta.db - balance performance/durability
     Full,    // events.db - maximum durability (for production)
@@ -407,43 +407,205 @@ mod tests {
     use tempfile::TempDir;
 
     #[tokio::test]
-    async fn test_sql_service_initialization() {
+    async fn test_sql_config_mvp_creation() {
         let temp_dir = TempDir::new().unwrap();
-        let config = SqlConfig::test_config(temp_dir.path());
+        let db_path = temp_dir.path().join("test.db");
 
-        let sql_service = SqlService::new(config).await.unwrap();
+        let config = SqlConfig::new_mvp(&db_path);
 
-        // Test that we can get connections
-        let _conn = sql_service.get_app_connection().await.unwrap();
-        let _events_conn = sql_service.get_events_connection().await.unwrap();
+        assert_eq!(config.app_db_path, db_path);
+        assert!(config.events_db_path.is_none());
+        assert_eq!(config.app_pool_size, 10);
+        assert_eq!(config.events_pool_size, 5);
+        assert!(config.backup_enabled);
+        assert_eq!(config.app_wal_mode, WalMode::Normal);
+        assert_eq!(config.events_wal_mode, WalMode::Full);
+        assert!(!config.use_split_databases);
     }
 
     #[tokio::test]
-    async fn test_health_check() {
+    async fn test_sql_config_production_creation() {
         let temp_dir = TempDir::new().unwrap();
-        let config = SqlConfig::test_config(temp_dir.path());
+        let app_db_path = temp_dir.path().join("app.db");
+        let events_db_path = temp_dir.path().join("events.db");
 
-        let sql_service = SqlService::new(config).await.unwrap();
-        let health = sql_service.health_check().await.unwrap();
+        let config = SqlConfig::new_production(&app_db_path, &events_db_path);
+
+        assert_eq!(config.app_db_path, app_db_path);
+        assert_eq!(config.events_db_path, Some(events_db_path));
+        assert_eq!(config.app_pool_size, 10);
+        assert_eq!(config.events_pool_size, 5);
+        assert!(config.backup_enabled);
+        assert_eq!(config.app_wal_mode, WalMode::Normal);
+        assert_eq!(config.events_wal_mode, WalMode::Full);
+        assert!(config.use_split_databases);
+    }
+
+    #[tokio::test]
+    async fn test_wal_mode_enum() {
+        assert_eq!(WalMode::Normal.as_str(), "NORMAL");
+        assert_eq!(WalMode::Full.as_str(), "FULL");
+    }
+
+    #[tokio::test]
+    async fn test_sql_service_creation_mvp() {
+        let temp_dir = TempDir::new().unwrap();
+        let db_path = temp_dir.path().join("test.db");
+
+        let config = SqlConfig::new_mvp(&db_path);
+        let sql_service = SqlService::new(config).await;
+
+        assert!(sql_service.is_ok(), "SQL service creation should succeed");
+    }
+
+    #[tokio::test]
+    async fn test_sql_service_creation_production() {
+        let temp_dir = TempDir::new().unwrap();
+        let app_db_path = temp_dir.path().join("app.db");
+        let events_db_path = temp_dir.path().join("events.db");
+
+        let config = SqlConfig::new_production(&app_db_path, &events_db_path);
+        let sql_service = SqlService::new(config).await;
+
+        assert!(sql_service.is_ok(), "SQL service creation should succeed");
+    }
+
+    #[tokio::test]
+    async fn test_migrations() {
+        let temp_dir = TempDir::new().unwrap();
+        let db_path = temp_dir.path().join("test.db");
+
+        let config = SqlConfig::new_mvp(&db_path);
+        let sql_service = SqlService::new(config).await.expect("Failed to create SQL service");
+
+        let result = sql_service.run_migrations().await;
+        assert!(result.is_ok(), "Migrations should run successfully");
+    }
+
+    #[tokio::test]
+    async fn test_connections() {
+        let temp_dir = TempDir::new().unwrap();
+        let db_path = temp_dir.path().join("test.db");
+
+        let config = SqlConfig::new_mvp(&db_path);
+        let sql_service = SqlService::new(config).await.expect("Failed to create SQL service");
+
+        sql_service.run_migrations().await.expect("Failed to run migrations");
+
+        // Test app connection
+        let app_conn = sql_service.get_app_connection().await;
+        assert!(app_conn.is_ok(), "Should get app connection");
+
+        // Test events connection (uses app connection for MVP)
+        let events_conn = sql_service.get_events_connection().await;
+        assert!(events_conn.is_ok(), "Should get events connection");
+    }
+
+    #[tokio::test]
+    async fn test_health_check_mvp() {
+        let temp_dir = TempDir::new().unwrap();
+        let db_path = temp_dir.path().join("test.db");
+
+        let config = SqlConfig::new_mvp(&db_path);
+        let sql_service = SqlService::new(config).await.expect("Failed to create SQL service");
+
+        sql_service.run_migrations().await.expect("Failed to run migrations");
+
+        let health = sql_service.health_check().await.expect("Failed to get health metrics");
 
         assert!(!health.is_split_database);
         assert!(health.events_db_size.is_none());
         assert!(health.events_pool_active.is_none());
+        assert!(health.app_db_size > 0);
+        // app_pool_active is u32, so it's always >= 0
+    }
+
+    #[tokio::test]
+    async fn test_health_check_production() {
+        let temp_dir = TempDir::new().unwrap();
+        let app_db_path = temp_dir.path().join("app.db");
+        let events_db_path = temp_dir.path().join("events.db");
+
+        let config = SqlConfig::new_production(&app_db_path, &events_db_path);
+        let sql_service = SqlService::new(config).await.expect("Failed to create SQL service");
+
+        sql_service.run_migrations().await.expect("Failed to run migrations");
+
+        let health = sql_service.health_check().await.expect("Failed to get health metrics");
+
+        assert!(health.is_split_database);
+        assert!(health.events_db_size.is_some());
+        assert!(health.events_pool_active.is_some());
+        assert!(health.app_db_size > 0);
+        // app_pool_active is u32, so it's always >= 0
+    }
+
+    #[tokio::test]
+    async fn test_transactions() {
+        let temp_dir = TempDir::new().unwrap();
+        let db_path = temp_dir.path().join("test.db");
+
+        let config = SqlConfig::new_mvp(&db_path);
+        let sql_service = SqlService::new(config).await.expect("Failed to create SQL service");
+
+        sql_service.run_migrations().await.expect("Failed to run migrations");
+
+        // Test app transaction
+        let app_result = sql_service.with_app_transaction(|_conn| {
+            Ok(42)
+        }).await;
+        assert_eq!(app_result.unwrap(), 42);
+
+        // Test events transaction
+        let events_result = sql_service.with_events_transaction(|_conn| {
+            Ok("test".to_string())
+        }).await;
+        assert_eq!(events_result.unwrap(), "test");
+    }
+
+    #[tokio::test]
+    async fn test_custom_configuration() {
+        let temp_dir = TempDir::new().unwrap();
+        let db_path = temp_dir.path().join("test.db");
+
+        let mut config = SqlConfig::new_mvp(&db_path);
+        config.app_pool_size = 5;
+        config.backup_enabled = false;
+        config.app_wal_mode = WalMode::Full;
+
+        let sql_service = SqlService::new(config).await.expect("Failed to create SQL service");
+        sql_service.run_migrations().await.expect("Failed to run migrations");
+
+        let health = sql_service.health_check().await.expect("Failed to get health metrics");
+        assert!(!health.is_split_database);
     }
 
     #[tokio::test]
     async fn test_backup_functionality() {
         let temp_dir = TempDir::new().unwrap();
-        let config = SqlConfig::test_config(temp_dir.path());
+        let db_path = temp_dir.path().join("test.db");
 
-        let sql_service = SqlService::new(config).await.unwrap();
+        let config = SqlConfig::new_mvp(&db_path);
+        let sql_service = SqlService::new(config).await.expect("Failed to create SQL service");
 
-        // Create backup directory in temp dir
-        let backup_dir = temp_dir.path().join("backups");
-        std::fs::create_dir_all(&backup_dir).unwrap();
+        sql_service.run_migrations().await.expect("Failed to run migrations");
 
-        // This should not fail even with empty database
         let result = sql_service.backup_databases().await;
-        assert!(result.is_ok());
+        assert!(result.is_ok(), "Backup should succeed: {:?}", result);
+    }
+
+    #[tokio::test]
+    async fn test_error_handling_invalid_path() {
+        let invalid_path = if cfg!(windows) {
+            "Z:\\invalid\\path\\that\\does\\not\\exist\\test.db"
+        } else {
+            "/invalid/path/that/does/not/exist/test.db"
+        };
+
+        let config = SqlConfig::new_mvp(invalid_path);
+        let result = SqlService::new(config).await;
+
+        assert!(result.is_err(), "Should fail with invalid path");
     }
 }
+
