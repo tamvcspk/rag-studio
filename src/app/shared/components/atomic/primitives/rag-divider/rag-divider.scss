@@ -1,0 +1,115 @@
+.rag-divider {
+  border: none;
+  background: none;
+
+  &--horizontal {
+    width: 100%;
+    border-top: 1px solid var(--rag-semantic-color-border-subtle);
+    position: relative;
+
+    &.rag-divider--with-label {
+      display: flex;
+      align-items: center;
+      text-align: center;
+
+      &::before {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background-color: var(--rag-semantic-color-border-subtle);
+      }
+
+      &::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background-color: var(--rag-semantic-color-border-subtle);
+      }
+    }
+
+    &.rag-divider--dashed {
+      border-top-style: dashed;
+
+      &.rag-divider--with-label {
+        &::before,
+        &::after {
+          background: none;
+          border-top: 1px dashed var(--rag-semantic-color-border-subtle);
+        }
+      }
+    }
+
+    &.rag-divider--dotted {
+      border-top-style: dotted;
+
+      &.rag-divider--with-label {
+        &::before,
+        &::after {
+          background: none;
+          border-top: 1px dotted var(--rag-semantic-color-border-subtle);
+        }
+      }
+    }
+  }
+
+  &--vertical {
+    height: 100%;
+    border-left: 1px solid var(--rag-semantic-color-border-subtle);
+
+    &.rag-divider--dashed {
+      border-left-style: dashed;
+    }
+
+    &.rag-divider--dotted {
+      border-left-style: dotted;
+    }
+  }
+
+  &--spacing-xs {
+    margin: var(--rag-primitive-spacing-xs) 0;
+
+    &.rag-divider--vertical {
+      margin: 0 var(--rag-primitive-spacing-xs);
+    }
+  }
+
+  &--spacing-sm {
+    margin: var(--rag-primitive-spacing-sm) 0;
+
+    &.rag-divider--vertical {
+      margin: 0 var(--rag-primitive-spacing-sm);
+    }
+  }
+
+  &--spacing-md {
+    margin: var(--rag-primitive-spacing-md) 0;
+
+    &.rag-divider--vertical {
+      margin: 0 var(--rag-primitive-spacing-md);
+    }
+  }
+
+  &--spacing-lg {
+    margin: var(--rag-primitive-spacing-lg) 0;
+
+    &.rag-divider--vertical {
+      margin: 0 var(--rag-primitive-spacing-lg);
+    }
+  }
+
+  &--spacing-xl {
+    margin: var(--rag-primitive-spacing-xl) 0;
+
+    &.rag-divider--vertical {
+      margin: 0 var(--rag-primitive-spacing-xl);
+    }
+  }
+}
+
+.rag-divider__label {
+  padding: 0 var(--rag-primitive-spacing-md);
+  font-size: var(--rag-primitive-fontSize-sm);
+  color: var(--rag-semantic-color-text-muted);
+  background-color: var(--rag-semantic-color-background-default);
+  white-space: nowrap;
+}

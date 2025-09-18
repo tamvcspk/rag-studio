@@ -1,0 +1,87 @@
+@use '../../../../styles/animations';
+
+:host {
+  display: block;
+}
+
+.rag-card {
+  background: var(--rag-semantic-color-background-default);
+  border-radius: var(--rag-primitive-radius-lg);
+  border: 1px solid var(--rag-primitive-color-transparent);
+  transition: all 0.15s ease;
+  position: relative;
+
+  &--default {
+    background: var(--rag-archetypes-card-flat-background);
+    border: var(--rag-archetypes-card-flat-border);
+    box-shadow: var(--rag-archetypes-card-flat-boxShadow);
+  }
+
+  &--elevated {
+    background: var(--rag-archetypes-card-elevated-background);
+    border: var(--rag-archetypes-card-elevated-border);
+    box-shadow: var(--rag-archetypes-card-elevated-boxShadow);
+  }
+
+  &--floating {
+    background: var(--rag-archetypes-card-floating-background);
+    border: var(--rag-archetypes-card-floating-border);
+    box-shadow: var(--rag-archetypes-card-floating-boxShadow);
+  }
+
+  &--padded {
+    padding: var(--rag-primitive-spacing-lg);
+  }
+
+  &--interactive {
+    cursor: pointer;
+
+    &:hover {
+      background: var(--rag-archetypes-card-elevated-background);
+      box-shadow: var(--rag-archetypes-card-floating-boxShadow);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:focus-visible {
+      box-shadow: var(--rag-archetypes-focus-ring-primary);
+      outline: none;
+    }
+  }
+
+  &--loading {
+    .rag-card__content {
+      opacity: 0.3;
+    }
+  }
+
+  &__loading-overlay {
+    @include animations.loading-overlay();
+  }
+
+  &__loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-md);
+  }
+
+  &__loading-text {
+    margin: 0;
+    color: var(--rag-semantic-color-text-muted);
+    font-size: var(--rag-primitive-fontSize-sm);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .rag-card {
+    background: var(--rag-semantic-color-background-subtle);
+    
+    &--floating {
+      border-color: var(--rag-semantic-color-border-muted);
+    }
+  }
+}

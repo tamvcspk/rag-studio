@@ -1,0 +1,206 @@
+/* RagToast - Radix-inspired toast component for feedback messages */
+
+.rt-Toast {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--rag-primitive-spacing-md);
+  padding: var(--rag-primitive-spacing-md) var(--rag-primitive-spacing-lg);
+  background-color: var(--rag-semantic-color-background-default);
+  border: 1px solid var(--rag-semantic-color-border-default);
+  border-radius: var(--rag-primitive-radius-md);
+  box-shadow: var(--rag-primitive-shadow-lg);
+  min-width: 320px;
+  max-width: 480px;
+  font-size: var(--rag-primitive-fontSize-sm);
+  line-height: var(--rag-primitive-lineHeight-sm);
+  
+  /* Animation states */
+  transform: translateX(0);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  
+  &.rt-exiting {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  
+  &.rt-hidden {
+    display: none;
+  }
+
+  /* Toast variants */
+  &.rt-variant-info {
+    border-left: 4px solid var(--rag-semantic-color-primary-500);
+    
+    .rt-toast-icon {
+      color: var(--rag-semantic-color-primary-500);
+    }
+  }
+
+  &.rt-variant-success {
+    border-left: 4px solid var(--rag-semantic-color-success-800);
+    
+    .rt-toast-icon {
+      color: var(--rag-semantic-color-success-800);
+    }
+  }
+
+  &.rt-variant-warning {
+    border-left: 4px solid var(--rag-semantic-color-warning-700);
+    
+    .rt-toast-icon {
+      color: var(--rag-semantic-color-warning-700);
+    }
+  }
+
+  &.rt-variant-error {
+    border-left: 4px solid var(--rag-semantic-color-danger-700);
+    
+    .rt-toast-icon {
+      color: var(--rag-semantic-color-danger-700);
+    }
+  }
+}
+
+.rt-toast-content {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--rag-primitive-spacing-md);
+  flex: 1;
+}
+
+.rt-toast-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: var(--rag-primitive-spacing-xs);
+}
+
+.rt-toast-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.rt-toast-title {
+  font-weight: 600;
+  color: var(--rag-semantic-color-text-default);
+  margin-bottom: var(--rag-primitive-spacing-xs);
+}
+
+.rt-toast-message {
+  color: var(--rag-semantic-color-text-subtle);
+  word-wrap: break-word;
+  line-height: var(--rag-primitive-lineHeight-md);
+}
+
+.rt-toast-actions {
+  display: flex;
+  gap: var(--rag-primitive-spacing-sm);
+  margin-top: var(--rag-primitive-spacing-md);
+  align-items: center;
+}
+
+.rt-toast-close {
+  position: absolute;
+  top: var(--rag-primitive-spacing-sm);
+  right: var(--rag-primitive-spacing-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--rag-primitive-spacing-xl);
+  height: var(--rag-primitive-spacing-xl);
+  border: none;
+  background: transparent;
+  border-radius: var(--rag-primitive-radius-sm);
+  color: var(--rag-semantic-color-text-subtle);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  &:hover {
+    background-color: var(--rag-semantic-color-border-default);
+    color: var(--rag-semantic-color-text-subtle);
+  }
+  
+  &:focus-visible {
+    outline: 2px solid var(--rag-semantic-color-primary-400);
+    outline-offset: 2px;
+  }
+}
+
+/* Dark mode support */
+:global(.dark) .rt-Toast {
+  background-color: var(--rag-semantic-color-background-default);
+  border-color: var(--rag-semantic-color-border-muted);
+  
+  .rt-toast-title {
+    color: var(--rag-semantic-color-text-inverse);
+  }
+  
+  .rt-toast-message {
+    color: var(--rag-semantic-color-text-inverse);
+  }
+  
+  .rt-toast-close {
+    color: var(--rag-semantic-color-text-disabled);
+    
+    &:hover {
+      background-color: var(--rag-semantic-color-background-muted);
+      color: var(--rag-semantic-color-border-muted);
+    }
+  }
+}
+
+/* Global overlay styles for CDK Overlay integration */
+:global(.toast-overlay-panel) {
+  z-index: 9999;
+  pointer-events: auto;
+}
+
+/* Toast container positioning (for future toast service) */
+.rt-ToastViewport {
+  position: fixed;
+  top: var(--rag-primitive-spacing-lg);
+  right: var(--rag-primitive-spacing-lg);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: var(--rag-primitive-spacing-md);
+  max-width: 480px;
+  pointer-events: none;
+  
+  .rt-Toast {
+    pointer-events: all;
+  }
+}
+
+/* Animation keyframes for smooth entry */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.rt-Toast {
+  animation: slideInRight 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  
+  &.rt-exiting {
+    animation: slideOutRight 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+}

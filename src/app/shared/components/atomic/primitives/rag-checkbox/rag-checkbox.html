@@ -1,0 +1,44 @@
+<label [class]="wrapperClasses()">
+  <div class="rt-checkbox-container">
+    <input
+      type="checkbox"
+      [class]="checkboxClasses()"
+      [checked]="checked"
+      [disabled]="disabled()"
+      [indeterminate]="indeterminate()"
+      (change)="handleChange($event)"
+      (blur)="handleBlur()"
+    />
+    <div class="rt-checkbox-indicator">
+      @if (checked && !indeterminate()) {
+        <rag-icon 
+          [img]="CheckIcon" 
+          size="xs"
+          class="rt-checkbox-check"
+        />
+      }
+      @if (indeterminate()) {
+        <rag-icon 
+          [img]="MinusIcon" 
+          size="xs"
+          class="rt-checkbox-indeterminate"
+        />
+      }
+    </div>
+  </div>
+  
+  @if (label() || description()) {
+    <div class="rt-checkbox-content">
+      @if (label()) {
+        <div class="rt-checkbox-label">{{ label() }}</div>
+      }
+      @if (description()) {
+        <div class="rt-checkbox-description">{{ description() }}</div>
+      }
+    </div>
+  }
+  
+  @if (!label() && !description()) {
+    <ng-content></ng-content>
+  }
+</label>

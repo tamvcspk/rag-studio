@@ -1,0 +1,72 @@
+<!-- Modern Angular 20: Use modern control flow -->
+<div class="rag-cron-input">
+  <div class="rag-cron-input__controls">
+    @if (showPresets()) {
+      <!-- Preset Selector -->
+      <div class="rag-cron-input__preset">
+        <rag-select
+          [value]="preset"
+          [options]="presetOptions()"
+          [size]="size()"
+          [disabled]="disabled()"
+          (valueChange)="handlePresetChange($event)">
+        </rag-select>
+      </div>
+    }
+
+    <!-- Cron Expression Input -->
+    <div class="rag-cron-input__expression">
+      <rag-input
+        [placeholder]="placeholder()"
+        [size]="size()"
+        [disabled]="disabled() || (!showPresets() ? false : !isCustom())"
+        [readonly]="!showPresets() ? false : !isCustom()"
+        [leftIcon]="ClockIcon"
+        [error]="!isValidCron()"
+        [value]="expression"
+        (input)="handleExpressionChange($event)"
+      />
+    </div>
+  </div>
+
+  <!-- Description and Validation -->
+  <div class="rag-cron-input__feedback">
+    @if (isValidCron()) {
+      <div class="rag-cron-input__description">
+        <rag-icon [img]="InfoIcon" size="xs"></rag-icon>
+        <span>{{ currentValue().description }}</span>
+        @if (timezone() !== 'UTC') {
+          <span class="rag-cron-input__timezone">({{ timezone() }})</span>
+        }
+      </div>
+    } @else {
+      <div class="rag-cron-input__error">
+        <rag-icon [img]="AlertCircleIcon" size="xs"></rag-icon>
+        <span>Invalid cron expression. Use format: minute hour day month weekday</span>
+      </div>
+    }
+  </div>
+
+  <!-- Cron Format Help -->
+  <div class="rag-cron-input__help">
+    <div class="rag-cron-input__help-header">
+      <rag-icon [img]="HelpCircleIcon" size="xs"></rag-icon>
+      <span>Cron Format Help</span>
+    </div>
+    <div class="rag-cron-input__help-content">
+      <div class="rag-cron-input__help-format">
+        <span class="rag-cron-input__help-part">minute</span>
+        <span class="rag-cron-input__help-part">hour</span>
+        <span class="rag-cron-input__help-part">day</span>
+        <span class="rag-cron-input__help-part">month</span>
+        <span class="rag-cron-input__help-part">weekday</span>
+      </div>
+      <div class="rag-cron-input__help-examples">
+        <div>Examples:</div>
+        <div><code>0 9 * * *</code> - Daily at 9:00 AM</div>
+        <div><code>*/15 * * * *</code> - Every 15 minutes</div>
+        <div><code>0 */6 * * *</code> - Every 6 hours</div>
+      </div>
+    </div>
+  </div>
+</div>

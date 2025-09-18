@@ -1,0 +1,110 @@
+<div class="rt-Dropdown" [class.rt-open]="isOpen()">
+  <!-- Trigger Button -->
+  <button
+    #trigger
+    [class]="triggerClasses()"
+    type="button"
+    [disabled]="disabled()"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-haspopup]="'menu'"
+    (click)="onTriggerClick()"
+    (keydown)="onTriggerKeydown($event)"
+  >
+    @if (triggerIcon()) {
+      <rag-icon
+        [img]="triggerIcon()!"
+        size="sm"
+        class="rt-DropdownTriggerIcon"
+      ></rag-icon>
+    }
+    
+    @if (triggerContent()) {
+      <span class="rt-DropdownTriggerText">{{ triggerContent() }}</span>
+    }
+    
+    <ng-content select="[slot=trigger]"></ng-content>
+    
+    @if (showArrow()) {
+      <rag-icon
+        [img]="chevronDown()"
+        size="xs"
+        class="rt-DropdownTriggerArrow"
+        [class.rt-rotated]="isOpen()"
+      />
+    }
+  </button>
+
+  <!-- Dropdown Content -->
+  @if (isOpen()) {
+    <div
+      [class]="contentClasses()"
+      role="menu"
+      [attr.aria-labelledby]="trigger"
+    >
+      @for (item of items(); track item.id; let i = $index) {
+        @if (item.separator) {
+          <div class="rt-DropdownSeparator" role="separator"></div>
+        } @else {
+          @if (item.href) {
+            <a
+              [href]="item.href"
+              [class]="getItemClasses(item, i)"
+              role="menuitem"
+              [attr.aria-disabled]="item.disabled"
+              [tabindex]="item.disabled ? -1 : 0"
+              (click)="onItemClick(item)"
+              (keydown)="onItemKeydown($event, item, i)"
+            >
+              <div class="rt-DropdownItemContent">
+                @if (item.icon) {
+                  <rag-icon
+                    [img]="item.icon"
+                    size="sm"
+                    class="rt-DropdownItemIcon"
+                  ></rag-icon>
+                }
+                
+                <span class="rt-DropdownItemLabel">{{ item.label }}</span>
+                
+                @if (item.shortcut) {
+                  <span class="rt-DropdownItemShortcut">{{ item.shortcut }}</span>
+                }
+              </div>
+            </a>
+          } @else {
+            <button
+              [class]="getItemClasses(item, i)"
+              type="button"
+              role="menuitem"
+              [attr.aria-disabled]="item.disabled"
+              [disabled]="item.disabled"
+              [tabindex]="item.disabled ? -1 : 0"
+              (click)="onItemClick(item)"
+              (keydown)="onItemKeydown($event, item, i)"
+            >
+              <div class="rt-DropdownItemContent">
+                @if (item.icon) {
+                  <rag-icon
+                    [img]="item.icon"
+                    size="sm"
+                    class="rt-DropdownItemIcon"
+                  ></rag-icon>
+                }
+                
+                <span class="rt-DropdownItemLabel">{{ item.label }}</span>
+                
+                @if (item.shortcut) {
+                  <span class="rt-DropdownItemShortcut">{{ item.shortcut }}</span>
+                }
+              </div>
+            </button>
+          }
+        }
+      } @empty {
+        <div class="rt-DropdownEmpty">
+          <span>No items available</span>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,78 @@
+<form [formGroup]="settingsForm" (ngSubmit)="onSave()">
+  <!-- Workspace Settings -->
+  <rag-settings-section title="Workspace Settings" description="Configure your RAG Studio workspace and data management"
+    [icon]="SettingsIcon" variant="card">
+
+    <rag-settings-item label="Workspace Name" description="Display name for this RAG Studio instance"
+      layout="horizontal">
+      <rag-input formControlName="workspaceName" placeholder="My RAG Studio"
+        [error]="isFieldInvalid('workspaceName')" />
+    </rag-settings-item>
+
+    <rag-settings-item label="Data Directory" description="Location where knowledge bases, indexes, and logs are stored"
+      layout="horizontal">
+      <div style="display: flex; gap: 8px;">
+        <rag-input formControlName="dataDirectory" placeholder="/path/to/rag-studio/data"
+          [error]="isFieldInvalid('dataDirectory')" style="flex: 1;" />
+        <rag-button variant="outline" size="md" type="button" (click)="selectDirectory()">
+          <rag-icon [img]="FolderOpenIcon" size="sm" />
+          Browse
+        </rag-button>
+      </div>
+    </rag-settings-item>
+  </rag-settings-section>
+
+  <!-- Auto-Save & Backup -->
+  <rag-settings-section title="Data Management" description="Configure automatic saving and backup behavior"
+    [icon]="HardDriveIcon" variant="card">
+
+    <rag-settings-item label="Auto-Save" description="Automatically save changes to knowledge bases and settings"
+      layout="horizontal">
+      <rag-switch formControlName="autoSave" />
+    </rag-settings-item>
+
+    <rag-settings-item label="Auto-Backup" description="Create automatic backups of your data directory"
+      layout="horizontal">
+      <rag-switch formControlName="autoBackup" />
+    </rag-settings-item>
+
+    @if (settingsForm.get('autoBackup')?.value) {
+    <rag-settings-item label="Backup Interval" description="How often to create automatic backups" layout="horizontal">
+      <rag-select formControlName="backupInterval" [options]="backupIntervalOptions()" placeholder="Select interval" />
+    </rag-settings-item>
+
+    <rag-settings-item label="Maximum Backups"
+      description="Number of backup copies to retain (older backups will be deleted)" layout="horizontal">
+      <rag-input formControlName="maxBackups" type="number" min="1" max="100" [error]="isFieldInvalid('maxBackups')" />
+    </rag-settings-item>
+    }
+  </rag-settings-section>
+
+  <!-- User Interface -->
+  <rag-settings-section title="User Interface" description="Customize the appearance and behavior of RAG Studio"
+    [icon]="GlobeIcon" variant="card">
+
+    <rag-settings-item label="Theme" description="Choose between light and dark interface themes" layout="horizontal">
+      <rag-toggle-group formControlName="theme" [options]="themeOptions()" size="md" />
+    </rag-settings-item>
+
+    <rag-settings-item label="Language" description="Interface language for RAG Studio" layout="horizontal">
+      <rag-select formControlName="language" [options]="languageOptions()" placeholder="Select language" />
+    </rag-settings-item>
+
+    <rag-settings-item label="Log Level" description="Amount of detail to include in application logs"
+      layout="horizontal">
+      <rag-select formControlName="logLevel" [options]="logLevelOptions()" placeholder="Select log level" />
+    </rag-settings-item>
+  </rag-settings-section>
+
+  <!-- Actions -->
+  <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+    <rag-button variant="outline" type="button" (click)="onReset()">
+      Reset to Defaults
+    </rag-button>
+    <rag-button variant="solid" type="submit" [loading]="isSaving()" [disabled]="!settingsForm.valid">
+      Save Settings
+    </rag-button>
+  </div>
+</form>

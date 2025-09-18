@@ -1,0 +1,174 @@
+:host {
+  display: inline-flex;
+}
+
+.rt-switch-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--rag-primitive-spacing-md);
+  cursor: pointer;
+  
+  &.rt-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.rt-switch-container {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.rt-Switch {
+  appearance: none;
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 1;
+
+  &:focus + .rt-switch-track {
+    box-shadow: var(--rag-archetypes-focus-ring-primary);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.rt-switch-track {
+  width: 44px;
+  height: 24px;
+  background: var(--rag-archetypes-switch-default-track-background);
+  border-radius: 12px;
+  position: relative;
+  transition: all 0.2s ease;
+  border: 1px solid var(--rag-archetypes-switch-default-track-borderColor);
+}
+
+.rt-switch-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--rag-archetypes-switch-default-thumb-background);
+  border-radius: 50%;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--rag-archetypes-switch-default-thumb-borderColor);
+}
+
+// Checked state
+.rt-Switch:checked + .rt-switch-track {
+  background: var(--rag-archetypes-switch-checked-track-background);
+  border-color: var(--rag-archetypes-switch-checked-track-borderColor);
+
+  .rt-switch-thumb {
+    transform: translateX(20px);
+    background: var(--rag-archetypes-switch-checked-thumb-background);
+    border-color: var(--rag-archetypes-switch-checked-thumb-borderColor);
+  }
+}
+
+// Disabled state
+.rt-Switch:disabled + .rt-switch-track {
+  background: var(--rag-archetypes-switch-disabled-track-background);
+  border-color: var(--rag-archetypes-switch-disabled-track-borderColor);
+
+  .rt-switch-thumb {
+    background: var(--rag-archetypes-switch-disabled-thumb-background);
+    border-color: var(--rag-archetypes-switch-disabled-thumb-borderColor);
+  }
+}
+
+// Color variants for checked state
+.rt-Switch.rt-color-green:checked + .rt-switch-track {
+  background-color: var(--rag-semantic-color-success-800);
+  border-color: var(--rag-semantic-color-success-800);
+}
+
+.rt-Switch.rt-color-red:checked + .rt-switch-track {
+  background-color: var(--rag-semantic-color-danger-700);
+  border-color: var(--rag-semantic-color-danger-700);
+}
+
+// Size variants
+.rt-Switch.rt-size-sm + .rt-switch-track {
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+
+  .rt-switch-thumb {
+    width: 16px;
+    height: 16px;
+    top: 1px;
+    left: 1px;
+  }
+}
+
+.rt-Switch.rt-size-sm:checked + .rt-switch-track .rt-switch-thumb {
+  transform: translateX(16px);
+}
+
+.rt-Switch.rt-size-md + .rt-switch-track {
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+
+  .rt-switch-thumb {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.rt-Switch.rt-size-md:checked + .rt-switch-track .rt-switch-thumb {
+  transform: translateX(20px);
+}
+
+.rt-Switch.rt-size-lg + .rt-switch-track {
+  width: 52px;
+  height: 28px;
+  border-radius: 14px;
+
+  .rt-switch-thumb {
+    width: 24px;
+    height: 24px;
+    top: 1px;
+    left: 1px;
+  }
+}
+
+.rt-Switch.rt-size-lg:checked + .rt-switch-track .rt-switch-thumb {
+  transform: translateX(24px);
+}
+
+// Disabled state
+.rt-Switch:disabled + .rt-switch-track {
+  background-color: var(--rag-semantic-color-background-muted);
+  border-color: var(--rag-semantic-color-border-muted);
+
+  .rt-switch-thumb {
+    background-color: var(--rag-semantic-color-border-subtle);
+  }
+}
+
+.rt-switch-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rag-primitive-spacing-xs);
+}
+
+.rt-switch-label {
+  font-size: var(--rag-primitive-fontSize-sm);
+  font-weight: 500;
+  line-height: var(--rag-primitive-lineHeight-sm);
+  color: var(--rag-semantic-color-text-default);
+}
+
+.rt-switch-description {
+  font-size: var(--rag-primitive-fontSize-xs);
+  line-height: var(--rag-primitive-lineHeight-sm);
+  color: var(--rag-semantic-color-text-muted);
+}

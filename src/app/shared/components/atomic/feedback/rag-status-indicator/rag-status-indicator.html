@@ -1,0 +1,15 @@
+<div 
+  [class]="statusClasses()"
+  [attr.aria-label]="ariaLabel()"
+  role="status"
+>
+  @if (showIcon()) {
+    <div class="rt-status-icon">
+      <rag-icon [img]="statusIcon()" [size]="size()" />
+    </div>
+  }
+  
+  @if (showLabel()) {
+    <div class="rt-status-label">{{ statusLabel() }}</div>
+  }
+</div>

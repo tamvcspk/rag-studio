@@ -1,0 +1,52 @@
+@if (isVisible) {
+  <div 
+    [class]="toastClasses()"
+    (mouseenter)="onMouseEnter()"
+    (mouseleave)="onMouseLeave()"
+    role="alert"
+    [attr.aria-live]="variant() === 'error' ? 'assertive' : 'polite'"
+  >
+    <div class="rt-toast-content">
+      <div class="rt-toast-icon">
+        <rag-icon [img]="displayIcon()" size="sm" />
+      </div>
+      
+      <div class="rt-toast-body">
+        @if (title()) {
+          <div class="rt-toast-title">{{ title() }}</div>
+        }
+        @if (message()) {
+          <div class="rt-toast-message">{{ message() }}</div>
+        } @else {
+          <div class="rt-toast-message">
+            <ng-content></ng-content>
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (actions().length > 0) {
+      <div class="rt-toast-actions">
+        @for (action of actions(); track action.label) {
+          <rag-button
+            [variant]="action.variant || 'ghost'"
+            size="xs"
+            (onClick)="handleAction(action)"
+          >
+            {{ action.label }}
+          </rag-button>
+        }
+      </div>
+    }
+
+    @if (dismissible()) {
+      <button
+        class="rt-toast-close"
+        (click)="dismiss()"
+        aria-label="Dismiss notification"
+      >
+        <rag-icon [img]="XIcon" size="xs" />
+      </button>
+    }
+  </div>
+}

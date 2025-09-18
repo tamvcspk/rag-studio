@@ -1,0 +1,88 @@
+:host {
+  display: block;
+  margin-bottom: var(--rag-primitive-spacing-md);
+}
+
+:host:last-child {
+  margin-bottom: 0;
+}
+
+.rt-Alert {
+  padding: var(--rag-primitive-spacing-md) var(--rag-primitive-spacing-lg);
+  border-radius: var(--rag-primitive-radius-md);
+  border: 1px solid;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--rag-primitive-spacing-md);
+}
+
+.rt-alert-content {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--rag-primitive-spacing-md);
+  flex: 1;
+}
+
+.rt-alert-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.rt-alert-body {
+  flex: 1;
+}
+
+.rt-alert-title {
+  font-weight: 600;
+  margin-bottom: var(--rag-primitive-spacing-xs);
+}
+
+.rt-alert-message {
+  line-height: var(--rag-primitive-lineHeight-lg);
+}
+
+.rt-alert-close {
+  flex-shrink: 0;
+}
+
+// Variant styles
+.rt-Alert.rt-variant-info {
+  background: var(--rag-archetypes-alert-info-background);
+  border: var(--rag-archetypes-alert-info-border);
+  color: var(--rag-archetypes-alert-info-color);
+
+  .rt-alert-icon {
+    color: var(--rag-archetypes-alert-info-iconColor);
+  }
+}
+
+.rt-Alert.rt-variant-success {
+  background: var(--rag-archetypes-alert-success-background);
+  border: var(--rag-archetypes-alert-success-border);
+  color: var(--rag-archetypes-alert-success-color);
+
+  .rt-alert-icon {
+    color: var(--rag-archetypes-alert-success-iconColor);
+  }
+}
+
+.rt-Alert.rt-variant-warning {
+  background: var(--rag-archetypes-alert-warning-background);
+  border: var(--rag-archetypes-alert-warning-border);
+  color: var(--rag-archetypes-alert-warning-color);
+
+  .rt-alert-icon {
+    color: var(--rag-archetypes-alert-warning-iconColor);
+  }
+}
+
+.rt-Alert.rt-variant-error {
+  background: var(--rag-archetypes-alert-error-background);
+  border: var(--rag-archetypes-alert-error-border);
+  color: var(--rag-archetypes-alert-error-color);
+
+  .rt-alert-icon {
+    color: var(--rag-archetypes-alert-error-iconColor);
+  }
+}

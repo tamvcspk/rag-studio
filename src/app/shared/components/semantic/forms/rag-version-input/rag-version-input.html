@@ -1,0 +1,52 @@
+<!-- Modern Angular 20: Use modern control flow -->
+<div class="rag-version-input">
+  <div class="rag-version-input__controls">
+    <!-- Version Type Selector -->
+    <div class="rag-version-input__type">
+      <rag-select 
+        [value]="versionType"
+        [options]="versionOptions()"
+        [size]="size()"
+        [disabled]="disabled()"
+        (valueChange)="handleTypeChange($event)">
+      </rag-select>
+    </div>
+
+    <!-- Version Input (only show for exact and range types) -->
+    @if (isExactOrRange()) {
+      <div class="rag-version-input__input">
+        <rag-input
+          [placeholder]="inputPlaceholder()"
+          [size]="size()"
+          [disabled]="disabled()"
+          [leftIcon]="leftIcon()"
+          [error]="!isValidVersion()"
+          [value]="versionValue"
+          (input)="handleVersionChange($event)"
+        />
+      </div>
+    }
+
+    <!-- Latest indicator -->
+    @if (versionType === 'latest') {
+      <div class="rag-version-input__latest">
+        <div class="rag-version-input__latest-indicator">
+          <rag-icon [img]="TrendingUpIcon" size="sm"></rag-icon>
+          <span>Will use the latest available version</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Version validation feedback -->
+  @if (isExactOrRange() && versionValue && !isValidVersion()) {
+    <div class="rag-version-input__validation">
+      <rag-icon [img]="AlertCircleIcon" size="sm"></rag-icon>
+      @if (versionType === 'exact') {
+        <span>Please enter a valid semantic version (e.g., 1.0.0)</span>
+      } @else {
+        <span>Please enter a valid version range (e.g., ^1.0.0, ~1.0.0)</span>
+      }
+    </div>
+  }
+</div>

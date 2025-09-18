@@ -1,0 +1,5 @@
+<div class="dashboard-stats-grid">
+  @for (card of statCards(); track $index) {
+    <rag-stat-card [data]="card" />
+  }
+</div>

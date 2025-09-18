@@ -1,0 +1,70 @@
+// RagTabs - Semantic Navigation Component
+// Reuses rag-tab-navigation styles for consistency
+@use '../rag-tab-navigation/rag-tab-navigation.scss';
+
+.rt-TabNav {
+  width: 100%;
+}
+
+// Tab Panels Container with visibility-based switching
+.rt-TabPanels {
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 200px;
+}
+
+.rt-TabPanel {
+  width: 100%;
+  transition: opacity 0.2s ease-in-out;
+  
+  &--visible {
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+    z-index: var(--rag-primitive-zIndex-raised);
+  }
+  
+  &--hidden {
+    position: fixed;
+    top: 0;
+    left: 100%;
+    opacity: 0;
+    visibility: hidden;
+    z-index: var(--rag-primitive-zIndex-hidden);
+  }
+}
+
+// Fallback content styling when no panels are provided
+.rt-TabContent {
+  margin-top: var(--rag-primitive-spacing-md);
+  padding: var(--rag-primitive-spacing-lg);
+  background: var(--rag-semantic-color-background-default);
+  border-radius: var(--rag-primitive-radius-md);
+  border: 1px solid var(--rag-semantic-color-border-subtle);
+}
+
+// Empty state styling (shared with tab-navigation)
+.rt-TabNavEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--rag-primitive-spacing-lg);
+  color: var(--rag-semantic-color-text-muted);
+  font-size: var(--rag-primitive-fontSize-sm);
+}
+
+// Responsive behavior - inherit from rag-tab-navigation
+@media (max-width: 768px) {
+  .rt-TabPanels {
+    min-height: 150px;
+  }
+  
+  .rt-TabPanel {
+    padding: var(--rag-primitive-spacing-sm);
+  }
+  
+  .rt-TabContent {
+    padding: var(--rag-primitive-spacing-md);
+  }
+}

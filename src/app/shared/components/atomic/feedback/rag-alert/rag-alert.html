@@ -1,0 +1,24 @@
+<div [class]="alertClasses()">
+  <div class="rt-alert-content">
+    <rag-icon [img]="displayIcon()" size="sm" class="rt-alert-icon" />
+    <div class="rt-alert-body">
+      @if (title()) {
+        <div class="rt-alert-title">{{ title() }}</div>
+      }
+      <div class="rt-alert-message">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+  @if (closable()) {
+    <rag-button
+      variant="ghost"
+      size="xs"
+      class="rt-alert-close"
+      (onClick)="handleClose()"
+      aria-label="Close alert"
+    >
+      <rag-icon [img]="XIcon" size="xs" />
+    </rag-button>
+  }
+</div>

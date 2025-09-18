@@ -1,0 +1,272 @@
+// Page Header Component
+// Uses design tokens for consistent styling across the application
+
+.rag-page-header {
+  // Base layout using design tokens
+  padding: var(--rag-primitive-spacing-lg) 0;
+  background: inherit;
+
+  // Size variants
+  &--sm {
+    padding: var(--rag-primitive-spacing-md) 0;
+    
+    .rag-page-header__title {
+      font-size: var(--rag-primitive-fontSize-lg);
+      line-height: var(--rag-primitive-lineHeight-lg);
+    }
+  }
+
+  &--md {
+    padding: var(--rag-primitive-spacing-lg) 0;
+    
+    .rag-page-header__title {
+      font-size: var(--rag-primitive-fontSize-xl);
+      line-height: var(--rag-primitive-lineHeight-xl);
+    }
+  }
+
+  &--lg {
+    padding: var(--rag-primitive-spacing-xl) 0;
+    
+    .rag-page-header__title {
+      font-size: calc(var(--rag-primitive-fontSize-xl) * 1.2);
+      line-height: calc(var(--rag-primitive-lineHeight-xl) * 1.2);
+    }
+  }
+
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: var(--rag-primitive-spacing-lg);
+    overflow: hidden;
+    
+    // Responsive behavior
+    @media (max-width: var(--rag-primitive-breakpoint-md)) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--rag-primitive-spacing-md);
+    }
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-md);
+  }
+
+  &__spacer {
+    flex: 1;
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--rag-primitive-size-4) * 3); // 48px
+    height: calc(var(--rag-primitive-size-4) * 3);
+    border-radius: var(--rag-primitive-radius-lg);
+    background: var(--rag-semantic-color-background-subtle);
+    color: var(--rag-semantic-color-primary-500);
+    flex-shrink: 0;
+  }
+
+  &__details {
+    flex: 1;
+    min-width: 0; // Allow text truncation
+  }
+
+  &__title {
+    margin: 0;
+    font-weight: var(--rag-primitive-fontWeight-semibold);
+    color: var(--rag-semantic-color-text-default);
+    line-height: 1.2;
+    
+    // Truncate long titles
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    @media (max-width: var(--rag-primitive-breakpoint-sm)) {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: initial;
+    }
+  }
+
+  &__description {
+    margin: var(--rag-primitive-spacing-xs) 0 0 0;
+    font-size: var(--rag-primitive-fontSize-md);
+    line-height: var(--rag-primitive-lineHeight-md);
+    color: var(--rag-semantic-color-text-subtle);
+    
+    // Truncate long descriptions
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    
+    @media (max-width: var(--rag-primitive-breakpoint-sm)) {
+      -webkit-line-clamp: 3;
+    }
+  }
+
+  &__right-section {
+    display: flex;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-lg);
+    flex-shrink: 0;
+    
+    // Stack on mobile
+    @media (max-width: var(--rag-primitive-breakpoint-md)) {
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--rag-primitive-spacing-md);
+    }
+  }
+
+  &__search {
+    // Ensure search input fits properly
+    min-width: 280px; // Minimum width for search input
+    flex-shrink: 1;
+    
+    @media (max-width: var(--rag-primitive-breakpoint-md)) {
+      width: 100%;
+      min-width: 0;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-sm);
+    flex-shrink: 0;
+    
+    // Stack actions on mobile
+    @media (max-width: var(--rag-primitive-breakpoint-md)) {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    
+    @media (max-width: var(--rag-primitive-breakpoint-sm)) {
+      flex-direction: column;
+      align-items: stretch;
+      
+      rag-button {
+        width: 100%;
+      }
+    }
+  }
+
+  // Overflow handling styles
+  &__overflow {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  &__more-button {    
+    &--active {
+      background: var(--rag-semantic-color-background-subtle);
+    }
+  }
+
+  &__overflow-menu {
+    min-width: 280px;
+    background: var(--rag-semantic-color-background-default);
+    border: var(--rag-primitive-borderWidth-1) solid var(--rag-semantic-color-border-default);
+    border-radius: var(--rag-primitive-radius-lg);
+    box-shadow: var(--rag-semantic-shadow-lg);
+    padding: var(--rag-primitive-spacing-sm);
+    
+    // Animation for smooth appearance
+    animation: slideDown 0.2s ease-out;
+    
+    @media (max-width: var(--rag-primitive-breakpoint-sm)) {
+      min-width: 240px;
+      max-width: 90vw;
+    }
+  }
+
+  &__overflow-search {
+    margin-bottom: var(--rag-primitive-spacing-sm);
+  }
+
+  &__overflow-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--rag-primitive-spacing-xs);
+  }
+
+  &__overflow-action {
+    display: flex;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-sm);
+    padding: var(--rag-primitive-spacing-sm);
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: var(--rag-primitive-radius-md);
+    font-size: var(--rag-primitive-fontSize-sm);
+    font-weight: var(--rag-primitive-fontWeight-medium);
+    color: var(--rag-semantic-color-text-default);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    
+    &:hover:not(:disabled) {
+      background: var(--rag-semantic-color-background-subtle);
+      color: var(--rag-semantic-color-text-emphasis);
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  // Overflowing state adjustments
+  &--overflowing {
+    .rag-page-header__right-section {
+      justify-content: flex-end;
+    }
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .rag-page-header {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .rag-page-header {
+    border-bottom-color: var(--rag-semantic-color-text-default);
+    
+    &__icon {
+      border: var(--rag-primitive-borderWidth-2) solid var(--rag-semantic-color-border-default);
+    }
+  }
+}
+
+// Dark mode considerations (handled by design tokens automatically)
+// The component will automatically adapt when design tokens are updated
+
+// Animations
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

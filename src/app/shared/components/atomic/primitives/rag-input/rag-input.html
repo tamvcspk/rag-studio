@@ -1,0 +1,33 @@
+<div [class]="containerClasses()">
+  <div class="rt-input-wrapper">
+    @if (leftIcon()) {
+      <rag-icon 
+        [img]="leftIcon()!" 
+        size="sm" 
+        class="rt-input-left-icon"
+      />
+    }
+    
+    <input
+      [class]="inputClasses()"
+      [type]="type()"
+      [placeholder]="placeholder()"
+      [disabled]="disabled()"
+      [readonly]="readonly()"
+      [attr.maxlength]="maxlength()"
+      [value]="currentValue()"
+      (input)="handleInput($event)"
+      (focus)="handleFocus($event)"
+      (blur)="handleBlur($event)"
+    />
+    
+    @if (rightIcon()) {
+      <rag-icon 
+        [img]="rightIcon()!" 
+        size="sm" 
+        class="rt-input-right-icon"
+        (click)="handleRightIconClick()"
+      />
+    }
+  </div>
+</div>

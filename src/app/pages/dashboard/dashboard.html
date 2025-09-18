@@ -1,0 +1,57 @@
+<div class="dashboard-page">
+  <div class="sticky-header">
+    <!-- Page Header -->
+    <rag-page-header
+      [title]="'Dashboard'"
+      [description]="'Monitor and manage your RAG Studio instance'"
+      [icon]="BarChart3Icon"
+      [actions]="headerActions()"
+      size="lg">
+    </rag-page-header>
+
+    <!-- System Alert -->
+    @if (showMaintenanceAlert()) {
+      <rag-alert 
+        variant="warning" 
+        title="Scheduled Maintenance"
+        [closable]="true"
+        (onClose)="dismissMaintenanceAlert()">
+        System will undergo maintenance at 2:00 AM. Background jobs will be paused.
+      </rag-alert>
+    }
+  </div>
+
+  <!-- Dashboard Content -->
+  <div class="dashboard-content">
+    <!-- Stats Overview & MCP Server Status Grid -->
+    <section class="dashboard-section dashboard-grid">
+      <rag-dashboard-stats-grid />
+      <rag-mcp-server-status />
+    </section>
+
+    <!-- Performance Metrics -->
+    <section class="dashboard-section">
+      <rag-query-performance-metrics />
+    </section>
+
+    <!-- Performance Metrics with Loading -->
+    <section class="dashboard-section">
+      <rag-card 
+        [loading]="isLoading()" 
+        loadingText="Loading metrics..."
+        variant="elevated">
+        <h2 class="section-title">Resource Usage</h2>
+        <div class="metrics-content">
+          <p>CPU Usage: 45%</p>
+          <p>Memory: 1.2GB / 4GB</p>
+          <p>Disk Space: 250GB / 500GB</p>
+        </div>
+      </rag-card>
+    </section>
+
+    <!-- Recent Activity -->
+    <section class="dashboard-section">
+      <rag-recent-activity-log />
+    </section>
+  </div>
+</div>

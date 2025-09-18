@@ -1,0 +1,304 @@
+// RagDialog - Semantic Overlay Component with CDK Dialog Service
+
+// Global styles for dialog service
+:host-context(.rag-dialog-backdrop) {
+  // These styles apply when dialog is opened via service
+}
+
+// Global CDK Dialog styles
+.rag-dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--rag-archetypes-dialog-backdrop-background);
+  backdrop-filter: var(--rag-archetypes-dialog-backdrop-backdropFilter);
+  animation: overlayShow 0.15s ease-out;
+  z-index: 1000;
+  
+  // Backdrop filter for modern browsers
+  @supports (backdrop-filter: blur(4px)) {
+    backdrop-filter: blur(4px);
+  }
+}
+
+// CDK Dialog container positioning
+.cdk-dialog-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--rag-primitive-spacing-lg);
+  pointer-events: none;
+  
+  .rag-dialog-panel {
+    pointer-events: auto;
+  }
+}
+
+// Panel size classes
+.rag-dialog-sm .rt-DialogContent {
+  width: 90vw;
+  max-width: 400px;
+}
+
+.rag-dialog-md .rt-DialogContent {
+  width: 90vw;
+  max-width: 500px;
+}
+
+.rag-dialog-lg .rt-DialogContent {
+  width: 90vw;
+  max-width: 700px;
+}
+
+.rag-dialog-xl .rt-DialogContent {
+  width: 90vw;
+  max-width: 900px;
+}
+
+.rag-dialog-full .rt-DialogContent {
+  width: 95vw;
+  height: 95vh;
+  max-width: none;
+  max-height: none;
+}
+
+.rt-DialogContent {
+  background: var(--rag-archetypes-dialog-container-background);
+  border-radius: var(--rag-archetypes-dialog-container-borderRadius);
+  box-shadow: var(--rag-archetypes-dialog-container-boxShadow);
+  border: var(--rag-archetypes-dialog-container-border);
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: contentShow 0.15s ease-out;
+  position: relative;
+
+  // Size-specific styles
+  &.rt-size-sm {
+    width: 90vw;
+    max-width: 400px;
+    padding: var(--rag-primitive-spacing-lg);
+  }
+
+  &.rt-size-md {
+    width: 90vw;
+    max-width: 500px;
+    padding: var(--rag-primitive-spacing-xl);
+  }
+
+  &.rt-size-lg {
+    width: 90vw;
+    max-width: 700px;
+    padding: var(--rag-primitive-spacing-xl);
+  }
+
+  &.rt-size-xl {
+    width: 90vw;
+    max-width: 900px;
+    padding: var(--rag-primitive-spacing-xl);
+  }
+
+  &.rt-size-full {
+    width: 95vw;
+    height: 95vh;
+    max-width: none;
+    max-height: none;
+    padding: var(--rag-primitive-spacing-xl);
+    border-radius: var(--rag-primitive-radius-md);
+  }
+}
+
+.rt-DialogHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: var(--rag-archetypes-dialog-header-padding);
+  border-bottom: var(--rag-archetypes-dialog-header-borderBottom);
+  gap: var(--rag-primitive-spacing-lg);
+}
+
+.rt-DialogTitle {
+  font-size: var(--rag-primitive-fontSize-xl);
+  font-weight: 600;
+  line-height: var(--rag-primitive-lineHeight-xl);
+  color: var(--rag-semantic-color-text-default);
+  margin: 0;
+  flex: 1;
+}
+
+.rt-DialogDescription {
+  color: var(--rag-semantic-color-text-subtle);
+  font-size: var(--rag-primitive-fontSize-sm);
+  line-height: var(--rag-primitive-lineHeight-md);
+  padding: var(--rag-archetypes-dialog-description-padding);
+}
+
+.rt-DialogCloseButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--rag-primitive-fontSize-lg);
+  height: var(--rag-primitive-fontSize-lg);
+  border: none;
+  background: none;
+  border-radius: var(--rag-primitive-radius-sm);
+  color: var(--rag-semantic-color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  outline: none;
+
+  &:hover {
+    background-color: var(--rag-semantic-color-background-muted);
+    color: var(--rag-semantic-color-text-default);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--rag-semantic-color-primary-700);
+  }
+
+  rag-icon {
+    flex-shrink: 0;
+  }
+}
+
+.rt-DialogBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--rag-archetypes-dialog-content-padding);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.rt-DialogFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--rag-primitive-spacing-md);
+  padding: var(--rag-archetypes-dialog-footer-padding);
+  border-top: var(--rag-archetypes-dialog-footer-borderTop);
+  margin-top: auto;
+  
+  &:empty {
+    display: none;
+  }
+}
+
+// Animations
+@keyframes overlayShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Responsive behavior
+@media (max-width: 768px) {
+  .rt-DialogContent {
+    &.rt-size-sm,
+    &.rt-size-md,
+    &.rt-size-lg,
+    &.rt-size-xl {
+      width: 95vw;
+      max-width: none;
+      max-height: 80vh;
+      padding: var(--rag-primitive-spacing-lg);
+    }
+
+    &.rt-size-full {
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0;
+      padding: var(--rag-primitive-spacing-lg);
+    }
+  }
+
+  .rt-DialogHeader {
+    margin-bottom: var(--rag-primitive-spacing-md);
+  }
+
+  .rt-DialogTitle {
+    font-size: var(--rag-primitive-fontSize-lg);
+  }
+
+  // Adjust CDK container for mobile
+  .cdk-dialog-container {
+    padding: var(--rag-primitive-spacing-sm);
+    align-items: flex-start;
+    padding-top: 5vh;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .rt-DialogContent {
+    background-color: var(--rag-semantic-color-background-default);
+    border: 1px solid var(--rag-semantic-color-border-subtle);
+  }
+
+  .rt-DialogTitle {
+    color: var(--rag-semantic-color-text-default);
+  }
+
+  .rt-DialogDescription {
+    color: var(--rag-semantic-color-text-subtle);
+  }
+
+  .rt-DialogCloseButton {
+    color: var(--rag-semantic-color-text-muted);
+
+    &:hover {
+      background-color: var(--rag-semantic-color-background-muted);
+      color: var(--rag-semantic-color-text-default);
+    }
+  }
+}
+
+// Focus management for CDK Dialog
+.rt-DialogContent {
+  // Ensure dialog content can receive focus
+  outline: none;
+}
+
+// Focus trap styles
+.rt-DialogCloseButton {
+  // Ensure close button is focusable
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--rag-semantic-color-primary-700);
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .rt-DialogContent {
+    border: 2px solid;
+  }
+
+  .rt-DialogCloseButton {
+    border: 1px solid;
+    
+    &:hover {
+      background-color: Highlight;
+      color: HighlightText;
+    }
+  }
+}

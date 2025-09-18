@@ -1,0 +1,36 @@
+@use '../../shared/styles/animations';
+
+.knowledge-bases-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  
+  .knowledge-bases-content {
+    flex: 1;
+    
+    .kb-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: var(--rag-primitive-spacing-lg);
+      
+      @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+        gap: var(--rag-primitive-spacing-md);
+      }
+      
+      // Auto-adjust grid based on content
+      @media (min-width: 1200px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      @media (min-width: 1600px) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  }
+}
+
+// Animation for cards appearing
+.kb-grid app-knowledge-base-card {
+  @extend .animate-fadeInUp;
+}

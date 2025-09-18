@@ -4,6 +4,9 @@ import {
   provideZoneChangeDetection,
 } from "@angular/core";
 import { provideRouter } from "@angular/router";
+import { provideDesignTokens } from "./shared/tokens/provider";
+import { OverlayModule } from "@angular/cdk/overlay";
+import { importProvidersFrom } from "@angular/core";
 
 import { routes } from "./app.routes";
 
@@ -12,5 +15,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    provideDesignTokens(),
+    importProvidersFrom(OverlayModule),
   ],
 };

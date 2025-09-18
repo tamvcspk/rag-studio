@@ -1,0 +1,12 @@
+<div class="pipeline-flow">
+  @for (step of steps(); track step.name; let isLast = $last) {
+    <div class="pipeline-step">
+      <rag-chip variant="soft">{{ step.name }}</rag-chip>
+      <span class="step-description">{{ step.type }}</span>
+    </div>
+    
+    @if (!isLast) {
+      <rag-icon [img]="ArrowRightIcon" class="pipeline-arrow"></rag-icon>
+    }
+  }
+</div>

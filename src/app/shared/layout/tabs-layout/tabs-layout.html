@@ -1,0 +1,10 @@
+<!-- Navigation using RagTabNavigation -->
+<div class="navigation-wrapper">
+  <rag-tab-navigation [items]="tabItems()" [activeItem]="currentActiveTab()" size="lg" variant="primary"
+    (itemChange)="onTabChange($event)" (indexChange)="onTabIndexChange($event)">
+  </rag-tab-navigation>
+</div>
+<!-- Main content area -->
+<div class="content-area" role="main">
+  <router-outlet />
+</div>

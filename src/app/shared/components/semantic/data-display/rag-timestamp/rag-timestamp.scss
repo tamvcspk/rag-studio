@@ -1,0 +1,65 @@
+:host {
+  display: inline-block;
+}
+
+.rag-timestamp {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-xs);
+  font-size: var(--rag-primitive-fontSize-md);
+  color: var(--rag-semantic-color-text-muted);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+
+  &--with-icon {
+    gap: var(--rag-primitive-spacing-sm);
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    color: var(--rag-primitive-color-gray-800);
+  }
+
+  &__text {
+    font-size: inherit;
+    color: inherit;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+}
+
+// Variants for different contexts
+.rag-timestamp {
+  &.rag-timestamp--muted {
+    color: var(--rag-primitive-color-gray-800);
+    font-size: var(--rag-primitive-fontSize-sm);
+  }
+
+  &.rag-timestamp--emphasized {
+    color: var(--rag-semantic-color-text-default);
+    font-weight: 500;
+  }
+
+  &.rag-timestamp--compact {
+    font-size: var(--rag-primitive-fontSize-sm);
+    gap: var(--rag-primitive-spacing-xs);
+
+    .rag-timestamp__icon {
+      width: 10px;
+      height: 10px;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .rag-timestamp {
+    color: var(--rag-primitive-color-gray-700);
+
+    &__icon {
+      color: var(--rag-primitive-color-gray-600);
+    }
+
+    &.rag-timestamp--emphasized {
+      color: var(--rag-primitive-color-white);
+    }
+  }
+}

@@ -1,0 +1,248 @@
+// RagSidebarItem - Semantic Navigation Component
+.rt-SidebarItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-decoration: none;
+  color: var(--rag-semantic-color-text-subtle);
+  border-radius: var(--rag-primitive-radius-md);
+  transition: all 0.15s;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  border: none;
+  background: none;
+
+  // Size variants
+  &.rt-size-sm {
+    padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+    font-size: var(--rag-primitive-fontSize-xs);
+  }
+
+  &.rt-size-md {
+    padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+    font-size: var(--rag-primitive-fontSize-sm);
+  }
+
+  &.rt-size-lg {
+    padding: var(--rag-primitive-spacing-md) var(--rag-primitive-spacing-lg);
+    font-size: var(--rag-primitive-fontSize-md);
+  }
+
+  // Variant styles
+  &.rt-variant-default {
+    &:hover:not(.rt-disabled) {
+      background-color: var(--rag-semantic-color-background-muted);
+      color: var(--rag-semantic-color-text-default);
+    }
+  }
+
+  &.rt-variant-ghost {
+    &:hover:not(.rt-disabled) {
+      background-color: var(--rag-semantic-color-background-subtle);
+      color: var(--rag-semantic-color-text-default);
+    }
+  }
+
+  &.rt-variant-subtle {
+    background-color: var(--rag-semantic-color-background-subtle);
+    
+    &:hover:not(.rt-disabled) {
+      background-color: var(--rag-semantic-color-background-muted);
+      color: var(--rag-semantic-color-text-default);
+    }
+  }
+
+  // State styles
+  &.rt-active {
+    background-color: var(--rag-semantic-color-primary-100);
+    color: var(--rag-semantic-color-primary-900);
+    
+    &:hover {
+      background-color: var(--rag-semantic-color-primary-200);
+      color: var(--rag-semantic-color-primary-1000);
+    }
+  }
+
+  &.rt-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: var(--rag-semantic-color-text-disabled);
+    
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  &.rt-indent {
+    margin-left: var(--rag-primitive-spacing-lg);
+  }
+
+  &.rt-collapsible {
+    .rt-SidebarItemContent {
+      justify-content: space-between;
+    }
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--rag-semantic-color-primary-700);
+  }
+}
+
+.rt-SidebarItemContent {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0; // Allow text truncation
+}
+
+.rt-SidebarItemMain {
+  display: flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-sm);
+  flex: 1;
+  min-width: 0; // Allow text truncation
+}
+
+.rt-SidebarItemIcon {
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.rt-SidebarItemLabel {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.rt-SidebarItemToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--rag-primitive-spacing-xs);
+  border: none;
+  background: none;
+  color: var(--rag-semantic-color-text-muted);
+  cursor: pointer;
+  border-radius: var(--rag-primitive-radius-sm);
+  transition: all 0.15s;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    background-color: var(--rag-semantic-color-background-muted);
+    color: var(--rag-semantic-color-text-default);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--rag-semantic-color-primary-700);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  rag-icon {
+    transition: transform 0.15s;
+  }
+}
+
+.rt-SidebarBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--rag-primitive-spacing-xs);
+  height: 18px;
+  min-width: 18px;
+  font-size: var(--rag-primitive-fontSize-xs);
+  font-weight: 500;
+  line-height: 1;
+  border-radius: var(--rag-primitive-radius-sm);
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &.rt-variant-default {
+    background-color: var(--rag-semantic-color-background-muted);
+    color: var(--rag-semantic-color-text-subtle);
+  }
+
+  &.rt-variant-success {
+    background-color: var(--rag-semantic-color-success-200);
+    color: var(--rag-semantic-color-success-900);
+  }
+
+  &.rt-variant-warning {
+    background-color: var(--rag-semantic-color-warning-200);
+    color: var(--rag-semantic-color-warning-900);
+  }
+
+  &.rt-variant-error {
+    background-color: var(--rag-semantic-color-danger-200);
+    color: var(--rag-semantic-color-danger-900);
+  }
+}
+
+// Nested items styling
+.rt-SidebarItem + .rt-SidebarItem.rt-indent {
+  border-left: 1px solid var(--rag-semantic-color-border-subtle);
+  margin-left: var(--rag-primitive-spacing-xl);
+  padding-left: var(--rag-primitive-spacing-md);
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .rt-SidebarItem {
+    color: var(--rag-semantic-color-text-subtle);
+
+    &.rt-variant-default:hover:not(.rt-disabled) {
+      background-color: var(--rag-semantic-color-background-muted);
+      color: var(--rag-semantic-color-text-default);
+    }
+
+    &.rt-variant-ghost:hover:not(.rt-disabled) {
+      background-color: var(--rag-semantic-color-background-subtle);
+      color: var(--rag-semantic-color-text-default);
+    }
+
+    &.rt-variant-subtle {
+      background-color: var(--rag-semantic-color-background-subtle);
+      
+      &:hover:not(.rt-disabled) {
+        background-color: var(--rag-semantic-color-background-muted);
+        color: var(--rag-semantic-color-text-default);
+      }
+    }
+
+    &.rt-active {
+      background-color: var(--rag-semantic-color-primary-100);
+      color: var(--rag-semantic-color-primary-900);
+      
+      &:hover {
+        background-color: var(--rag-semantic-color-primary-200);
+        color: var(--rag-semantic-color-primary-1000);
+      }
+    }
+
+    &.rt-disabled {
+      color: var(--rag-semantic-color-text-disabled);
+    }
+  }
+
+  .rt-SidebarItemToggle {
+    color: var(--rag-semantic-color-text-muted);
+
+    &:hover:not(:disabled) {
+      background-color: var(--rag-semantic-color-background-muted);
+      color: var(--rag-semantic-color-text-default);
+    }
+  }
+
+  .rt-SidebarBadge {
+    &.rt-variant-default {
+      background-color: var(--rag-semantic-color-background-muted);
+      color: var(--rag-semantic-color-text-subtle);
+    }
+  }
+}

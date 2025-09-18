@@ -1,0 +1,97 @@
+.rag-toggle-group {
+  display: flex;
+  background-color: var(--rag-semantic-color-background-muted);
+  border-radius: var(--rag-primitive-radius-md);
+  padding: var(--rag-primitive-spacing-xs);
+  gap: var(--rag-primitive-spacing-xs);
+
+  &--sm {
+    .rag-toggle-group__option {
+      padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+      font-size: var(--rag-primitive-fontSize-sm);
+      border-radius: var(--rag-primitive-radius-sm);
+    }
+  }
+
+  &--md {
+    .rag-toggle-group__option {
+      padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+      font-size: var(--rag-primitive-fontSize-md);
+      border-radius: var(--rag-primitive-radius-md);
+    }
+  }
+
+  &--lg {
+    .rag-toggle-group__option {
+      padding: var(--rag-primitive-spacing-md) var(--rag-primitive-spacing-lg);
+      font-size: var(--rag-primitive-fontSize-lg);
+      border-radius: var(--rag-primitive-radius-md);
+    }
+  }
+
+  &--outline {
+    background-color: transparent;
+    border: 1px solid var(--rag-semantic-color-border-default);
+
+    .rag-toggle-group__option {
+      &--selected {
+        background-color: var(--rag-semantic-color-background-default);
+        border: 1px solid var(--rag-semantic-color-border-default);
+      }
+    }
+  }
+
+  &--ghost {
+    background-color: transparent;
+
+    .rag-toggle-group__option {
+      &--selected {
+        background-color: var(--rag-semantic-color-background-subtle);
+      }
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    .rag-toggle-group__option {
+      pointer-events: none;
+    }
+  }
+}
+
+.rag-toggle-group__option {
+  display: flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-xs);
+  background: none;
+  border: none;
+  color: var(--rag-semantic-color-text-subtle);
+  font-weight: var(--rag-primitive-fontWeight-medium);
+  cursor: pointer;
+  transition: all 0.15s ease-out;
+  white-space: nowrap;
+
+  &:hover:not(&--disabled) {
+    color: var(--rag-semantic-color-text-default);
+    background-color: var(--rag-semantic-color-background-subtle);
+  }
+
+  &--selected {
+    background-color: var(--rag-semantic-color-background-default);
+    color: var(--rag-semantic-color-text-default);
+    box-shadow: var(--rag-primitive-shadow-xs);
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: var(--rag-semantic-color-text-disabled);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--rag-semantic-color-background-default), 0 0 0 4px var(--rag-semantic-color-primary-500);
+  }
+}

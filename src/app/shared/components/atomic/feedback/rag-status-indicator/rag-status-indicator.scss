@@ -1,0 +1,198 @@
+/* RagStatusIndicator - Radix-inspired status indicator for system states */
+
+.rt-StatusIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-sm);
+  font-family: var(--default-font-family);
+  font-weight: 400;
+  
+  /* Size variants */
+  &.rt-size-xs {
+    font-size: var(--rag-primitive-fontSize-xs);
+    line-height: var(--rag-primitive-lineHeight-xs);
+    gap: var(--rag-primitive-spacing-xs);
+  }
+
+  &.rt-size-sm {
+    font-size: var(--rag-primitive-fontSize-sm);
+    line-height: var(--rag-primitive-lineHeight-sm);
+    gap: var(--rag-primitive-spacing-xs);
+  }
+
+  &.rt-size-md {
+    font-size: var(--rag-primitive-fontSize-sm);
+    line-height: var(--rag-primitive-lineHeight-sm);
+    gap: var(--rag-primitive-spacing-sm);
+  }
+
+  &.rt-size-lg {
+    font-size: var(--rag-primitive-fontSize-md);
+    line-height: var(--rag-primitive-lineHeight-md);
+    gap: var(--rag-primitive-spacing-sm);
+  }
+
+  /* Status variants */
+  &.rt-status-idle {
+    .rt-status-icon {
+      color: var(--rag-semantic-color-text-subtle);
+    }
+    .rt-status-label {
+      color: var(--rag-semantic-color-text-subtle);
+    }
+  }
+
+  &.rt-status-loading {
+    .rt-status-icon {
+      color: var(--rag-semantic-color-primary-500);
+    }
+    .rt-status-label {
+      color: var(--rag-semantic-color-text-subtle);
+    }
+  }
+
+  &.rt-status-success {
+    .rt-status-icon {
+      color: var(--rag-semantic-color-success-800);
+    }
+    .rt-status-label {
+      color: var(--rag-semantic-color-success-900);
+    }
+  }
+
+  &.rt-status-error {
+    .rt-status-icon {
+      color: var(--rag-semantic-color-danger-700);
+    }
+    .rt-status-label {
+      color: var(--rag-semantic-color-danger-900);
+    }
+  }
+
+  &.rt-status-warning {
+    .rt-status-icon {
+      color: var(--rag-semantic-color-warning-700);
+    }
+    .rt-status-label {
+      color: var(--rag-semantic-color-warning-900);
+    }
+  }
+
+  /* Pulse animation for loading states */
+  &.rt-pulse .rt-status-icon {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+.rt-status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.rt-status-label {
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Pulse animation keyframes */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Loading spinner rotation for loader icon */
+.rt-status-loading .rt-status-icon :global(svg) {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dark mode support */
+:global(.dark) .rt-StatusIndicator {
+  &.rt-status-idle {
+    .rt-status-icon {
+      color: var(--rag-semantic-color-text-disabled);
+    }
+    .rt-status-label {
+      color: var(--rag-semantic-color-text-inverse);
+    }
+  }
+
+  &.rt-status-loading {
+    .rt-status-icon {
+      color: var(--rag-semantic-color-primary-500);
+    }
+    .rt-status-label {
+      color: var(--rag-semantic-color-text-inverse);
+    }
+  }
+
+  &.rt-status-success {
+    .rt-status-label {
+      color: var(--rag-semantic-color-success-200);
+    }
+  }
+
+  &.rt-status-error {
+    .rt-status-label {
+      color: var(--rag-semantic-color-danger-200);
+    }
+  }
+
+  &.rt-status-warning {
+    .rt-status-label {
+      color: var(--rag-semantic-color-warning-200);
+    }
+  }
+}
+
+/* Compact variant for tight spaces */
+.rt-StatusIndicator.rt-compact {
+  gap: var(--rag-primitive-spacing-xs);
+  
+  .rt-status-label {
+    font-size: var(--rag-primitive-fontSize-xs);
+    font-weight: 400;
+  }
+}
+
+/* Icon-only variant */
+.rt-StatusIndicator:not(.rt-StatusIndicator:has(.rt-status-label)) {
+  .rt-status-icon {
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: calc(100% + var(--rag-primitive-spacing-sm));
+      height: calc(100% + var(--rag-primitive-spacing-sm));
+      border-radius: 50%;
+      background-color: currentColor;
+      opacity: 0;
+      transition: opacity 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      z-index: -1;
+    }
+    
+    &:hover::after {
+      opacity: 0.1;
+    }
+  }
+}

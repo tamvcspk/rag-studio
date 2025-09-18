@@ -1,0 +1,73 @@
+.mcp-server-status {
+  background: white;
+  border: 1px solid var(--rag-semantic-color-border-default);
+  border-radius: var(--rag-primitive-radius-md);
+  padding: var(--rag-primitive-spacing-lg);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--rag-primitive-spacing-lg);
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-md);
+  }
+
+  &__title {
+    font-size: var(--rag-primitive-fontSize-md);
+    font-weight: 600;
+    margin: 0 0 var(--rag-primitive-spacing-xs) 0;
+    color: var(--rag-semantic-color-text-default);
+  }
+
+  &__subtitle {
+    font-size: var(--rag-primitive-fontSize-xs);
+    color: var(--rag-semantic-color-text-muted);
+    margin: 0;
+  }
+
+  &__details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--rag-primitive-spacing-md);
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--rag-primitive-spacing-sm) 0;
+
+  &__label {
+    font-size: var(--rag-primitive-fontSize-xs);
+    color: var(--rag-semantic-color-text-muted);
+  }
+
+  &__value {
+    font-size: var(--rag-primitive-fontSize-sm);
+    font-weight: 500;
+    color: var(--rag-semantic-color-text-default);
+  }
+}
+
+// Utility classes for icon colors
+.text-green-600 {
+  color: var(--rag-semantic-color-success-800);
+}
+
+.text-red-600 {
+  color: var(--rag-semantic-color-danger-700);
+}
+
+.text-gray-400 {
+  color: var(--rag-semantic-color-text-disabled);
+}

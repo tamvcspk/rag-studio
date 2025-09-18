@@ -1,0 +1,44 @@
+<div [class]="containerClasses()">
+  <div class="rag-metric-display__header">
+    <span class="rag-metric-display__label">{{ metric().label }}</span>
+    
+    <div class="rag-metric-display__status">
+      @if (metricStatus() === 'good') {
+        <rag-icon [img]="CheckCircleIcon" size="sm" class="rag-metric-display__status-icon" />
+      } @else if (metricStatus() === 'warning') {
+        <rag-icon [img]="AlertTriangleIcon" size="sm" class="rag-metric-display__status-icon" />
+      } @else if (metricStatus() === 'critical') {
+        <rag-icon [img]="XCircleIcon" size="sm" class="rag-metric-display__status-icon" />
+      }
+    </div>
+  </div>
+
+  <div class="rag-metric-display__value">{{ formattedValue() }}</div>
+
+  @if (variant() === 'detailed' && metric().threshold) {
+    <div class="rag-metric-display__thresholds">
+      <div class="rag-metric-display__threshold rag-metric-display__threshold--good">
+        <span class="rag-metric-display__threshold-label">Good</span>
+        <span class="rag-metric-display__threshold-value">≤ {{ metric().threshold!.good }}{{ metric().unit }}</span>
+      </div>
+      <div class="rag-metric-display__threshold rag-metric-display__threshold--warning">
+        <span class="rag-metric-display__threshold-label">Warning</span>
+        <span class="rag-metric-display__threshold-value">≤ {{ metric().threshold!.warning }}{{ metric().unit }}</span>
+      </div>
+    </div>
+  }
+
+  @if (showTarget() && metric().target && progressPercentage()) {
+    <div class="rag-metric-display__progress">
+      <div class="rag-metric-display__progress-bar">
+        <div 
+          class="rag-metric-display__progress-fill" 
+          [style.width.%]="progressPercentage()">
+        </div>
+      </div>
+      <span class="rag-metric-display__progress-text">
+        {{ progressPercentage()?.toFixed(0) }}% of {{ metric().target }}{{ metric().unit }}
+      </span>
+    </div>
+  }
+</div>

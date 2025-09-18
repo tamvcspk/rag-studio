@@ -1,0 +1,35 @@
+.security-settings-panel {
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--rag-primitive-spacing-md);
+    margin-top: var(--rag-primitive-spacing-xl);
+    padding-top: var(--rag-primitive-spacing-lg);
+    border-top: 1px solid var(--rag-semantic-color-border-subtle);
+  }
+
+  .warning-section {
+    margin-top: var(--rag-primitive-spacing-md);
+    padding: var(--rag-primitive-spacing-md);
+    background-color: var(--rag-semantic-color-warning-50);
+    border: 1px solid var(--rag-semantic-color-warning-200);
+    border-radius: var(--rag-primitive-radius-md);
+  }
+}
+
+// Security-specific styling
+.air-gapped-warning {
+  background-color: var(--rag-semantic-color-warning-100);
+  border-left: 4px solid var(--rag-semantic-color-warning-600);
+}
+
+.security-risk-indicator {
+  color: var(--rag-semantic-color-danger-600);
+  font-weight: var(--rag-primitive-fontWeight-medium);
+}
+
+// Form validation styling
+rag-select[disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}

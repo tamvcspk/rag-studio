@@ -1,0 +1,286 @@
+@use '../../../../styles/animations';
+
+:host {
+  display: inline-flex;
+}
+
+.rt-Chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-xs);
+  padding: 0 var(--rag-primitive-spacing-sm);
+  height: 20px;
+  font-size: var(--rag-primitive-fontSize-xs);
+  font-weight: 500;
+  line-height: 1;
+  border-radius: var(--rag-primitive-radius-sm);
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+// Size variants
+.rt-Chip.rt-size-sm {
+  height: 16px;
+  padding: 0 var(--rag-primitive-spacing-xs);
+  font-size: var(--rag-primitive-fontSize-xs);
+  gap: 2px;
+  border-radius: var(--rag-primitive-radius-xs);
+}
+
+.rt-Chip.rt-size-md {
+  height: 20px;
+  padding: 0 var(--rag-primitive-spacing-sm);
+  font-size: var(--rag-primitive-fontSize-xs);
+  gap: var(--rag-primitive-spacing-xs);
+  border-radius: var(--rag-primitive-radius-sm);
+}
+
+// Variant styles
+.rt-Chip.rt-variant-solid {
+  background-color: var(--rag-primitive-color-gray-800);
+  color: var(--rag-primitive-color-white);
+
+  &.rt-color-blue {
+    background-color: var(--rag-semantic-color-primary-500);
+    color: var(--rag-primitive-color-white);
+  }
+
+  &.rt-color-green {
+    background-color: var(--rag-semantic-color-success-800);
+    color: var(--rag-primitive-color-white);
+  }
+
+  &.rt-color-amber {
+    background-color: var(--rag-semantic-color-warning-700);
+    color: var(--rag-primitive-color-white);
+  }
+
+  &.rt-color-red {
+    background-color: var(--rag-semantic-color-danger-700);
+    color: var(--rag-primitive-color-white);
+  }
+}
+
+.rt-Chip.rt-variant-soft {
+  background-color: var(--rag-semantic-color-background-muted);
+  color: var(--rag-semantic-color-text-subtle);
+
+  &.rt-color-blue {
+    background-color: var(--rag-semantic-color-primary-100);
+    color: var(--rag-semantic-color-primary-500);
+  }
+
+  &.rt-color-green {
+    background-color: var(--rag-semantic-color-success-100);
+    color: var(--rag-semantic-color-success-800);
+  }
+
+  &.rt-color-amber {
+    background-color: var(--rag-semantic-color-warning-100);
+    color: var(--rag-semantic-color-warning-700);
+  }
+
+  &.rt-color-red {
+    background-color: var(--rag-semantic-color-danger-100);
+    color: var(--rag-semantic-color-danger-700);
+  }
+}
+
+.rt-Chip.rt-variant-outline {
+  background-color: var(--rag-primitive-color-transparent);
+  border: 1px solid var(--rag-semantic-color-border-default);
+  color: var(--rag-semantic-color-text-subtle);
+
+  &.rt-color-blue {
+    border-color: var(--rag-semantic-color-primary-500);
+    color: var(--rag-semantic-color-primary-500);
+  }
+
+  &.rt-color-green {
+    border-color: var(--rag-semantic-color-success-800);
+    color: var(--rag-semantic-color-success-800);
+  }
+
+  &.rt-color-amber {
+    border-color: var(--rag-semantic-color-warning-700);
+    color: var(--rag-semantic-color-warning-700);
+  }
+
+  &.rt-color-red {
+    border-color: var(--rag-semantic-color-danger-700);
+    color: var(--rag-semantic-color-danger-700);
+  }
+}
+
+// Status indicator dot
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  background-color: currentColor;
+}
+
+// Special dot chip
+.rt-chip-dot {
+  .status-indicator {
+    background-color: var(--rag-semantic-color-success-800);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--rag-semantic-color-success-800) 20%, transparent);
+  }
+
+  &.rt-color-amber .status-indicator {
+    background-color: var(--rag-semantic-color-warning-700);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--rag-semantic-color-warning-700) 20%, transparent);
+  }
+
+  &.rt-color-red .status-indicator {
+    background-color: var(--rag-semantic-color-danger-700);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--rag-semantic-color-danger-700) 20%, transparent);
+  }
+
+  &.rt-color-gray .status-indicator {
+    background-color: var(--rag-primitive-color-gray-800);
+  }
+}
+
+// Interactive states
+.rt-Chip.rt-chip-selectable {
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+
+  &:hover:not(.rt-chip-disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active:not(.rt-chip-disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.rt-Chip.rt-chip-selected {
+  &.rt-variant-soft {
+    background-color: var(--rag-semantic-color-primary-100);
+    color: var(--rag-semantic-color-primary-600);
+    border: 1px solid var(--rag-semantic-color-primary-300);
+
+    &.rt-color-blue {
+      background-color: var(--rag-semantic-color-primary-200);
+      color: var(--rag-semantic-color-primary-700);
+      border: 1px solid var(--rag-semantic-color-primary-400);
+    }
+
+    &.rt-color-green {
+      background-color: var(--rag-semantic-color-success-200);
+      color: var(--rag-semantic-color-success-800);
+      border: 1px solid var(--rag-semantic-color-success-400);
+    }
+
+    &.rt-color-amber {
+      background-color: var(--rag-semantic-color-warning-200);
+      color: var(--rag-semantic-color-warning-800);
+      border: 1px solid var(--rag-semantic-color-warning-400);
+    }
+
+    &.rt-color-red {
+      background-color: var(--rag-semantic-color-danger-200);
+      color: var(--rag-semantic-color-danger-800);
+      border: 1px solid var(--rag-semantic-color-danger-400);
+    }
+  }
+
+  &.rt-variant-outline {
+    border-width: 2px;
+    background-color: color-mix(in srgb, currentColor 5%, transparent);
+  }
+
+  &.rt-variant-solid {
+    box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 30%, transparent);
+  }
+}
+
+.rt-Chip.rt-chip-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+
+  &.rt-chip-selectable {
+    cursor: not-allowed;
+  }
+}
+
+// Close button styles
+.rt-chip-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  margin-left: var(--rag-primitive-spacing-xs);
+  background: none;
+  border: none;
+  border-radius: var(--rag-primitive-radius-xs);
+  cursor: pointer;
+  color: currentColor;
+  opacity: 0.6;
+  transition: all 0.15s ease-in-out;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    opacity: 1;
+    background-color: color-mix(in srgb, currentColor 15%, transparent);
+  }
+
+  &:active:not(:disabled) {
+    opacity: 1;
+    background-color: color-mix(in srgb, currentColor 25%, transparent);
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--rag-semantic-color-primary-500);
+    outline-offset: 1px;
+  }
+}
+
+.rt-Chip.rt-chip-loading {
+  color: transparent;
+  cursor: not-allowed;
+  pointer-events: none;
+  
+  &.rt-chip-selectable {
+    cursor: not-allowed;
+  }
+}
+
+// Loading spinner
+.rt-chip-spinner {
+  width: 10px;
+  height: 10px;
+  border: 1px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  color: var(--rag-semantic-color-text-subtle);
+}
+
+.rt-Chip.rt-size-sm .rt-chip-spinner {
+  width: 8px;
+  height: 8px;
+  border-width: 1px;
+}
+
+// Size adjustments for close button
+.rt-Chip.rt-size-sm .rt-chip-close {
+  width: 12px;
+  height: 12px;
+  margin-left: 2px;
+}

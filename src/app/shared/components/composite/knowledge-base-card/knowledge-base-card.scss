@@ -1,0 +1,156 @@
+.knowledge-base-card {
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--rag-primitive-spacing-md);
+
+    .title-section {
+      display: flex;
+      align-items: center;
+      gap: var(--rag-primitive-spacing-md);
+      flex: 1;
+
+      .title-info {
+        flex: 1;
+
+        .title {
+          margin: 0 0 var(--rag-primitive-spacing-xs) 0;
+          font-size: var(--rag-primitive-fontSize-lg);
+          font-weight: 600;
+          color: var(--rag-semantic-color-text-default);
+        }
+
+        .subtitle {
+          margin: 0;
+          font-size: var(--rag-primitive-fontSize-sm);
+          color: var(--rag-semantic-color-text-subtle);
+        }
+      }
+    }
+
+    .status-chip {
+      flex-shrink: 0;
+    }
+  }
+
+  .description {
+    margin: 0 0 var(--rag-primitive-spacing-md) 0;
+    color: var(--rag-semantic-color-text-subtle);
+    font-size: var(--rag-primitive-fontSize-sm);
+    line-height: var(--rag-primitive-lineHeight-md);
+  }
+
+  .progress-section {
+    margin-bottom: var(--rag-primitive-spacing-lg);
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--rag-primitive-spacing-sm);
+
+      .progress-label {
+        font-size: var(--rag-primitive-fontSize-sm);
+        color: var(--rag-semantic-color-text-subtle);
+      }
+
+      .progress-percentage {
+        font-size: var(--rag-primitive-fontSize-sm);
+        font-weight: 500;
+        color: var(--rag-semantic-color-text-subtle);
+      }
+    }
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--rag-primitive-spacing-md);
+    margin-bottom: var(--rag-primitive-spacing-lg);
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--rag-primitive-spacing-xs);
+
+      .stat-label {
+        font-size: var(--rag-primitive-fontSize-xs);
+        color: var(--rag-semantic-color-text-subtle);
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+      }
+
+      .stat-value {
+        font-weight: 500;
+        font-size: var(--rag-primitive-fontSize-sm);
+        color: var(--rag-semantic-color-text-default);
+      }
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .metadata-chips {
+    display: flex;
+    gap: var(--rag-primitive-spacing-sm);
+    flex-wrap: wrap;
+    margin-bottom: var(--rag-primitive-spacing-lg);
+
+    @media (max-width: 640px) {
+      flex-direction: column;
+      gap: var(--rag-primitive-spacing-xs);
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: var(--rag-primitive-spacing-sm);
+    flex-wrap: wrap;
+
+    .danger-button {
+      color: var(--rag-semantic-color-danger-800);
+
+      &:hover {
+        color: var(--rag-semantic-color-danger-900);
+        background-color: rgba(239, 68, 68, 0.05);
+      }
+    }
+
+    @media (max-width: 640px) {
+      flex-direction: column;
+      gap: var(--rag-primitive-spacing-sm);
+    }
+  }
+
+}
+
+// Error state styling for failed KBs
+:host.failed {
+  .knowledge-base-card {
+    border-color: var(--rag-semantic-color-danger-600);
+    background-color: rgba(239, 68, 68, 0.02);
+
+    .title {
+      color: var(--rag-semantic-color-danger-950);
+    }
+  }
+}
+
+// Indexing state styling
+:host.indexing {
+  .knowledge-base-card {
+    border-color: var(--rag-semantic-color-warning-600);
+    background-color: rgba(245, 158, 11, 0.02);
+  }
+}
+
+// Success state styling for indexed KBs
+:host.indexed {
+  .knowledge-base-card {
+    border-color: var(--rag-semantic-color-success-600);
+    background-color: rgba(34, 197, 94, 0.02);
+  }
+}

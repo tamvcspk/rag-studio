@@ -1,0 +1,158 @@
+.rag-overflow-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--rag-primitive-spacing-sm) 0;
+  
+  .rag-overflow-content {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    
+    // Hide scrollbar
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    
+    // Enable horizontal scrolling for content
+    white-space: nowrap;
+    
+    // Ensure content flows horizontally
+    display: flex;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-sm);
+  }
+  
+  .rag-overflow-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    
+    // Button styling
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--rag-primitive-radius-md);
+    background: var(--rag-semantic-color-background-default);
+    color: var(--rag-semantic-color-text-default);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    // Shadow for better visibility
+    box-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.1),
+      0 0 0 1px var(--rag-semantic-color-border-default);
+    
+    &:hover {
+      background: var(--rag-semantic-color-background-subtle);
+      box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.15),
+        0 0 0 1px var(--rag-semantic-color-border-default);
+    }
+    
+    &:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+    
+    // Gradient overlay for smooth visual transition
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 40px;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    // Left button positioning and gradient
+    &--left {
+      left: 8px;
+      
+      &::before {
+        left: -8px;
+        background: linear-gradient(
+          to right,
+          var(--rag-semantic-color-background-default) 0%,
+          var(--rag-semantic-color-background-default) 60%,
+          transparent 100%
+        );
+      }
+    }
+    
+    // Right button positioning and gradient
+    &--right {
+      right: 8px;
+      
+      &::before {
+        right: -8px;
+        background: linear-gradient(
+          to left,
+          var(--rag-semantic-color-background-default) 0%,
+          var(--rag-semantic-color-background-default) 60%,
+          transparent 100%
+        );
+      }
+    }
+    
+    // Icon styling
+    rag-icon {
+      color: var(--rag-semantic-color-text-subtle);
+      transition: color 0.2s ease;
+    }
+    
+    &:hover rag-icon {
+      color: var(--rag-semantic-color-text-default);
+    }
+  }
+  
+  // Dark theme support
+  [data-theme="dark"] & {
+    .rag-overflow-nav {
+      &--left::before {
+        background: linear-gradient(
+          to right,
+          var(--rag-semantic-color-background-default) 0%,
+          var(--rag-semantic-color-background-default) 60%,
+          transparent 100%
+        );
+      }
+      
+      &--right::before {
+        background: linear-gradient(
+          to left,
+          var(--rag-semantic-color-background-default) 0%,
+          var(--rag-semantic-color-background-default) 60%,
+          transparent 100%
+        );
+      }
+    }
+  }
+  
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .rag-overflow-nav {
+      width: 28px;
+      height: 28px;
+      
+      &--left {
+        left: 4px;
+      }
+      
+      &--right {
+        right: 4px;
+      }
+      
+      &::before {
+        width: 32px;
+      }
+    }
+  }
+}

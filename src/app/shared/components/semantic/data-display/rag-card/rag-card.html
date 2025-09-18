@@ -1,0 +1,11 @@
+<div [class]="cardClasses()">
+  @if (loading()) {
+    <div class="rag-card__loading-overlay">
+      <div class="rag-card__loading-content">
+        <rag-spinner size="lg" />
+        <p class="rag-card__loading-text">{{ loadingText() }}</p>
+      </div>
+    </div>
+  }
+  <ng-content></ng-content>
+</div>

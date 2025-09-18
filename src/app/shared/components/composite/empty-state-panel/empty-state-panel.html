@@ -1,0 +1,27 @@
+<rag-card class="empty-state-panel">
+  <div class="empty-state-content">
+    <div class="icon-container">
+      <rag-icon 
+        [img]="icon()" 
+        size="xl"
+        class="empty-state-icon">
+      </rag-icon>
+    </div>
+    
+    <h3 class="empty-state-title">{{ title() }}</h3>
+    
+    @if (description()) {
+      <p class="empty-state-description">{{ description() }}</p>
+    }
+    
+    @if (showAction() && actionLabel()) {
+      <rag-button 
+        variant="solid" 
+        size="md" 
+        (click)="onAction()"
+        class="action-button">
+        {{ actionLabel() }}
+      </rag-button>
+    }
+  </div>
+</rag-card>

@@ -1,0 +1,232 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.rag-cron-input {
+  width: 100%;
+
+  &__controls {
+    display: flex;
+    gap: var(--rag-primitive-spacing-md);
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: var(--rag-primitive-spacing-md);
+  }
+
+  &__preset {
+    flex: 0 0 180px;
+    min-width: 180px;
+  }
+
+  &__expression {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__feedback {
+    margin-bottom: var(--rag-primitive-spacing-lg);
+  }
+
+  &__description {
+    display: flex;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-sm);
+    padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+    background-color: var(--rag-semantic-color-info-100);
+    border: 1px solid var(--rag-semantic-color-info-300);
+    border-radius: var(--rag-primitive-radius-md);
+    color: var(--rag-semantic-color-info-900);
+    font-size: var(--rag-primitive-fontSize-sm);
+    line-height: var(--rag-primitive-lineHeight-md);
+
+    rag-icon {
+      flex-shrink: 0;
+      color: var(--rag-semantic-color-info-600);
+    }
+  }
+
+  &__timezone {
+    color: var(--rag-semantic-color-text-muted);
+    font-weight: 500;
+  }
+
+  &__error {
+    display: flex;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-sm);
+    padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+    background-color: var(--rag-semantic-color-danger-100);
+    border: 1px solid var(--rag-semantic-color-danger-300);
+    border-radius: var(--rag-primitive-radius-md);
+    color: var(--rag-semantic-color-danger-700);
+    font-size: var(--rag-primitive-fontSize-sm);
+    line-height: var(--rag-primitive-lineHeight-md);
+
+    rag-icon {
+      flex-shrink: 0;
+      color: var(--rag-semantic-color-danger-700);
+    }
+  }
+
+  &__help {
+    background-color: var(--rag-semantic-color-background-subtle);
+    border: 1px solid var(--rag-semantic-color-border-default);
+    border-radius: var(--rag-primitive-radius-md);
+    overflow: hidden;
+  }
+
+  &__help-header {
+    display: flex;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-sm);
+    padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+    background-color: var(--rag-semantic-color-background-muted);
+    border-bottom: 1px solid var(--rag-semantic-color-border-default);
+    font-size: var(--rag-primitive-fontSize-sm);
+    font-weight: 500;
+    color: var(--rag-semantic-color-text-subtle);
+
+    rag-icon {
+      flex-shrink: 0;
+      color: var(--rag-semantic-color-text-subtle);
+    }
+  }
+
+  &__help-content {
+    padding: var(--rag-primitive-spacing-md);
+    font-size: var(--rag-primitive-fontSize-sm);
+    color: var(--rag-semantic-color-text-subtle);
+    line-height: var(--rag-primitive-lineHeight-md);
+  }
+
+  &__help-format {
+    display: flex;
+    gap: var(--rag-primitive-spacing-md);
+    margin-bottom: var(--rag-primitive-spacing-md);
+    padding: var(--rag-primitive-spacing-sm);
+    background-color: var(--rag-semantic-color-background-muted);
+    border-radius: var(--rag-primitive-radius-sm);
+    justify-content: space-around;
+    text-align: center;
+  }
+
+  &__help-part {
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+    font-size: var(--rag-primitive-fontSize-sm);
+    font-weight: 500;
+    color: var(--rag-semantic-color-text-default);
+    padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+    background-color: var(--rag-semantic-color-background-default);
+    border: 1px solid var(--rag-semantic-color-border-default);
+    border-radius: var(--rag-primitive-radius-xs);
+  }
+
+  &__help-examples {
+    div {
+      margin-bottom: var(--rag-primitive-spacing-xs);
+      
+      &:first-child {
+        font-weight: 500;
+        margin-bottom: var(--rag-primitive-spacing-sm);
+      }
+    }
+
+    code {
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+      background-color: var(--rag-semantic-color-background-muted);
+      border: 1px solid var(--rag-semantic-color-border-default);
+      border-radius: var(--rag-primitive-radius-xs);
+      padding: var(--rag-primitive-spacing-xs);
+      font-size: 11px;
+      color: var(--rag-semantic-color-text-default);
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 640px) {
+  .rag-cron-input {
+    &__controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__preset {
+      flex: none;
+      width: 100%;
+    }
+
+    &__expression {
+      width: 100%;
+    }
+
+    &__help-format {
+      flex-direction: column;
+      gap: var(--space-2, 8px);
+    }
+  }
+}
+
+// Size variants
+.rag-cron-input--sm {
+  .rag-cron-input__controls {
+    gap: var(--rag-primitive-spacing-sm);
+    margin-bottom: var(--rag-primitive-spacing-sm);
+  }
+
+  .rag-cron-input__preset {
+    flex: 0 0 140px;
+    min-width: 140px;
+  }
+
+  .rag-cron-input__feedback {
+    margin-bottom: var(--rag-primitive-spacing-md);
+  }
+
+  .rag-cron-input__description,
+  .rag-cron-input__error {
+    font-size: 11px;
+    padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+  }
+
+  .rag-cron-input__help-content {
+    padding: var(--rag-primitive-spacing-sm);
+    font-size: 11px;
+  }
+
+  .rag-cron-input__help-part {
+    font-size: 10px;
+  }
+}
+
+.rag-cron-input--lg {
+  .rag-cron-input__controls {
+    gap: var(--rag-primitive-spacing-lg);
+    margin-bottom: var(--rag-primitive-spacing-lg);
+  }
+
+  .rag-cron-input__preset {
+    flex: 0 0 200px;
+    min-width: 200px;
+  }
+
+  .rag-cron-input__feedback {
+    margin-bottom: var(--rag-primitive-spacing-xl);
+  }
+
+  .rag-cron-input__description,
+  .rag-cron-input__error {
+    font-size: var(--rag-primitive-fontSize-md);
+    padding: var(--rag-primitive-spacing-md) var(--rag-primitive-spacing-lg);
+  }
+
+  .rag-cron-input__help-content {
+    padding: var(--rag-primitive-spacing-lg);
+    font-size: var(--rag-primitive-fontSize-md);
+  }
+
+  .rag-cron-input__help-part {
+    font-size: var(--rag-primitive-fontSize-md);
+  }
+}

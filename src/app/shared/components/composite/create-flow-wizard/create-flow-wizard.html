@@ -1,0 +1,270 @@
+<rag-dialog 
+  title="Create New Flow" 
+  description="Create a new flow by combining tools, knowledge bases, and pipelines"
+  size="lg" 
+  [showCloseButton]="true">
+
+<div class="create-flow-wizard">
+  <!-- Progress Header -->
+  <div class="wizard-progress">
+    <rag-progress [value]="progress" [max]="100"></rag-progress>
+    <span class="progress-text">Step {{ currentStep() + 1 }} of {{ steps.length }}</span>
+  </div>
+
+  <!-- Step Navigation -->
+  <div class="step-navigation">
+    @for (step of steps; track step.id; let i = $index) {
+      <div 
+        class="step-item"
+        [class.active]="i === currentStep()"
+        [class.completed]="step.completed"
+        (click)="goToStep(i)">
+        <div class="step-icon">
+          @if (step.completed) {
+            <rag-icon [img]="checkIcon" [size]="16"></rag-icon>
+          } @else {
+            <span>{{ i + 1 }}</span>
+          }
+        </div>
+        <div class="step-info">
+          <div class="step-title">{{ step.title }}</div>
+          <div class="step-description">{{ step.description }}</div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Step Content -->
+  <div class="step-content">
+    @switch (currentStep()) {
+      <!-- Step 1: Basic Information -->
+      @case (0) {
+        <div class="basic-info-step">
+          <h3>Basic Information</h3>
+          <p class="step-intro">Let's start with the basic details of your flow.</p>
+
+          <div class="form-group">
+            <label>Flow Name</label>
+            <rag-input
+              [(ngModel)]="flowName"
+              placeholder="Enter a descriptive name for your flow">
+            </rag-input>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <rag-textarea
+              [(ngModel)]="flowDescription"
+              placeholder="Describe what this flow does and its purpose"
+[rows]="3">
+            </rag-textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Tags</label>
+            <div class="tag-input">
+              <rag-input
+                [(ngModel)]="tagInput"
+                placeholder="Add a tag and press Enter"
+                (keyup.enter)="addTag()">
+              </rag-input>
+              <rag-button 
+                [variant]="'outline'" 
+                [size]="'sm'"
+                (click)="addTag()"
+                [disabled]="!newTag().trim()">
+                Add
+              </rag-button>
+            </div>
+            <div class="tags-list" *ngIf="formData().tags.length > 0">
+              @for (tag of formData().tags; track tag) {
+                <rag-chip [variant]="'soft'" class="tag-item">
+                  {{ tag }}
+                  <button class="remove-tag" (click)="removeTag(tag)">
+                    <rag-icon [img]="xIcon" [size]="12"></rag-icon>
+                  </button>
+                </rag-chip>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Step 2: Add Components -->
+      @case (1) {
+        <div class="components-step">
+          <h3>Add Components</h3>
+          <p class="step-intro">Select the tools, knowledge bases, and pipelines for your flow.</p>
+
+          <div class="components-grid">
+            @for (component of availableComponents; track component.id) {
+              <div 
+                class="component-card"
+                [class.selected]="isComponentSelected(component)"
+                (click)="toggleComponent(component)">
+                <div class="component-header">
+                  <div class="component-icon">
+                    <rag-icon [img]="getComponentIcon(component.type)" [size]="20"></rag-icon>
+                  </div>
+                  <div class="component-info">
+                    <div class="component-name">{{ component.name }}</div>
+                    <div class="component-type">{{ component.type | titlecase }}</div>
+                  </div>
+                  <div class="selection-indicator">
+                    @if (isComponentSelected(component)) {
+                      <rag-icon [img]="checkCircleIcon" [size]="20" class="selected-icon"></rag-icon>
+                    } @else {
+                      <rag-icon [img]="plusCircleIcon" [size]="20" class="add-icon"></rag-icon>
+                    }
+                  </div>
+                </div>
+                <div class="component-description" *ngIf="component.description">
+                  {{ component.description }}
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="selected-summary" *ngIf="selectedComponents().length > 0">
+            <h4>Selected Components ({{ selectedComponents().length }})</h4>
+            <div class="selected-list">
+              @for (component of selectedComponents(); track component.id) {
+                <rag-chip [variant]="'outline'">
+                  <rag-icon [img]="getComponentIcon(component.type)" [size]="12"></rag-icon>
+                  {{ component.name }}
+                </rag-chip>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Step 3: Connect Components -->
+      @case (2) {
+        <div class="connections-step">
+          <h3>Connect Components</h3>
+          <p class="step-intro">Define how your components work together (optional for now).</p>
+
+          <div class="flow-preview">
+            <div class="flow-visualization">
+              @for (component of selectedComponents(); track component.id; let isLast = $last) {
+                <div class="flow-node">
+                  <div class="node-icon">
+                    <rag-icon [img]="getComponentIcon(component.type)" [size]="16"></rag-icon>
+                  </div>
+                  <div class="node-label">{{ component.name }}</div>
+                </div>
+                @if (!isLast) {
+                  <div class="flow-connector">
+                    <rag-icon [img]="arrowRightIcon" [size]="20"></rag-icon>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+
+          <div class="connection-note">
+            <rag-icon [img]="infoIcon" [size]="16"></rag-icon>
+            <div>
+              <strong>Note:</strong> Advanced connection configuration will be available in the flow designer. 
+              For now, components will be connected in the order selected.
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Step 4: Review & Create -->
+      @case (3) {
+        <div class="review-step">
+          <h3>Review & Create</h3>
+          <p class="step-intro">Review your flow configuration before creating.</p>
+
+          <rag-card class="review-card">
+            <div class="review-section">
+              <h4>Basic Information</h4>
+              <div class="review-item">
+                <span class="label">Name:</span>
+                <span class="value">{{ formData().name }}</span>
+              </div>
+              <div class="review-item">
+                <span class="label">Description:</span>
+                <span class="value">{{ formData().description }}</span>
+              </div>
+              <div class="review-item" *ngIf="formData().tags.length > 0">
+                <span class="label">Tags:</span>
+                <div class="tags-list">
+                  @for (tag of formData().tags; track tag) {
+                    <rag-chip [variant]="'soft'">{{ tag }}</rag-chip>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="review-section">
+              <h4>Components ({{ selectedComponents().length }})</h4>
+              @for (component of selectedComponents(); track component.id; let i = $index) {
+                <div class="component-review-item">
+                  <div class="component-order">{{ i + 1 }}</div>
+                  <div class="component-icon">
+                    <rag-icon [img]="getComponentIcon(component.type)" [size]="16"></rag-icon>
+                  </div>
+                  <div class="component-details">
+                    <div class="component-name">{{ component.name }}</div>
+                    <div class="component-type">{{ component.type | titlecase }}</div>
+                  </div>
+                </div>
+              }
+            </div>
+          </rag-card>
+        </div>
+      }
+    }
+  </div>
+
+</div>
+
+<!-- Dialog Footer Actions -->
+<div slot="footer" class="wizard-actions">
+  <div class="secondary-actions">
+    <rag-button 
+      [variant]="'ghost'" 
+      (click)="cancel()">
+      Cancel
+    </rag-button>
+    
+    @if (canGoPrevious) {
+      <rag-button 
+        [variant]="'outline'" 
+        (click)="previousStep()">
+        <rag-icon [img]="arrowLeftIcon" [size]="14"></rag-icon>
+        Previous
+      </rag-button>
+    }
+  </div>
+
+  <div class="primary-actions">
+    @if (currentStep() < steps.length - 1) {
+      <rag-button 
+        [variant]="'solid'" 
+        [disabled]="!canGoNext"
+        (click)="nextStep()">
+        Next
+        <rag-icon [img]="arrowRightIcon" [size]="14"></rag-icon>
+      </rag-button>
+    } @else {
+      <rag-button 
+        [variant]="'solid'" 
+        [disabled]="isCreating()"
+        (click)="createFlow()">
+        @if (isCreating()) {
+          Creating Flow...
+        } @else {
+          Create Flow
+        }
+        <rag-icon [img]="checkIcon" [size]="14"></rag-icon>
+      </rag-button>
+    }
+  </div>
+</div>
+
+</rag-dialog>

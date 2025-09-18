@@ -1,0 +1,28 @@
+<div class="rt-DialogContent" [class]="contentClasses">
+  @if (showCloseButton() || title()) {
+  <div class="rt-DialogHeader">
+    @if (title()) {
+    <h2 id="dialog-title" class="rt-DialogTitle">{{ title() }}</h2>
+    }
+
+    @if (showCloseButton()) {
+    <button class="rt-DialogCloseButton" type="button" [attr.aria-label]="'Close ' + (title() || 'dialog')"
+      (click)="closeDialog()">
+      <rag-icon [img]="XIcon" size="sm"></rag-icon>
+    </button>
+    }
+  </div>
+  }
+
+  @if (description()) {
+  <p id="dialog-description" class="rt-DialogDescription">{{ description() }}</p>
+  }
+
+  <div class="rt-DialogBody">
+    <ng-content></ng-content>
+  </div>
+
+  <div class="rt-DialogFooter">
+    <ng-content select="[slot=footer]"></ng-content>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<div [class]="cardClasses()">
+  <div class="rag-stat-card__header">
+    <span class="rag-stat-card__label">{{ data().label }}</span>
+    @if (data().icon) {
+      <rag-icon [img]="data().icon" class="rag-stat-card__icon" />
+    }
+  </div>
+  
+  <div class="rag-stat-card__value">{{ data().value }}</div>
+  
+  @if (data().change) {
+    <div [class]="trendClasses()">
+      @if (data().change!.trend === 'up') {
+        <rag-icon [img]="TrendingUpIcon" size="sm" />
+      } @else if (data().change!.trend === 'down') {
+        <rag-icon [img]="TrendingDownIcon" size="sm" />
+      } @else {
+        <rag-icon [img]="MinusIcon" size="sm" />
+      }
+      <span>{{ data().change!.value }}</span>
+    </div>
+  }
+</div>

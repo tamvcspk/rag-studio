@@ -1,0 +1,56 @@
+<div class="pipelines-page">
+  <div class="sticky-header">
+    <!-- Page Header with Search -->
+    <rag-page-header [title]="'Processing Pipelines'"
+      [description]="'Automated workflows for data ingestion and indexing'" [icon]="WorkflowIcon"
+      [actions]="headerActions()" [showSearch]="true"
+      [searchPlaceholder]="'Search pipelines by name, description, or status...'" [searchValue]="searchQuery()"
+      (searchChange)="onSearchChange($event)" (searchClear)="onSearchClear()" size="lg">
+    </rag-page-header>
+
+    <!-- Statistics Overview -->
+    <rag-stats-overview [stats]="pipelineStatsItems()" [loading]="isLoading()" (filterChange)="onFilterChange($event)">
+    </rag-stats-overview>
+  </div>
+
+  <!-- Pipelines Content -->
+  <div class="pipelines-content">
+    @if (filteredPipelines().length === 0 && searchQuery() === '' && selectedFilters().length === 0) {
+    <!-- Empty state - no pipelines created yet -->
+    <rag-empty-state-panel
+      [icon]="WorkflowIcon"
+      [title]="'No pipelines created yet'"
+      [description]="'Pipelines automate data ingestion, processing, and indexing workflows. Create your first one to get started.'"
+      [actionLabel]="'Create Your First Pipeline'"
+      (action)="onCreatePipeline()">
+    </rag-empty-state-panel>
+    } @else if (filteredPipelines().length === 0) {
+    <!-- No results for current filters -->
+    <rag-empty-state-panel
+      [icon]="SearchIcon"
+      [title]="'No pipelines found'"
+      [description]="'Try adjusting your search or filter criteria'"
+      [actionLabel]="'Clear Filters'"
+      (action)="onSearchClear()">
+    </rag-empty-state-panel>
+    } @else {
+    <!-- Pipelines Grid -->
+    <div class="pipelines-grid">
+      @for (pipeline of filteredPipelines(); track pipeline.id) {
+      <rag-pipeline-card [pipeline]="pipeline" (onPause)="onPipelinePause($event)"
+        (onPlay)="onPipelinePlay($event)" (onEdit)="onPipelineEdit($event)" (onSchedule)="onPipelineSchedule($event)"
+        (onRunNow)="onPipelineRunNow($event)">
+      </rag-pipeline-card>
+      } @empty {
+      <rag-empty-state-panel
+        [icon]="WorkflowIcon"
+        [title]="'No pipelines available'"
+        [description]="'This shouldn\'t happen. Please try refreshing the page.'"
+        [showAction]="false">
+      </rag-empty-state-panel>
+      }
+    </div>
+    }
+  </div>
+
+</div>

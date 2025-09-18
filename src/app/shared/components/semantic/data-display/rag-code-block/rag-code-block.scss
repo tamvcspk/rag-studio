@@ -1,0 +1,174 @@
+:host {
+  display: block;
+}
+
+.rag-code-block {
+  background: var(--rag-semantic-color-background-subtle);
+  border: 1px solid var(--rag-semantic-color-border-default);
+  border-radius: var(--rag-primitive-radius-md);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+    background: var(--rag-semantic-color-background-muted);
+    border-bottom: 1px solid var(--rag-semantic-color-border-default);
+  }
+
+  &__title-group {
+    display: flex;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-sm);
+  }
+
+  &__title {
+    font-size: var(--rag-primitive-fontSize-md);
+    font-weight: 500;
+    color: var(--rag-semantic-color-text-default);
+  }
+
+  &__language {
+    font-size: var(--rag-primitive-fontSize-sm);
+    color: var(--rag-semantic-color-text-muted);
+    background: var(--rag-semantic-color-background-muted);
+    padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+    border-radius: var(--rag-primitive-radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__copy-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--rag-primitive-spacing-xs);
+    background: transparent;
+    border: 1px solid var(--rag-semantic-color-border-muted);
+    border-radius: var(--rag-primitive-radius-sm);
+    color: var(--rag-semantic-color-text-subtle);
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: var(--rag-semantic-color-background-muted);
+      border-color: var(--rag-primitive-color-gray-700);
+    }
+
+    &:active {
+      background: var(--rag-primitive-color-gray-400);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--rag-semantic-color-primary-500);
+      outline-offset: 2px;
+    }
+  }
+
+  &__content {
+    position: relative;
+    overflow: auto;
+  }
+
+  &__pre {
+    margin: 0;
+    padding: var(--rag-primitive-spacing-md);
+    overflow: visible;
+    background: transparent;
+    white-space: pre;
+    word-wrap: normal;
+    tab-size: 2;
+  }
+
+  &__code {
+    font-family: inherit;
+    font-size: var(--rag-primitive-fontSize-md);
+    line-height: var(--rag-primitive-lineHeight-lg);
+    color: var(--rag-semantic-color-text-default);
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  &--with-line-numbers {
+    .rag-code-block__pre {
+      padding-left: 3rem;
+    }
+  }
+
+  &__line-numbers {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: var(--rag-primitive-spacing-md) 0;
+    background: var(--rag-semantic-color-background-muted);
+    border-right: 1px solid var(--rag-semantic-color-border-default);
+    width: 3rem;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  &__line-number {
+    display: block;
+    font-size: var(--rag-primitive-fontSize-md);
+    line-height: var(--rag-primitive-lineHeight-lg);
+    color: var(--rag-primitive-color-gray-800);
+    text-align: right;
+    padding-right: var(--rag-primitive-spacing-sm);
+  }
+}
+
+/* Syntax highlighting could be added here with CSS variables */
+.rag-code-block__code {
+  .keyword { color: var(--rag-primitive-color-red-700); }
+  .string { color: var(--rag-primitive-color-blue-900); }
+  .comment { color: var(--rag-primitive-color-gray-700); }
+  .number { color: var(--rag-primitive-color-blue-800); }
+  .function { color: var(--rag-primitive-color-purple-800); }
+}
+
+@media (prefers-color-scheme: dark) {
+  .rag-code-block {
+    background: var(--rag-primitive-color-gray-1000);
+    border-color: var(--rag-primitive-color-gray-800);
+
+    &__header {
+      background: var(--rag-primitive-color-gray-950);
+      border-bottom-color: var(--rag-primitive-color-gray-800);
+    }
+
+    &__title {
+      color: var(--rag-primitive-color-white);
+    }
+
+    &__language {
+      background: var(--rag-primitive-color-gray-800);
+      color: var(--rag-primitive-color-gray-300);
+    }
+
+    &__copy-button {
+      border-color: var(--rag-primitive-color-gray-800);
+      color: var(--rag-primitive-color-gray-300);
+
+      &:hover {
+        background: var(--rag-primitive-color-gray-800);
+        border-color: var(--rag-primitive-color-gray-700);
+      }
+    }
+
+    &__code {
+      color: var(--rag-primitive-color-white);
+    }
+
+    &__line-numbers {
+      background: var(--rag-primitive-color-gray-950);
+      border-right-color: var(--rag-primitive-color-gray-800);
+    }
+
+    &__line-number {
+      color: var(--rag-primitive-color-gray-700);
+    }
+  }
+}

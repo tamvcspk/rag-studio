@@ -1,0 +1,28 @@
+<section [class]="sectionClasses()">
+  @if (title() || description()) {
+    <header class="rag-settings-section__header">
+      @if (icon()) {
+        <rag-icon 
+          [img]="icon()!" 
+          size="lg" 
+          class="rag-settings-section__icon" />
+      }
+      <div class="rag-settings-section__text">
+        @if (title()) {
+          <h3 class="rag-settings-section__title">{{ title() }}</h3>
+        }
+        @if (description()) {
+          <p class="rag-settings-section__description">{{ description() }}</p>
+        }
+      </div>
+    </header>
+  }
+  
+  @if (variant() === 'default' && (title() || description())) {
+    <rag-divider spacing="lg" />
+  }
+
+  <div class="rag-settings-section__content">
+    <ng-content></ng-content>
+  </div>
+</section>

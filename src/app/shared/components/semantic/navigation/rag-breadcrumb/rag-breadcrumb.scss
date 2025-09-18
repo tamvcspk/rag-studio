@@ -1,0 +1,151 @@
+// RagBreadcrumb - Semantic Navigation Component
+.rt-Breadcrumb {
+  display: flex;
+  align-items: center;
+  color: var(--rag-semantic-color-text-muted);
+
+  // Size variants
+  &.rt-size-sm {
+    font-size: var(--rag-primitive-fontSize-xs);
+  }
+
+  &.rt-size-md {
+    font-size: var(--rag-primitive-fontSize-sm);
+  }
+
+  &.rt-size-lg {
+    font-size: var(--rag-primitive-fontSize-md);
+  }
+}
+
+.rt-BreadcrumbList {
+  display: flex;
+  align-items: center;
+  gap: var(--rag-archetypes-breadcrumb-container-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+  font-size: var(--rag-archetypes-breadcrumb-container-fontSize);
+}
+
+.rt-BreadcrumbListItem {
+  display: flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-sm);
+}
+
+.rt-BreadcrumbItem {
+  display: flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-xs);
+  color: var(--rag-archetypes-breadcrumb-item-default-color);
+  text-decoration: var(--rag-archetypes-breadcrumb-item-default-textDecoration);
+  transition: color 0.15s;
+  border-radius: var(--rag-primitive-radius-sm);
+  padding: var(--rag-primitive-spacing-xs) 0;
+
+  &.rt-link {
+    color: var(--rag-archetypes-breadcrumb-item-default-color);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--rag-archetypes-breadcrumb-item-hover-color);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--rag-semantic-color-primary-700);
+      outline-offset: 2px;
+    }
+  }
+
+  &.rt-current {
+    color: var(--rag-archetypes-breadcrumb-item-current-color);
+    font-weight: var(--rag-archetypes-breadcrumb-item-current-fontWeight);
+  }
+
+  &.rt-disabled {
+    color: var(--rag-semantic-color-text-disabled);
+    cursor: not-allowed;
+  }
+
+  // Icon styling
+  rag-icon {
+    flex-shrink: 0;
+  }
+
+  span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+
+    // On smaller screens, reduce max width
+    @media (max-width: 768px) {
+      max-width: 120px;
+    }
+  }
+}
+
+.rt-BreadcrumbSeparator {
+  flex-shrink: 0;
+  color: var(--rag-archetypes-breadcrumb-separator-color);
+  opacity: var(--rag-archetypes-breadcrumb-separator-opacity);
+}
+
+.rt-BreadcrumbEmpty {
+  color: var(--rag-semantic-color-text-muted);
+  font-style: italic;
+}
+
+// Responsive behavior
+@media (max-width: 768px) {
+  .rt-BreadcrumbList {
+    gap: var(--rag-primitive-spacing-xs);
+  }
+
+  .rt-BreadcrumbListItem {
+    gap: var(--rag-primitive-spacing-xs);
+  }
+
+  // Hide middle items on very small screens
+  .rt-BreadcrumbListItem:not(:first-child):not(:last-child):not(:nth-last-child(2)) {
+    display: none;
+  }
+
+  // Add ellipsis indicator
+  .rt-BreadcrumbList::before {
+    content: "...";
+    color: var(--rag-semantic-color-text-disabled);
+    order: 1;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .rt-Breadcrumb {
+    color: var(--rag-semantic-color-text-muted);
+  }
+
+  .rt-BreadcrumbItem {
+    &.rt-link {
+      color: var(--rag-semantic-color-text-subtle);
+
+      &:hover {
+        color: var(--rag-semantic-color-primary-700);
+      }
+    }
+
+    &.rt-current {
+      color: var(--rag-semantic-color-text-default);
+    }
+
+    &.rt-disabled {
+      color: var(--rag-semantic-color-text-disabled);
+    }
+  }
+
+  .rt-BreadcrumbSeparator {
+    color: var(--rag-semantic-color-text-disabled);
+  }
+}

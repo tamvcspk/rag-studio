@@ -1,0 +1,177 @@
+<rag-dialog 
+  [title]="flow() ? 'Edit Flow - ' + flow()!.name : 'Flow Designer'"
+  [description]="flow() ? 'Design and configure your flow components and connections.' : ''"
+  size="xl">
+  
+  <div class="flow-designer-content">
+    @if (!readonly()) {
+    <div class="designer-toolbar">
+      <rag-button 
+        [variant]="isDesignMode() ? 'solid' : 'outline'" 
+        [size]="'sm'"
+        (click)="toggleDesignMode()">
+        <rag-icon [img]="edit3Icon" [size]="14"></rag-icon>
+        {{ isDesignMode() ? 'View Mode' : 'Design Mode' }}
+      </rag-button>
+    </div>
+    }
+
+    <div class="designer-canvas">
+    @if (nodes().length === 0) {
+      <rag-empty-state-panel
+        [icon]="gitBranchIcon"
+        [title]="'No Flow Components'"
+        [description]="'Add components to your flow to start designing the workflow.'"
+        [actionLabel]="'Add Components'"
+        (action)="cancel()">
+      </rag-empty-state-panel>
+    } @else {
+      <div class="design-canvas">
+        <svg class="connections-layer" width="100%" height="100%">
+          <!-- Connection lines would be drawn here in a full implementation -->
+          @for (node of nodes(); track node.id) {
+            @for (connectionId of node.connections; track connectionId) {
+              <!-- Simple line connections - would be more sophisticated in real implementation -->
+              <line 
+                [attr.x1]="node.position.x + 50" 
+                [attr.y1]="node.position.y + 40"
+                [attr.x2]="node.position.x + 150" 
+                [attr.y2]="node.position.y + 40"
+                stroke="#94a3b8" 
+                stroke-width="2"
+                stroke-dasharray="5,5">
+              </line>
+            }
+          }
+        </svg>
+
+        <div class="nodes-layer">
+          @for (node of nodes(); track node.id) {
+            <div 
+              class="flow-node"
+              [class.selected]="selectedNode()?.id === node.id"
+              [style.left.px]="node.position.x"
+              [style.top.px]="node.position.y"
+              (click)="selectNode(node)">
+              <div class="node-header">
+                <div class="node-icon">
+                  <rag-icon [img]="getNodeIcon(node.type)" [size]="16"></rag-icon>
+                </div>
+                <rag-chip 
+                  [variant]="'soft'" 
+                  [color]="getNodeColor(node.type)"
+                  size="sm">
+                  {{ node.type }}
+                </rag-chip>
+              </div>
+              <div class="node-content">
+                <div class="node-title">{{ node.name }}</div>
+              </div>
+              <div class="node-ports">
+                <div class="input-port"></div>
+                <div class="output-port"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Node Properties Panel -->
+      @if (selectedNode() && isDesignMode()) {
+        <div class="properties-panel">
+          <div class="panel-header">
+            <h4>Node Properties</h4>
+            <button 
+              class="close-panel" 
+              (click)="selectedNode.set(null)"
+              aria-label="Close properties panel">
+              <rag-icon [img]="xIcon" [size]="16"></rag-icon>
+            </button>
+          </div>
+          <div class="panel-content">
+            <div class="property-group">
+              <label>Name</label>
+              <div class="property-value">{{ selectedNode()?.name }}</div>
+            </div>
+            <div class="property-group">
+              <label>Type</label>
+              <rag-chip 
+                [variant]="'soft'" 
+                [color]="getNodeColor(selectedNode()!.type)">
+                {{ selectedNode()?.type }}
+              </rag-chip>
+            </div>
+            <div class="property-group">
+              <label>Position</label>
+              <div class="property-value">
+                x: {{ selectedNode()!.position.x }}, y: {{ selectedNode()!.position.y }}
+              </div>
+            </div>
+            <div class="property-group">
+              <label>Connections</label>
+              <div class="connections-list">
+                @if (selectedNode() && selectedNode()!.connections.length === 0) {
+                  <span class="no-connections">No connections</span>
+                } @else if (selectedNode() && selectedNode()!.connections.length > 0) {
+                  @for (connectionId of selectedNode()!.connections; track connectionId) {
+                    <rag-chip [variant]="'outline'">{{ connectionId }}</rag-chip>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    }
+    </div>
+    
+    @if (nodes().length > 0) {
+    <div class="designer-status">
+      <span class="node-count">{{ nodes().length }} components</span>
+      @if (selectedNode()) {
+        <span class="selected-info">• {{ selectedNode()?.name }} selected</span>
+      }
+      @if (isDesignMode()) {
+        <span class="mode-indicator">• Design mode active</span>
+      }
+    </div>
+    }
+  </div>
+  
+  @if (!readonly()) {
+  <div slot="footer" class="dialog-actions">
+    @if (nodes().length > 0) {
+    <div class="footer-controls">
+      <rag-button 
+        [variant]="'ghost'" 
+        [size]="'sm'"
+        title="Fit to screen">
+        <rag-icon [img]="maximize2Icon" [size]="14"></rag-icon>
+        Fit View
+      </rag-button>
+      <rag-button 
+        [variant]="'ghost'" 
+        [size]="'sm'"
+        title="Reset zoom">
+        <rag-icon [img]="refreshCwIcon" [size]="14"></rag-icon>
+        Reset
+      </rag-button>
+    </div>
+    }
+    <div class="primary-actions">
+      <rag-button 
+        [variant]="'outline'" 
+        (click)="cancel()">
+        Cancel
+      </rag-button>
+      <rag-button 
+        [variant]="'solid'" 
+        (click)="saveFlow()"
+        [disabled]="!flow()">
+        <rag-icon [img]="saveIcon" [size]="14"></rag-icon>
+        Save Flow
+      </rag-button>
+    </div>
+  </div>
+  }
+</rag-dialog>

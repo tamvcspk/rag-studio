@@ -1,0 +1,113 @@
+<rag-card class="pipeline-card" [loading]="loading()">
+  <div class="pipeline-card__header">
+    <div class="pipeline-card__title-section">
+      <div class="pipeline-card__title-wrapper">
+        <h3 class="pipeline-card__title">{{ pipeline().name }}</h3>
+        <p class="pipeline-card__description">{{ pipeline().description }}</p>
+      </div>
+    </div>
+    <rag-chip 
+      [variant]="getBadgeVariant(pipeline().status)"
+      [color]="getBadgeColor(pipeline().status)"
+      class="pipeline-card__status">
+      @if (pipeline().status === 'running') {
+        <rag-icon [img]="CheckCircleIcon" class="status-icon active"></rag-icon>
+        RUNNING
+      } @else if (pipeline().status === 'scheduled') {
+        <rag-icon [img]="ClockIcon" class="status-icon"></rag-icon>
+        SCHEDULED
+      } @else if (pipeline().status === 'error') {
+        <rag-icon [img]="ClockIcon" class="status-icon error"></rag-icon>
+        ERROR
+      } @else {
+        <rag-icon [img]="ClockIcon" class="status-icon"></rag-icon>
+        {{ pipeline().status | titlecase }}
+      }
+    </rag-chip>
+  </div>
+
+  <div class="pipeline-card__flow">
+    <rag-pipeline-flow-visualization [steps]="pipeline().steps"></rag-pipeline-flow-visualization>
+  </div>
+
+  <div class="pipeline-card__metrics">
+    <div class="metric-item">
+      <span class="metric-label">Schedule</span>
+      <span class="metric-value">{{ pipeline().schedule }}</span>
+    </div>
+    @if (pipeline().lastRun) {
+      <div class="metric-item">
+        <span class="metric-label">Last Run</span>
+        <span class="metric-value">{{ pipeline().lastRun }}</span>
+      </div>
+    }
+    @if (pipeline().nextRun) {
+      <div class="metric-item">
+        <span class="metric-label">Next Run</span>
+        <span class="metric-value">{{ pipeline().nextRun }}</span>
+      </div>
+    }
+    @if (pipeline().duration) {
+      <div class="metric-item">
+        <span class="metric-label">Duration</span>
+        <span class="metric-value">{{ pipeline().duration }}</span>
+      </div>
+    }
+    @if (pipeline().avgDuration) {
+      <div class="metric-item">
+        <span class="metric-label">Avg Duration</span>
+        <span class="metric-value">{{ pipeline().avgDuration }}</span>
+      </div>
+    }
+    @if (pipeline().documentsProcessed) {
+      <div class="metric-item">
+        <span class="metric-label">Documents</span>
+        <span class="metric-value">{{ pipeline().documentsProcessed | number }}</span>
+      </div>
+    }
+    @if (pipeline().successRate) {
+      <div class="metric-item">
+        <span class="metric-label">Success Rate</span>
+        <span class="metric-value">{{ pipeline().successRate }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="pipeline-card__actions">
+    @if (pipeline().status === 'running') {
+      <rag-button 
+        variant="outline" 
+        size="sm" 
+        (onClick)="onPauseClick()">
+        <rag-icon [img]="PauseIcon"></rag-icon>
+        Pause
+      </rag-button>
+    } @else {
+      <rag-button 
+        variant="outline" 
+        size="sm" 
+        (onClick)="onPlayClick()">
+        <rag-icon [img]="PlayIcon"></rag-icon>
+        Run Now
+      </rag-button>
+    }
+    
+    <rag-button 
+      variant="ghost" 
+      size="sm" 
+      (onClick)="onEditClick()">
+      <rag-icon [img]="EditIcon"></rag-icon>
+      Edit
+    </rag-button>
+
+    @if (pipeline().status === 'scheduled') {
+      <rag-button 
+        variant="ghost" 
+        size="sm" 
+        (onClick)="onScheduleClick()">
+        <rag-icon [img]="CalendarIcon"></rag-icon>
+        Schedule
+      </rag-button>
+    }
+  </div>
+</rag-card>

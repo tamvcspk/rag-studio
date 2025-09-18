@@ -4,9 +4,32 @@
       "WebFetch(domain:pyoxidizer.readthedocs.io)",
       "WebFetch(domain:gregoryszorc.com)",
       "WebFetch(domain:gregoryszorc.com)",
-      "WebFetch(domain:docs.rs)"
+      "WebFetch(domain:docs.rs)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "mcp__angular-cli__get_best_practices",
+      "Bash(cargo check:*)",
+      "mcp__angular-cli__list_projects",
+      "WebFetch(domain:primeng.org)",
+      "WebFetch(domain:www.primefaces.org)",
+      "WebSearch",
+      "Bash(ng generate component:*)",
+      "Read(/C:\\c\\Src\\project/**)",
+      "Bash(npm run build:*)",
+      "Bash(ng generate service:*)",
+      "Bash(npm run generate:tokens:*)",
+      "Bash(move:*)",
+      "Bash(ng generate module:*)",
+      "mcp__angular-cli__search_documentation",
+      "WebFetch(domain:material.angular.dev)",
+      "Bash(ng build)",
+      "Bash(mkdir:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "additionalDirectories": [
+      "C:\\c\\Src\\project\\rag-studio"
+    ]
   }
 }

@@ -1,0 +1,106 @@
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--rag-semantic-color-background-subtle);
+
+  .sticky-header {
+    padding: 0 var(--rag-primitive-spacing-xl);
+  }
+
+  .settings-content {
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl);
+  }
+
+  .settings-tab-content {
+    padding: var(--rag-primitive-spacing-lg) 0;
+  }
+
+  // Coming Soon panels
+  .coming-soon-panel,
+  .about-panel {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .coming-soon-panel {
+    margin-top: var(--rag-primitive-spacing-xl);
+  }
+
+  // About panel specific styling
+  .about-panel {
+    .about-content {
+      padding: var(--rag-primitive-spacing-xl);
+      text-align: center;
+    }
+
+    .about-icon {
+      color: var(--rag-semantic-color-primary-600);
+      margin-bottom: var(--rag-primitive-spacing-lg);
+    }
+
+    .about-title {
+      font-size: var(--rag-primitive-fontSize-xl);
+      font-weight: var(--rag-primitive-fontWeight-semibold);
+      margin-bottom: var(--rag-primitive-spacing-xs);
+      color: var(--rag-semantic-color-text-default);
+    }
+
+    .about-subtitle {
+      color: var(--rag-semantic-color-text-muted);
+      margin-bottom: var(--rag-primitive-spacing-xl);
+    }
+
+    .about-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--rag-primitive-spacing-lg);
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .about-info-item {
+      text-align: left;
+    }
+
+    .about-info-label {
+      font-weight: var(--rag-primitive-fontWeight-medium);
+      color: var(--rag-semantic-color-text-default);
+      margin-bottom: var(--rag-primitive-spacing-xs);
+    }
+
+    .about-info-value {
+      color: var(--rag-semantic-color-text-muted);
+      font-size: var(--rag-primitive-fontSize-sm);
+      
+      &.about-info-path {
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .settings-page {
+    .settings-content {
+      padding: var(--rag-primitive-spacing-lg);
+    }
+
+    .about-panel .about-info-grid {
+      grid-template-columns: 1fr;
+      gap: var(--rag-primitive-spacing-md);
+    }
+  }
+}
+
+// Dark mode support (when implemented)
+@media (prefers-color-scheme: dark) {
+  .settings-page {
+    background-color: var(--rag-semantic-color-background-subtle);
+  }
+}

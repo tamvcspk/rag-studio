@@ -1,0 +1,175 @@
+.flow-card {
+  padding: var(--rag-primitive-spacing-xl);
+
+  .flow-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--rag-primitive-spacing-xl);
+
+    .flow-info {
+      display: flex;
+      gap: var(--rag-primitive-spacing-md);
+
+      .flow-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: var(--rag-semantic-color-primary-50);
+        border-radius: var(--rag-primitive-radius-md);
+        color: var(--rag-semantic-color-primary-600);
+      }
+
+      .flow-details {
+        flex: 1;
+
+        .flow-title {
+          font-size: var(--rag-primitive-fontSize-lg);
+          font-weight: 600;
+          color: var(--rag-semantic-color-text-default);
+          margin: 0 0 var(--rag-primitive-spacing-xs) 0;
+          line-height: var(--rag-primitive-lineHeight-lg);
+        }
+
+        .flow-description {
+          font-size: var(--rag-primitive-fontSize-sm);
+          color: var(--rag-semantic-color-text-muted);
+          margin: 0;
+          line-height: var(--rag-primitive-lineHeight-md);
+        }
+      }
+    }
+
+    .flow-status {
+      .status-chip {
+        display: flex;
+        align-items: center;
+        gap: var(--rag-primitive-spacing-xs);
+      }
+    }
+  }
+
+  .flow-parts-preview {
+    margin-bottom: var(--rag-primitive-spacing-xl);
+
+    .parts-flow {
+      display: flex;
+      align-items: center;
+      gap: var(--rag-primitive-spacing-sm);
+      padding: var(--rag-primitive-spacing-lg);
+      background: var(--rag-semantic-color-background-subtle);
+      border-radius: var(--rag-primitive-radius-md);
+      overflow-x: auto;
+
+      .flow-part {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--rag-primitive-spacing-xs);
+        min-width: 80px;
+
+        .part-name {
+          font-size: var(--rag-primitive-fontSize-xs);
+          color: var(--rag-semantic-color-text-muted);
+          text-align: center;
+          line-height: var(--rag-primitive-lineHeight-xs);
+        }
+      }
+
+      .flow-arrow {
+        color: var(--rag-semantic-color-text-disabled);
+        flex-shrink: 0;
+        margin: 0 var(--rag-primitive-spacing-xs);
+      }
+    }
+  }
+
+  .flow-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--rag-primitive-spacing-sm);
+    margin-bottom: var(--rag-primitive-spacing-xl);
+  }
+
+  .flow-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+    gap: var(--rag-primitive-spacing-lg);
+    margin-bottom: var(--rag-primitive-spacing-xl);
+    padding: var(--rag-primitive-spacing-lg);
+    background: var(--rag-semantic-color-background-subtle);
+    border-radius: var(--rag-primitive-radius-md);
+
+    .stat-item {
+      text-align: center;
+
+      .stat-label {
+        display: block;
+        font-size: var(--rag-primitive-fontSize-xs);
+        color: var(--rag-semantic-color-text-muted);
+        margin-bottom: var(--rag-primitive-spacing-xs);
+        font-weight: 500;
+      }
+
+      .stat-value {
+        display: block;
+        font-size: var(--rag-primitive-fontSize-md);
+        font-weight: 600;
+        color: var(--rag-semantic-color-text-default);
+      }
+    }
+  }
+
+  .flow-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-lg);
+
+    .primary-actions {
+      display: flex;
+      gap: var(--rag-primitive-spacing-sm);
+    }
+
+    .secondary-actions {
+      display: flex;
+      gap: var(--rag-primitive-spacing-sm);
+
+      .delete-button {
+        color: var(--rag-semantic-color-danger-600);
+
+        &:hover {
+          color: var(--rag-semantic-color-danger-700);
+          background-color: var(--rag-semantic-color-danger-50);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .flow-card {
+    .flow-card-header {
+      flex-direction: column;
+      gap: var(--rag-primitive-spacing-lg);
+      align-items: flex-start;
+    }
+
+    .flow-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .flow-actions {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--rag-primitive-spacing-md);
+
+      .primary-actions,
+      .secondary-actions {
+        justify-content: center;
+      }
+    }
+  }
+}

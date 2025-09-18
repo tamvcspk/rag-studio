@@ -1,0 +1,155 @@
+@if (tool().status === 'ERROR') {
+  <rag-card class="tool-card error-card">
+    <div class="tool-card-header">
+      <div class="tool-info">
+        <rag-icon 
+          [img]="AlertCircle" 
+          size="md" 
+          class="tool-icon error">
+        </rag-icon>
+        <div class="tool-details">
+          <h3 class="tool-name">{{ tool().name }}</h3>
+          <code class="tool-endpoint">{{ tool().endpoint }}</code>
+        </div>
+      </div>
+      <rag-chip 
+        [variant]="getStatusBadgeVariant()"
+        [color]="getStatusBadgeColor()"
+        class="status-chip">
+        {{ getStatusBadgeText() }}
+      </rag-chip>
+    </div>
+
+    @if (tool().errorMessage) {
+      <rag-alert variant="error" class="error-alert">
+        <rag-icon [img]="AlertCircle" size="xs" />
+        <div>
+          <strong>Registration Failed:</strong> {{ tool().errorMessage }}
+        </div>
+      </rag-alert>
+    }
+
+    <div class="tool-actions">
+      <rag-button 
+        variant="solid" 
+        size="sm"
+        (click)="handleAction('retry')">
+        <rag-icon [img]="RefreshCw" size="xs" />
+        Retry Registration
+      </rag-button>
+      
+      <rag-button 
+        variant="outline" 
+        size="sm"
+        (click)="handleAction('logs')">
+        <rag-icon [img]="FileText" size="xs" />
+        View Logs
+      </rag-button>
+
+      <rag-button 
+        variant="ghost" 
+        size="sm"
+        class="delete-button"
+        (click)="handleAction('delete')">
+        <rag-icon [img]="Trash2" size="xs" />
+        Remove
+      </rag-button>
+    </div>
+  </rag-card>
+} @else {
+  <rag-card class="tool-card">
+    <div class="tool-card-header">
+      <div class="tool-info">
+        <rag-icon 
+          [img]="getStatusIcon()" 
+          size="md" 
+          [class]="'tool-icon ' + tool().baseOperation">
+        </rag-icon>
+        <div class="tool-details">
+          <h3 class="tool-name">{{ tool().name }}</h3>
+          <code class="tool-endpoint">{{ tool().endpoint }}</code>
+        </div>
+      </div>
+      <rag-chip 
+        [variant]="getStatusBadgeVariant()"
+        [color]="getStatusBadgeColor()"
+        class="status-chip">
+        {{ getStatusBadgeText() }}
+      </rag-chip>
+    </div>
+
+    <p class="tool-description">{{ tool().description }}</p>
+
+    <div class="tool-metadata">
+      <rag-chip variant="outline" size="sm">
+        KB: {{ tool().knowledgeBase.name }}@{{ tool().knowledgeBase.version }}
+      </rag-chip>
+      <rag-chip variant="outline" size="sm">
+        Type: {{ tool().baseOperation }}
+      </rag-chip>
+      @if (tool().baseOperation === 'rag.search') {
+        <rag-chip variant="outline" size="sm">
+          Top-K: {{ tool().config.topK }}
+        </rag-chip>
+      }
+      @if (tool().baseOperation === 'rag.answer') {
+        <rag-chip variant="outline" size="sm">
+          Top-N: {{ tool().config.topN }}
+        </rag-chip>
+      }
+    </div>
+
+    @if (tool().usage) {
+      <div class="tool-usage">
+        <span class="usage-metric">
+          <strong>{{ tool().usage!.totalCalls }}</strong> calls
+        </span>
+        <span class="usage-metric">
+          <strong>{{ tool().usage!.avgLatency }}ms</strong> avg latency
+        </span>
+        @if (tool().lastUsed) {
+          <span class="usage-metric">
+            Last used: <strong>{{ tool().lastUsed }}</strong>
+          </span>
+        }
+      </div>
+    }
+
+    <div class="tool-actions">
+      @if (tool().status === 'ACTIVE') {
+        <rag-button 
+          variant="outline" 
+          size="sm"
+          (click)="handleAction('deactivate')">
+          <rag-icon [img]="Pause" size="xs" />
+          Deactivate
+        </rag-button>
+      } @else {
+        <rag-button 
+          variant="outline" 
+          size="sm"
+          (click)="handleAction('activate')">
+          <rag-icon [img]="Play" size="xs" />
+          Activate
+        </rag-button>
+      }
+
+      <rag-button 
+        variant="ghost" 
+        size="sm"
+        (click)="handleAction('edit')">
+        <rag-icon [img]="Edit" size="xs" />
+        Edit
+      </rag-button>
+
+      <rag-button 
+        variant="ghost" 
+        size="sm"
+        class="delete-button"
+        (click)="handleAction('delete')">
+        <rag-icon [img]="Trash2" size="xs" />
+        Delete
+      </rag-button>
+    </div>
+  </rag-card>
+}

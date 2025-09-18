@@ -1,0 +1,71 @@
+.pipeline-flow {
+  display: flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-sm);
+  padding: var(--rag-primitive-spacing-md);
+  background-color: var(--rag-semantic-color-background-muted);
+  border-radius: var(--rag-primitive-radius-md);
+  overflow-x: auto;
+  min-height: 60px;
+
+  .pipeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-xs);
+    min-width: 80px;
+    flex-shrink: 0;
+
+    .step-description {
+      font-size: var(--rag-primitive-fontSize-xs);
+      color: var(--rag-semantic-color-text-subtle);
+      text-align: center;
+      white-space: nowrap;
+    }
+  }
+
+  .pipeline-arrow {
+    color: var(--rag-semantic-color-text-muted);
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    padding: var(--rag-primitive-spacing-sm);
+    gap: var(--rag-primitive-spacing-xs);
+
+    .pipeline-step {
+      min-width: 60px;
+      
+      .step-description {
+        font-size: 10px;
+      }
+    }
+
+    .pipeline-arrow {
+      width: 12px;
+      height: 12px;
+    }
+  }
+}
+
+// Add scrollbar styling for pipeline flow
+.pipeline-flow::-webkit-scrollbar {
+  height: 4px;
+}
+
+.pipeline-flow::-webkit-scrollbar-track {
+  background: var(--rag-semantic-color-background-subtle);
+  border-radius: var(--rag-primitive-radius-sm);
+}
+
+.pipeline-flow::-webkit-scrollbar-thumb {
+  background: var(--rag-semantic-color-text-disabled);
+  border-radius: var(--rag-primitive-radius-sm);
+}
+
+.pipeline-flow::-webkit-scrollbar-thumb:hover {
+  background: var(--rag-semantic-color-text-muted);
+}

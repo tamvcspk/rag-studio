@@ -1,0 +1,124 @@
+:host {
+  display: inline-block;
+  position: relative;
+}
+
+.rt-tooltip-trigger {
+  position: relative;
+  display: inline-block;
+}
+
+.rt-Tooltip {
+  position: absolute;
+  z-index: 1000;
+  padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+  background-color: var(--rag-semantic-color-text-default);
+  color: white;
+  border-radius: var(--rag-primitive-radius-sm);
+  font-size: var(--rag-primitive-fontSize-xs);
+  line-height: var(--rag-primitive-lineHeight-xs);
+  white-space: nowrap;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.15s ease;
+  pointer-events: none;
+  box-shadow: var(--rag-primitive-shadow-md);
+
+  &.rt-visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  // Placement variants
+  &.rt-placement-top {
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    margin-bottom: 8px;
+
+    &.rt-visible {
+      transform: translateX(-50%) scale(1);
+    }
+
+    .rt-tooltip-arrow {
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid var(--rag-semantic-color-text-default);
+    }
+  }
+
+  &.rt-placement-bottom {
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    margin-top: 8px;
+
+    &.rt-visible {
+      transform: translateX(-50%) scale(1);
+    }
+
+    .rt-tooltip-arrow {
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 6px solid var(--rag-semantic-color-text-default);
+    }
+  }
+
+  &.rt-placement-left {
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%) scale(0.8);
+    margin-right: 8px;
+
+    &.rt-visible {
+      transform: translateY(-50%) scale(1);
+    }
+
+    .rt-tooltip-arrow {
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 6px solid var(--rag-semantic-color-text-default);
+    }
+  }
+
+  &.rt-placement-right {
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%) scale(0.8);
+    margin-left: 8px;
+
+    &.rt-visible {
+      transform: translateY(-50%) scale(1);
+    }
+
+    .rt-tooltip-arrow {
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-right: 6px solid var(--rag-semantic-color-text-default);
+    }
+  }
+}
+
+.rt-tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.rt-tooltip-content {
+  max-width: 200px;
+  word-wrap: break-word;
+  white-space: normal;
+}

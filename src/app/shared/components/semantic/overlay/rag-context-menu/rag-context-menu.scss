@@ -1,0 +1,327 @@
+// RagContextMenu - Semantic Overlay Component
+.rt-ContextMenu {
+  position: fixed;
+  z-index: 100;
+  min-width: 200px;
+  max-width: 300px;
+  background-color: var(--rag-semantic-color-background-default);
+  border: 1px solid var(--rag-semantic-color-border-muted);
+  border-radius: var(--rag-primitive-radius-lg);
+  box-shadow: var(--rag-primitive-shadow-lg);
+  padding: var(--rag-primitive-spacing-xs);
+  animation: contextMenuShow 0.15s ease-out;
+  user-select: none;
+
+  // Size variants
+  &.rt-size-sm {
+    min-width: 150px;
+    padding: var(--rag-primitive-spacing-xs);
+  }
+
+  &.rt-size-md {
+    min-width: 200px;
+    padding: var(--rag-primitive-spacing-xs);
+  }
+
+  &.rt-size-lg {
+    min-width: 250px;
+    padding: var(--rag-primitive-spacing-sm);
+  }
+
+  &.rt-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.rt-ContextMenuItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+  color: var(--rag-semantic-color-text-subtle);
+  border-radius: var(--rag-primitive-radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+  outline: none;
+  font-size: var(--rag-primitive-fontSize-sm);
+
+  &:hover:not(.rt-disabled) {
+    background-color: var(--rag-semantic-color-background-muted);
+    color: var(--rag-semantic-color-text-default);
+  }
+
+  &.rt-focused {
+    background-color: var(--rag-semantic-color-primary-100);
+    color: var(--rag-semantic-color-primary-900);
+  }
+
+  &.rt-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: var(--rag-semantic-color-text-disabled);
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  &.rt-has-submenu {
+    &:hover {
+      .rt-ContextMenuSubmenu {
+        display: block;
+      }
+    }
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--rag-semantic-color-primary-700);
+  }
+}
+
+.rt-ContextMenuItemContent {
+  display: flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-sm);
+  width: 100%;
+  min-width: 0;
+}
+
+.rt-ContextMenuItemIcon {
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.rt-ContextMenuItemLabel {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.rt-ContextMenuItemShortcut {
+  flex-shrink: 0;
+  font-size: var(--rag-primitive-fontSize-xs);
+  color: var(--rag-semantic-color-text-muted);
+  font-family: monospace;
+  background-color: var(--rag-semantic-color-background-muted);
+  padding: 2px var(--rag-primitive-spacing-xs);
+  border-radius: var(--rag-primitive-radius-xs);
+}
+
+.rt-ContextMenuItemSubmenuArrow {
+  flex-shrink: 0;
+  color: var(--rag-semantic-color-text-muted);
+  margin-left: auto;
+}
+
+.rt-ContextMenuSubmenu {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  margin-left: var(--rag-primitive-spacing-xs);
+  min-width: 180px;
+  background-color: var(--rag-semantic-color-background-default);
+  border: 1px solid var(--rag-semantic-color-border-muted);
+  border-radius: var(--rag-primitive-radius-lg);
+  box-shadow: var(--rag-primitive-shadow-md);
+  padding: var(--rag-primitive-spacing-xs);
+  z-index: 101;
+  animation: submenuShow 0.12s ease-out;
+
+  // Adjust position if submenu would go off screen
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+    border: 4px solid transparent;
+    border-right-color: var(--rag-semantic-color-border-muted);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+    border: 3px solid transparent;
+    border-right-color: var(--rag-semantic-color-background-default);
+    margin-right: -1px;
+  }
+}
+
+.rt-ContextMenuSeparator {
+  height: 1px;
+  background-color: var(--rag-semantic-color-border-subtle);
+  margin: var(--rag-primitive-spacing-xs) 0;
+}
+
+.rt-ContextMenuEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--rag-primitive-spacing-lg);
+  color: var(--rag-semantic-color-text-muted);
+  font-size: var(--rag-primitive-fontSize-sm);
+  font-style: italic;
+}
+
+// Animations
+@keyframes contextMenuShow {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes submenuShow {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Viewport boundary adjustments
+.rt-ContextMenu {
+  // Ensure menu stays within viewport bounds
+  max-height: calc(100vh - 20px);
+  overflow-y: auto;
+}
+
+// Prevent submenu from going off-screen
+.rt-ContextMenuSubmenu {
+  // Check if submenu would go beyond right edge
+  @supports (right: max(0px, 100vw - 200px)) {
+    &[data-align="left"] {
+      left: auto;
+      right: 100%;
+      margin-left: 0;
+      margin-right: var(--rag-primitive-spacing-xs);
+
+      &::before {
+        left: 100%;
+        right: auto;
+        border-right-color: transparent;
+        border-left-color: var(--rag-semantic-color-border-muted);
+      }
+
+      &::after {
+        left: 100%;
+        right: auto;
+        border-right-color: transparent;
+        border-left-color: var(--rag-semantic-color-background-default);
+        margin-left: -1px;
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .rt-ContextMenu,
+  .rt-ContextMenuSubmenu {
+    background-color: var(--rag-semantic-color-background-default);
+    border-color: var(--rag-semantic-color-border-muted);
+  }
+
+  .rt-ContextMenuItem {
+    color: var(--rag-semantic-color-text-subtle);
+
+    &:hover:not(.rt-disabled) {
+      background-color: var(--rag-semantic-color-background-muted);
+      color: var(--rag-semantic-color-text-default);
+    }
+
+    &.rt-focused {
+      background-color: var(--rag-semantic-color-primary-100);
+      color: var(--rag-semantic-color-primary-900);
+    }
+
+    &.rt-disabled {
+      color: var(--rag-semantic-color-text-disabled);
+    }
+  }
+
+  .rt-ContextMenuItemShortcut {
+    color: var(--rag-semantic-color-text-muted);
+    background-color: var(--rag-semantic-color-background-muted);
+  }
+
+  .rt-ContextMenuItemSubmenuArrow {
+    color: var(--rag-semantic-color-text-muted);
+  }
+
+  .rt-ContextMenuSeparator {
+    background-color: var(--rag-semantic-color-border-subtle);
+  }
+
+  .rt-ContextMenuEmpty {
+    color: var(--rag-semantic-color-text-muted);
+  }
+
+  .rt-ContextMenuSubmenu {
+    &::before {
+      border-right-color: var(--rag-semantic-color-border-muted);
+    }
+
+    &::after {
+      border-right-color: var(--rag-semantic-color-background-default);
+    }
+
+    &[data-align="left"] {
+      &::before {
+        border-left-color: var(--rag-semantic-color-border-muted);
+      }
+
+      &::after {
+        border-left-color: var(--rag-semantic-color-background-default);
+      }
+    }
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .rt-ContextMenu,
+  .rt-ContextMenuSubmenu {
+    border-width: 2px;
+  }
+
+  .rt-ContextMenuItem {
+    &:hover:not(.rt-disabled) {
+      background-color: Highlight;
+      color: HighlightText;
+    }
+
+    &.rt-focused {
+      background-color: Highlight;
+      color: HighlightText;
+      outline: 2px solid HighlightText;
+    }
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .rt-ContextMenu,
+  .rt-ContextMenuSubmenu {
+    animation: none;
+  }
+
+  .rt-ContextMenuItem {
+    transition: none;
+  }
+}

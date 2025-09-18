@@ -1,0 +1,90 @@
+@if (isOpen()) {
+  <div
+    #menu
+    [class]="menuClasses()"
+    [style]="menuStyle()"
+    role="menu"
+    [attr.aria-orientation]="'vertical'"
+  >
+    @for (item of items(); track item.id; let i = $index) {
+      @if (item.separator) {
+        <div class="rt-ContextMenuSeparator" role="separator"></div>
+      } @else {
+        <div
+          [class]="getItemClasses(item, i)"
+          role="menuitem"
+          [attr.aria-disabled]="item.disabled"
+          [attr.aria-haspopup]="item.submenu ? 'menu' : null"
+          [attr.aria-expanded]="item.submenu ? isSubmenuOpen(item.id) : null"
+          [tabindex]="item.disabled ? -1 : 0"
+          (click)="onItemClick(item)"
+          (mouseenter)="onItemMouseEnter(item)"
+        >
+          <div class="rt-ContextMenuItemContent">
+            @if (item.icon) {
+              <rag-icon
+                [img]="item.icon"
+                size="sm"
+                class="rt-ContextMenuItemIcon"
+              ></rag-icon>
+            }
+            
+            <span class="rt-ContextMenuItemLabel">{{ item.label }}</span>
+            
+            @if (item.shortcut) {
+              <span class="rt-ContextMenuItemShortcut">{{ item.shortcut }}</span>
+            }
+            
+            @if (item.submenu) {
+              <rag-icon
+                [img]="chevronRight()"
+                size="xs"
+                class="rt-ContextMenuItemSubmenuArrow"
+              ></rag-icon>
+            }
+          </div>
+
+          <!-- Submenu -->
+          @if (item.submenu && isSubmenuOpen(item.id)) {
+            <div class="rt-ContextMenuSubmenu" role="menu">
+              @for (subItem of item.submenu; track subItem.id) {
+                @if (subItem.separator) {
+                  <div class="rt-ContextMenuSeparator" role="separator"></div>
+                } @else {
+                  <div
+                    class="rt-ContextMenuItem"
+                    [class.rt-disabled]="subItem.disabled"
+                    role="menuitem"
+                    [attr.aria-disabled]="subItem.disabled"
+                    [tabindex]="subItem.disabled ? -1 : 0"
+                    (click)="onItemClick(subItem)"
+                  >
+                    <div class="rt-ContextMenuItemContent">
+                      @if (subItem.icon) {
+                        <rag-icon
+                          [img]="subItem.icon"
+                          size="sm"
+                          class="rt-ContextMenuItemIcon"
+                        ></rag-icon>
+                      }
+                      
+                      <span class="rt-ContextMenuItemLabel">{{ subItem.label }}</span>
+                      
+                      @if (subItem.shortcut) {
+                        <span class="rt-ContextMenuItemShortcut">{{ subItem.shortcut }}</span>
+                      }
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          }
+        </div>
+      }
+    } @empty {
+      <div class="rt-ContextMenuEmpty">
+        <span>No actions available</span>
+      </div>
+    }
+  </div>
+}

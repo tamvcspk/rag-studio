@@ -1,0 +1,15 @@
+<!-- Modern Angular 20: Use modern input composition -->
+<div class="rag-search-input">
+  <rag-input
+    [placeholder]="placeholder()"
+    [size]="size()"
+    [disabled]="disabled()"
+    [type]="'search'"
+    [leftIcon]="leftIcon()"
+    [rightIcon]="rightIcon()"
+    [value]="value"
+    (input)="handleInput($event)"
+    (keydown)="handleKeydown($event)"
+    (onRightIconClick)="handleClear()"
+  />
+</div>

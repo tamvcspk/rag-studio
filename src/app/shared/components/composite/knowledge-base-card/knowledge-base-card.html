@@ -1,0 +1,142 @@
+<rag-card class="knowledge-base-card">
+  <!-- Header -->
+  <div class="card-header">
+    <div class="title-section">
+      <rag-icon 
+        [img]="statusConfig().icon.component" 
+        size="md"
+        [style.color]="statusConfig().icon.color">
+      </rag-icon>
+      <div class="title-info">
+        <h3 class="title">{{ knowledgeBase().name }}</h3>
+        <p class="subtitle">
+          {{ knowledgeBase().product }}@{{ knowledgeBase().version }} • 
+          {{ knowledgeBase().contentSource | titlecase }}
+        </p>
+      </div>
+    </div>
+    <rag-chip 
+      [variant]="statusConfig().chip.variant"
+      [color]="statusConfig().chip.color"
+      [loading]="isIndexing()"
+      [icon]="statusConfig().chip.icon"
+      class="status-chip">
+      {{ knowledgeBase().status | uppercase }}
+    </rag-chip>
+  </div>
+
+  <!-- Description -->
+  @if (knowledgeBase().description) {
+    <p class="description">{{ knowledgeBase().description }}</p>
+  }
+
+  <!-- Progress Bar (only for indexing) -->
+  @if (isIndexing() && knowledgeBase().progressPercentage) {
+    <div class="progress-section">
+      <div class="progress-header">
+        <span class="progress-label">Indexing progress</span>
+        <span class="progress-percentage">{{ knowledgeBase().progressPercentage }}%</span>
+      </div>
+      <rag-progress [value]="knowledgeBase().progressPercentage || 0"></rag-progress>
+    </div>
+  }
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-item">
+      <span class="stat-label">Size</span>
+      <span class="stat-value">{{ knowledgeBase().size }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Chunks</span>
+      <span class="stat-value">
+        @if (isIndexing() && knowledgeBase().progressPercentage) {
+          {{ formatNumber(knowledgeBase().chunks) }}/{{ formatNumber(Math.round(knowledgeBase().chunks / (knowledgeBase().progressPercentage! / 100))) }}
+        } @else {
+          {{ formatNumber(knowledgeBase().chunks) }}
+        }
+      </span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">
+        @if (isIndexing()) {
+          {{ knowledgeBase().documentsCount ? 'Documents' : 'Vectors' }}
+        } @else {
+          Vectors
+        }
+      </span>
+      <span class="stat-value">
+        @if (isIndexing() && knowledgeBase().documentsCount) {
+          {{ formatNumber(knowledgeBase().documentsCount || 0) }}
+        } @else {
+          {{ formatNumber(knowledgeBase().vectors) }}
+        }
+      </span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">
+        @if (isIndexing() && knowledgeBase().estimatedTimeRemaining) {
+          Est. Time
+        } @else {
+          BM25 Terms
+        }
+      </span>
+      <span class="stat-value">
+        @if (isIndexing() && knowledgeBase().estimatedTimeRemaining) {
+          {{ knowledgeBase().estimatedTimeRemaining }}
+        } @else {
+          {{ formatNumber(knowledgeBase().bm25Terms) }}
+        }
+      </span>
+    </div>
+  </div>
+
+  <!-- Metadata chips -->
+  <div class="metadata-chips">
+    <rag-chip variant="outline">Semver: {{ knowledgeBase().semverRange }}</rag-chip>
+    <rag-chip variant="outline">Model: {{ knowledgeBase().embeddingModel }}</rag-chip>
+    @if (knowledgeBase().lastIndexedAt) {
+      <rag-chip variant="outline">Updated: {{ getRelativeTime(knowledgeBase().lastIndexedAt!) }}</rag-chip>
+    }
+  </div>
+
+  <!-- Action buttons -->
+  @if (showActions()) {
+    <div class="action-buttons">
+      @if (isIndexed()) {
+        <rag-button variant="outline" size="sm" (click)="onReindex()">
+          <rag-icon [img]="iconComponents.RefreshCw" size="xs" />
+          Reindex
+        </rag-button>
+        <rag-button variant="ghost" size="sm" (click)="onExport()">
+          <rag-icon [img]="iconComponents.Download" size="xs" />
+          Export
+        </rag-button>
+        <rag-button variant="ghost" size="sm" class="danger-button" (click)="onDelete()">
+          <rag-icon [img]="iconComponents.Trash2" size="xs" />
+          Delete
+        </rag-button>
+      } @else if (isIndexing()) {
+        <rag-button variant="outline" size="sm" (click)="onPause()">
+          <rag-icon [img]="iconComponents.Pause" size="xs" />
+          Pause
+        </rag-button>
+        <rag-button variant="ghost" size="sm" class="danger-button" (click)="onCancel()">
+          <rag-icon [img]="iconComponents.X" size="xs" />
+          Cancel
+        </rag-button>
+      } @else if (isFailed()) {
+        <rag-button variant="solid" size="sm" (click)="onReindex()">
+          <rag-icon [img]="iconComponents.RefreshCw" size="xs" />
+          Retry
+        </rag-button>
+        <rag-button variant="outline" size="sm">
+          View Logs
+        </rag-button>
+        <rag-button variant="ghost" size="sm" class="danger-button" (click)="onDelete()">
+          Remove
+        </rag-button>
+      }
+    </div>
+  }
+</rag-card>

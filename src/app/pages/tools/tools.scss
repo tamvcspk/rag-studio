@@ -1,0 +1,40 @@
+@use '../../shared/styles/animations';
+
+.tools-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100%;
+}
+
+// Spacing between overview component and content
+.tools-page {
+  rag-stats-overview {
+    margin-bottom: var(--rag-primitive-spacing-xl);
+  }
+}
+
+// Tools Content
+.tools-content {
+  
+  // Tools Grid
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--rag-primitive-spacing-xl);
+    margin-bottom: var(--rag-primitive-spacing-xl);
+    
+    // Responsive grid adjustments
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
+    
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: var(--rag-primitive-spacing-lg);
+    }
+  }
+}
+
+.pipelines-grid rapp-tool-card {
+  @extend .animate-fadeInUp;
+}

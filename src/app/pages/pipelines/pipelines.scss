@@ -1,0 +1,31 @@
+@use '../../shared/styles/animations';
+
+.pipelines-page {
+  min-height: 100%;
+
+  .pipelines-content {
+    .pipelines-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: var(--rag-primitive-spacing-lg);
+
+      // Responsive adjustments
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: var(--rag-primitive-spacing-md);
+      }
+
+      @media (max-width: 560px) {
+        grid-template-columns: 1fr;
+        gap: var(--rag-primitive-spacing-md);
+      }
+    }
+  }
+}
+
+// Global adjustments for pipeline cards in grid
+.pipelines-grid rag-pipeline-card {
+  height: fit-content;
+
+  @extend .animate-fadeInUp;
+}

@@ -1,0 +1,68 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rag-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+  flex-shrink: 0;
+}
+
+// Size variants using archetype system
+.rag-icon--xs {
+  width: var(--rag-archetypes-icon-size-xs);
+  height: var(--rag-archetypes-icon-size-xs);
+}
+
+.rag-icon--sm {
+  width: var(--rag-archetypes-icon-size-sm);
+  height: var(--rag-archetypes-icon-size-sm);
+}
+
+.rag-icon--md {
+  width: var(--rag-archetypes-icon-size-md);
+  height: var(--rag-archetypes-icon-size-md);
+}
+
+.rag-icon--lg {
+  width: var(--rag-archetypes-icon-size-lg);
+  height: var(--rag-archetypes-icon-size-lg);
+}
+
+.rag-icon--xl {
+  width: var(--rag-archetypes-icon-size-xl);
+  height: var(--rag-archetypes-icon-size-xl);
+}
+
+// Color variants using archetype system
+.rag-icon--default {
+  color: var(--rag-archetypes-icon-color-default);
+}
+
+.rag-icon--subtle {
+  color: var(--rag-archetypes-icon-color-subtle);
+}
+
+.rag-icon--muted {
+  color: var(--rag-archetypes-icon-color-muted);
+}
+
+.rag-icon--primary {
+  color: var(--rag-archetypes-icon-color-primary);
+}
+
+.rag-icon--success {
+  color: var(--rag-archetypes-icon-color-success);
+}
+
+.rag-icon--warning {
+  color: var(--rag-archetypes-icon-color-warning);
+}
+
+.rag-icon--danger {
+  color: var(--rag-archetypes-icon-color-danger);
+}

@@ -1,0 +1,106 @@
+.create-tool-wizard {
+  .wizard-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--rag-primitive-spacing-xl);
+  }
+  
+  .form-section {
+    .section-title {
+      font-size: var(--rag-primitive-fontSize-md);
+      font-weight: 600;
+      margin-bottom: var(--rag-primitive-spacing-md);
+      color: var(--rag-semantic-color-text-default);
+      border-bottom: 1px solid var(--rag-semantic-color-border-default);
+      padding-bottom: var(--rag-primitive-spacing-sm);
+    }
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--rag-primitive-spacing-lg);
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  // Preview section styling
+  .tool-preview {
+    background: var(--rag-semantic-color-background-subtle);
+    border: 1px solid var(--rag-semantic-color-border-default);
+    border-radius: var(--rag-primitive-radius-md);
+    padding: var(--rag-primitive-spacing-lg);
+    
+    .preview-item {
+      display: flex;
+      align-items: center;
+      gap: var(--rag-primitive-spacing-sm);
+      margin-bottom: var(--rag-primitive-spacing-sm);
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      strong {
+        font-weight: 500;
+        color: var(--rag-semantic-color-text-subtle);
+        min-width: 140px;
+      }
+      
+      code {
+        background: var(--rag-semantic-color-background-muted);
+        padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+        border-radius: var(--rag-primitive-radius-sm);
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+        font-size: var(--rag-primitive-fontSize-xs);
+        color: var(--rag-semantic-color-text-default);
+      }
+    }
+  }
+  
+  .wizard-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--rag-primitive-spacing-md);
+    margin-top: var(--rag-primitive-spacing-xl);
+    padding-top: var(--rag-primitive-spacing-lg);
+    border-top: 1px solid var(--rag-semantic-color-border-default);
+  }
+}
+
+// Responsive design
+@media (max-width: 640px) {
+  .create-tool-wizard .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .create-tool-wizard .wizard-actions {
+    flex-direction: column-reverse;
+    
+    app-rag-button {
+      width: 100%;
+    }
+  }
+}
+
+// Form field overrides for better layout
+:host ::ng-deep {
+  .form-section app-rag-form-field {
+    margin-bottom: var(--rag-primitive-spacing-lg);
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  // Ensure form controls fill available space
+  .full-width app-rag-input,
+  .full-width app-rag-textarea,
+  .full-width app-rag-select {
+    width: 100%;
+  }
+}

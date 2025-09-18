@@ -1,0 +1,55 @@
+<div class="knowledge-bases-page">
+  <div class="sticky-header">
+    <!-- Page Header with Search -->
+    <rag-page-header [title]="'Knowledge Bases'" [description]="'Versioned content repositories for RAG retrieval'"
+      [icon]="iconComponents.BookOpen" [actions]="headerActions()" [showSearch]="true"
+      [searchPlaceholder]="'Search knowledge bases by name, product, or description...'" [searchValue]="searchQuery()"
+      (searchChange)="onSearchChange($event)" (searchClear)="onSearchClear()" size="lg">
+    </rag-page-header>
+
+    <!-- Statistics Overview -->
+    <rag-stats-overview [stats]="kbStatsItems()" [loading]="isLoading()" (filterChange)="onFilterChange($event)">
+    </rag-stats-overview>
+  </div>
+
+  <!-- Knowledge Bases Content -->
+  <div class="knowledge-bases-content">
+    @if (filteredKBs().length === 0 && searchQuery() === '' && selectedFilters().length === 0) {
+    <!-- Empty state - no knowledge bases created yet -->
+    <rag-empty-state-panel
+      [icon]="iconComponents.BookOpen"
+      [title]="'No knowledge bases created yet'"
+      [description]="'Knowledge bases store and index your content for RAG retrieval. Create your first one to get started.'"
+      [actionLabel]="'Create Your First Knowledge Base'"
+      (action)="openCreateWizard()">
+    </rag-empty-state-panel>
+    } @else if (filteredKBs().length === 0) {
+    <!-- No results for current filters -->
+    <rag-empty-state-panel
+      [icon]="SearchIcon"
+      [title]="'No knowledge bases found'"
+      [description]="'Try adjusting your search or filter criteria'"
+      [actionLabel]="'Clear Filters'"
+      (action)="onSearchClear()">
+    </rag-empty-state-panel>
+    } @else {
+    <!-- Knowledge Bases Grid -->
+    <div class="kb-grid">
+      @for (kb of filteredKBs(); track kb.id) {
+      <app-knowledge-base-card [knowledgeBase]="kb" (reindex)="onReindexKB($event)"
+        (export)="onExportKB($event)" (delete)="onDeleteKB($event)" (pause)="onPauseKB($event)"
+        (cancel)="onCancelKB($event)">
+      </app-knowledge-base-card>
+      } @empty {
+      <rag-empty-state-panel
+        [icon]="iconComponents.BookOpen"
+        [title]="'No knowledge bases available'"
+        [description]="'This shouldn\'t happen. Please try refreshing the page.'"
+        [showAction]="false">
+      </rag-empty-state-panel>
+      }
+    </div>
+    }
+  </div>
+
+</div>

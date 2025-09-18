@@ -1,0 +1,30 @@
+<!-- Modern Angular 20: Use @if instead of *ngIf -->
+<div [class]="fieldClasses()">
+  @if (label()) {
+    <label 
+      [class]="labelClasses()" 
+      [for]="htmlFor()">
+      {{ label() }}
+      @if (required()) {
+        <span class="rag-form-field__required">*</span>
+      }
+    </label>
+  }
+
+  @if (description()) {
+    <div class="rag-form-field__description">
+      {{ description() }}
+    </div>
+  }
+
+  <div class="rag-form-field__input">
+    <ng-content />
+  </div>
+
+  @if (error()) {
+    <div class="rag-form-field__error">
+      <rag-icon [img]="AlertCircleIcon" size="xs"></rag-icon>
+      <span>{{ error() }}</span>
+    </div>
+  }
+</div>

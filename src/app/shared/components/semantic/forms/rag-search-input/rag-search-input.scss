@@ -1,0 +1,55 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.rag-search-input {
+  position: relative;
+  width: 100%;
+
+  // Override base input styles for search-specific styling
+  ::ng-deep(.rt-TextFieldInput[type="search"]) {
+
+    // Hide browser search input specific styling
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button,
+    &::-webkit-search-results-button,
+    &::-webkit-search-results-decoration {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+  }
+
+  // Search icon styling
+  ::ng-deep(.rt-input-left-icon) {
+    color: var(--rag-primitive-color-gray-800);
+  }
+
+  // Clear button styling when visible
+  ::ng-deep(.rt-input-right-icon) {
+    color: var(--rag-primitive-color-gray-800);
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.15s ease;
+
+    &:hover {
+      color: var(--rag-semantic-color-text-subtle);
+    }
+  }
+
+  // Show clear button when input has value and is focused/hovered
+  &:hover,
+  &:focus-within {
+    ::ng-deep(.rt-input-right-icon) {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  // Disabled state
+  ::ng-deep(.rt-TextField.rt-disabled) {
+    .rt-input-left-icon {
+      color: var(--rag-primitive-color-gray-700);
+    }
+  }
+}

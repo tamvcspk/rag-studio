@@ -1,0 +1,81 @@
+<div [class]="containerClasses()">
+  <button
+    #trigger
+    type="button"
+    [class]="selectClasses()"
+    [disabled]="disabled()"
+    (click)="toggleDropdown()"
+    [attr.aria-expanded]="isOpen"
+    [attr.aria-haspopup]="'listbox'"
+  >
+    <span class="rt-select-value" [class.rt-placeholder]="!selectedOption()">
+      {{ displayValue() }}
+    </span>
+    
+    <div class="rt-select-icons">
+      @if (clearable() && selectedOption()) {
+        <button
+          type="button"
+          class="rt-select-clear"
+          (click)="clearSelection($event)"
+          [attr.aria-label]="'Clear selection'"
+        >
+          <rag-icon [img]="XIcon" size="xs" />
+        </button>
+      }
+      
+      <rag-icon 
+        [img]="ChevronDownIcon" 
+        size="sm" 
+        class="rt-select-chevron"
+        [class.rt-rotated]="isOpen"
+      />
+    </div>
+  </button>
+</div>
+
+<!-- Overlay template for dropdown -->
+<ng-template #dropdownTemplate>
+  <div class="rt-select-dropdown">
+    @if (searchable()) {
+      <div class="rt-select-search">
+        <input
+          type="text"
+          class="rt-select-search-input"
+          placeholder="Search options..."
+          [value]="searchTerm"
+          (input)="onSearchInput($event)"
+          #searchInput
+        />
+        <rag-icon [img]="SearchIcon" size="xs" class="rt-select-search-icon" />
+      </div>
+    }
+    
+    <ul class="rt-select-options" role="listbox">
+      <li
+        *ngFor="let option of filteredOptions()"
+        class="rt-select-option"
+        [class.rt-selected]="option.value === selectedValue"
+        [class.rt-disabled]="option.disabled"
+        role="option"
+        [attr.aria-selected]="option.value === selectedValue"
+        (click)="selectOption(option)"
+      >
+        <span class="rt-option-label">{{ option.label }}</span>
+        @if (option.value === selectedValue) {
+          <rag-icon 
+            [img]="CheckIcon" 
+            size="xs" 
+            class="rt-option-check"
+          />
+        }
+      </li>
+      
+      @if (filteredOptions().length === 0) {
+        <li class="rt-select-empty">
+          No options found
+        </li>
+      }
+    </ul>
+  </div>
+</ng-template>

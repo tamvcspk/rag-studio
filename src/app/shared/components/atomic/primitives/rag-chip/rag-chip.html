@@ -1,0 +1,22 @@
+<span [class]="chipClasses()" (click)="onChipClick()">
+  @if (dot()) {
+    <span class="status-indicator"></span>
+  }
+  @if (icon() && !dot() && !loading()) {
+    <rag-icon [img]="icon()!" size="xs" />
+  }
+  @if (loading()) {
+    <div class="rt-chip-spinner"></div>
+  }
+  <ng-content></ng-content>
+  @if (removable()) {
+    <button 
+      type="button"
+      class="rt-chip-close"
+      (click)="onRemoveClick($event)"
+      [disabled]="disabled() || loading()"
+      aria-label="Remove chip">
+      <rag-icon [img]="closeIcon" size="xs" />
+    </button>
+  }
+</span>

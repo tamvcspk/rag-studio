@@ -1,0 +1,58 @@
+<div class="flows-page">
+  <div class="sticky-header">
+    <!-- Page Header with Search -->
+    <rag-page-header [title]="'Complete Flows'"
+      [description]="'End-to-end RAG processes combining tools, knowledge bases, and pipelines'" [icon]="GitBranchIcon"
+      [actions]="headerActions()" [showSearch]="true"
+      [searchPlaceholder]="'Search flows by name, description, or tags...'" [searchValue]="searchQuery()"
+      (searchChange)="onSearchChange($event)" (searchClear)="onSearchClear()" size="lg">
+    </rag-page-header>
+
+    <!-- Statistics Overview -->
+    <rag-stats-overview [stats]="flowStatsItems()" [loading]="isLoading()" (filterChange)="onFilterChange($event)">
+    </rag-stats-overview>
+  </div>
+
+
+  <!-- Flows Grid -->
+  <div class="flows-content">
+    @if (filteredFlows().length === 0 && searchQuery() === '' && selectedFilters().length === 0) {
+    <!-- Empty state - no flows created yet -->
+    <rag-empty-state-panel
+      [icon]="GitBranchIcon"
+      [title]="'No flows created yet'"
+      [description]="'Create your first complete flow to get started with end-to-end RAG processes.'"
+      [actionLabel]="'Create Your First Flow'"
+      (action)="onCreateFlow()">
+    </rag-empty-state-panel>
+    } @else if (filteredFlows().length === 0) {
+    <!-- No results for current filters -->
+    <rag-empty-state-panel
+      [icon]="SearchIcon"
+      [title]="'No flows found'"
+      [description]="'Try adjusting your search or filter criteria'"
+      [actionLabel]="'Clear Filters'"
+      (action)="onSearchClear()">
+    </rag-empty-state-panel>
+    } @else {
+    <!-- Flows Grid -->
+    <div class="flows-grid">
+      @for (flow of filteredFlows(); track flow.id) {
+      <app-flow-card [flow]="flow" (onEdit)="onFlowEdit($event)"
+        (onDelete)="onFlowDelete($event)" (onExecute)="onFlowExecute($event)" (onPause)="onFlowPause($event)"
+        (onResume)="onFlowResume($event)" (onDuplicate)="onFlowDuplicate($event)" (onExport)="onFlowExport($event)">
+      </app-flow-card>
+      } @empty {
+      <rag-empty-state-panel
+        [icon]="GitBranchIcon"
+        [title]="'No flows available'"
+        [description]="'This shouldn\'t happen. Please try refreshing the page.'"
+        [showAction]="false">
+      </rag-empty-state-panel>
+      }
+    </div>
+    }
+  </div>
+
+</div>
+

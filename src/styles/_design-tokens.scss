@@ -1,0 +1,644 @@
+// RAG Studio Design Tokens
+// Auto-generated CSS custom properties from design-tokens.ts
+// 
+// This file provides CSS custom properties (CSS variables) for the RAG Studio design system.
+// Components should use these CSS variables for consistent styling and theme support.
+
+// ===== CSS CUSTOM PROPERTIES =====
+// Runtime-injected design tokens with --rag- prefix
+
+:root {
+  // Primitive tokens - Colors
+  --rag-primitive-color-white: hsl(0, 0%, 100%);
+  --rag-primitive-color-black: hsl(0, 0%, 0%);
+  --rag-primitive-color-transparent: transparent;
+  
+  // Gray scale
+  --rag-primitive-color-gray-50: hsl(0, 0%, 99.0%);
+  --rag-primitive-color-gray-100: hsl(0, 0%, 97.3%);
+  --rag-primitive-color-gray-200: hsl(0, 0%, 95.1%);
+  --rag-primitive-color-gray-300: hsl(0, 0%, 93.0%);
+  --rag-primitive-color-gray-400: hsl(0, 0%, 90.9%);
+  --rag-primitive-color-gray-500: hsl(0, 0%, 88.7%);
+  --rag-primitive-color-gray-600: hsl(0, 0%, 85.8%);
+  --rag-primitive-color-gray-700: hsl(0, 0%, 78.0%);
+  --rag-primitive-color-gray-800: hsl(0, 0%, 56.1%);
+  --rag-primitive-color-gray-900: hsl(0, 0%, 52.3%);
+  --rag-primitive-color-gray-950: hsl(0, 0%, 43.5%);
+  --rag-primitive-color-gray-1000: hsl(0, 0%, 9.0%);
+
+  // Blue scale  
+  --rag-primitive-color-blue-50: hsl(206, 100%, 97.0%);
+  --rag-primitive-color-blue-100: hsl(205, 100%, 94.0%);
+  --rag-primitive-color-blue-200: hsl(206, 100%, 90.0%);
+  --rag-primitive-color-blue-300: hsl(206, 98%, 84.0%);
+  --rag-primitive-color-blue-400: hsl(206, 93%, 73.0%);
+  --rag-primitive-color-blue-500: hsl(206, 100%, 50.0%);
+  --rag-primitive-color-blue-600: hsl(208, 100%, 47.0%);
+  --rag-primitive-color-blue-700: hsl(211, 100%, 43.0%);
+  --rag-primitive-color-blue-800: hsl(214, 100%, 37.0%);
+  --rag-primitive-color-blue-900: hsl(217, 91%, 31.0%);
+  --rag-primitive-color-blue-950: hsl(221, 83%, 23.0%);
+  --rag-primitive-color-blue-1000: hsl(224, 76%, 16.0%);
+
+  // Green scale
+  --rag-primitive-color-green-50: hsl(136, 50%, 98.9%);
+  --rag-primitive-color-green-100: hsl(138, 62%, 96.9%);
+  --rag-primitive-color-green-200: hsl(139, 55%, 94.5%);
+  --rag-primitive-color-green-300: hsl(140, 48%, 91.0%);
+  --rag-primitive-color-green-400: hsl(141, 43%, 86.0%);
+  --rag-primitive-color-green-500: hsl(143, 40%, 79.0%);
+  --rag-primitive-color-green-600: hsl(146, 38%, 69.0%);
+  --rag-primitive-color-green-700: hsl(151, 40%, 54.0%);
+  --rag-primitive-color-green-800: hsl(151, 55%, 41.5%);
+  --rag-primitive-color-green-900: hsl(152, 57%, 37.6%);
+  --rag-primitive-color-green-950: hsl(153, 67%, 28.5%);
+  --rag-primitive-color-green-1000: hsl(155, 40%, 14.0%);
+
+  // Red scale
+  --rag-primitive-color-red-50: hsl(359, 100%, 99.4%);
+  --rag-primitive-color-red-100: hsl(359, 100%, 98.6%);
+  --rag-primitive-color-red-200: hsl(360, 100%, 97.0%);
+  --rag-primitive-color-red-300: hsl(360, 91%, 95.0%);
+  --rag-primitive-color-red-400: hsl(360, 83%, 91.0%);
+  --rag-primitive-color-red-500: hsl(360, 77%, 85.0%);
+  --rag-primitive-color-red-600: hsl(359, 75%, 75.0%);
+  --rag-primitive-color-red-700: hsl(358, 75%, 59.0%);
+  --rag-primitive-color-red-800: hsl(358, 69%, 55.0%);
+  --rag-primitive-color-red-900: hsl(358, 65%, 48.0%);
+  --rag-primitive-color-red-950: hsl(354, 50%, 14.6%);
+  --rag-primitive-color-red-1000: hsl(353, 23%, 10.0%);
+
+  // Amber scale
+  --rag-primitive-color-amber-50: hsl(39, 70%, 97.0%);
+  --rag-primitive-color-amber-100: hsl(40, 85%, 95.0%);
+  --rag-primitive-color-amber-200: hsl(40, 84%, 90.0%);
+  --rag-primitive-color-amber-300: hsl(40, 84%, 83.0%);
+  --rag-primitive-color-amber-400: hsl(41, 84%, 78.0%);
+  --rag-primitive-color-amber-500: hsl(41, 88%, 75.0%);
+  --rag-primitive-color-amber-600: hsl(39, 85%, 67.0%);
+  --rag-primitive-color-amber-700: hsl(39, 100%, 57.0%);
+  --rag-primitive-color-amber-800: hsl(35, 91%, 51.0%);
+  --rag-primitive-color-amber-900: hsl(32, 89%, 47.0%);
+  --rag-primitive-color-amber-950: hsl(15, 25%, 15.0%);
+  --rag-primitive-color-amber-1000: hsl(20, 14%, 9.0%);
+
+  // Orange scale
+  --rag-primitive-color-orange-50: hsl(24, 100%, 97.0%);
+  --rag-primitive-color-orange-100: hsl(24, 100%, 95.0%);
+  --rag-primitive-color-orange-200: hsl(24, 100%, 92.0%);
+  --rag-primitive-color-orange-300: hsl(24, 100%, 86.0%);
+  --rag-primitive-color-orange-400: hsl(24, 100%, 78.0%);
+  --rag-primitive-color-orange-500: hsl(25, 95%, 71.0%);
+  --rag-primitive-color-orange-600: hsl(25, 90%, 60.0%);
+  --rag-primitive-color-orange-700: hsl(25, 100%, 54.0%);
+  --rag-primitive-color-orange-800: hsl(25, 100%, 47.0%);
+  --rag-primitive-color-orange-900: hsl(25, 100%, 37.0%);
+  --rag-primitive-color-orange-950: hsl(15, 25%, 15.0%);
+  --rag-primitive-color-orange-1000: hsl(15, 20%, 10.0%);
+
+  // Purple scale
+  --rag-primitive-color-purple-50: hsl(280, 100%, 99.0%);
+  --rag-primitive-color-purple-100: hsl(279, 75%, 97.0%);
+  --rag-primitive-color-purple-200: hsl(280, 56%, 93.0%);
+  --rag-primitive-color-purple-300: hsl(280, 50%, 88.0%);
+  --rag-primitive-color-purple-400: hsl(281, 47%, 82.0%);
+  --rag-primitive-color-purple-500: hsl(282, 44%, 75.0%);
+  --rag-primitive-color-purple-600: hsl(283, 42%, 67.0%);
+  --rag-primitive-color-purple-700: hsl(285, 45%, 58.0%);
+  --rag-primitive-color-purple-800: hsl(288, 56%, 52.0%);
+  --rag-primitive-color-purple-900: hsl(292, 62%, 46.0%);
+  --rag-primitive-color-purple-950: hsl(303, 45%, 15.0%);
+  --rag-primitive-color-purple-1000: hsl(300, 26%, 9.0%);
+
+  // Spacing scale
+  --rag-primitive-spacing-xs: 4px;
+  --rag-primitive-spacing-sm: 8px;
+  --rag-primitive-spacing-md: 12px;
+  --rag-primitive-spacing-lg: 16px;
+  --rag-primitive-spacing-xl: 24px;
+
+  // Typography scale
+  --rag-primitive-fontSize-xs: 11px;
+  --rag-primitive-fontSize-sm: 12px;
+  --rag-primitive-fontSize-md: 14px;
+  --rag-primitive-fontSize-lg: 16px;
+  --rag-primitive-fontSize-xl: 18px;
+
+  --rag-primitive-lineHeight-xs: 16px;
+  --rag-primitive-lineHeight-sm: 16px;
+  --rag-primitive-lineHeight-md: 20px;
+  --rag-primitive-lineHeight-lg: 24px;
+  --rag-primitive-lineHeight-xl: 28px;
+
+  // Font weight scale
+  --rag-primitive-fontWeight-normal: 400;
+  --rag-primitive-fontWeight-medium: 500;
+  --rag-primitive-fontWeight-semibold: 600;
+  --rag-primitive-fontWeight-bold: 700;
+
+  // Border radius scale
+  --rag-primitive-radius-xs: 2px;
+  --rag-primitive-radius-sm: 4px;
+  --rag-primitive-radius-md: 6px;
+  --rag-primitive-radius-lg: 8px;
+  --rag-primitive-radius-xl: 12px;
+  --rag-primitive-radius-xxl: 24px;
+
+  // Border width scale
+  --rag-primitive-borderWidth-1: 1px;
+  --rag-primitive-borderWidth-2: 2px;
+  --rag-primitive-borderWidth-4: 4px;
+  --rag-primitive-borderWidth-8: 8px;
+
+  // Box shadow scale
+  --rag-primitive-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --rag-primitive-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --rag-primitive-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --rag-primitive-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --rag-primitive-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+  // Z-index layering scale
+  --rag-primitive-zIndex-auto: auto;
+  --rag-primitive-zIndex-base: 0;
+  --rag-primitive-zIndex-raised: 10;
+  --rag-primitive-zIndex-sticky: 11;
+  --rag-primitive-zIndex-hidden: -1;
+
+  // Size scale (height/width values)
+  --rag-primitive-size-1: 4px;
+  --rag-primitive-size-2: 8px;
+  --rag-primitive-size-3: 12px;
+  --rag-primitive-size-4: 16px;
+  --rag-primitive-size-5: 20px;
+  --rag-primitive-size-6: 24px;
+  --rag-primitive-size-7: 28px;
+  --rag-primitive-size-8: 32px;
+  --rag-primitive-size-9: 36px;
+  --rag-primitive-size-10: 40px;
+  --rag-primitive-size-11: 44px;
+  --rag-primitive-size-12: 48px;
+  --rag-primitive-size-14: 56px;
+  --rag-primitive-size-16: 64px;
+  --rag-primitive-size-20: 80px;
+  --rag-primitive-size-24: 96px;
+  --rag-primitive-size-28: 112px;
+  --rag-primitive-size-32: 128px;
+  --rag-primitive-size-36: 144px;
+  --rag-primitive-size-40: 160px;
+  --rag-primitive-size-44: 176px;
+  --rag-primitive-size-48: 192px;
+  --rag-primitive-size-52: 208px;
+  --rag-primitive-size-56: 224px;
+  --rag-primitive-size-60: 240px;
+  --rag-primitive-size-64: 256px;
+  --rag-primitive-size-72: 288px;
+  --rag-primitive-size-80: 320px;
+  --rag-primitive-size-96: 384px;
+
+  // Responsive breakpoint scale
+  --rag-primitive-breakpoint-sm: 640px;
+  --rag-primitive-breakpoint-md: 768px;
+  --rag-primitive-breakpoint-lg: 1024px;
+  --rag-primitive-breakpoint-xl: 1280px;
+  --rag-primitive-breakpoint-2xl: 1536px;
+
+  // Semantic tokens
+  --rag-semantic-color-background-default: var(--rag-primitive-color-white);
+  --rag-semantic-color-background-subtle: var(--rag-primitive-color-gray-50);
+  --rag-semantic-color-background-muted: var(--rag-primitive-color-gray-4 00);
+  
+  --rag-semantic-color-border-default: var(--rag-primitive-color-gray-500);
+  --rag-semantic-color-border-subtle: var(--rag-primitive-color-gray-400);
+  --rag-semantic-color-border-muted: var(--rag-primitive-color-gray-600);
+  
+  --rag-semantic-color-text-default: var(--rag-primitive-color-gray-1000);
+  --rag-semantic-color-text-subtle: var(--rag-primitive-color-gray-950);
+  --rag-semantic-color-text-muted: var(--rag-primitive-color-gray-700);
+  --rag-semantic-color-text-disabled: var(--rag-primitive-color-gray-500);
+  --rag-semantic-color-text-inverse: var(--rag-primitive-color-white);
+
+  // Primary colors (blue)
+  --rag-semantic-color-primary-50: var(--rag-primitive-color-blue-50);
+  --rag-semantic-color-primary-100: var(--rag-primitive-color-blue-100);
+  --rag-semantic-color-primary-200: var(--rag-primitive-color-blue-200);
+  --rag-semantic-color-primary-300: var(--rag-primitive-color-blue-300);
+  --rag-semantic-color-primary-400: var(--rag-primitive-color-blue-400);
+  --rag-semantic-color-primary-500: var(--rag-primitive-color-blue-500);
+  --rag-semantic-color-primary-600: var(--rag-primitive-color-blue-600);
+  --rag-semantic-color-primary-700: var(--rag-primitive-color-blue-700);
+  --rag-semantic-color-primary-800: var(--rag-primitive-color-blue-800);
+  --rag-semantic-color-primary-900: var(--rag-primitive-color-blue-900);
+  --rag-semantic-color-primary-950: var(--rag-primitive-color-blue-950);
+  --rag-semantic-color-primary-1000: var(--rag-primitive-color-blue-1000);
+
+  // Success colors (green)  
+  --rag-semantic-color-success-50: var(--rag-primitive-color-green-50);
+  --rag-semantic-color-success-100: var(--rag-primitive-color-green-100);
+  --rag-semantic-color-success-200: var(--rag-primitive-color-green-200);
+  --rag-semantic-color-success-300: var(--rag-primitive-color-green-300);
+  --rag-semantic-color-success-400: var(--rag-primitive-color-green-400);
+  --rag-semantic-color-success-500: var(--rag-primitive-color-green-500);
+  --rag-semantic-color-success-600: var(--rag-primitive-color-green-600);
+  --rag-semantic-color-success-700: var(--rag-primitive-color-green-700);
+  --rag-semantic-color-success-800: var(--rag-primitive-color-green-800);
+  --rag-semantic-color-success-900: var(--rag-primitive-color-green-900);
+  --rag-semantic-color-success-950: var(--rag-primitive-color-green-950);
+  --rag-semantic-color-success-1000: var(--rag-primitive-color-green-1000);
+
+  // Warning colors (amber)
+  --rag-semantic-color-warning-50: var(--rag-primitive-color-amber-50);
+  --rag-semantic-color-warning-100: var(--rag-primitive-color-amber-100);
+  --rag-semantic-color-warning-200: var(--rag-primitive-color-amber-200);
+  --rag-semantic-color-warning-300: var(--rag-primitive-color-amber-300);
+  --rag-semantic-color-warning-400: var(--rag-primitive-color-amber-400);
+  --rag-semantic-color-warning-500: var(--rag-primitive-color-amber-500);
+  --rag-semantic-color-warning-600: var(--rag-primitive-color-amber-600);
+  --rag-semantic-color-warning-700: var(--rag-primitive-color-amber-700);
+  --rag-semantic-color-warning-800: var(--rag-primitive-color-amber-800);
+  --rag-semantic-color-warning-900: var(--rag-primitive-color-amber-900);
+  --rag-semantic-color-warning-950: var(--rag-primitive-color-amber-950);
+  --rag-semantic-color-warning-1000: var(--rag-primitive-color-amber-1000);
+
+  // Danger colors (red)
+  --rag-semantic-color-danger-50: var(--rag-primitive-color-red-50);
+  --rag-semantic-color-danger-100: var(--rag-primitive-color-red-100);
+  --rag-semantic-color-danger-200: var(--rag-primitive-color-red-200);
+  --rag-semantic-color-danger-300: var(--rag-primitive-color-red-300);
+  --rag-semantic-color-danger-400: var(--rag-primitive-color-red-400);
+  --rag-semantic-color-danger-500: var(--rag-primitive-color-red-500);
+  --rag-semantic-color-danger-600: var(--rag-primitive-color-red-600);
+  --rag-semantic-color-danger-700: var(--rag-primitive-color-red-700);
+  --rag-semantic-color-danger-800: var(--rag-primitive-color-red-800);
+  --rag-semantic-color-danger-900: var(--rag-primitive-color-red-900);
+  --rag-semantic-color-danger-950: var(--rag-primitive-color-red-950);
+  --rag-semantic-color-danger-1000: var(--rag-primitive-color-red-1000);
+
+  // Info colors (blue)
+  --rag-semantic-color-info-50: var(--rag-primitive-color-blue-50);
+  --rag-semantic-color-info-100: var(--rag-primitive-color-blue-100);
+  --rag-semantic-color-info-200: var(--rag-primitive-color-blue-200);
+  --rag-semantic-color-info-300: var(--rag-primitive-color-blue-300);
+  --rag-semantic-color-info-400: var(--rag-primitive-color-blue-400);
+  --rag-semantic-color-info-500: var(--rag-primitive-color-blue-500);
+  --rag-semantic-color-info-600: var(--rag-primitive-color-blue-600);
+  --rag-semantic-color-info-700: var(--rag-primitive-color-blue-700);
+  --rag-semantic-color-info-800: var(--rag-primitive-color-blue-800);
+  --rag-semantic-color-info-900: var(--rag-primitive-color-blue-900);
+  --rag-semantic-color-info-950: var(--rag-primitive-color-blue-950);
+  --rag-semantic-color-info-1000: var(--rag-primitive-color-blue-1000);
+
+  // Neutral colors (gray)  
+  --rag-semantic-color-neutral-50: var(--rag-primitive-color-gray-50);
+  --rag-semantic-color-neutral-100: var(--rag-primitive-color-gray-100);
+  --rag-semantic-color-neutral-200: var(--rag-primitive-color-gray-200);
+  --rag-semantic-color-neutral-300: var(--rag-primitive-color-gray-300);
+  --rag-semantic-color-neutral-400: var(--rag-primitive-color-gray-400);
+  --rag-semantic-color-neutral-500: var(--rag-primitive-color-gray-500);
+  --rag-semantic-color-neutral-600: var(--rag-primitive-color-gray-600);
+  --rag-semantic-color-neutral-700: var(--rag-primitive-color-gray-700);
+  --rag-semantic-color-neutral-800: var(--rag-primitive-color-gray-800);
+  --rag-semantic-color-neutral-900: var(--rag-primitive-color-gray-900);
+  --rag-semantic-color-neutral-950: var(--rag-primitive-color-gray-950);
+  --rag-semantic-color-neutral-1000: var(--rag-primitive-color-gray-1000);
+
+  // Component patterns - Button variants
+  --rag-archetypes-button-solid-background: var(--rag-semantic-color-text-default);
+  --rag-archetypes-button-solid-color: var(--rag-semantic-color-text-inverse);
+  --rag-archetypes-button-solid-border: none;
+
+  --rag-archetypes-button-outline-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-button-outline-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-button-outline-border: 1px solid var(--rag-semantic-color-border-default);
+
+  --rag-archetypes-button-ghost-background: transparent;
+  --rag-archetypes-button-ghost-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-button-ghost-border: none;
+
+  --rag-archetypes-button-soft-background: var(--rag-semantic-color-background-muted);
+  --rag-archetypes-button-soft-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-button-soft-border: none;
+
+  // Component patterns - Size variants (standard components)
+  --rag-archetypes-size-xs-height: 24px;
+  --rag-archetypes-size-xs-padding: 0 var(--rag-primitive-spacing-xs);
+  --rag-archetypes-size-xs-fontSize: var(--rag-primitive-fontSize-xs);
+  --rag-archetypes-size-xs-borderRadius: var(--rag-primitive-radius-xs);
+
+  --rag-archetypes-size-sm-height: 28px;
+  --rag-archetypes-size-sm-padding: 0 var(--rag-primitive-spacing-sm);
+  --rag-archetypes-size-sm-fontSize: var(--rag-primitive-fontSize-sm);
+  --rag-archetypes-size-sm-borderRadius: var(--rag-primitive-radius-sm);
+
+  --rag-archetypes-size-md-height: 32px;
+  --rag-archetypes-size-md-padding: 0 var(--rag-primitive-spacing-md);
+  --rag-archetypes-size-md-fontSize: var(--rag-primitive-fontSize-md);
+  --rag-archetypes-size-md-borderRadius: var(--rag-primitive-radius-md);
+
+  --rag-archetypes-size-lg-height: 40px;
+  --rag-archetypes-size-lg-padding: 0 var(--rag-primitive-spacing-lg);
+  --rag-archetypes-size-lg-fontSize: var(--rag-primitive-fontSize-lg);
+  --rag-archetypes-size-lg-borderRadius: var(--rag-primitive-radius-md);
+
+  --rag-archetypes-size-xl-height: 48px;
+  --rag-archetypes-size-xl-padding: 0 var(--rag-primitive-spacing-xl);
+  --rag-archetypes-size-xl-fontSize: var(--rag-primitive-fontSize-xl);
+  --rag-archetypes-size-xl-borderRadius: var(--rag-primitive-radius-lg);
+
+  // Component patterns - Badge sizes (smaller scale)
+  --rag-archetypes-chip-xs-height: 16px;
+  --rag-archetypes-chip-xs-padding: 0 var(--rag-primitive-spacing-xs);
+  --rag-archetypes-chip-xs-fontSize: var(--rag-primitive-fontSize-xs);
+  --rag-archetypes-chip-xs-borderRadius: var(--rag-primitive-radius-xs);
+
+  --rag-archetypes-chip-sm-height: 20px;
+  --rag-archetypes-chip-sm-padding: 0 var(--rag-primitive-spacing-xs);
+  --rag-archetypes-chip-sm-fontSize: var(--rag-primitive-fontSize-xs);
+  --rag-archetypes-chip-sm-borderRadius: var(--rag-primitive-radius-sm);
+
+  --rag-archetypes-chip-md-height: 24px;
+  --rag-archetypes-chip-md-padding: 0 var(--rag-primitive-spacing-sm);
+  --rag-archetypes-chip-md-fontSize: var(--rag-primitive-fontSize-sm);
+  --rag-archetypes-chip-md-borderRadius: var(--rag-primitive-radius-sm);
+
+  --rag-archetypes-chip-lg-height: 28px;
+  --rag-archetypes-chip-lg-padding: 0 var(--rag-primitive-spacing-md);
+  --rag-archetypes-chip-lg-fontSize: var(--rag-primitive-fontSize-md);
+  --rag-archetypes-chip-lg-borderRadius: var(--rag-primitive-radius-md);
+
+  --rag-archetypes-chip-xl-height: 32px;
+  --rag-archetypes-chip-xl-padding: 0 var(--rag-primitive-spacing-lg);
+  --rag-archetypes-chip-xl-fontSize: var(--rag-primitive-fontSize-md);
+  --rag-archetypes-chip-xl-borderRadius: var(--rag-primitive-radius-md);
+
+  // Component patterns - Status indicators
+  --rag-archetypes-status-xs-iconSize: 12px;
+  --rag-archetypes-status-xs-dotSize: 6px;
+  
+  --rag-archetypes-status-sm-iconSize: 14px;
+  --rag-archetypes-status-sm-dotSize: 8px;
+  
+  --rag-archetypes-status-md-iconSize: 16px;
+  --rag-archetypes-status-md-dotSize: 10px;
+  
+  --rag-archetypes-status-lg-iconSize: 20px;
+  --rag-archetypes-status-lg-dotSize: 12px;
+  
+  --rag-archetypes-status-xl-iconSize: 24px;
+  --rag-archetypes-status-xl-dotSize: 14px;
+
+  // Component patterns - Alert variants
+  --rag-archetypes-alert-info-background: var(--rag-semantic-color-primary-100);
+  --rag-archetypes-alert-info-color: var(--rag-semantic-color-primary-950);
+  --rag-archetypes-alert-info-border: 1px solid var(--rag-semantic-color-primary-300);
+  --rag-archetypes-alert-info-iconColor: var(--rag-semantic-color-primary-700);
+
+  --rag-archetypes-alert-success-background: var(--rag-semantic-color-success-100);
+  --rag-archetypes-alert-success-color: var(--rag-semantic-color-success-950);
+  --rag-archetypes-alert-success-border: 1px solid var(--rag-semantic-color-success-300);
+  --rag-archetypes-alert-success-iconColor: var(--rag-semantic-color-success-700);
+
+  --rag-archetypes-alert-warning-background: var(--rag-semantic-color-warning-100);
+  --rag-archetypes-alert-warning-color: var(--rag-semantic-color-warning-950);
+  --rag-archetypes-alert-warning-border: 1px solid var(--rag-semantic-color-warning-300);
+  --rag-archetypes-alert-warning-iconColor: var(--rag-semantic-color-warning-700);
+
+  --rag-archetypes-alert-error-background: var(--rag-semantic-color-danger-100);
+  --rag-archetypes-alert-error-color: var(--rag-semantic-color-danger-950);
+  --rag-archetypes-alert-error-border: 1px solid var(--rag-semantic-color-danger-300);
+  --rag-archetypes-alert-error-iconColor: var(--rag-semantic-color-danger-700);
+
+  // Component patterns - Select variants
+  --rag-archetypes-select-default-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-select-default-border: 1px solid var(--rag-semantic-color-border-default);
+  --rag-archetypes-select-default-color: var(--rag-semantic-color-text-default);
+
+  --rag-archetypes-select-focus-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-select-focus-border: 1px solid var(--rag-semantic-color-primary-500);
+  --rag-archetypes-select-focus-boxShadow: 0 0 0 3px var(--rag-semantic-color-primary-100);
+  --rag-archetypes-select-focus-color: var(--rag-semantic-color-text-default);
+
+  --rag-archetypes-select-error-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-select-error-border: 1px solid var(--rag-semantic-color-danger-500);
+  --rag-archetypes-select-error-boxShadow: 0 0 0 3px var(--rag-semantic-color-danger-100);
+  --rag-archetypes-select-error-color: var(--rag-semantic-color-text-default);
+
+  --rag-archetypes-select-disabled-background: var(--rag-semantic-color-background-muted);
+  --rag-archetypes-select-disabled-border: 1px solid var(--rag-semantic-color-border-subtle);
+  --rag-archetypes-select-disabled-color: var(--rag-semantic-color-text-disabled);
+
+  // Component patterns - Progress variants
+  --rag-archetypes-progress-primary-background: var(--rag-semantic-color-primary-200);
+  --rag-archetypes-progress-primary-fill: var(--rag-semantic-color-primary-600);
+  --rag-archetypes-progress-primary-text: var(--rag-semantic-color-primary-900);
+
+  --rag-archetypes-progress-success-background: var(--rag-semantic-color-success-200);
+  --rag-archetypes-progress-success-fill: var(--rag-semantic-color-success-600);
+  --rag-archetypes-progress-success-text: var(--rag-semantic-color-success-900);
+
+  --rag-archetypes-progress-warning-background: var(--rag-semantic-color-warning-200);
+  --rag-archetypes-progress-warning-fill: var(--rag-semantic-color-warning-600);
+  --rag-archetypes-progress-warning-text: var(--rag-semantic-color-warning-900);
+
+  --rag-archetypes-progress-danger-background: var(--rag-semantic-color-danger-200);
+  --rag-archetypes-progress-danger-fill: var(--rag-semantic-color-danger-600);
+  --rag-archetypes-progress-danger-text: var(--rag-semantic-color-danger-900);
+
+  // Component patterns - Switch variants
+  --rag-archetypes-switch-default-track-background: var(--rag-semantic-color-neutral-300);
+  --rag-archetypes-switch-default-track-borderColor: var(--rag-semantic-color-neutral-400);
+  --rag-archetypes-switch-default-thumb-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-switch-default-thumb-borderColor: var(--rag-semantic-color-neutral-300);
+
+  --rag-archetypes-switch-checked-track-background: var(--rag-semantic-color-primary-500);
+  --rag-archetypes-switch-checked-track-borderColor: var(--rag-semantic-color-primary-600);
+  --rag-archetypes-switch-checked-thumb-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-switch-checked-thumb-borderColor: var(--rag-semantic-color-primary-600);
+
+  --rag-archetypes-switch-disabled-track-background: var(--rag-semantic-color-neutral-200);
+  --rag-archetypes-switch-disabled-track-borderColor: var(--rag-semantic-color-neutral-300);
+  --rag-archetypes-switch-disabled-thumb-background: var(--rag-semantic-color-neutral-100);
+  --rag-archetypes-switch-disabled-thumb-borderColor: var(--rag-semantic-color-neutral-200);
+
+  // Component patterns - Icon sizes and colors
+  --rag-archetypes-icon-size-xs: 12px;
+  --rag-archetypes-icon-size-sm: 14px;
+  --rag-archetypes-icon-size-md: 16px;
+  --rag-archetypes-icon-size-lg: 20px;
+  --rag-archetypes-icon-size-xl: 24px;
+
+  --rag-archetypes-icon-color-default: var(--rag-semantic-color-text-default);
+  --rag-archetypes-icon-color-subtle: var(--rag-semantic-color-text-subtle);
+  --rag-archetypes-icon-color-muted: var(--rag-semantic-color-text-muted);
+  --rag-archetypes-icon-color-primary: var(--rag-semantic-color-primary-600);
+  --rag-archetypes-icon-color-success: var(--rag-semantic-color-success-600);
+  --rag-archetypes-icon-color-warning: var(--rag-semantic-color-warning-600);
+  --rag-archetypes-icon-color-danger: var(--rag-semantic-color-danger-600);
+
+  // Component patterns - Skeleton variants
+  --rag-archetypes-skeleton-text-background: var(--rag-semantic-color-neutral-200);
+  --rag-archetypes-skeleton-text-borderRadius: var(--rag-primitive-radius-xs);
+
+  --rag-archetypes-skeleton-circular-background: var(--rag-semantic-color-neutral-200);
+  --rag-archetypes-skeleton-circular-borderRadius: 50%;
+
+  --rag-archetypes-skeleton-rectangular-background: var(--rag-semantic-color-neutral-200);
+  --rag-archetypes-skeleton-rectangular-borderRadius: var(--rag-primitive-radius-sm);
+
+  // Component patterns - Tooltip variants
+  --rag-archetypes-tooltip-default-background: var(--rag-semantic-color-text-default);
+  --rag-archetypes-tooltip-default-color: var(--rag-semantic-color-text-inverse);
+  --rag-archetypes-tooltip-default-borderRadius: var(--rag-primitive-radius-sm);
+  --rag-archetypes-tooltip-default-boxShadow: var(--rag-primitive-shadow-lg);
+  --rag-archetypes-tooltip-default-fontSize: var(--rag-primitive-fontSize-sm);
+  --rag-archetypes-tooltip-default-padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+
+  // Component patterns - Focus states
+  --rag-archetypes-focus-ring-primary: 0 0 0 2px var(--rag-semantic-color-background-default), 0 0 0 4px var(--rag-semantic-color-primary-500);
+  --rag-archetypes-focus-ring-danger: 0 0 0 2px var(--rag-semantic-color-background-default), 0 0 0 4px var(--rag-semantic-color-danger-500);
+  --rag-archetypes-focus-ring-success: 0 0 0 2px var(--rag-semantic-color-background-default), 0 0 0 4px var(--rag-semantic-color-success-500);
+
+  // Component patterns - Dialog/Modal variants
+  --rag-archetypes-dialog-backdrop-background: rgba(0, 0, 0, 0.5);
+  --rag-archetypes-dialog-backdrop-backdropFilter: blur(4px);
+
+  --rag-archetypes-dialog-container-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-dialog-container-borderRadius: var(--rag-primitive-radius-lg);
+  --rag-archetypes-dialog-container-boxShadow: var(--rag-primitive-shadow-xl);
+  --rag-archetypes-dialog-container-border: 1px solid var(--rag-semantic-color-border-subtle);
+
+  --rag-archetypes-dialog-header-borderBottom: 1px solid var(--rag-semantic-color-border-subtle);
+  --rag-archetypes-dialog-header-padding: var(--rag-primitive-spacing-lg) var(--rag-primitive-spacing-xl);
+  --rag-archetypes-dialog-description-padding: 0 var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl);
+
+  --rag-archetypes-dialog-content-padding: var(--rag-primitive-spacing-xl);
+
+  --rag-archetypes-dialog-footer-borderTop: 1px solid var(--rag-semantic-color-border-subtle);
+  --rag-archetypes-dialog-footer-padding: var(--rag-primitive-spacing-lg) var(--rag-primitive-spacing-xl);
+
+  // Component patterns - Dropdown/Menu variants
+  --rag-archetypes-dropdown-container-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-dropdown-container-borderRadius: var(--rag-primitive-radius-md);
+  --rag-archetypes-dropdown-container-boxShadow: var(--rag-primitive-shadow-lg);
+  --rag-archetypes-dropdown-container-border: 1px solid var(--rag-semantic-color-border-default);
+  --rag-archetypes-dropdown-container-padding: var(--rag-primitive-spacing-xs);
+
+  --rag-archetypes-dropdown-item-default-background: transparent;
+  --rag-archetypes-dropdown-item-default-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-dropdown-item-default-padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+
+  --rag-archetypes-dropdown-item-hover-background: var(--rag-semantic-color-background-subtle);
+  --rag-archetypes-dropdown-item-hover-color: var(--rag-semantic-color-text-default);
+
+  --rag-archetypes-dropdown-item-active-background: var(--rag-semantic-color-primary-100);
+  --rag-archetypes-dropdown-item-active-color: var(--rag-semantic-color-primary-900);
+
+  --rag-archetypes-dropdown-item-disabled-background: transparent;
+  --rag-archetypes-dropdown-item-disabled-color: var(--rag-semantic-color-text-disabled);
+
+  --rag-archetypes-dropdown-separator-background: var(--rag-semantic-color-border-subtle);
+  --rag-archetypes-dropdown-separator-height: 1px;
+  --rag-archetypes-dropdown-separator-margin: var(--rag-primitive-spacing-xs) 0;
+
+  // Component patterns - Toast/Notification variants
+  --rag-archetypes-toast-container-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-toast-container-borderRadius: var(--rag-primitive-radius-md);
+  --rag-archetypes-toast-container-boxShadow: var(--rag-primitive-shadow-lg);
+  --rag-archetypes-toast-container-border: 1px solid var(--rag-semantic-color-border-default);
+  --rag-archetypes-toast-container-padding: var(--rag-primitive-spacing-md);
+
+  --rag-archetypes-toast-success-background: var(--rag-semantic-color-success-50);
+  --rag-archetypes-toast-success-border: 1px solid var(--rag-semantic-color-success-200);
+  --rag-archetypes-toast-success-color: var(--rag-semantic-color-success-900);
+  --rag-archetypes-toast-success-iconColor: var(--rag-semantic-color-success-600);
+
+  --rag-archetypes-toast-warning-background: var(--rag-semantic-color-warning-50);
+  --rag-archetypes-toast-warning-border: 1px solid var(--rag-semantic-color-warning-200);
+  --rag-archetypes-toast-warning-color: var(--rag-semantic-color-warning-900);
+  --rag-archetypes-toast-warning-iconColor: var(--rag-semantic-color-warning-600);
+
+  --rag-archetypes-toast-error-background: var(--rag-semantic-color-danger-50);
+  --rag-archetypes-toast-error-border: 1px solid var(--rag-semantic-color-danger-200);
+  --rag-archetypes-toast-error-color: var(--rag-semantic-color-danger-900);
+  --rag-archetypes-toast-error-iconColor: var(--rag-semantic-color-danger-600);
+
+  --rag-archetypes-toast-info-background: var(--rag-semantic-color-primary-50);
+  --rag-archetypes-toast-info-border: 1px solid var(--rag-semantic-color-primary-200);
+  --rag-archetypes-toast-info-color: var(--rag-semantic-color-primary-900);
+  --rag-archetypes-toast-info-iconColor: var(--rag-semantic-color-primary-600);
+
+  // Component patterns - Form Field variants
+  --rag-archetypes-formField-label-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-formField-label-fontSize: var(--rag-primitive-fontSize-sm);
+  --rag-archetypes-formField-label-fontWeight: 500;
+  --rag-archetypes-formField-label-marginBottom: var(--rag-primitive-spacing-xs);
+
+  --rag-archetypes-formField-description-color: var(--rag-semantic-color-text-muted);
+  --rag-archetypes-formField-description-fontSize: var(--rag-primitive-fontSize-xs);
+  --rag-archetypes-formField-description-marginTop: var(--rag-primitive-spacing-xs);
+
+  --rag-archetypes-formField-error-color: var(--rag-semantic-color-danger-700);
+  --rag-archetypes-formField-error-fontSize: var(--rag-primitive-fontSize-xs);
+  --rag-archetypes-formField-error-marginTop: var(--rag-primitive-spacing-xs);
+
+  --rag-archetypes-formField-required-color: var(--rag-semantic-color-danger-600);
+
+  // Component patterns - Tab Navigation variants
+  --rag-archetypes-tabs-container-background: var(--rag-semantic-color-background-muted);
+  --rag-archetypes-tabs-container-borderRadius: var(--rag-primitive-radius-lg);
+  --rag-archetypes-tabs-container-padding: var(--rag-primitive-spacing-xs);
+  --rag-archetypes-tabs-container-gap: var(--rag-primitive-spacing-xs);
+
+  --rag-archetypes-tabs-trigger-default-background: transparent;
+  --rag-archetypes-tabs-trigger-default-color: var(--rag-semantic-color-text-subtle);
+  --rag-archetypes-tabs-trigger-default-padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-md);
+  --rag-archetypes-tabs-trigger-default-borderRadius: var(--rag-primitive-radius-xxl);
+  --rag-archetypes-tabs-trigger-default-fontSize: var(--rag-primitive-fontSize-sm);
+  --rag-archetypes-tabs-trigger-default-fontWeight: 500;
+
+  --rag-archetypes-tabs-trigger-hover-color: var(--rag-semantic-color-text-default);
+
+  --rag-archetypes-tabs-trigger-active-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-tabs-trigger-active-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-tabs-trigger-active-boxShadow: var(--rag-primitive-shadow-xs);
+
+  --rag-archetypes-tabs-trigger-disabled-opacity: 0.5;
+  --rag-archetypes-tabs-trigger-disabled-cursor: not-allowed;
+
+  // Component patterns - Breadcrumb Navigation variants
+  --rag-archetypes-breadcrumb-container-gap: var(--rag-primitive-spacing-xs);
+  --rag-archetypes-breadcrumb-container-fontSize: var(--rag-primitive-fontSize-sm);
+
+  --rag-archetypes-breadcrumb-item-default-color: var(--rag-semantic-color-text-muted);
+  --rag-archetypes-breadcrumb-item-default-textDecoration: none;
+
+  --rag-archetypes-breadcrumb-item-hover-color: var(--rag-semantic-color-text-default);
+
+  --rag-archetypes-breadcrumb-item-current-color: var(--rag-semantic-color-text-default);
+  --rag-archetypes-breadcrumb-item-current-fontWeight: 500;
+
+  --rag-archetypes-breadcrumb-separator-color: var(--rag-semantic-color-text-muted);
+  --rag-archetypes-breadcrumb-separator-opacity: 0.6;
+
+  // Component patterns - Navigation Bar variants
+  --rag-archetypes-nav-container-background: var(--rag-semantic-color-background-default);
+  --rag-archetypes-nav-container-borderBottom: 1px solid var(--rag-semantic-color-border-default);
+  --rag-archetypes-nav-container-padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+  --rag-archetypes-nav-container-gap: var(--rag-primitive-spacing-sm);
+
+  --rag-archetypes-nav-item-default-background: transparent;
+  --rag-archetypes-nav-item-default-color: var(--rag-semantic-color-text-subtle);
+  --rag-archetypes-nav-item-default-padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+  --rag-archetypes-nav-item-default-borderRadius: var(--rag-primitive-radius-md);
+  --rag-archetypes-nav-item-default-fontSize: var(--rag-primitive-fontSize-sm);
+  --rag-archetypes-nav-item-default-fontWeight: 500;
+
+  --rag-archetypes-nav-item-hover-background: var(--rag-semantic-color-background-subtle);
+  --rag-archetypes-nav-item-hover-color: var(--rag-semantic-color-text-default);
+
+  --rag-archetypes-nav-item-active-background: var(--rag-semantic-color-background-subtle);
+  --rag-archetypes-nav-item-active-color: var(--rag-semantic-color-primary-700);
+
+  --rag-archetypes-nav-item-disabled-opacity: 0.5;
+  --rag-archetypes-nav-item-disabled-cursor: not-allowed;
+}

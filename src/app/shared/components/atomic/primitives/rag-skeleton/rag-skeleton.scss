@@ -1,0 +1,41 @@
+:host {
+  display: block;
+}
+
+.rt-Skeleton {
+  background: linear-gradient(90deg, var(--rag-semantic-color-background-muted) 25%, var(--rag-semantic-color-border-default) 50%, var(--rag-semantic-color-background-muted) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  margin-bottom: var(--rag-primitive-spacing-sm);
+}
+
+.rt-Skeleton:last-child {
+  margin-bottom: 0;
+}
+
+// Variant styles using archetype system
+.rt-Skeleton.rt-variant-text {
+  background: var(--rag-archetypes-skeleton-text-background);
+  border-radius: var(--rag-archetypes-skeleton-text-borderRadius);
+  height: var(--rag-primitive-lineHeight-sm);
+  width: 100%;
+}
+
+.rt-Skeleton.rt-variant-circular {
+  background: var(--rag-archetypes-skeleton-circular-background);
+  border-radius: var(--rag-archetypes-skeleton-circular-borderRadius);
+  width: 40px;
+  height: 40px;
+}
+
+.rt-Skeleton.rt-variant-rectangular {
+  background: var(--rag-archetypes-skeleton-rectangular-background);
+  border-radius: var(--rag-archetypes-skeleton-rectangular-borderRadius);
+  width: 100%;
+  height: 120px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

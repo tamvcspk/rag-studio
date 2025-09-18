@@ -1,0 +1,57 @@
+<div class="tools-page">
+  <div class="sticky-header">
+    <!-- Page Header with Search -->
+    <rag-page-header [title]="'Dynamic MCP Tools'"
+      [description]="'Create and manage tools exposed via Model Context Protocol'" [icon]="WrenchIcon"
+      [actions]="headerActions()" [showSearch]="true"
+      [searchPlaceholder]="'Search tools by name, endpoint, or description...'" [searchValue]="searchQuery()"
+      (searchChange)="onSearchChange($event)" (searchClear)="onSearchClear()" size="lg">
+    </rag-page-header>
+
+    <!-- Statistics Overview -->
+    <rag-stats-overview [stats]="toolStatsItems()" [loading]="isLoading()" (filterChange)="onFilterChange($event)">
+    </rag-stats-overview>
+  </div>
+
+  <!-- Tools Content -->
+  <div class="tools-content">
+    @if (filteredTools().length === 0 && searchQuery() === '' && selectedFilters().length === 0) {
+    <!-- Empty state - no tools created yet -->
+    <rag-empty-state-panel
+      [icon]="WrenchIcon"
+      [title]="'No tools created yet'"
+      [description]="'Create your first dynamic MCP tool to get started with RAG-powered integrations'"
+      [actionLabel]="'Create Your First Tool'"
+      (action)="onCreateTool()">
+    </rag-empty-state-panel>
+    } @else if (filteredTools().length === 0) {
+    <!-- No results for current filters -->
+    <rag-empty-state-panel
+      [icon]="SearchIcon"
+      [title]="'No tools found'"
+      [description]="'Try adjusting your search or filter criteria'"
+      [actionLabel]="'Clear Filters'"
+      (action)="onSearchClear()">
+    </rag-empty-state-panel>
+    } @else {
+    <!-- Tools Grid -->
+    <div class="tools-grid">
+      @for (tool of filteredTools(); track tool.id) {
+      <app-tool-card [tool]="tool" (onActivate)="onToolActivate($event)"
+        (onDeactivate)="onToolDeactivate($event)" (onEdit)="onToolEdit($event)" (onDelete)="onToolDelete($event)"
+        (onRetry)="onToolRetry($event)" (onViewLogs)="onToolViewLogs($event)">
+      </app-tool-card>
+      } @empty {
+      <rag-empty-state-panel
+        [icon]="WrenchIcon"
+        [title]="'No tools available'"
+        [description]="'This shouldn\'t happen. Please try refreshing the page.'"
+        [showAction]="false">
+      </rag-empty-state-panel>
+      }
+    </div>
+    }
+  </div>
+
+
+</div>

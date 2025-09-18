@@ -1,0 +1,34 @@
+<label [class]="wrapperClasses()">
+  <div class="rt-radio-container">
+    <input
+      type="radio"
+      [class]="radioClasses()"
+      [value]="value()"
+      [name]="name()"
+      [checked]="isChecked()"
+      [disabled]="disabled()"
+      (change)="handleChange($event)"
+      (blur)="handleBlur()"
+    />
+    <div class="rt-radio-indicator">
+      @if (isChecked()) {
+        <div class="rt-radio-dot"></div>
+      }
+    </div>
+  </div>
+  
+  @if (label() || description()) {
+    <div class="rt-radio-content">
+      @if (label()) {
+        <div class="rt-radio-label">{{ label() }}</div>
+      }
+      @if (description()) {
+        <div class="rt-radio-description">{{ description() }}</div>
+      }
+    </div>
+  }
+  
+  @if (!label() && !description()) {
+    <ng-content></ng-content>
+  }
+</label>

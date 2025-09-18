@@ -1,0 +1,52 @@
+<nav class="rt-TabNav" role="navigation" aria-label="Main navigation">
+  <div [class]="navListClasses()" role="tablist">
+    @for (item of items(); track trackByItem($index, item)) {
+      @if (item.routerLink) {
+        <!-- Router link variant -->
+        <a
+          [class]="getItemClasses(item)"
+          [routerLink]="item.routerLink"
+          [routerLinkActiveOptions]="{ exact: item.exact || false }"
+          routerLinkActive="rt-active"
+          role="tab"
+          [attr.aria-selected]="isItemActive(item.id)"
+          [attr.aria-disabled]="item.disabled"
+          [attr.aria-label]="item.label"
+          (click)="onItemClick(item, $index)"
+        >
+          @if (item.icon) {
+            <rag-icon
+              [img]="item.icon"
+              size="sm"
+            />
+          }
+          <span class="rt-TabNavItem__label">{{ item.label }}</span>
+        </a>
+      } @else {
+        <!-- Button variant -->
+        <button
+          [class]="getItemClasses(item)"
+          type="button"
+          role="tab"
+          [attr.aria-selected]="isItemActive(item.id)"
+          [attr.aria-disabled]="item.disabled"
+          [attr.aria-label]="item.label"
+          [disabled]="item.disabled || disabled()"
+          (click)="onItemClick(item, $index)"
+        >
+          @if (item.icon) {
+            <rag-icon
+              [img]="item.icon"
+              size="sm"
+            />
+          }
+          <span class="rt-TabNavItem__label">{{ item.label }}</span>
+        </button>
+      }
+    } @empty {
+      <div class="rt-TabNavEmpty" role="alert">
+        No navigation items available
+      </div>
+    }
+  </div>
+</nav>
