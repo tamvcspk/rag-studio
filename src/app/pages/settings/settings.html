@@ -17,14 +17,12 @@
       (selectedIndexChange)="onTabIndexChange($event)">
       
       <!-- General Settings Tab -->
-      <ng-template 
-        ragTabPanel="general" 
-        [label]="'General'" 
+      <ng-template
+        ragTabPanel="general"
+        [label]="'General'"
         [icon]="SettingsIcon">
         <div class="settings-tab-content">
-          <div class="placeholder-panel">
-            <p>General settings panel - Coming soon</p>
-          </div>
+          <rag-general-settings-panel />
         </div>
       </ng-template>
 
@@ -34,9 +32,7 @@
         [label]="'Security'"
         [icon]="ShieldIcon">
         <div class="settings-tab-content">
-          <div class="placeholder-panel">
-            <p>Security settings panel - Coming soon</p>
-          </div>
+          <rag-security-settings-panel />
         </div>
       </ng-template>
       

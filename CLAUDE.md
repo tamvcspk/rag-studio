@@ -15,8 +15,9 @@ For detailed project information, refer to the `docs/` folder:
 - **Installation Guides**: `docs/installation/` - Setup and installation documentation
 
 ### Development Best Practices
-- **Development Guidelines**: See `docs/DEVELOPMENT_GUIDELINES.md` for comprehensive Angular 20+, Rust, testing, and performance guidelines
-- **Command Reference**: See `docs/COMMAND_REFERENCE.md` for all development commands, Tauri commands, and operational procedures
+- **Development Conventions**: `docs/DEVELOPMENT_CONVENTIONS.md` - **AUTHORITATIVE** source for all coding standards, component architecture, naming conventions, and project structure patterns
+- **Development Guidelines**: `docs/DEVELOPMENT_GUIDELINES.md` - Comprehensive Angular 20+, Rust, testing, and performance guidelines
+- **Command Reference**: `docs/COMMAND_REFERENCE.md` - All development commands, Tauri commands, and operational procedures
 - **Angular Best Practices**: Use the Angular CLI MCP tool (`mcp__angular-cli__get_best_practices`) for current Angular 20+ guidelines
 
 ## Project Overview
@@ -348,4 +349,22 @@ For comprehensive development guidelines including Angular 20+, Rust, service st
 - **Angular 20+**: Use standalone components, signals, modern control flow (`@if`, `@for`, `@switch`)
 - **Rust Best Practices**: Follow comprehensive Rust idioms, error handling, and async patterns
 - **Service Structure**: Enforce standardized service patterns as defined in CORE_DESIGN.md
+
+### Development Conventions
+
+**IMPORTANT**: Follow all development conventions documented in `docs/DEVELOPMENT_CONVENTIONS.md`:
+
+- **Angular Component Architecture**: Flat directory structure, separate HTML/TS files, rag-prefixed naming
+- **Angular 20+ Standards**: Signal-based components, modern control flow, standalone architecture
+- **Rust Service Patterns**: Standardized service structure, async traits, proper error handling
+- **Testing Standards**: Unit tests co-located, integration tests in tests/ directory
+- **File Naming**: Consistent naming patterns across Angular, Rust, and documentation files
+
+Key rules to remember:
+- Components: Flat structure, separate HTML files, no inline templates
+- Naming: `rag-component-name` selector, `component-name` directory/files
+- Import paths: Relative imports based on component location
+- Testing: Maintain 90%+ coverage with proper separation
+
+See `docs/DEVELOPMENT_CONVENTIONS.md` for complete conventions reference.
 

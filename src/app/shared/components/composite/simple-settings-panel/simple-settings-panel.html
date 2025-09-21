@@ -1,0 +1,179 @@
+<div class="simple-settings-panel">
+  @if (settingsStore.error()) {
+    <rag-alert variant="error" [icon]="'alert-circle'">
+      {{ settingsStore.error() }}
+    </rag-alert>
+  }
+
+  <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="settings-form">
+
+    <!-- Server Settings Section -->
+    <rag-settings-section
+      title="Server Settings"
+      description="Configure MCP server and connection settings"
+      [icon]="ServerIcon">
+
+      <div class="server-status" slot="header-actions">
+        Status: {{ serverStatus() }}
+      </div>
+
+      <div class="form-grid">
+        <rag-form-field label="Enable MCP Server">
+          <rag-checkbox formControlName="mcpServerEnabled">
+            Start server automatically
+          </rag-checkbox>
+        </rag-form-field>
+
+        <rag-form-field label="Server Port">
+          <input
+            type="number"
+            formControlName="mcpServerPort"
+            [disabled]="settingsStore.isLoading()"
+            min="1024"
+            max="65535"
+            class="form-input" />
+        </rag-form-field>
+
+        <rag-form-field label="Max Connections">
+          <input
+            type="number"
+            formControlName="maxConnections"
+            [disabled]="settingsStore.isLoading()"
+            min="1"
+            max="1000"
+            class="form-input" />
+        </rag-form-field>
+      </div>
+
+      <div class="section-actions">
+        @if (isServerRunning()) {
+          <rag-button
+            variant="outline"
+            color="red"
+            [loading]="settingsStore.isLoading()"
+            (click)="stopServer()">
+            Stop Server
+          </rag-button>
+        } @else {
+          <rag-button
+            variant="solid"
+            color="green"
+            [loading]="settingsStore.isLoading()"
+            (click)="startServer()">
+            Start Server
+          </rag-button>
+        }
+      </div>
+    </rag-settings-section>
+
+    <!-- Knowledge Base Settings Section -->
+    <rag-settings-section
+      title="Knowledge Base Settings"
+      description="Configure embedding models, chunk size, and search parameters"
+      [icon]="DatabaseIcon">
+
+      <div class="form-grid">
+        <rag-form-field label="Chunk Size (tokens)">
+          <input
+            type="number"
+            formControlName="chunkSize"
+            [disabled]="settingsStore.isLoading()"
+            min="128"
+            max="2048"
+            class="form-input" />
+        </rag-form-field>
+
+        <rag-form-field label="Search Top-K Results">
+          <input
+            type="number"
+            formControlName="searchTopK"
+            [disabled]="settingsStore.isLoading()"
+            min="1"
+            max="50"
+            class="form-input" />
+        </rag-form-field>
+
+        <rag-form-field label="Search Options">
+          <rag-checkbox formControlName="enableHybridSearch">
+            Enable hybrid search (Vector + BM25)
+          </rag-checkbox>
+        </rag-form-field>
+      </div>
+    </rag-settings-section>
+
+    <!-- System Settings Section -->
+    <rag-settings-section
+      title="System Settings"
+      description="Configure storage quotas, cache settings, and logging"
+      [icon]="SettingsIcon">
+
+      <div class="form-grid">
+        <rag-form-field label="Storage Quota (GB)">
+          <input
+            type="number"
+            formControlName="storageQuotaGb"
+            [disabled]="settingsStore.isLoading()"
+            min="1"
+            max="50"
+            class="form-input" />
+        </rag-form-field>
+
+        <rag-form-field label="Backup Options">
+          <rag-checkbox formControlName="autoBackup">
+            Enable automatic backups
+          </rag-checkbox>
+        </rag-form-field>
+      </div>
+    </rag-settings-section>
+
+    <!-- Security Settings Section -->
+    <rag-settings-section
+      title="Security Settings"
+      description="Configure air-gapped mode and data protection settings"
+      [icon]="ShieldIcon">
+
+      <div class="security-status" slot="header-actions">
+        Mode: {{ securityMode() }}
+      </div>
+
+      <div class="form-grid">
+        <rag-form-field label="Network Security">
+          <rag-checkbox formControlName="airGappedMode">
+            Enable air-gapped mode (requires restart)
+          </rag-checkbox>
+        </rag-form-field>
+
+        <rag-form-field label="Data Protection">
+          <rag-checkbox formControlName="encryptData">
+            Encrypt data at rest
+          </rag-checkbox>
+        </rag-form-field>
+      </div>
+
+      @if (settingsForm.value.airGappedMode) {
+        <rag-alert variant="warning" [icon]="'alert-triangle'">
+          Air-gapped mode will be enabled after application restart
+        </rag-alert>
+      }
+    </rag-settings-section>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <rag-button
+        type="button"
+        variant="outline"
+        (click)="resetSettings()"
+        [disabled]="settingsStore.isLoading()">
+        Reset to Defaults
+      </rag-button>
+
+      <rag-button
+        type="submit"
+        variant="solid"
+        [loading]="settingsStore.isLoading()"
+        [disabled]="settingsForm.invalid">
+        Save All Settings
+      </rag-button>
+    </div>
+  </form>
+</div>

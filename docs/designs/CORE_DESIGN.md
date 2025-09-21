@@ -187,6 +187,21 @@ core/tests/
 4. **Discoverability**: Developers can quickly understand any service by following the standard pattern
 5. **Scalability**: Easy to add new services following the established pattern
 
+## Angular Component Architecture Guidelines
+
+**NOTE**: Complete Angular component architecture guidelines, conventions, and implementation standards have been consolidated into `docs/DEVELOPMENT_CONVENTIONS.md`.
+
+### Key Component Structure Summary
+
+- **3-Tier Architecture**: Atomic → Semantic → Composite components
+- **Flat Directory Structure**: All composite components at root level (no subdirectories)
+- **File Separation**: Always separate `.ts`, `.html`, `.scss` files (no inline templates)
+- **Naming Convention**: `rag-component-name` selector, `component-name` directory/files
+- **Angular 20+ Standards**: Signal-based, standalone components with modern control flow
+
+**For detailed component conventions, implementation patterns, and examples, see:**
+`docs/DEVELOPMENT_CONVENTIONS.md` - Authoritative source for all component architecture standards
+
 ## 1. Architecture Overview and Process Boundaries
 
 ### Overview Diagram

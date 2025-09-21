@@ -1,86 +1,185 @@
-<form [formGroup]="securityForm" (ngSubmit)="onSave()">
-  <!-- Network Security -->
-  <rag-settings-section title="Network Security" description="Control network access and external connections"
-    [icon]="NetworkIcon" variant="card">
-
-    <rag-settings-item label="Air-Gapped Mode"
-      description="Block all outbound network connections after setup. Ensures complete data isolation."
-      layout="horizontal">
-      <rag-switch formControlName="airGappedMode" />
-    </rag-settings-item>
-
-    @if (securityForm.get('airGappedMode')?.value) {
-    <rag-alert variant="warning" title="Air-Gapped Mode Active">
-      All external network access will be blocked. You won't be able to download new models or updates.
+<div class="security-settings-panel">
+  @if (settingsStore.error()) {
+    <rag-alert variant="error" [icon]="'alert-circle'">
+      {{ settingsStore.error() }}
     </rag-alert>
-    }
+  }
 
-    <rag-settings-item label="Network Policy" description="Define which network operations are allowed"
-      layout="horizontal">
-      <rag-select formControlName="networkPolicy" [options]="networkPolicyOptions()"
-        [disabled]="securityForm.get('airGappedMode')?.value" placeholder="Select policy" />
-    </rag-settings-item>
-  </rag-settings-section>
+  <!-- Security Status Alert -->
+  <rag-alert
+    [variant]="securityStatusVariant()"
+    [icon]="securityStatusIcon()">
+    {{ securityStatusMessage() }}
+  </rag-alert>
 
-  <!-- Data Protection -->
-  <rag-settings-section title="Data Protection" description="Encryption and data security settings" [icon]="LockIcon"
-    variant="card">
+  <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="settings-form">
 
-    <rag-settings-item label="Encrypt Data at Rest"
-      description="Encrypt knowledge bases and sensitive data stored on disk" layout="horizontal">
-      <rag-switch formControlName="encryptData" />
-    </rag-settings-item>
+    <!-- Network Security Section -->
+    <rag-settings-section
+      title="Network Security"
+      description="Configure network access and air-gapped mode settings"
+      [icon]="NetworkIcon">
 
-    <rag-settings-item label="Citation Policy"
-      description="Require citations for all RAG responses (recommended for transparency)" layout="horizontal">
-      <rag-switch formControlName="citationPolicy" />
-    </rag-settings-item>
+      <div class="security-status" slot="header-actions">
+        Mode: {{ networkMode() }}
+      </div>
 
-    @if (!securityForm.get('citationPolicy')?.value) {
-    <rag-alert variant="info" title="Citation Policy Disabled">
-      RAG responses may be generated without source citations. Consider enabling for better transparency.
-    </rag-alert>
-    }
-  </rag-settings-section>
+      <div class="form-grid">
+        <rag-form-field label="Air-gapped Mode">
+          <rag-checkbox formControlName="airGappedMode">
+            Enable air-gapped mode (blocks all outbound connections)
+          </rag-checkbox>
+        </rag-form-field>
 
-  <!-- Access Control -->
-  <rag-settings-section title="Access Control" description="Manage permissions and access levels" [icon]="ShieldIcon"
-    variant="card">
+        @if (!settingsForm.value.airGappedMode) {
+          <rag-form-field label="Network Policy">
+            <select
+              formControlName="networkPolicy"
+              [disabled]="settingsStore.isLoading()"
+              class="form-select">
+              <option value="strict">Strict (Minimal connections)</option>
+              <option value="moderate">Moderate (Required connections only)</option>
+              <option value="open">Open (All connections allowed)</option>
+            </select>
+          </rag-form-field>
 
-    <rag-settings-item label="Default Permission Level"
-      description="Default access level for file system and process operations" layout="horizontal">
-      <rag-toggle-group formControlName="permissionLevel" [options]="permissionLevelOptions()" size="md" />
-    </rag-settings-item>
+          <rag-form-field label="Connection Options">
+            <rag-checkbox formControlName="allowOutboundConnections">
+              Allow outbound connections for updates
+            </rag-checkbox>
+          </rag-form-field>
+        }
+      </div>
 
-    <rag-settings-item label="Audit Logging"
-      description="Log all security-related operations and permission escalations" layout="horizontal">
-      <rag-switch formControlName="auditLogging" />
-    </rag-settings-item>
-  </rag-settings-section>
+      @if (settingsForm.value.airGappedMode) {
+        <rag-alert variant="warning" [icon]="'alert-triangle'">
+          Air-gapped mode will be enabled after application restart. All network connections will be blocked.
+        </rag-alert>
+      }
+    </rag-settings-section>
 
-  <!-- Privacy & Logging -->
-  <rag-settings-section title="Privacy & Logging" description="Control what information is logged and retained"
-    [icon]="EyeIcon" variant="card">
+    <!-- Data Protection Section -->
+    <rag-settings-section
+      title="Data Protection"
+      description="Configure encryption and data security settings"
+      [icon]="LockIcon">
 
-    <rag-settings-item label="Log Redaction" description="Automatically redact sensitive information from log files"
-      layout="horizontal">
-      <rag-switch formControlName="logRedaction" />
-    </rag-settings-item>
+      <div class="encryption-status" slot="header-actions">
+        Encryption: {{ encryptionStatus() }}
+      </div>
 
-    <rag-settings-item label="Log Retention (Days)" description="How long to keep log files before automatic deletion"
-      layout="horizontal">
-      <rag-select formControlName="logRetention" [options]="logRetentionOptions()"
-        placeholder="Select retention period" />
-    </rag-settings-item>
-  </rag-settings-section>
+      <div class="form-grid">
+        <rag-form-field label="Data Encryption">
+          <rag-checkbox formControlName="encryptData">
+            Encrypt data at rest (recommended)
+          </rag-checkbox>
+        </rag-form-field>
 
-  <!-- Actions -->
-  <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
-    <rag-button variant="outline" type="button" (click)="onReset()">
-      Reset to Defaults
-    </rag-button>
-    <rag-button variant="solid" type="submit" [loading]="isSaving()" [disabled]="!securityForm.valid">
-      Save Security Settings
-    </rag-button>
-  </div>
-</form>
+        @if (settingsForm.value.encryptData) {
+          <rag-form-field label="Encryption Strength">
+            <select
+              formControlName="encryptionStrength"
+              [disabled]="settingsStore.isLoading()"
+              class="form-select">
+              <option value="aes-128">AES-128 (Standard)</option>
+              <option value="aes-256">AES-256 (High Security)</option>
+              <option value="chacha20">ChaCha20-Poly1305 (Modern)</option>
+            </select>
+          </rag-form-field>
+        }
+      </div>
+
+      @if (settingsForm.value.encryptData && !isEncryptionEnabled()) {
+        <rag-alert variant="info" [icon]="'info'">
+          Encryption will be applied to new data. Existing data will be encrypted during the next backup.
+        </rag-alert>
+      }
+    </rag-settings-section>
+
+    <!-- Audit & Compliance Section -->
+    <rag-settings-section
+      title="Audit & Compliance"
+      description="Configure logging, auditing, and compliance settings"
+      [icon]="FileTextIcon">
+
+      <div class="audit-status" slot="header-actions">
+        Audit: {{ auditStatus() }}
+      </div>
+
+      <div class="form-grid">
+        <rag-form-field label="Audit Logging">
+          <rag-checkbox formControlName="auditLogging">
+            Enable comprehensive audit logging
+          </rag-checkbox>
+        </rag-form-field>
+
+        <rag-form-field label="Log Retention (days)">
+          <input
+            type="number"
+            formControlName="logRetention"
+            [disabled]="settingsStore.isLoading()"
+            min="7"
+            max="365"
+            class="form-input" />
+        </rag-form-field>
+
+        <rag-form-field label="Privacy Options">
+          <rag-checkbox formControlName="logRedaction">
+            Enable log redaction (remove sensitive data)
+          </rag-checkbox>
+        </rag-form-field>
+      </div>
+    </rag-settings-section>
+
+    <!-- Citation & Permission Section -->
+    <rag-settings-section
+      title="Citations & Permissions"
+      description="Configure citation policies and permission levels"
+      [icon]="EyeIcon">
+
+      <div class="form-grid">
+        <rag-form-field label="Citation Policy">
+          <rag-checkbox formControlName="citationPolicy">
+            Enforce strict citation policy
+          </rag-checkbox>
+        </rag-form-field>
+
+        <rag-form-field label="Response Requirements">
+          <rag-checkbox formControlName="requireCitations">
+            Require citations for all responses ("no citation → no answer")
+          </rag-checkbox>
+        </rag-form-field>
+
+        <rag-form-field label="Permission Level">
+          <select
+            formControlName="permissionLevel"
+            [disabled]="settingsStore.isLoading()"
+            class="form-select">
+            <option value="basic">Basic (Read-only operations)</option>
+            <option value="standard">Standard (Read-write operations)</option>
+            <option value="admin">Admin (Full system access)</option>
+          </select>
+        </rag-form-field>
+      </div>
+    </rag-settings-section>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <rag-button
+        type="button"
+        variant="outline"
+        (click)="resetSettings()"
+        [disabled]="settingsStore.isLoading()">
+        Reset to Defaults
+      </rag-button>
+
+      <rag-button
+        type="submit"
+        variant="solid"
+        [loading]="settingsStore.isLoading()"
+        [disabled]="settingsForm.invalid">
+        Save Security Settings
+      </rag-button>
+    </div>
+  </form>
+</div>

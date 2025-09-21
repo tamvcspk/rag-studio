@@ -1,6 +1,6 @@
 import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Settings as SettingsIcon, Shield, Zap, Code, Database, Info, Server } from 'lucide-angular';
+import { Settings as SettingsIcon, Shield, Code, Database, Info } from 'lucide-angular';
 
 import {
   RagTabs,
@@ -8,6 +8,8 @@ import {
 } from '../../shared/components/semantic/navigation/rag-tabs/rag-tabs';
 import {
   RagSimpleSettingsPanel,
+  RagGeneralSettingsPanel,
+  RagSecuritySettingsPanel,
   EmptyStatePanel
 } from '../../shared/components/composite';
 import {
@@ -18,29 +20,6 @@ import { RagCard } from '../../shared/components/semantic/data-display';
 import { RagPageHeader } from '../../shared/components/semantic/navigation';
 import { SettingsStore } from '../../shared/store/settings.store';
 
-interface GeneralSettings {
-  workspaceName: string;
-  dataDirectory: string;
-  autoSave: boolean;
-  autoBackup: boolean;
-  backupInterval: string;
-  maxBackups: number;
-  logLevel: string;
-  theme: string;
-  language: string;
-}
-
-interface SecuritySettings {
-  airGappedMode: boolean;
-  networkPolicy: string;
-  encryptData: boolean;
-  logRetention: number;
-  logRedaction: boolean;
-  citationPolicy: boolean;
-  permissionLevel: string;
-  auditLogging: boolean;
-}
-
 @Component({
   selector: 'app-settings',
   standalone: true,
@@ -49,6 +28,8 @@ interface SecuritySettings {
     RagTabs,
     RagTabPanelDirective,
     RagSimpleSettingsPanel,
+    RagGeneralSettingsPanel,
+    RagSecuritySettingsPanel,
     EmptyStatePanel,
     RagButton,
     RagIcon,
@@ -65,11 +46,9 @@ export class Settings {
   // Icon constants
   readonly SettingsIcon = SettingsIcon;
   readonly ShieldIcon = Shield;
-  readonly ZapIcon = Zap;
   readonly CodeIcon = Code;
   readonly DatabaseIcon = Database;
   readonly InfoIcon = Info;
-  readonly ServerIcon = Server;
 
   // Modern Angular 20: Use signals for reactive state
   private readonly selectedTabIndex = signal<number>(0);
@@ -96,20 +75,5 @@ export class Settings {
 
   onTabIndexChange(index: number): void {
     this.selectedTabIndex.set(index);
-  }
-
-  onGeneralSettingsChange(settings: GeneralSettings): void {
-    console.log('General settings updated:', settings);
-    // Settings are now managed by the SettingsStore in individual panels
-  }
-
-  onSecuritySettingsChange(settings: SecuritySettings): void {
-    console.log('Security settings updated:', settings);
-    // Settings are now managed by the SettingsStore in individual panels
-  }
-
-  selectDataDirectory(): void {
-    // Directory selection is now handled by the SettingsStore
-    this.settingsStore.selectDataDirectory();
   }
 }

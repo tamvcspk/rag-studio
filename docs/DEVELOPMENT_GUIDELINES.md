@@ -88,14 +88,13 @@ export class ExampleComponent {
 - Follow the pattern: Store → Component, not Service → Component
 
 ### Design System Integration
+**NOTE**: Complete design system and component architecture standards are documented in `docs/DEVELOPMENT_CONVENTIONS.md`.
+
 - Use Radix-inspired design system components consistently
 - Use Lucide Icons for all iconography (3,300+ icons, tree-shakeable)
-- Implement atomic, semantic, and composite component architecture:
-  - Atomic: RagButton, RagChip, RagSpinner, RagIcon, etc.
-  - Semantic: RagCard, RagFormField, RagSearchInput, etc.
-  - Composite: ToolCard, PipelineDesigner, CreateToolWizard, etc.
-- Use SCSS with CSS custom properties for theming (light/dark mode support)
-- Implement responsive layouts using CSS Grid and Flexbox
+- 3-tier component architecture: Atomic → Semantic → Composite
+- SCSS with CSS custom properties for theming (light/dark mode support)
+- Responsive layouts using CSS Grid and Flexbox
 
 ### Migration from Older Angular Versions
 - Replace `@Input()` with `input()` or `input.required()`
@@ -118,7 +117,7 @@ export class ExampleComponent {
 
 ## Service Structure Guidelines
 
-**IMPORTANT: All services must follow the consistent service structure pattern defined in CORE_DESIGN.md.**
+**IMPORTANT: All services must follow the consistent service structure pattern defined in `docs/DEVELOPMENT_CONVENTIONS.md` and `docs/designs/CORE_DESIGN.md`.**
 
 ### Service Organization
 
