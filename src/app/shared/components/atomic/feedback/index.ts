@@ -4,3 +4,4 @@ export type { RagToastAction } from './rag-toast/rag-toast';
 export { RagToastService } from './rag-toast/rag-toast.service';
 export type { RagToastConfig } from './rag-toast/rag-toast.service';
 export { RagStatusIndicator } from './rag-status-indicator/rag-status-indicator';
+export { RagTooltip } from './rag-tooltip/rag-tooltip';

@@ -29,6 +29,8 @@ pub struct AppState {
     pub metrics: AppMetrics,
     pub is_loading: bool,
     pub last_error: Option<String>,
+    pub mcp_server_running: bool,
+    pub air_gapped_mode: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -91,6 +93,8 @@ impl Default for AppState {
             metrics: AppMetrics::default(),
             is_loading: false,
             last_error: None,
+            mcp_server_running: false,
+            air_gapped_mode: false,
         }
     }
 }
@@ -168,6 +172,11 @@ impl Manager {
     pub fn set_app_handle(&mut self, app_handle: AppHandle) {
         self.app_handle = Some(app_handle);
         info!("Tauri app handle set for real-time events");
+    }
+
+    /// Get application state for reading/writing
+    pub async fn get_app_state(&self) -> Arc<RwLock<AppState>> {
+        self.app_state.clone()
     }
 
     /// Emit state delta to frontend (real-time sync)

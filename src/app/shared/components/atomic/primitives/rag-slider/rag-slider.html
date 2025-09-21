@@ -1,0 +1,49 @@
+<div [class]="wrapperClasses()">
+  @if (label()) {
+    <label class="rt-slider-label">
+      {{ label() }}
+    </label>
+  }
+
+  <div class="rt-slider-container">
+    @if (showMinMax()) {
+      <span class="rt-slider-min-value">{{ min() }}{{ unit() }}</span>
+    }
+
+    <div class="rt-slider-track-container">
+      <input
+        type="range"
+        [class]="sliderClasses()"
+        [min]="min()"
+        [max]="max()"
+        [step]="step()"
+        [value]="value"
+        [disabled]="disabled()"
+        (input)="handleInput($event)"
+        (blur)="handleBlur()"
+      />
+      <div class="rt-slider-track">
+        <div
+          class="rt-slider-progress"
+          [style.width.%]="progressPercentage()"
+        ></div>
+      </div>
+    </div>
+
+    @if (showMinMax()) {
+      <span class="rt-slider-max-value">{{ max() }}{{ unit() }}</span>
+    }
+  </div>
+
+  @if (showValue()) {
+    <div class="rt-slider-value-display">
+      {{ displayValue() }}
+    </div>
+  }
+
+  @if (description()) {
+    <div class="rt-slider-description">
+      {{ description() }}
+    </div>
+  }
+</div>

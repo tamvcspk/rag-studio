@@ -1,31 +1,38 @@
-import { Component, input, output, signal, computed } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { Shield, Lock, Network, Eye, AlertTriangle } from 'lucide-angular';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Shield, Lock, Network, FileText, Eye } from 'lucide-angular';
 
-import { 
-  RagSettingsSection,
-  RagSettingsItem 
-} from '../../semantic/forms';
-import { 
-  RagSwitch,
-  RagSelect,
-  RagSelectOption,
+import {
   RagButton,
-  RagToggleGroup,
-  RagToggleGroupOption,
-} from '../../atomic/primitives';
-import { RagAlert } from '../../atomic/feedback';
+  RagCheckbox,
+  RagAlert
+} from '../../atomic';
+import {
+  RagFormField,
+  RagSettingsSection
+} from '../../semantic';
+import { SettingsStore } from '../../../store/settings.store';
 
-interface SecuritySettings {
-  airGappedMode: boolean;
-  networkPolicy: string;
-  encryptData: boolean;
-  logRetention: number;
-  logRedaction: boolean;
-  citationPolicy: boolean;
-  permissionLevel: string;
-  auditLogging: boolean;
+interface SecuritySettingsForm {
+  // Network security
+  airGappedMode: FormControl<boolean>;
+  networkPolicy: FormControl<string>;
+  allowOutboundConnections: FormControl<boolean>;
+
+  // Data protection
+  encryptData: FormControl<boolean>;
+  encryptionStrength: FormControl<string>;
+
+  // Audit & logging
+  auditLogging: FormControl<boolean>;
+  logRetention: FormControl<number>;
+  logRedaction: FormControl<boolean>;
+
+  // Citations & compliance
+  citationPolicy: FormControl<boolean>;
+  requireCitations: FormControl<boolean>;
+  permissionLevel: FormControl<string>;
 }
 
 @Component({
@@ -34,102 +41,182 @@ interface SecuritySettings {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RagSettingsSection,
-    RagSettingsItem,
-    RagSwitch,
-    RagSelect,
     RagButton,
-    RagToggleGroup,
-    RagAlert
+    RagCheckbox,
+    RagAlert,
+    RagFormField,
+    RagSettingsSection
   ],
   templateUrl: './security-settings-panel.html',
-  styleUrl: './security-settings-panel.scss'
+  styleUrls: ['./security-settings-panel.scss']
 })
 export class RagSecuritySettingsPanel {
-  // Icon constants
+  // Dependencies
+  readonly settingsStore = inject(SettingsStore);
+
+  // Icons
   readonly ShieldIcon = Shield;
   readonly LockIcon = Lock;
   readonly NetworkIcon = Network;
+  readonly FileTextIcon = FileText;
   readonly EyeIcon = Eye;
-  readonly AlertTriangleIcon = AlertTriangle;
 
-  // Modern Angular 20: Use input() with proper typing
-  readonly settings = input<Partial<SecuritySettings>>();
+  // Form
+  readonly settingsForm = new FormGroup<SecuritySettingsForm>({
+    // Network security
+    airGappedMode: new FormControl(false, { nonNullable: true }),
+    networkPolicy: new FormControl('moderate', { nonNullable: true }),
+    allowOutboundConnections: new FormControl(false, { nonNullable: true }),
 
-  // Modern Angular 20: Use output() instead of EventEmitter
-  readonly settingsChange = output<SecuritySettings>();
+    // Data protection
+    encryptData: new FormControl(false, { nonNullable: true }),
+    encryptionStrength: new FormControl('aes-256', { nonNullable: true }),
 
-  // Modern Angular 20: Use signals for reactive state
-  readonly isSaving = signal(false);
+    // Audit & logging
+    auditLogging: new FormControl(false, { nonNullable: true }),
+    logRetention: new FormControl(30, {
+      nonNullable: true,
+      validators: [Validators.required, Validators.min(7), Validators.max(365)]
+    }),
+    logRedaction: new FormControl(true, { nonNullable: true }),
 
-  // Form management
-  readonly securityForm: FormGroup;
+    // Citations & compliance
+    citationPolicy: new FormControl(true, { nonNullable: true }),
+    requireCitations: new FormControl(true, { nonNullable: true }),
+    permissionLevel: new FormControl('standard', { nonNullable: true }),
+  });
 
-  constructor(private fb: FormBuilder) {
-    this.securityForm = this.fb.group({
-      airGappedMode: [false],
-      networkPolicy: ['default-deny'],
-      encryptData: [false],
-      logRetention: [30],
-      logRedaction: [true],
-      citationPolicy: [true],
-      permissionLevel: ['restricted'],
-      auditLogging: [true]
-    });
+  // State
+  private readonly isInitialized = signal(false);
 
-    // Watch for input changes and patch form
-    this.securityForm.patchValue(this.settings() || {});
+  // Computed values
+  readonly networkMode = computed(() => {
+    const airGapped = this.settingsForm.value.airGappedMode;
+    const policy = this.settingsForm.value.networkPolicy;
+    return airGapped ? 'Air-gapped' : `Network (${policy})`;
+  });
+
+  readonly encryptionStatus = computed(() => {
+    const enabled = this.settingsForm.value.encryptData;
+    const strength = this.settingsForm.value.encryptionStrength;
+    return enabled ? `Enabled (${strength?.toUpperCase()})` : 'Disabled';
+  });
+
+  readonly auditStatus = computed(() => {
+    const enabled = this.settingsForm.value.auditLogging;
+    const retention = this.settingsForm.value.logRetention;
+    return enabled ? `Enabled (${retention}d retention)` : 'Disabled';
+  });
+
+  readonly securityStatusVariant = computed(() => {
+    const airGapped = this.settingsForm.value.airGappedMode;
+    const encrypted = this.settingsForm.value.encryptData;
+
+    if (airGapped && encrypted) return 'success';
+    if (airGapped || encrypted) return 'warning';
+    return 'error';
+  });
+
+  readonly securityStatusIcon = computed(() => {
+    const variant = this.securityStatusVariant();
+    return variant === 'success' ? 'shield-check' :
+           variant === 'warning' ? 'alert-triangle' : 'shield-x';
+  });
+
+  readonly securityStatusMessage = computed(() => {
+    const airGapped = this.settingsForm.value.airGappedMode;
+    const encrypted = this.settingsForm.value.encryptData;
+
+    if (airGapped && encrypted) {
+      return 'Security Status: High - Air-gapped mode with encryption enabled';
+    }
+    if (airGapped) {
+      return 'Security Status: Medium - Air-gapped mode enabled, consider enabling encryption';
+    }
+    if (encrypted) {
+      return 'Security Status: Medium - Encryption enabled, consider air-gapped mode for maximum security';
+    }
+    return 'Security Status: Low - Consider enabling air-gapped mode and encryption';
+  });
+
+  readonly isEncryptionEnabled = computed(() => {
+    const settings = this.settingsStore.settings();
+    return settings?.security?.encrypt_data ?? false;
+  });
+
+  constructor() {
+    // Initialize store and sync form when settings change
+    this.initializeStore();
+    this.syncFormWithSettings();
   }
 
-  // Dropdown options
-  readonly networkPolicyOptions = computed<RagSelectOption<string>[]>(() => [
-    { value: 'allow-all', label: 'Allow All Connections' },
-    { value: 'default-deny', label: 'Default Deny (Recommended)' },
-    { value: 'whitelist-only', label: 'Whitelist Only' },
-    { value: 'blocked', label: 'All Blocked' }
-  ]);
+  private async initializeStore() {
+    if (!this.settingsStore.isInitialized()) {
+      await this.settingsStore.initialize();
+    }
+    this.isInitialized.set(true);
+  }
 
-  readonly permissionLevelOptions = computed<RagToggleGroupOption<string>[]>(() => [
-    { value: 'minimal', label: 'Minimal' },
-    { value: 'restricted', label: 'Restricted' },
-    { value: 'standard', label: 'Standard' }
-  ]);
-
-  readonly logRetentionOptions = computed<RagSelectOption<number>[]>(() => [
-    { value: 7, label: '7 Days' },
-    { value: 14, label: '14 Days' },
-    { value: 30, label: '30 Days (Recommended)' },
-    { value: 90, label: '90 Days' },
-    { value: 365, label: '1 Year' },
-    { value: -1, label: 'Never Delete' }
-  ]);
-
-  async onSave(): Promise<void> {
-    if (!this.securityForm.valid) return;
-
-    this.isSaving.set(true);
-    
-    try {
-      // Simulate save delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const formValue = this.securityForm.value as SecuritySettings;
-      this.settingsChange.emit(formValue);
-    } finally {
-      this.isSaving.set(false);
+  private syncFormWithSettings() {
+    // Watch for settings changes and update form
+    const settings = this.settingsStore.settings();
+    if (settings && this.isInitialized()) {
+      this.settingsForm.patchValue({
+        airGappedMode: settings.security?.air_gapped_mode ?? false,
+        networkPolicy: settings.security?.network_policy || 'moderate',
+        allowOutboundConnections: false, // TODO: Add to backend interface
+        encryptData: settings.security?.encrypt_data ?? false,
+        encryptionStrength: 'aes-256', // TODO: Add to backend interface
+        auditLogging: settings.security?.audit_logging ?? false,
+        logRetention: 30, // TODO: Add to backend interface
+        logRedaction: settings.security?.log_redaction ?? true,
+        citationPolicy: settings.security?.citation_policy ?? true,
+        requireCitations: true, // TODO: Add to backend interface
+        permissionLevel: settings.security?.permission_level || 'standard',
+      }, { emitEvent: false });
     }
   }
 
-  onReset(): void {
-    this.securityForm.reset({
+  // Form methods
+  async saveSettings() {
+    if (this.settingsForm.valid) {
+      const formValue = this.settingsForm.value;
+      const currentSettings = this.settingsStore.settings();
+
+      if (currentSettings) {
+        await this.settingsStore.updateSettings({
+          ...currentSettings,
+          security: {
+            ...currentSettings.security,
+            // Only update fields that exist in the backend interface
+            air_gapped_mode: formValue.airGappedMode!,
+            network_policy: formValue.networkPolicy!,
+            encrypt_data: formValue.encryptData!,
+            audit_logging: formValue.auditLogging!,
+            log_redaction: formValue.logRedaction!,
+            citation_policy: formValue.citationPolicy!,
+            permission_level: formValue.permissionLevel!,
+            // TODO: Add these fields to backend interface:
+            // allow_outbound_connections, encryption_strength, log_retention, require_citations
+          }
+        });
+      }
+    }
+  }
+
+  resetSettings() {
+    this.settingsForm.reset({
       airGappedMode: false,
-      networkPolicy: 'default-deny',
+      networkPolicy: 'moderate',
+      allowOutboundConnections: false,
       encryptData: false,
+      encryptionStrength: 'aes-256',
+      auditLogging: false,
       logRetention: 30,
       logRedaction: true,
       citationPolicy: true,
-      permissionLevel: 'restricted',
-      auditLogging: true
+      requireCitations: true,
+      permissionLevel: 'standard',
     });
   }
 }

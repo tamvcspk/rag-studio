@@ -1,0 +1,173 @@
+.simple-settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 800px;
+
+  .error-message {
+    padding: var(--space-3);
+    background: var(--color-red-50);
+    border: 1px solid var(--color-red-200);
+    border-radius: var(--radius-md);
+    color: var(--color-red-700);
+    font-size: var(--font-size-sm);
+  }
+
+  .warning-message {
+    padding: var(--space-3);
+    background: var(--color-yellow-50);
+    border: 1px solid var(--color-yellow-200);
+    border-radius: var(--radius-md);
+    color: var(--color-yellow-700);
+    font-size: var(--font-size-sm);
+    margin-top: var(--space-3);
+  }
+
+  .settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+
+    .settings-section {
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        margin-bottom: var(--space-4);
+
+        h3 {
+          margin: 0;
+          font-size: var(--font-size-lg);
+          font-weight: var(--font-weight-semibold);
+          color: var(--text-primary);
+          flex: 1;
+        }
+
+        .server-status,
+        .security-status {
+          font-size: var(--font-size-sm);
+          color: var(--text-secondary);
+          background: var(--surface-secondary);
+          padding: var(--space-1) var(--space-2);
+          border-radius: var(--radius-sm);
+        }
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-4);
+
+        rag-form-field {
+          .form-input,
+          .form-select {
+            width: 100%;
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            background: var(--surface-primary);
+            color: var(--text-primary);
+            transition: all var(--transition-normal);
+
+            &:focus {
+              outline: none;
+              border-color: var(--accent-primary);
+              box-shadow: 0 0 0 2px var(--accent-primary-alpha);
+            }
+
+            &:disabled {
+              background: var(--surface-disabled);
+              color: var(--text-disabled);
+              cursor: not-allowed;
+            }
+
+            &[type="number"] {
+              max-width: 200px;
+            }
+          }
+        }
+      }
+
+      .section-actions {
+        display: flex;
+        gap: var(--space-2);
+        margin-top: var(--space-4);
+        padding-top: var(--space-3);
+        border-top: 1px solid var(--border-secondary);
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      gap: var(--space-2);
+      justify-content: flex-end;
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--border-secondary);
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .simple-settings-panel {
+    .settings-form {
+      .settings-section {
+        .section-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: var(--space-2);
+
+          .server-status,
+          .security-status {
+            align-self: flex-start;
+          }
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+
+          rag-form-field {
+            .form-input,
+            .form-select {
+              max-width: none;
+            }
+          }
+        }
+
+        .section-actions {
+          flex-direction: column;
+
+          rag-button {
+            width: 100%;
+          }
+        }
+      }
+
+      .form-actions {
+        flex-direction: column;
+
+        rag-button {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .simple-settings-panel {
+    .error-message {
+      background: var(--color-red-900);
+      border-color: var(--color-red-700);
+      color: var(--color-red-200);
+    }
+
+    .warning-message {
+      background: var(--color-yellow-900);
+      border-color: var(--color-yellow-700);
+      color: var(--color-yellow-200);
+    }
+  }
+}

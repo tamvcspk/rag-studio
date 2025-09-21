@@ -22,6 +22,7 @@ All atomic components leverage the **RAG Studio Design Token System** with three
 - [Primitive Components](#primitive-components)
   - [RagChip](#ragchip)
   - [RagButton](#ragbutton)
+  - [RagBadge](#ragbadge)
   - [RagCheckbox](#ragcheckbox)
   - [RagIcon](#ragicon)
   - [RagInput](#raginput)
@@ -31,6 +32,8 @@ All atomic components leverage the **RAG Studio Design Token System** with three
   - [RagSkeleton](#ragskeleton)
   - [RagSpinner](#ragspinner)
   - [RagSwitch](#ragswitch)
+  - [RagToggle](#ragtoggle)
+  - [RagSlider](#ragslider)
   - [RagTextarea](#ragtextarea)
   - [RagOverflowBar](#ragoverflowbar)
   - [RagDivider](#ragdivider)
@@ -237,6 +240,128 @@ export class ButtonExampleComponent {
   readonly PlusIcon = PlusIcon;
 }
 ```
+
+---
+
+### RagBadge
+
+An attribute directive that adds informational badges to any element, perfect for notification counts, status indicators, and labels.
+
+**Selector:** `[ragBadge]`
+
+#### Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `ragBadge` | `string \| number \| TemplateRef<any> \| null` | `null` | Badge content - text, number, or template |
+| `badgeVariant` | `'solid' \| 'soft' \| 'outline'` | `'solid'` | Visual style variant |
+| `badgeColor` | `'gray' \| 'blue' \| 'green' \| 'amber' \| 'red' \| 'orange' \| 'purple'` | `'red'` | Badge color theme |
+| `badgeSize` | `'xs' \| 'sm' \| 'md'` | `'sm'` | Badge size |
+| `badgePosition` | `'top-right' \| 'top-left' \| 'bottom-right' \| 'bottom-left'` | `'top-right'` | Badge position on element |
+| `badgeOffset` | `boolean` | `false` | Offset badge further from element |
+| `badgeHidden` | `boolean` | `false` | Hide/show the badge |
+
+#### Usage Examples
+
+```html
+<!-- Basic notification badge -->
+<rag-button [ragBadge]="notificationCount">
+  Messages
+</rag-button>
+
+<!-- Custom position and color -->
+<rag-icon
+  [img]="BellIcon"
+  [ragBadge]="5"
+  badgePosition="top-right"
+  badgeColor="red"
+  badgeSize="xs">
+</rag-icon>
+
+<!-- Status badge with different variants -->
+<div
+  class="user-avatar"
+  [ragBadge]="'NEW'"
+  badgeVariant="soft"
+  badgeColor="green"
+  badgePosition="bottom-right">
+  <img src="avatar.jpg" alt="User">
+</div>
+
+<!-- Badge with template content -->
+<rag-button
+  [ragBadge]="badgeTemplate"
+  badgePosition="top-left"
+  badgeColor="blue">
+  Settings
+</rag-button>
+
+<ng-template #badgeTemplate>
+  <rag-icon [img]="StarIcon" size="xs"></rag-icon>
+</ng-template>
+
+<!-- Conditional badge -->
+<rag-chip
+  [ragBadge]="hasUpdates ? 'Updated' : null"
+  badgeColor="amber"
+  badgeVariant="outline">
+  Document
+</rag-chip>
+
+<!-- Dynamic badge with offset -->
+<div
+  class="file-item"
+  [ragBadge]="fileCount"
+  [badgeOffset]="true"
+  badgeSize="md"
+  badgeColor="purple">
+  Folder Name
+</div>
+```
+
+```typescript
+// Component using badges
+import { BellIcon, StarIcon } from 'lucide-angular';
+
+@Component({
+  selector: 'app-notification-example',
+  imports: [RagButton, RagIcon, RagChip, RagBadge],
+  template: `
+    <rag-button
+      [ragBadge]="unreadCount"
+      [badgeHidden]="unreadCount === 0"
+      badgeColor="red"
+      badgeSize="sm">
+      Inbox
+    </rag-button>
+  `
+})
+export class NotificationExampleComponent {
+  readonly BellIcon = BellIcon;
+  readonly StarIcon = StarIcon;
+
+  unreadCount = signal(3);
+  hasUpdates = signal(true);
+}
+```
+
+#### Key Features
+
+- **Automatic Positioning**: Badges are positioned absolutely relative to the host element
+- **Template Support**: Accepts text, numbers, or Angular templates for custom content
+- **Dynamic Content**: Reactive to signal changes and can be shown/hidden conditionally
+- **Non-Intrusive**: Uses `pointer-events: none` so badges don't interfere with host element interactions
+- **Flexible Positioning**: Four corner positions with optional offset
+- **Design Token Integration**: Full integration with the RAG Studio design system
+- **Accessibility**: Properly positioned without affecting screen reader navigation
+
+#### Common Use Cases
+
+- **Notification counts** on buttons and icons
+- **Status indicators** on avatars and items
+- **New/Updated labels** on content cards
+- **Counter badges** for shopping carts, messages
+- **Feature flags** and promotional labels
 
 ---
 
@@ -526,6 +651,254 @@ Toggle switch component for boolean values.
 | `disabled` | `boolean` | `false` | Disabled state |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Switch size |
 | `label` | `string \| undefined` | `undefined` | Label text |
+
+---
+
+### RagToggle
+
+A toggle switch component with customizable text, variants, and states for boolean value controls.
+
+**Selector:** `rag-toggle`
+
+#### Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Toggle size |
+| `disabled` | `boolean` | `false` | Disabled state |
+| `color` | `'blue' \| 'green' \| 'red'` | `'blue'` | Color theme |
+| `label` | `string \| undefined` | `undefined` | Label text |
+| `description` | `string \| undefined` | `undefined` | Description text |
+| `variant` | `'solid' \| 'soft' \| 'outline'` | `'solid'` | Visual style variant |
+| `onText` | `string` | `'ON'` | Text displayed when toggle is on |
+| `offText` | `string` | `'OFF'` | Text displayed when toggle is off |
+
+#### Events
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `onToggle` | `EventEmitter<boolean>` | Emitted when toggle state changes |
+| `valueChange` | `EventEmitter<boolean>` | Emitted when value changes |
+
+#### Usage Examples
+
+```html
+<!-- Basic toggle -->
+<rag-toggle (onToggle)="handleToggle($event)">Basic Toggle</rag-toggle>
+
+<!-- Toggle with custom text -->
+<rag-toggle
+  [onText]="'ENABLED'"
+  [offText]="'DISABLED'"
+  [color]="'green'"
+  (valueChange)="onStatusChange($event)">
+</rag-toggle>
+
+<!-- Toggle with label and description -->
+<rag-toggle
+  [label]="'Notifications'"
+  [description]="'Receive email notifications'"
+  [variant]="'soft'"
+  [color]="'blue'">
+</rag-toggle>
+
+<!-- Form integration -->
+<rag-toggle
+  [formControl]="notificationControl"
+  [label]="'Enable notifications'"
+  [size]="'lg'">
+</rag-toggle>
+
+<!-- Disabled toggle -->
+<rag-toggle
+  [disabled]="true"
+  [label]="'Feature unavailable'"
+  [variant]="'outline'">
+</rag-toggle>
+```
+
+```typescript
+// Component using toggle
+@Component({
+  selector: 'app-settings',
+  imports: [RagToggle],
+  template: `
+    <rag-toggle
+      [label]="'Dark Mode'"
+      [description]="'Use dark theme'"
+      [formControl]="darkModeControl"
+      (onToggle)="toggleDarkMode($event)">
+    </rag-toggle>
+  `
+})
+export class SettingsComponent {
+  darkModeControl = new FormControl(false);
+
+  toggleDarkMode(enabled: boolean) {
+    console.log('Dark mode:', enabled);
+    // Apply theme changes
+  }
+}
+```
+
+#### Features
+
+- **Custom Text**: Configurable ON/OFF text display
+- **Form Integration**: Full `ControlValueAccessor` support
+- **Visual Variants**: Multiple styling options (solid, soft, outline)
+- **Size Options**: Small, medium, and large sizes
+- **Accessibility**: Proper ARIA attributes and keyboard navigation
+- **State Management**: Tracks checked state with reactive signals
+
+---
+
+### RagSlider
+
+A range slider component for selecting numeric values within a specified range with customizable styling and display options.
+
+**Selector:** `rag-slider`
+
+#### Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `min` | `number` | `0` | Minimum value |
+| `max` | `number` | `100` | Maximum value |
+| `step` | `number` | `1` | Step increment |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Slider size |
+| `disabled` | `boolean` | `false` | Disabled state |
+| `showValue` | `boolean` | `true` | Show current value display |
+| `showMinMax` | `boolean` | `true` | Show min/max value labels |
+| `label` | `string \| undefined` | `undefined` | Label text |
+| `description` | `string \| undefined` | `undefined` | Description text |
+| `color` | `'blue' \| 'green' \| 'red'` | `'blue'` | Color theme |
+| `unit` | `string` | `''` | Unit suffix for values (e.g., 'px', '%', 'ms') |
+
+#### Events
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `valueChange` | `EventEmitter<number>` | Emitted when value changes |
+| `onSliderChange` | `EventEmitter<number>` | Emitted when slider changes |
+
+#### Usage Examples
+
+```html
+<!-- Basic slider -->
+<rag-slider
+  [min]="0"
+  [max]="100"
+  [step]="5"
+  (valueChange)="onVolumeChange($event)">
+</rag-slider>
+
+<!-- Slider with label and unit -->
+<rag-slider
+  [label]="'Font Size'"
+  [min]="12"
+  [max]="24"
+  [step]="1"
+  [unit]="'px'"
+  [color]="'blue'"
+  (valueChange)="onFontSizeChange($event)">
+</rag-slider>
+
+<!-- Percentage slider -->
+<rag-slider
+  [label]="'Opacity'"
+  [description]="'Set element transparency'"
+  [min]="0"
+  [max]="100"
+  [step]="10"
+  [unit]="'%'"
+  [color]="'green'"
+  [size]="'lg'">
+</rag-slider>
+
+<!-- Form integration -->
+<rag-slider
+  [formControl]="brightnessControl"
+  [label]="'Brightness'"
+  [min]="0"
+  [max]="200"
+  [step]="5"
+  [unit]="'%'">
+</rag-slider>
+
+<!-- Disabled slider -->
+<rag-slider
+  [disabled]="true"
+  [label]="'Read-only setting'"
+  [min]="0"
+  [max]="10"
+  [showMinMax]="false">
+</rag-slider>
+
+<!-- Custom styling options -->
+<rag-slider
+  [label]="'Custom Range'"
+  [min]="-50"
+  [max]="50"
+  [step]="2.5"
+  [color]="'red'"
+  [showValue]="true"
+  [showMinMax]="true"
+  [size]="'sm'">
+</rag-slider>
+```
+
+```typescript
+// Component using slider
+@Component({
+  selector: 'app-audio-controls',
+  imports: [RagSlider],
+  template: `
+    <rag-slider
+      [label]="'Volume'"
+      [min]="0"
+      [max]="100"
+      [step]="5"
+      [unit]="'%'"
+      [formControl]="volumeControl"
+      (valueChange)="onVolumeChange($event)">
+    </rag-slider>
+
+    <rag-slider
+      [label]="'Bass'"
+      [min]="-10"
+      [max]="10"
+      [step]="1"
+      [unit]="'dB'"
+      [color]="'green'"
+      (valueChange)="onBassChange($event)">
+    </rag-slider>
+  `
+})
+export class AudioControlsComponent {
+  volumeControl = new FormControl(75);
+
+  onVolumeChange(volume: number) {
+    console.log('Volume changed to:', volume);
+    // Apply volume changes
+  }
+
+  onBassChange(bass: number) {
+    console.log('Bass changed to:', bass);
+    // Apply bass changes
+  }
+}
+```
+
+#### Features
+
+- **Range Control**: Configurable min, max, and step values
+- **Visual Progress**: Shows current position with progress track
+- **Value Display**: Optional current value and min/max labels
+- **Unit Support**: Display values with custom units (px, %, etc.)
+- **Form Integration**: Full `ControlValueAccessor` support
+- **Responsive Design**: Multiple size options and color themes
+- **Accessibility**: Proper ARIA attributes and keyboard navigation
+- **Value Clamping**: Automatically clamps values to valid range
 
 ---
 

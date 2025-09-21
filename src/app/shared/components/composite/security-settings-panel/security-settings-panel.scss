@@ -1,35 +1,99 @@
 .security-settings-panel {
-  .actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 800px;
+
+  .settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .form-input,
+  .form-select {
+    width: 100%;
+    padding: var(--space-2);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    background-color: var(--color-surface-primary);
+    color: var(--color-text-primary);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary-500);
+      box-shadow: 0 0 0 3px var(--color-primary-100);
+    }
+
+    &:disabled {
+      background-color: var(--color-surface-secondary);
+      color: var(--color-text-tertiary);
+      cursor: not-allowed;
+    }
+
+    &::placeholder {
+      color: var(--color-text-tertiary);
+    }
+  }
+
+  .security-status,
+  .encryption-status,
+  .audit-status {
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+  }
+
+  .form-actions {
     display: flex;
     justify-content: flex-end;
-    gap: var(--rag-primitive-spacing-md);
-    margin-top: var(--rag-primitive-spacing-xl);
-    padding-top: var(--rag-primitive-spacing-lg);
-    border-top: 1px solid var(--rag-semantic-color-border-subtle);
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border-secondary);
+
+    @media (max-width: 768px) {
+      flex-direction: column-reverse;
+
+      rag-button {
+        width: 100%;
+      }
+    }
   }
 
-  .warning-section {
-    margin-top: var(--rag-primitive-spacing-md);
-    padding: var(--rag-primitive-spacing-md);
-    background-color: var(--rag-semantic-color-warning-50);
-    border: 1px solid var(--rag-semantic-color-warning-200);
-    border-radius: var(--rag-primitive-radius-md);
+  // Security-specific styling
+  rag-alert {
+    margin-bottom: var(--space-4);
   }
-}
 
-// Security-specific styling
-.air-gapped-warning {
-  background-color: var(--rag-semantic-color-warning-100);
-  border-left: 4px solid var(--rag-semantic-color-warning-600);
-}
+  // Enhanced visual feedback for security states
+  .form-grid {
+    rag-form-field {
+      &:has(rag-checkbox[formControlName="airGappedMode"]:checked) {
+        .form-field-label {
+          color: var(--color-success-600);
+          font-weight: var(--font-medium);
+        }
+      }
 
-.security-risk-indicator {
-  color: var(--rag-semantic-color-danger-600);
-  font-weight: var(--rag-primitive-fontWeight-medium);
-}
-
-// Form validation styling
-rag-select[disabled="true"] {
-  opacity: 0.5;
-  pointer-events: none;
+      &:has(rag-checkbox[formControlName="encryptData"]:checked) {
+        .form-field-label {
+          color: var(--color-success-600);
+          font-weight: var(--font-medium);
+        }
+      }
+    }
+  }
 }

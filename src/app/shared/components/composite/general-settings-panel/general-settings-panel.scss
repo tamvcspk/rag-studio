@@ -1,33 +1,80 @@
 .general-settings-panel {
-  .actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 800px;
+
+  .settings-form {
     display: flex;
-    justify-content: flex-end;
-    gap: var(--rag-primitive-spacing-md);
-    margin-top: var(--rag-primitive-spacing-xl);
-    padding-top: var(--rag-primitive-spacing-lg);
-    border-top: 1px solid var(--rag-semantic-color-border-subtle);
+    flex-direction: column;
+    gap: var(--space-4);
   }
 
-  .directory-selector {
-    display: flex;
-    gap: var(--rag-primitive-spacing-sm);
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
 
-    rag-input {
-      flex: 1;
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1fr;
     }
   }
 
-  .conditional-settings {
-    margin-left: var(--rag-primitive-spacing-lg);
-    padding-left: var(--rag-primitive-spacing-lg);
-    border-left: 2px solid var(--rag-semantic-color-border-subtle);
-  }
-}
+  .input-group {
+    display: flex;
+    gap: var(--space-2);
 
-// Form validation styling
-rag-input[error="true"],
-rag-select[error="true"] {
-  --input-border-color: var(--rag-semantic-color-danger-500);
-  --input-focus-border-color: var(--rag-semantic-color-danger-600);
-  --input-focus-box-shadow: 0 0 0 3px var(--rag-semantic-color-danger-100);
+    .form-input {
+      flex: 1;
+    }
+
+    .form-input-readonly {
+      background-color: var(--color-surface-secondary);
+      cursor: not-allowed;
+    }
+  }
+
+  .form-input,
+  .form-select {
+    width: 100%;
+    padding: var(--space-2);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    background-color: var(--color-surface-primary);
+    color: var(--color-text-primary);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary-500);
+      box-shadow: 0 0 0 3px var(--color-primary-100);
+    }
+
+    &:disabled {
+      background-color: var(--color-surface-secondary);
+      color: var(--color-text-tertiary);
+      cursor: not-allowed;
+    }
+
+    &::placeholder {
+      color: var(--color-text-tertiary);
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border-secondary);
+
+    @media (max-width: 768px) {
+      flex-direction: column-reverse;
+
+      rag-button {
+        width: 100%;
+      }
+    }
+  }
 }

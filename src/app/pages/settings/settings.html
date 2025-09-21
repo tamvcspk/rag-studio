@@ -17,47 +17,32 @@
       (selectedIndexChange)="onTabIndexChange($event)">
       
       <!-- General Settings Tab -->
-      <ng-template 
-        ragTabPanel="general" 
-        [label]="'General'" 
+      <ng-template
+        ragTabPanel="general"
+        [label]="'General'"
         [icon]="SettingsIcon">
         <div class="settings-tab-content">
-          <rag-general-settings-panel
-            [settings]="generalSettings()"
-            (settingsChange)="onGeneralSettingsChange($event)"
-            (directorySelect)="selectDataDirectory()" />
+          <rag-general-settings-panel />
         </div>
       </ng-template>
-      
+
       <!-- Security Settings Tab -->
-      <ng-template 
-        ragTabPanel="security" 
-        [label]="'Security'" 
+      <ng-template
+        ragTabPanel="security"
+        [label]="'Security'"
         [icon]="ShieldIcon">
         <div class="settings-tab-content">
-          <rag-security-settings-panel
-            [settings]="securitySettings()"
-            (settingsChange)="onSecuritySettingsChange($event)" />
+          <rag-security-settings-panel />
         </div>
       </ng-template>
       
-      <!-- Performance Settings Tab -->
-      <ng-template 
-        ragTabPanel="performance" 
-        [label]="'Performance'" 
-        [icon]="ZapIcon"
-        [disabled]="true">
+      <!-- All Settings Tab -->
+      <ng-template
+        ragTabPanel="all"
+        [label]="'All Settings'"
+        [icon]="SettingsIcon">
         <div class="settings-tab-content">
-          <div class="coming-soon-panel">
-            <rag-empty-state-panel
-              [title]="'Performance Settings'"
-              [description]="'Configure RAG performance, caching, and resource limits'"
-              [icon]="ZapIcon">
-              <rag-button variant="outline" size="lg">
-                Coming Soon
-              </rag-button>
-            </rag-empty-state-panel>
-          </div>
+          <rag-simple-settings-panel />
         </div>
       </ng-template>
       

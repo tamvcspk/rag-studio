@@ -18,10 +18,10 @@ Complete quick reference for all RAG Studio components - both atomic and semanti
 
 ```typescript
 // Atomic components
-import { 
-  RagButton, RagInput, RagSelect, RagChip, RagAlert,
+import {
+  RagButton, RagInput, RagSelect, RagChip, RagAlert, RagBadge,
   RagIcon, RagSpinner, RagProgress, RagSkeleton, RagOverflowBar,
-  RagDivider, RagToggleGroup
+  RagDivider, RagToggleGroup, RagToggle, RagSlider
 } from './shared/components/atomic';
 
 // Services
@@ -45,22 +45,29 @@ import {
 ```typescript
 @Component({
   selector: 'app-example',
-  imports: [RagButton, RagInput, RagCard, RagIcon], // Standalone components
+  imports: [RagButton, RagInput, RagCard, RagIcon, RagBadge, RagToggle, RagSlider], // Standalone components
   template: `
     <rag-card>
       <rag-input [placeholder]="'Enter text'" />
-      <rag-button (onClick)="submit()">Submit</rag-button>
+      <rag-button (onClick)="submit()" [ragBadge]="notificationCount() > 0 ? notificationCount() : null">
+        Submit
+      </rag-button>
     </rag-card>
   `
 })
 export class ExampleComponent {
   private toastService = inject(ToastService);
-  
+
   // Import specific icons needed
   readonly SaveIcon = SaveIcon;
   readonly SearchIcon = SearchIcon;
-  
+
+  // Badge state
+  readonly notificationCount = signal(3);
+
   submit() {
+    // Clear notifications
+    this.notificationCount.set(0);
     // Show success toast
     this.toastService.success('Form submitted successfully!', 'Success');
   }
@@ -198,6 +205,15 @@ export class FormComponent {
         </div>
       }
     </div>
+  </rag-card>
+
+  <!-- Notification card with badge -->
+  <rag-card [ragBadge]="unreadNotifications() > 0 ? unreadNotifications() : null"
+            badgeVariant="solid"
+            badgeColor="red"
+            [interactive]="true">
+    <h3>Notifications</h3>
+    <p>{{ unreadNotifications() }} unread messages</p>
   </rag-card>
 </div>
 ```
@@ -500,6 +516,7 @@ export class ActionsComponent {
 | Component | Quick Example | Most Common Props |
 |-----------|---------------|-------------------|
 | `<rag-button>` | `<rag-button variant="solid">Save</rag-button>` | `variant`, `loading`, `disabled` |
+| `[ragBadge]` | `<button [ragBadge]="count()">Notifications</button>` | `ragBadge`, `badgeVariant`, `badgeColor` |
 | `<rag-input>` | `<rag-input [placeholder]="'Email'" [leftIcon]="'mail'">` | `type`, `error`, `leftIcon` |
 | `<rag-select>` | `<rag-select [options]="items" [searchable]="true">` | `options`, `searchable`, `clearable` |
 | `<rag-chip>` | `<rag-chip color="green">Active</rag-chip>` | `variant`, `color`, `icon` |
@@ -509,6 +526,8 @@ export class ActionsComponent {
 | `<rag-overflow-bar>` | `<rag-overflow-bar><rag-chip>Tag</rag-chip></rag-overflow-bar>` | `scrollAmount`, `hideButtons` |
 | `<rag-divider>` | `<rag-divider [label]="'Settings'" spacing="lg">` | `orientation`, `variant`, `label`, `spacing` |
 | `<rag-toggle-group>` | `<rag-toggle-group [options]="themes" [multiple]="true">` | `options`, `multiple`, `variant`, `size` |
+| `<rag-toggle>` | `<rag-toggle [onText]="'ON'" [offText]="'OFF'" variant="soft">` | `variant`, `onText`, `offText`, `color` |
+| `<rag-slider>` | `<rag-slider [min]="0" [max]="100" [unit]="'%'">` | `min`, `max`, `step`, `unit`, `showValue` |
 
 ### 📊 Semantic Components (Business Logic)
 | Component | Quick Example | Most Common Props |
@@ -549,9 +568,31 @@ export class ActionsComponent {
 <rag-button [fullWidth]="true">Full Width</rag-button>
 ```
 
-### Badge Variants  
+### Badge Variants
 ```html
-<!-- Visual styles -->
+<!-- Badge directive on buttons -->
+<button [ragBadge]="3" badgeVariant="solid" badgeColor="red">
+  Notifications
+</button>
+
+<!-- Badge directive on icons -->
+<rag-icon [img]="BellIcon" [ragBadge]="count()"></rag-icon>
+
+<!-- Badge with custom positioning -->
+<div [ragBadge]="'NEW'"
+     badgePosition="top-left"
+     badgeVariant="soft"
+     badgeColor="blue">
+  Feature Card
+</div>
+
+<!-- Template badges for complex content -->
+<span [ragBadge]="statusTemplate">User Profile</span>
+<ng-template #statusTemplate>
+  <rag-icon [img]="CheckIcon" size="xs"></rag-icon>
+</ng-template>
+
+<!-- Chip components (different from badges) -->
 <rag-chip variant="solid" color="blue">Solid</rag-chip>
 <rag-chip variant="soft" color="green">Soft</rag-chip>
 <rag-chip variant="outline" color="amber">Outline</rag-chip>
@@ -722,7 +763,37 @@ export class FormComponent {
       title="Appearance"
       description="Customize the look and feel"
       [icon]="PaletteIcon">
-      <!-- settings items -->
+
+      <!-- Toggle components for settings -->
+      <rag-toggle
+        [label]="'Dark Mode'"
+        [description]="'Use dark theme'"
+        [onText]="'ON'"
+        [offText]="'OFF'"
+        [variant]="'soft'"
+        [color]="'blue'"
+        (onToggle)="toggleDarkMode($event)" />
+
+      <!-- Slider components for ranges -->
+      <rag-slider
+        [label]="'UI Scale'"
+        [description]="'Adjust interface scaling'"
+        [min]="75"
+        [max]="150"
+        [step]="5"
+        [unit]="'%'"
+        [color]="'green'"
+        (valueChange)="onScaleChange($event)" />
+
+      <rag-slider
+        [label]="'Animation Speed'"
+        [min]="0.5"
+        [max]="2.0"
+        [step]="0.1"
+        [unit]="'x'"
+        [color]="'blue'"
+        [size]="'lg'" />
+
     </rag-settings-section>
   </ng-template>
   
@@ -1094,4 +1165,4 @@ it('should have no accessibility violations', async () => {
 ---
 
 **Last Updated**: September 2, 2025  
-**Components Covered**: 19 atomic + 19 semantic + composite components
+**Components Covered**: 21 atomic + 19 semantic + composite components

@@ -1,0 +1,417 @@
+import { Component, input, output, computed, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Server,
+  Play,
+  Square,
+  RotateCcw,
+  Activity,
+  Settings,
+  Users,
+  Clock,
+  Wifi,
+  WifiOff
+} from 'lucide-angular';
+
+import {
+  RagButton,
+  RagIcon,
+  RagSpinner,
+  RagCheckbox,
+  RagInput
+} from '../../../atomic';
+import {
+  RagCard,
+  RagFormField
+} from '../../../semantic';
+import { SettingsStore, ServerSettings } from '../../../../store/settings.store';
+
+interface ServerManagementForm {
+  mcpServerEnabled: FormControl<boolean>;
+  mcpServerPort: FormControl<number>;
+  maxConnections: FormControl<number>;
+  requestTimeout: FormControl<number>;
+  healthCheckInterval: FormControl<number>;
+}
+
+@Component({
+  selector: 'rag-server-management-panel',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RagButton,
+    RagIcon,
+    RagSpinner,
+    RagCheckbox,
+    RagInput,
+    RagCard,
+    RagFormField
+  ],
+  template: `
+    <div class="server-management-panel">
+      <!-- Server Status Card -->
+      <rag-card variant="elevated" class="status-card">
+        <div class="status-header">
+          <div class="status-info">
+            <rag-icon [img]="ServerIcon" size="md" />
+            <div class="status-text">
+              <h3>MCP Server Status</h3>
+              <p class="status-description">
+                Model Context Protocol server for AI agent integration
+              </p>
+            </div>
+          </div>
+          <div class="status-badge">
+            <span class="status-indicator" [class]="serverStatusBadgeVariant()">
+              <rag-icon [img]="serverStatusIcon()" size="sm" />
+              {{ serverStatusText() }}
+            </span>
+          </div>
+        </div>
+
+        <div class="status-metrics" *ngIf="serverSettings()">
+          <div class="metric">
+            <rag-icon [img]="UsersIcon" size="sm" />
+            <span class="metric-label">Port</span>
+            <span class="metric-value">{{ serverSettings()!.mcp_server_port }}</span>
+          </div>
+          <div class="metric">
+            <rag-icon [img]="ActivityIcon" size="sm" />
+            <span class="metric-label">Max Connections</span>
+            <span class="metric-value">{{ serverSettings()!.max_connections }}</span>
+          </div>
+          <div class="metric">
+            <rag-icon [img]="ClockIcon" size="sm" />
+            <span class="metric-label">Timeout</span>
+            <span class="metric-value">{{ serverSettings()!.request_timeout }}s</span>
+          </div>
+        </div>
+
+        <div class="status-actions">
+          @if (isServerRunning()) {
+            <rag-button
+              variant="outline"
+              color="red"
+              [loading]="settingsStore.isLoading()"
+              (click)="stopServer()">
+              <rag-icon [img]="SquareIcon" size="sm" />
+              Stop Server
+            </rag-button>
+          } @else {
+            <rag-button
+              variant="solid"
+              color="green"
+              [loading]="settingsStore.isLoading()"
+              (click)="startServer()">
+              <rag-icon [img]="PlayIcon" size="sm" />
+              Start Server
+            </rag-button>
+          }
+
+          <rag-button
+            variant="outline"
+            [loading]="settingsStore.isLoading()"
+            (click)="refreshStatus()">
+            <rag-icon [img]="RotateCcwIcon" size="sm" />
+            Refresh
+          </rag-button>
+        </div>
+      </rag-card>
+
+      <!-- Server Configuration -->
+      <rag-card variant="elevated" class="config-card">
+        <div class="config-header">
+          <rag-icon [img]="SettingsIcon" size="md" />
+          <h3>Server Configuration</h3>
+        </div>
+
+        @if (settingsStore.error()) {
+          <div class="error-message">
+            Error: {{ settingsStore.error() }}
+          </div>
+        }
+
+        <form [formGroup]="serverForm" (ngSubmit)="saveConfiguration()" class="config-form">
+          <!-- Server Enable Toggle -->
+          <rag-form-field
+            label="Enable MCP Server"
+            description="Start MCP server automatically when application launches">
+            <rag-checkbox
+              formControlName="mcpServerEnabled"
+              [disabled]="settingsStore.isLoading()">
+              Enable at startup
+            </rag-checkbox>
+          </rag-form-field>
+
+          <!-- Server Port -->
+          <rag-form-field
+            label="Server Port"
+            description="TCP port for MCP server connections"
+            [error]="getFieldError('mcpServerPort')">
+            <input
+              type="number"
+              formControlName="mcpServerPort"
+              [disabled]="settingsStore.isLoading()"
+              min="1024"
+              max="65535"
+              class="form-input" />
+          </rag-form-field>
+
+          <!-- Max Connections -->
+          <rag-form-field
+            label="Maximum Connections"
+            description="Maximum number of concurrent client connections">
+            <input
+              type="number"
+              formControlName="maxConnections"
+              [disabled]="settingsStore.isLoading()"
+              min="1"
+              max="1000"
+              class="form-input" />
+          </rag-form-field>
+
+          <!-- Request Timeout -->
+          <rag-form-field
+            label="Request Timeout"
+            description="Maximum time to wait for client requests (seconds)">
+            <input
+              type="number"
+              formControlName="requestTimeout"
+              [disabled]="settingsStore.isLoading()"
+              min="5"
+              max="300"
+              class="form-input" />
+          </rag-form-field>
+
+          <!-- Health Check Interval -->
+          <rag-form-field
+            label="Health Check Interval"
+            description="How often to check server health (seconds)">
+            <input
+              type="number"
+              formControlName="healthCheckInterval"
+              [disabled]="settingsStore.isLoading()"
+              min="10"
+              max="300"
+              class="form-input" />
+          </rag-form-field>
+
+          <!-- Network Status -->
+          <rag-form-field
+            label="Network Status"
+            description="Current network connectivity mode">
+            <div class="network-status">
+              @if (settingsStore.securityStatus()?.airGapped) {
+                <span class="network-indicator air-gapped">
+                  <rag-icon [img]="WifiOffIcon" size="sm" />
+                  Air-gapped Mode
+                </span>
+              } @else {
+                <span class="network-indicator enabled">
+                  <rag-icon [img]="WifiIcon" size="sm" />
+                  Network Enabled
+                </span>
+              }
+            </div>
+          </rag-form-field>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <rag-button
+              type="button"
+              variant="outline"
+              (click)="resetConfiguration()"
+              [disabled]="settingsStore.isLoading()">
+              Reset to Defaults
+            </rag-button>
+
+            <rag-button
+              type="submit"
+              variant="solid"
+              [loading]="settingsStore.isLoading()"
+              [disabled]="serverForm.invalid">
+              Save Configuration
+            </rag-button>
+          </div>
+        </form>
+      </rag-card>
+    </div>
+  `,
+  styleUrls: ['./server-management-panel.scss']
+})
+export class RagServerManagementPanel {
+  // Dependencies
+  readonly settingsStore = inject(SettingsStore);
+
+  // Icons
+  readonly ServerIcon = Server;
+  readonly PlayIcon = Play;
+  readonly SquareIcon = Square;
+  readonly RotateCcwIcon = RotateCcw;
+  readonly ActivityIcon = Activity;
+  readonly SettingsIcon = Settings;
+  readonly UsersIcon = Users;
+  readonly ClockIcon = Clock;
+  readonly WifiIcon = Wifi;
+  readonly WifiOffIcon = WifiOff;
+
+  // Form
+  readonly serverForm = new FormGroup<ServerManagementForm>({
+    mcpServerEnabled: new FormControl(true, { nonNullable: true }),
+    mcpServerPort: new FormControl(3000, {
+      nonNullable: true,
+      validators: [Validators.required, Validators.min(1024), Validators.max(65535)]
+    }),
+    maxConnections: new FormControl(100, {
+      nonNullable: true,
+      validators: [Validators.required, Validators.min(1), Validators.max(1000)]
+    }),
+    requestTimeout: new FormControl(30, {
+      nonNullable: true,
+      validators: [Validators.required, Validators.min(5), Validators.max(300)]
+    }),
+    healthCheckInterval: new FormControl(30, {
+      nonNullable: true,
+      validators: [Validators.required, Validators.min(10), Validators.max(300)]
+    }),
+  });
+
+  // State
+  private readonly isInitialized = signal(false);
+
+  // Computed values
+  readonly serverSettings = computed(() => this.settingsStore.settings()?.server);
+
+  readonly isServerRunning = computed(() => {
+    return this.settingsStore.mcpServerRunning();
+  });
+
+  readonly serverStatusText = computed(() => {
+    const status = this.serverSettings()?.mcp_server_status;
+    switch (status) {
+      case 'running': return 'Running';
+      case 'stopped': return 'Stopped';
+      case 'starting': return 'Starting';
+      case 'stopping': return 'Stopping';
+      default: return 'Unknown';
+    }
+  });
+
+  readonly serverStatusBadgeVariant = computed(() => {
+    const status = this.serverSettings()?.mcp_server_status;
+    switch (status) {
+      case 'running': return 'success';
+      case 'stopped': return 'secondary';
+      case 'starting':
+      case 'stopping': return 'warning';
+      default: return 'error';
+    }
+  });
+
+  readonly serverStatusIcon = computed(() => {
+    const status = this.serverSettings()?.mcp_server_status;
+    switch (status) {
+      case 'running': return this.ActivityIcon;
+      case 'stopped': return this.SquareIcon;
+      case 'starting':
+      case 'stopping': return this.RotateCcwIcon;
+      default: return this.ServerIcon;
+    }
+  });
+
+  constructor() {
+    // Initialize store and sync form when settings change
+    this.initializeStore();
+    this.syncFormWithSettings();
+  }
+
+  private async initializeStore() {
+    if (!this.settingsStore.isInitialized()) {
+      await this.settingsStore.initialize();
+    }
+    this.isInitialized.set(true);
+  }
+
+  private syncFormWithSettings() {
+    // Watch for settings changes and update form
+    const settings = this.serverSettings();
+    if (settings && this.isInitialized()) {
+      this.serverForm.patchValue({
+        mcpServerEnabled: settings.mcp_server_enabled,
+        mcpServerPort: settings.mcp_server_port,
+        maxConnections: settings.max_connections,
+        requestTimeout: settings.request_timeout,
+        healthCheckInterval: settings.health_check_interval,
+      }, { emitEvent: false });
+    }
+  }
+
+  // Server control methods
+  async startServer() {
+    try {
+      await this.settingsStore.startMcpServer();
+    } catch (error) {
+      console.error('Failed to start server:', error);
+    }
+  }
+
+  async stopServer() {
+    try {
+      await this.settingsStore.stopMcpServer();
+    } catch (error) {
+      console.error('Failed to stop server:', error);
+    }
+  }
+
+  async refreshStatus() {
+    try {
+      await this.settingsStore.getServerStatus();
+    } catch (error) {
+      console.error('Failed to refresh server status:', error);
+    }
+  }
+
+  // Configuration methods
+  async saveConfiguration() {
+    if (this.serverForm.valid) {
+      const formValue = this.serverForm.value;
+      const currentSettings = this.settingsStore.settings();
+
+      if (currentSettings) {
+        await this.settingsStore.updateSettings({
+          server: {
+            ...currentSettings.server,
+            mcp_server_enabled: formValue.mcpServerEnabled!,
+            mcp_server_port: formValue.mcpServerPort!,
+            max_connections: formValue.maxConnections!,
+            request_timeout: formValue.requestTimeout!,
+            health_check_interval: formValue.healthCheckInterval!,
+          }
+        });
+      }
+    }
+  }
+
+  resetConfiguration() {
+    this.serverForm.reset({
+      mcpServerEnabled: true,
+      mcpServerPort: 3000,
+      maxConnections: 100,
+      requestTimeout: 30,
+      healthCheckInterval: 30,
+    });
+  }
+
+  // Utility methods
+  getFieldError(fieldName: keyof ServerManagementForm): string | null {
+    const field = this.serverForm.get(fieldName);
+    if (field?.invalid && field?.touched) {
+      if (field.errors?.['required']) return 'This field is required';
+      if (field.errors?.['min']) return `Minimum value is ${field.errors['min'].min}`;
+      if (field.errors?.['max']) return `Maximum value is ${field.errors['max'].max}`;
+    }
+    return null;
+  }
+}

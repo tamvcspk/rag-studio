@@ -6,6 +6,7 @@ export { RagSkeleton } from './rag-skeleton/rag-skeleton';
 export { RagProgress } from './rag-progress/rag-progress';
 export { RagIcon } from './rag-icon/rag-icon';
 export { RagOverflowBar } from './rag-overflow-bar/rag-overflow-bar';
+export { RagBadge } from './rag-badge/rag-badge';
 
 // Form Primitives
 export { RagCheckbox } from './rag-checkbox/rag-checkbox';
@@ -17,6 +18,8 @@ export { RagSelect } from './rag-select/rag-select';
 export type { RagSelectOption } from './rag-select/rag-select';
 export { RagToggleGroup } from './rag-toggle-group/rag-toggle-group';
 export type { RagToggleGroupOption } from './rag-toggle-group/rag-toggle-group';
+export { RagSlider } from './rag-slider/rag-slider';
+export { RagToggle } from './rag-toggle/rag-toggle';
 
 // Layout Primitives
 export { RagDivider } from './rag-divider/rag-divider';

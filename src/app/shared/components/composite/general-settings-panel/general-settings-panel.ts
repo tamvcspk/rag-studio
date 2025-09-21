@@ -1,33 +1,34 @@
-import { Component, input, output, signal, computed } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { Settings, Globe, FolderOpen, HardDrive } from 'lucide-angular';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Settings, FolderOpen, Palette, Globe } from 'lucide-angular';
 
-import { 
-  RagSettingsSection,
-  RagSettingsItem
-} from '../../semantic/forms';
-import { 
-  RagInput,
-  RagSelect,
-  RagSelectOption,
-  RagSwitch,
-  RagToggleGroup,
-  RagToggleGroupOption,
+import {
   RagButton,
-  RagIcon
-} from '../../atomic/primitives';
+  RagCheckbox,
+  RagAlert
+} from '../../atomic';
+import {
+  RagFormField,
+  RagSettingsSection
+} from '../../semantic';
+import { SettingsStore } from '../../../store/settings.store';
 
-interface GeneralSettings {
-  workspaceName: string;
-  dataDirectory: string;
-  autoSave: boolean;
-  autoBackup: boolean;
-  backupInterval: string;
-  maxBackups: number;
-  logLevel: string;
-  theme: string;
-  language: string;
+interface GeneralSettingsForm {
+  // Workspace settings
+  workspaceName: FormControl<string>;
+  dataDirectory: FormControl<string>;
+
+  // Preferences
+  autoSave: FormControl<boolean>;
+  autoBackup: FormControl<boolean>;
+  backupInterval: FormControl<string>;
+  maxBackups: FormControl<number>;
+
+  // Interface settings
+  theme: FormControl<string>;
+  language: FormControl<string>;
+  logLevel: FormControl<string>;
 }
 
 @Component({
@@ -36,122 +37,131 @@ interface GeneralSettings {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RagSettingsSection,
-    RagSettingsItem,
-    RagInput,
-    RagSelect,
-    RagSwitch,
-    RagToggleGroup,
     RagButton,
-    RagIcon
+    RagCheckbox,
+    RagAlert,
+    RagFormField,
+    RagSettingsSection
   ],
   templateUrl: './general-settings-panel.html',
-  styleUrl: './general-settings-panel.scss'
+  styleUrls: ['./general-settings-panel.scss']
 })
 export class RagGeneralSettingsPanel {
-  // Icon constants
+  // Dependencies
+  readonly settingsStore = inject(SettingsStore);
+
+  // Icons
   readonly SettingsIcon = Settings;
-  readonly GlobeIcon = Globe;
   readonly FolderOpenIcon = FolderOpen;
-  readonly HardDriveIcon = HardDrive;
+  readonly PaletteIcon = Palette;
+  readonly GlobeIcon = Globe;
 
-  // Modern Angular 20: Use input() with proper typing
-  readonly settings = input<Partial<GeneralSettings>>();
+  // Form
+  readonly settingsForm = new FormGroup<GeneralSettingsForm>({
+    // Workspace settings
+    workspaceName: new FormControl('My RAG Studio Workspace', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(1)]
+    }),
+    dataDirectory: new FormControl('./data', {
+      nonNullable: true,
+      validators: [Validators.required]
+    }),
 
-  // Modern Angular 20: Use output() instead of EventEmitter
-  readonly settingsChange = output<GeneralSettings>();
-  readonly directorySelect = output<void>();
+    // Preferences
+    autoSave: new FormControl(true, { nonNullable: true }),
+    autoBackup: new FormControl(false, { nonNullable: true }),
+    backupInterval: new FormControl('daily', { nonNullable: true }),
+    maxBackups: new FormControl(10, {
+      nonNullable: true,
+      validators: [Validators.required, Validators.min(1), Validators.max(50)]
+    }),
 
-  // Modern Angular 20: Use signals for reactive state
-  readonly isSaving = signal(false);
+    // Interface settings
+    theme: new FormControl('system', { nonNullable: true }),
+    language: new FormControl('en', { nonNullable: true }),
+    logLevel: new FormControl('info', { nonNullable: true }),
+  });
 
-  // Form management
-  readonly settingsForm: FormGroup;
+  // State
+  private readonly isInitialized = signal(false);
 
-  constructor(private fb: FormBuilder) {
-    this.settingsForm = this.fb.group({
-      workspaceName: ['RAG Studio'],
-      dataDirectory: ['./data'],
-      autoSave: [true],
-      autoBackup: [false],
-      backupInterval: ['daily'],
-      maxBackups: [7],
-      logLevel: ['info'],
-      theme: ['light'],
-      language: ['en']
-    });
-
-    // Watch for input changes and patch form
-    this.settingsForm.patchValue(this.settings() || {});
+  constructor() {
+    // Initialize store and sync form when settings change
+    this.initializeStore();
+    this.syncFormWithSettings();
   }
 
-  // Dropdown options
-  readonly backupIntervalOptions = computed<RagSelectOption<string>[]>(() => [
-    { value: 'hourly', label: 'Every Hour' },
-    { value: 'daily', label: 'Daily' },
-    { value: 'weekly', label: 'Weekly' },
-    { value: 'monthly', label: 'Monthly' }
-  ]);
-
-  readonly themeOptions = computed<RagToggleGroupOption<string>[]>(() => [
-    { value: 'light', label: 'Light' },
-    { value: 'dark', label: 'Dark' },
-    { value: 'system', label: 'System' }
-  ]);
-
-  readonly languageOptions = computed<RagSelectOption<string>[]>(() => [
-    { value: 'en', label: 'English' },
-    { value: 'es', label: 'Español' },
-    { value: 'fr', label: 'Français' },
-    { value: 'de', label: 'Deutsch' },
-    { value: 'ja', label: '日本語' },
-    { value: 'zh', label: '中文' }
-  ]);
-
-  readonly logLevelOptions = computed<RagSelectOption<string>[]>(() => [
-    { value: 'error', label: 'Error Only' },
-    { value: 'warn', label: 'Warnings' },
-    { value: 'info', label: 'Info' },
-    { value: 'debug', label: 'Debug' },
-    { value: 'trace', label: 'Trace' }
-  ]);
-
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.settingsForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
+  private async initializeStore() {
+    if (!this.settingsStore.isInitialized()) {
+      await this.settingsStore.initialize();
+    }
+    this.isInitialized.set(true);
   }
 
-  async onSave(): Promise<void> {
-    if (!this.settingsForm.valid) return;
-
-    this.isSaving.set(true);
-    
-    try {
-      // Simulate save delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const formValue = this.settingsForm.value as GeneralSettings;
-      this.settingsChange.emit(formValue);
-    } finally {
-      this.isSaving.set(false);
+  private syncFormWithSettings() {
+    // Watch for settings changes and update form
+    const settings = this.settingsStore.settings();
+    if (settings && this.isInitialized()) {
+      this.settingsForm.patchValue({
+        workspaceName: 'My RAG Studio Workspace', // TODO: Add to backend interface
+        dataDirectory: settings.system?.data_directory || './data',
+        autoSave: settings.system?.auto_backup ?? true,
+        autoBackup: settings.system?.auto_backup ?? false,
+        backupInterval: 'daily', // TODO: Add to backend interface
+        maxBackups: settings.system?.max_backups || 10,
+        theme: 'system', // TODO: Add to backend interface
+        language: 'en', // TODO: Add to backend interface
+        logLevel: settings.system?.log_level || 'info',
+      }, { emitEvent: false });
     }
   }
 
-  onReset(): void {
+  // Directory selection
+  async selectDataDirectory() {
+    try {
+      await this.settingsStore.selectDataDirectory();
+      // The store will update the settings and trigger form sync
+    } catch (error) {
+      console.error('Failed to select data directory:', error);
+    }
+  }
+
+  // Form methods
+  async saveSettings() {
+    if (this.settingsForm.valid) {
+      const formValue = this.settingsForm.value;
+      const currentSettings = this.settingsStore.settings();
+
+      if (currentSettings) {
+        await this.settingsStore.updateSettings({
+          ...currentSettings,
+          system: {
+            ...currentSettings.system,
+            // Only update fields that exist in the backend interface
+            data_directory: formValue.dataDirectory!,
+            auto_backup: formValue.autoBackup!,
+            max_backups: formValue.maxBackups!,
+            log_level: formValue.logLevel!,
+            // TODO: Add these fields to backend interface:
+            // workspace_name, backup_interval, theme, language, auto_save
+          }
+        });
+      }
+    }
+  }
+
+  resetSettings() {
     this.settingsForm.reset({
-      workspaceName: 'RAG Studio',
+      workspaceName: 'My RAG Studio Workspace',
       dataDirectory: './data',
       autoSave: true,
       autoBackup: false,
       backupInterval: 'daily',
-      maxBackups: 7,
+      maxBackups: 10,
+      theme: 'system',
+      language: 'en',
       logLevel: 'info',
-      theme: 'light',
-      language: 'en'
     });
-  }
-
-  selectDirectory(): void {
-    this.directorySelect.emit();
   }
 }
