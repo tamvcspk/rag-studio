@@ -1,0 +1,205 @@
+// Badge directive styles - positioned absolutely on elements
+.rag-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--rag-primitive-spacing-xs);
+  font-size: var(--rag-primitive-fontSize-xs);
+  font-weight: 600;
+  line-height: 1;
+  border-radius: var(--rag-primitive-radius-lg);
+  white-space: nowrap;
+  font-family: inherit;
+  box-sizing: border-box;
+  pointer-events: none; // Badges don't interfere with host element interaction
+}
+
+// Size variants
+.rag-badge--xs {
+  min-width: 12px;
+  height: 12px;
+  padding: 0 2px;
+  font-size: 10px;
+  border-radius: var(--rag-primitive-radius-md);
+}
+
+.rag-badge--sm {
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--rag-primitive-spacing-xs);
+  font-size: var(--rag-primitive-fontSize-xs);
+  border-radius: var(--rag-primitive-radius-lg);
+}
+
+.rag-badge--md {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--rag-primitive-spacing-sm);
+  font-size: var(--rag-primitive-fontSize-xs);
+  border-radius: var(--rag-primitive-radius-lg);
+}
+
+// Variant styles
+.rag-badge--solid {
+  background-color: var(--rag-primitive-color-gray-800);
+  color: var(--rag-primitive-color-white);
+  border: none;
+
+  &.rag-badge--blue {
+    background-color: var(--rag-semantic-color-primary-500);
+    color: var(--rag-primitive-color-white);
+  }
+
+  &.rag-badge--green {
+    background-color: var(--rag-semantic-color-success-800);
+    color: var(--rag-primitive-color-white);
+  }
+
+  &.rag-badge--amber {
+    background-color: var(--rag-semantic-color-warning-700);
+    color: var(--rag-primitive-color-white);
+  }
+
+  &.rag-badge--red {
+    background-color: var(--rag-semantic-color-danger-700);
+    color: var(--rag-primitive-color-white);
+  }
+
+  &.rag-badge--orange {
+    background-color: var(--rag-primitive-color-orange-600);
+    color: var(--rag-primitive-color-white);
+  }
+
+  &.rag-badge--purple {
+    background-color: var(--rag-primitive-color-purple-600);
+    color: var(--rag-primitive-color-white);
+  }
+}
+
+.rag-badge--soft {
+  background-color: var(--rag-semantic-color-background-muted);
+  color: var(--rag-semantic-color-text-default);
+  border: 1px solid var(--rag-semantic-color-border-subtle);
+
+  &.rag-badge--blue {
+    background-color: var(--rag-semantic-color-primary-100);
+    color: var(--rag-semantic-color-primary-600);
+    border-color: var(--rag-semantic-color-primary-200);
+  }
+
+  &.rag-badge--green {
+    background-color: var(--rag-semantic-color-success-100);
+    color: var(--rag-semantic-color-success-800);
+    border-color: var(--rag-semantic-color-success-200);
+  }
+
+  &.rag-badge--amber {
+    background-color: var(--rag-semantic-color-warning-100);
+    color: var(--rag-semantic-color-warning-700);
+    border-color: var(--rag-semantic-color-warning-200);
+  }
+
+  &.rag-badge--red {
+    background-color: var(--rag-semantic-color-danger-100);
+    color: var(--rag-semantic-color-danger-700);
+    border-color: var(--rag-semantic-color-danger-200);
+  }
+
+  &.rag-badge--orange {
+    background-color: var(--rag-primitive-color-orange-100);
+    color: var(--rag-primitive-color-orange-700);
+    border-color: var(--rag-primitive-color-orange-200);
+  }
+
+  &.rag-badge--purple {
+    background-color: var(--rag-primitive-color-purple-100);
+    color: var(--rag-primitive-color-purple-700);
+    border-color: var(--rag-primitive-color-purple-200);
+  }
+}
+
+.rag-badge--outline {
+  background-color: var(--rag-semantic-color-background-default);
+  color: var(--rag-semantic-color-text-subtle);
+  border: 1px solid var(--rag-semantic-color-border-default);
+
+  &.rag-badge--blue {
+    border-color: var(--rag-semantic-color-primary-500);
+    color: var(--rag-semantic-color-primary-600);
+  }
+
+  &.rag-badge--green {
+    border-color: var(--rag-semantic-color-success-800);
+    color: var(--rag-semantic-color-success-800);
+  }
+
+  &.rag-badge--amber {
+    border-color: var(--rag-semantic-color-warning-700);
+    color: var(--rag-semantic-color-warning-700);
+  }
+
+  &.rag-badge--red {
+    border-color: var(--rag-semantic-color-danger-700);
+    color: var(--rag-semantic-color-danger-700);
+  }
+
+  &.rag-badge--orange {
+    border-color: var(--rag-primitive-color-orange-600);
+    color: var(--rag-primitive-color-orange-700);
+  }
+
+  &.rag-badge--purple {
+    border-color: var(--rag-primitive-color-purple-600);
+    color: var(--rag-primitive-color-purple-700);
+  }
+}
+
+// Position-specific adjustments
+.rag-badge--top-right,
+.rag-badge--top-left {
+  // Ensure badges don't get cut off at the top
+  margin-top: 2px;
+}
+
+.rag-badge--bottom-right,
+.rag-badge--bottom-left {
+  // Ensure badges don't get cut off at the bottom
+  margin-bottom: 2px;
+}
+
+// Offset positioning (further from element)
+.rag-badge--offset {
+  &.rag-badge--top-right,
+  &.rag-badge--top-left {
+    margin-top: 6px;
+  }
+
+  &.rag-badge--bottom-right,
+  &.rag-badge--bottom-left {
+    margin-bottom: 6px;
+  }
+}
+
+// Special case for numeric badges (make them circular when single digit)
+.rag-badge {
+  &:not(:empty) {
+    // If content is single character and numeric, make it perfectly circular
+    &:has-text(1), &:has-text(2), &:has-text(3), &:has-text(4), &:has-text(5),
+    &:has-text(6), &:has-text(7), &:has-text(8), &:has-text(9) {
+      border-radius: 50%;
+      min-width: var(--height);
+      text-align: center;
+    }
+  }
+}
+
+// For badges with custom template content
+.rag-badge {
+  // Allow template content to determine size
+  &:has(> *) {
+    min-width: auto;
+    width: auto;
+  }
+}

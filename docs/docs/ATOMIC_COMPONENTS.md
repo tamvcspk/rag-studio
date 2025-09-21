@@ -22,6 +22,7 @@ All atomic components leverage the **RAG Studio Design Token System** with three
 - [Primitive Components](#primitive-components)
   - [RagChip](#ragchip)
   - [RagButton](#ragbutton)
+  - [RagBadge](#ragbadge)
   - [RagCheckbox](#ragcheckbox)
   - [RagIcon](#ragicon)
   - [RagInput](#raginput)
@@ -237,6 +238,128 @@ export class ButtonExampleComponent {
   readonly PlusIcon = PlusIcon;
 }
 ```
+
+---
+
+### RagBadge
+
+An attribute directive that adds informational badges to any element, perfect for notification counts, status indicators, and labels.
+
+**Selector:** `[ragBadge]`
+
+#### Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `ragBadge` | `string \| number \| TemplateRef<any> \| null` | `null` | Badge content - text, number, or template |
+| `badgeVariant` | `'solid' \| 'soft' \| 'outline'` | `'solid'` | Visual style variant |
+| `badgeColor` | `'gray' \| 'blue' \| 'green' \| 'amber' \| 'red' \| 'orange' \| 'purple'` | `'red'` | Badge color theme |
+| `badgeSize` | `'xs' \| 'sm' \| 'md'` | `'sm'` | Badge size |
+| `badgePosition` | `'top-right' \| 'top-left' \| 'bottom-right' \| 'bottom-left'` | `'top-right'` | Badge position on element |
+| `badgeOffset` | `boolean` | `false` | Offset badge further from element |
+| `badgeHidden` | `boolean` | `false` | Hide/show the badge |
+
+#### Usage Examples
+
+```html
+<!-- Basic notification badge -->
+<rag-button [ragBadge]="notificationCount">
+  Messages
+</rag-button>
+
+<!-- Custom position and color -->
+<rag-icon
+  [img]="BellIcon"
+  [ragBadge]="5"
+  badgePosition="top-right"
+  badgeColor="red"
+  badgeSize="xs">
+</rag-icon>
+
+<!-- Status badge with different variants -->
+<div
+  class="user-avatar"
+  [ragBadge]="'NEW'"
+  badgeVariant="soft"
+  badgeColor="green"
+  badgePosition="bottom-right">
+  <img src="avatar.jpg" alt="User">
+</div>
+
+<!-- Badge with template content -->
+<rag-button
+  [ragBadge]="badgeTemplate"
+  badgePosition="top-left"
+  badgeColor="blue">
+  Settings
+</rag-button>
+
+<ng-template #badgeTemplate>
+  <rag-icon [img]="StarIcon" size="xs"></rag-icon>
+</ng-template>
+
+<!-- Conditional badge -->
+<rag-chip
+  [ragBadge]="hasUpdates ? 'Updated' : null"
+  badgeColor="amber"
+  badgeVariant="outline">
+  Document
+</rag-chip>
+
+<!-- Dynamic badge with offset -->
+<div
+  class="file-item"
+  [ragBadge]="fileCount"
+  [badgeOffset]="true"
+  badgeSize="md"
+  badgeColor="purple">
+  Folder Name
+</div>
+```
+
+```typescript
+// Component using badges
+import { BellIcon, StarIcon } from 'lucide-angular';
+
+@Component({
+  selector: 'app-notification-example',
+  imports: [RagButton, RagIcon, RagChip, RagBadge],
+  template: `
+    <rag-button
+      [ragBadge]="unreadCount"
+      [badgeHidden]="unreadCount === 0"
+      badgeColor="red"
+      badgeSize="sm">
+      Inbox
+    </rag-button>
+  `
+})
+export class NotificationExampleComponent {
+  readonly BellIcon = BellIcon;
+  readonly StarIcon = StarIcon;
+
+  unreadCount = signal(3);
+  hasUpdates = signal(true);
+}
+```
+
+#### Key Features
+
+- **Automatic Positioning**: Badges are positioned absolutely relative to the host element
+- **Template Support**: Accepts text, numbers, or Angular templates for custom content
+- **Dynamic Content**: Reactive to signal changes and can be shown/hidden conditionally
+- **Non-Intrusive**: Uses `pointer-events: none` so badges don't interfere with host element interactions
+- **Flexible Positioning**: Four corner positions with optional offset
+- **Design Token Integration**: Full integration with the RAG Studio design system
+- **Accessibility**: Properly positioned without affecting screen reader navigation
+
+#### Common Use Cases
+
+- **Notification counts** on buttons and icons
+- **Status indicators** on avatars and items
+- **New/Updated labels** on content cards
+- **Counter badges** for shopping carts, messages
+- **Feature flags** and promotional labels
 
 ---
 

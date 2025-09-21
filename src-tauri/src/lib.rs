@@ -1,6 +1,7 @@
 mod python_integration;
 mod manager;
 mod kb_commands;
+mod settings_commands;
 
 use python_integration::PythonContext;
 use std::sync::OnceLock;
@@ -11,6 +12,7 @@ use rag_core::{SqlService, SqlConfig};
 use rag_core::modules::kb::{KbService, KbServiceImpl};
 use manager::Manager;
 use kb_commands::*;
+use settings_commands::*;
 
 // Global Python context instance using OnceLock for thread-safe lazy initialization
 static PYTHON_CONTEXT: OnceLock<PythonContext> = OnceLock::new();
@@ -77,7 +79,17 @@ pub fn run() {
             export_knowledge_base,
             reindex_knowledge_base,
             get_app_state,
-            get_health_status
+            get_health_status,
+            // Settings Management Commands
+            get_app_settings,
+            update_app_settings,
+            start_mcp_server,
+            stop_mcp_server,
+            get_mcp_server_status,
+            select_data_directory,
+            clear_application_cache,
+            export_settings,
+            import_settings
         ])
         .setup(|app| {
             println!("RAG Studio application initializing...");

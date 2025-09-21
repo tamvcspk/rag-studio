@@ -1,0 +1,32 @@
+<div [class]="wrapperClasses()">
+  @if (label()) {
+    <label class="rt-toggle-label">
+      {{ label() }}
+    </label>
+  }
+
+  <button
+    type="button"
+    [class]="toggleClasses()"
+    [disabled]="disabled()"
+    [attr.aria-pressed]="checked"
+    [attr.aria-label]="label() || currentText()"
+    (click)="handleClick()"
+    (keydown)="handleKeydown($event)"
+    (blur)="handleBlur()"
+  >
+    <div class="rt-toggle-track">
+      <div [class]="thumbClasses()">
+        @if (currentText() && size() !== 'sm') {
+          <span class="rt-toggle-text">{{ currentText() }}</span>
+        }
+      </div>
+    </div>
+  </button>
+
+  @if (description()) {
+    <div class="rt-toggle-description">
+      {{ description() }}
+    </div>
+  }
+</div>

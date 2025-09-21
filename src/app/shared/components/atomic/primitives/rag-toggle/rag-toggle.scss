@@ -1,0 +1,333 @@
+@use '../../../../styles/animations';
+
+.rt-toggle-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rag-primitive-spacing-sm);
+  width: max-content;
+
+  &.rt-disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+.rt-toggle-label {
+  font-size: var(--rag-primitive-fontSize-sm);
+  font-weight: 500;
+  color: var(--rag-semantic-text-primary);
+  margin: 0;
+}
+
+.rt-Toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: var(--rag-primitive-radius-full);
+  transition: all 0.15s ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--rag-semantic-accent-primary);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  // Size variants
+  &.rt-size-sm {
+    width: 32px;
+    height: 16px;
+  }
+
+  &.rt-size-md {
+    width: 44px;
+    height: 24px;
+  }
+
+  &.rt-size-lg {
+    width: 56px;
+    height: 32px;
+  }
+}
+
+.rt-toggle-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--rag-primitive-radius-full);
+  transition: all 0.15s ease;
+
+  // Default state (unchecked)
+  background-color: var(--rag-semantic-bg-tertiary);
+  border: 1px solid var(--rag-semantic-border-secondary);
+
+  // Variant: solid (default)
+  .rt-variant-solid & {
+    background-color: var(--rag-semantic-bg-tertiary);
+    border: 1px solid var(--rag-semantic-border-secondary);
+  }
+
+  // Variant: soft
+  .rt-variant-soft & {
+    background-color: var(--rag-semantic-bg-secondary);
+    border: 1px solid var(--rag-semantic-border-muted);
+  }
+
+  // Variant: outline
+  .rt-variant-outline & {
+    background-color: transparent;
+    border: 2px solid var(--rag-semantic-border-secondary);
+  }
+
+  // Checked state
+  .rt-checked & {
+    background-color: var(--rag-semantic-accent-primary);
+    border-color: var(--rag-semantic-accent-primary);
+
+    .rt-color-green.rt-Toggle & {
+      background-color: var(--rag-semantic-success-primary);
+      border-color: var(--rag-semantic-success-primary);
+    }
+
+    .rt-color-red.rt-Toggle & {
+      background-color: var(--rag-semantic-error-primary);
+      border-color: var(--rag-semantic-error-primary);
+    }
+  }
+
+  // Variant overrides for checked state
+  .rt-checked.rt-variant-soft & {
+    background-color: var(--rag-semantic-accent-bg);
+    border-color: var(--rag-semantic-accent-border);
+
+    .rt-color-green.rt-Toggle & {
+      background-color: var(--rag-semantic-success-bg);
+      border-color: var(--rag-semantic-success-border);
+    }
+
+    .rt-color-red.rt-Toggle & {
+      background-color: var(--rag-semantic-error-bg);
+      border-color: var(--rag-semantic-error-border);
+    }
+  }
+
+  .rt-checked.rt-variant-outline & {
+    background-color: transparent;
+    border-color: var(--rag-semantic-accent-primary);
+
+    .rt-color-green.rt-Toggle & {
+      border-color: var(--rag-semantic-success-primary);
+    }
+
+    .rt-color-red.rt-Toggle & {
+      border-color: var(--rag-semantic-error-primary);
+    }
+  }
+
+  // Hover states
+  .rt-Toggle:hover:not(:disabled) & {
+    background-color: var(--rag-semantic-bg-secondary);
+    border-color: var(--rag-semantic-border-primary);
+
+    .rt-variant-soft.rt-Toggle & {
+      background-color: var(--rag-semantic-bg-tertiary);
+      border-color: var(--rag-semantic-border-secondary);
+    }
+  }
+
+  .rt-Toggle:hover:not(:disabled).rt-checked & {
+    background-color: var(--rag-semantic-accent-hover);
+    border-color: var(--rag-semantic-accent-hover);
+
+    .rt-color-green.rt-Toggle & {
+      background-color: var(--rag-semantic-success-hover);
+      border-color: var(--rag-semantic-success-hover);
+    }
+
+    .rt-color-red.rt-Toggle & {
+      background-color: var(--rag-semantic-error-hover);
+      border-color: var(--rag-semantic-error-hover);
+    }
+  }
+}
+
+.rt-toggle-thumb {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--rag-semantic-bg-primary);
+  border-radius: var(--rag-primitive-radius-full);
+  box-shadow: var(--rag-primitive-shadow-sm);
+  transition: all 0.15s ease;
+
+  // Size variants
+  .rt-size-sm .rt-Toggle & {
+    width: 12px;
+    height: 12px;
+  }
+
+  .rt-size-md .rt-Toggle & {
+    width: 20px;
+    height: 20px;
+  }
+
+  .rt-size-lg .rt-Toggle & {
+    width: 28px;
+    height: 28px;
+  }
+
+  // Checked state - move to right
+  &.rt-checked {
+    .rt-size-sm .rt-Toggle & {
+      transform: translateX(16px);
+    }
+
+    .rt-size-md .rt-Toggle & {
+      transform: translateX(20px);
+    }
+
+    .rt-size-lg .rt-Toggle & {
+      transform: translateX(24px);
+    }
+  }
+
+  // Outline variant adjustments
+  .rt-variant-outline & {
+    top: 2px;
+    left: 2px;
+
+    .rt-size-sm .rt-Toggle & {
+      width: 10px;
+      height: 10px;
+    }
+
+    .rt-size-md .rt-Toggle & {
+      width: 16px;
+      height: 16px;
+    }
+
+    .rt-size-lg .rt-Toggle & {
+      width: 24px;
+      height: 24px;
+    }
+
+    &.rt-checked {
+      .rt-size-sm .rt-Toggle & {
+        transform: translateX(14px);
+      }
+
+      .rt-size-md .rt-Toggle & {
+        transform: translateX(20px);
+      }
+
+      .rt-size-lg .rt-Toggle & {
+        transform: translateX(24px);
+      }
+    }
+  }
+}
+
+.rt-toggle-icon {
+  color: var(--rag-semantic-text-secondary);
+  transition: color 0.15s ease;
+
+  .rt-checked & {
+    color: var(--rag-semantic-accent-primary);
+
+    .rt-color-green.rt-Toggle & {
+      color: var(--rag-semantic-success-primary);
+    }
+
+    .rt-color-red.rt-Toggle & {
+      color: var(--rag-semantic-error-primary);
+    }
+  }
+}
+
+.rt-toggle-text {
+  font-size: var(--rag-primitive-fontSize-xs);
+  font-weight: 600;
+  color: var(--rag-semantic-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color 0.15s ease;
+
+  .rt-size-md .rt-Toggle & {
+    font-size: var(--rag-primitive-fontSize-xs);
+  }
+
+  .rt-size-lg .rt-Toggle & {
+    font-size: var(--rag-primitive-fontSize-sm);
+  }
+
+  .rt-checked & {
+    color: var(--rag-semantic-accent-primary);
+
+    .rt-color-green.rt-Toggle & {
+      color: var(--rag-semantic-success-primary);
+    }
+
+    .rt-color-red.rt-Toggle & {
+      color: var(--rag-semantic-error-primary);
+    }
+  }
+}
+
+.rt-toggle-description {
+  font-size: var(--rag-primitive-fontSize-xs);
+  color: var(--rag-semantic-text-secondary);
+  margin-top: var(--rag-primitive-spacing-xs);
+}
+
+// Active state
+.rt-Toggle:active:not(:disabled) {
+  .rt-toggle-thumb {
+    transform: scale(0.95);
+
+    &.rt-checked {
+      .rt-size-sm & {
+        transform: translateX(16px) scale(0.95);
+      }
+
+      .rt-size-md & {
+        transform: translateX(20px) scale(0.95);
+      }
+
+      .rt-size-lg & {
+        transform: translateX(24px) scale(0.95);
+      }
+    }
+  }
+}
+
+// Disabled state
+.rt-toggle-wrapper.rt-disabled {
+  .rt-toggle-track {
+    background-color: var(--rag-semantic-bg-muted);
+    border-color: var(--rag-semantic-border-muted);
+  }
+
+  .rt-toggle-thumb {
+    background-color: var(--rag-semantic-bg-secondary);
+    box-shadow: none;
+  }
+
+  .rt-toggle-label,
+  .rt-toggle-description {
+    color: var(--rag-semantic-text-disabled);
+  }
+
+  .rt-toggle-icon,
+  .rt-toggle-text {
+    color: var(--rag-semantic-text-disabled);
+  }
+}
