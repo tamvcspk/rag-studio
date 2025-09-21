@@ -143,3 +143,132 @@ async fn test_vector_service_concurrent_operations() {
     let (search_result1, search_result2) = tokio::join!(search1, search2);
     assert!(search_result1.is_ok() && search_result2.is_ok(), "Concurrent searches should succeed");
 }
+
+#[tokio::test]
+async fn test_bm25_search_functionality() {
+    let temp_dir = TempDir::new().unwrap();
+    let config = VectorDbConfig::test_config(temp_dir.path());
+
+    let vector_service = VectorDbService::new(config).await.expect("Failed to create vector service");
+
+    // Create collection with test documents
+    let schema = VectorSchema {
+        chunk_id: "chunk_1".to_string(),
+        document_id: "doc_1".to_string(),
+        kb_id: "test_kb".to_string(),
+        content: "Rust programming language systems performance".to_string(),
+        embedding: vec![0.1, 0.2, 0.3, 0.4],
+        metadata: serde_json::json!({"category": "programming"}),
+        created_at: 1234567890,
+        updated_at: 1234567890,
+    };
+
+    vector_service.create_collection("test_kb", &schema).await.expect("Failed to create collection");
+
+    let vectors = vec![
+        schema,
+        VectorSchema {
+            chunk_id: "chunk_2".to_string(),
+            document_id: "doc_2".to_string(),
+            kb_id: "test_kb".to_string(),
+            content: "JavaScript web development frontend backend".to_string(),
+            embedding: vec![0.2, 0.3, 0.4, 0.5],
+            metadata: serde_json::json!({"category": "web"}),
+            created_at: 1234567891,
+            updated_at: 1234567891,
+        },
+        VectorSchema {
+            chunk_id: "chunk_3".to_string(),
+            document_id: "doc_3".to_string(),
+            kb_id: "test_kb".to_string(),
+            content: "Python machine learning artificial intelligence data science".to_string(),
+            embedding: vec![0.3, 0.4, 0.5, 0.6],
+            metadata: serde_json::json!({"category": "ai"}),
+            created_at: 1234567892,
+            updated_at: 1234567892,
+        },
+    ];
+
+    vector_service.upsert_vectors("test_kb", vectors).await.expect("Failed to upsert vectors");
+
+    // Test BM25 search with exact term match
+    let search_results = vector_service.bm25_search("test_kb", "rust", 5, None).await.expect("Failed to perform BM25 search");
+    assert!(!search_results.is_empty(), "BM25 search should find Rust-related content");
+
+    // Test BM25 search with multiple terms
+    let search_results = vector_service.bm25_search("test_kb", "programming language", 5, None).await.expect("Failed to perform BM25 search");
+    assert!(!search_results.is_empty(), "BM25 search should find programming-related content");
+
+    // Test BM25 search with no matches
+    let search_results = vector_service.bm25_search("test_kb", "nonexistent", 5, None).await.expect("Failed to perform BM25 search");
+    assert!(search_results.is_empty(), "BM25 search should return empty for non-matching terms");
+}
+
+#[tokio::test]
+async fn test_hybrid_search_functionality() {
+    let temp_dir = TempDir::new().unwrap();
+    let config = VectorDbConfig::test_config(temp_dir.path());
+
+    let vector_service = VectorDbService::new(config).await.expect("Failed to create vector service");
+
+    // Create collection with test documents
+    let schema = VectorSchema {
+        chunk_id: "chunk_1".to_string(),
+        document_id: "doc_1".to_string(),
+        kb_id: "test_kb".to_string(),
+        content: "Vector database search similarity embeddings".to_string(),
+        embedding: vec![0.1, 0.2, 0.3, 0.4],
+        metadata: serde_json::json!({"type": "technical"}),
+        created_at: 1234567890,
+        updated_at: 1234567890,
+    };
+
+    vector_service.create_collection("test_kb", &schema).await.expect("Failed to create collection");
+
+    let vectors = vec![
+        schema,
+        VectorSchema {
+            chunk_id: "chunk_2".to_string(),
+            document_id: "doc_2".to_string(),
+            kb_id: "test_kb".to_string(),
+            content: "Database systems relational SQL NoSQL storage".to_string(),
+            embedding: vec![0.11, 0.21, 0.31, 0.41], // Similar embedding
+            metadata: serde_json::json!({"type": "database"}),
+            created_at: 1234567891,
+            updated_at: 1234567891,
+        },
+    ];
+
+    vector_service.upsert_vectors("test_kb", vectors).await.expect("Failed to upsert vectors");
+
+    // Test hybrid search combining vector similarity and text matching
+    let query_vector = vec![0.1, 0.2, 0.3, 0.4]; // Should match first document by vector similarity
+    let search_results = vector_service.hybrid_search("test_kb", "database", &query_vector, 5, None).await.expect("Failed to perform hybrid search");
+
+    // Should find results from both vector and BM25 search
+    assert!(!search_results.is_empty(), "Hybrid search should find relevant content");
+
+    // Results should be sorted by hybrid score
+    if search_results.len() > 1 {
+        assert!(search_results[0].score >= search_results[1].score, "Results should be sorted by score");
+    }
+}
+
+#[tokio::test]
+async fn test_vector_service_error_handling() {
+    let temp_dir = TempDir::new().unwrap();
+    let config = VectorDbConfig::test_config(temp_dir.path());
+
+    let vector_service = VectorDbService::new(config).await.expect("Failed to create vector service");
+
+    // Test operations on non-existent collection
+    let query_vector = vec![0.1, 0.2, 0.3, 0.4];
+    let search_result = vector_service.search("nonexistent_kb", &query_vector, 5, None).await;
+    assert!(search_result.is_err(), "Search on non-existent collection should fail");
+
+    let bm25_result = vector_service.bm25_search("nonexistent_kb", "test", 5, None).await;
+    assert!(bm25_result.is_err(), "BM25 search on non-existent collection should fail");
+
+    let stats_result = vector_service.get_collection_stats("nonexistent_kb").await;
+    assert!(stats_result.is_err(), "Stats on non-existent collection should fail");
+}

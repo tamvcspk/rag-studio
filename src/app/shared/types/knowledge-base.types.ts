@@ -11,35 +11,37 @@ export interface KnowledgeBase {
   product: string;
   description?: string;
   status: KnowledgeBaseStatus;
-  
-  // Content metadata
-  contentSource: ContentSourceType;
+
+  // Stats (updated to match Rust backend)
+  document_count: number;
+  chunk_count: number;
+  index_size: number; // bytes
+  health_score: number; // 0.0 to 1.0
+
+  // Timestamps (ISO strings from Rust)
+  created_at: string;
+  updated_at: string;
+
+  // Optional fields for backward compatibility
+  contentSource?: ContentSourceType;
   sourceUrl?: string;
-  
-  // Stats
-  size: string; // e.g., "45.2 MB"
-  chunks: number;
-  vectors: number;
-  bm25Terms: number;
-  documentsCount?: number;
-  
-  // Configuration
-  embeddingModel: EmbeddingModel;
-  semverRange: string;
-  
-  // Timestamps
-  createdAt: Date;
-  updatedAt: Date;
-  lastIndexedAt?: Date;
-  
-  // Progress (for indexing)
+  embeddingModel?: EmbeddingModel;
+  semverRange?: string;
   progressPercentage?: number;
   estimatedTimeRemaining?: string;
-  
-  // Manifest
   manifest?: KnowledgeBaseManifest;
   fingerprint?: string;
   license?: string;
+
+  // Legacy fields (computed from new fields for backward compatibility)
+  size?: string; // computed from index_size
+  chunks?: number; // alias for chunk_count
+  vectors?: number; // alias for chunk_count
+  bm25Terms?: number;
+  documentsCount?: number; // alias for document_count
+  createdAt?: Date; // computed from created_at
+  updatedAt?: Date; // computed from updated_at
+  lastIndexedAt?: Date;
 }
 
 export interface KnowledgeBaseManifest {
@@ -105,4 +107,5 @@ export interface CreateKBFormData {
   contentSource: ContentSourceType;
   sourceUrl: string;
   embeddingModel: EmbeddingModel;
+  chunkSize?: number; // Added for backend compatibility
 }

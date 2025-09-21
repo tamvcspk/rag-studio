@@ -1,0 +1,45 @@
+[package]
+name = "rag-mcp"
+version = "0.1.0"
+edition = "2021"
+description = "MCP (Model Context Protocol) server subprocess for RAG Studio"
+
+[[bin]]
+name = "rag-mcp"
+path = "src/main.rs"
+
+[dependencies]
+# Core RAG dependencies
+rag-core = { path = "../core" }
+
+# Async runtime
+tokio = { workspace = true }
+chrono = { workspace = true }
+
+# Serialization
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+# Error handling
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+
+# Logging
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+# MCP Protocol (JSON-RPC over stdio for MVP)
+async-trait = { workspace = true }
+
+# CLI parsing
+clap = { version = "4.4", features = ["derive"] }
+
+# UUID generation
+uuid = { workspace = true }
+
+# Validation
+jsonschema = "0.17"
+
+[dev-dependencies]
+tempfile = "3.8"
+tokio-test = "0.4"

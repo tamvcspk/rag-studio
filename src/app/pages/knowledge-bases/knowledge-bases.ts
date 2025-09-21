@@ -7,7 +7,7 @@ import {
   CreateKBFormData,
   KnowledgeBaseStatus 
 } from '../../shared/types';
-import { MockKnowledgeBasesService } from '../../shared/services/mock-knowledge-bases';
+import { KnowledgeBasesService } from '../../shared/services/knowledge-bases.service';
 import { KnowledgeBaseCard } from '../../shared/components/composite/knowledge-base-card/knowledge-base-card';
 import { CreateKBWizard } from '../../shared/components/composite/create-kb-wizard/create-kb-wizard';
 import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
@@ -32,7 +32,7 @@ type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
   styleUrl: './knowledge-bases.scss'
 })
 export class KnowledgeBases implements OnInit {
-  private readonly kbService = inject(MockKnowledgeBasesService);
+  private readonly kbService = inject(KnowledgeBasesService);
   private readonly dialogService = inject(RagDialogService);
   private readonly toastService = inject(RagToastService);
   
@@ -43,11 +43,12 @@ export class KnowledgeBases implements OnInit {
   readonly ClockIcon = Clock;
   readonly PauseIcon = Pause;
 
-  private allKnowledgeBases = signal<KnowledgeBase[]>([]);
+  // Use signals from the service for real-time updates
+  private readonly allKnowledgeBases = this.kbService.knowledgeBases;
   readonly searchQuery = signal('');
   readonly selectedFilters = signal<string[]>([]);
   private statusFilter = signal<FilterType>('all');
-  readonly isLoading = signal(true);
+  readonly isLoading = this.kbService.isLoading;
 
   // Computed filtered knowledge bases
   readonly filteredKBs = computed(() => {
@@ -100,14 +101,14 @@ export class KnowledgeBases implements OnInit {
   readonly totalCount = computed(() => this.allKnowledgeBases().length);
   readonly filteredCount = computed(() => this.filteredKBs().length);
 
-  // Computed statistics
+  // Use computed statistics from the service
   readonly kbStats = computed(() => {
-    const kbs = this.allKnowledgeBases();
+    const metrics = this.kbService.metrics();
     return {
-      total: kbs.length,
-      indexed: kbs.filter(kb => kb.status === 'indexed').length,
-      indexing: kbs.filter(kb => kb.status === 'indexing').length,
-      failed: kbs.filter(kb => kb.status === 'failed').length
+      total: metrics.total_kbs,
+      indexed: metrics.indexed_kbs,
+      indexing: metrics.indexing_kbs,
+      failed: metrics.failed_kbs
     };
   });
   
@@ -190,21 +191,9 @@ export class KnowledgeBases implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.loadKnowledgeBases();
-  }
-
-  private loadKnowledgeBases(): void {
-    this.isLoading.set(true);
-    this.kbService.getKnowledgeBases().subscribe({
-      next: (kbs) => {
-        this.allKnowledgeBases.set(kbs);
-        this.isLoading.set(false);
-      },
-      error: (error) => {
-        console.error('Failed to load knowledge bases:', error);
-        this.isLoading.set(false);
-      }
-    });
+    // Initial load is handled by the service automatically
+    // Real-time updates will come through service signals
+    console.log('KnowledgeBases component initialized with real-time service');
   }
 
   onSearchChange(query: string): void {
@@ -237,22 +226,23 @@ export class KnowledgeBases implements OnInit {
   }
 
   onCreateKB(formData: CreateKBFormData): void {
-    this.kbService.createKnowledgeBase({
-      name: formData.name,
-      version: formData.version,
-      product: formData.product,
-      description: formData.description,
-      contentSource: formData.contentSource,
-      sourceUrl: formData.sourceUrl,
-      embeddingModel: formData.embeddingModel
-    }).subscribe({
+    this.kbService.createKnowledgeBase(formData).subscribe({
       next: (newKB) => {
-        // Add the new KB to the list
-        this.allKnowledgeBases.update(kbs => [newKB, ...kbs]);
-        console.log('Knowledge base created:', newKB);
+        // State is automatically updated via real-time events
+        console.log('Knowledge base creation initiated:', newKB);
+        this.toastService.show({
+          variant: 'success',
+          title: 'Knowledge base creation started',
+          message: 'The indexing process will begin shortly.'
+        });
       },
       error: (error) => {
         console.error('Failed to create knowledge base:', error);
+        this.toastService.show({
+          variant: 'error',
+          title: 'Creation failed',
+          message: error.message || 'Failed to create knowledge base'
+        });
       }
     });
   }
@@ -261,10 +251,19 @@ export class KnowledgeBases implements OnInit {
     this.kbService.reindexKnowledgeBase(kbId).subscribe({
       next: () => {
         console.log('Reindexing started for KB:', kbId);
-        this.loadKnowledgeBases(); // Refresh to show updated status
+        this.toastService.show({
+          variant: 'info',
+          title: 'Reindexing started',
+          message: 'The knowledge base will be reindexed.'
+        });
       },
       error: (error) => {
         console.error('Failed to start reindexing:', error);
+        this.toastService.show({
+          variant: 'error',
+          title: 'Reindexing failed',
+          message: error.message || 'Failed to start reindexing'
+        });
       }
     });
   }
@@ -296,11 +295,21 @@ export class KnowledgeBases implements OnInit {
     if (confirm('Are you sure you want to delete this knowledge base? This action cannot be undone.')) {
       this.kbService.deleteKnowledgeBase(kbId).subscribe({
         next: () => {
-          this.allKnowledgeBases.update(kbs => kbs.filter(kb => kb.id !== kbId));
-          console.log('Knowledge base deleted:', kbId);
+          // State is automatically updated via real-time events
+          console.log('Knowledge base deletion initiated:', kbId);
+          this.toastService.show({
+            variant: 'success',
+            title: 'Knowledge base deleted',
+            message: 'The knowledge base has been successfully deleted.'
+          });
         },
         error: (error) => {
           console.error('Failed to delete knowledge base:', error);
+          this.toastService.show({
+            variant: 'error',
+            title: 'Deletion failed',
+            message: error.message || 'Failed to delete knowledge base'
+          });
         }
       });
     }
@@ -314,10 +323,8 @@ export class KnowledgeBases implements OnInit {
   onCancelKB(kbId: string): void {
     if (confirm('Are you sure you want to cancel the indexing? Progress will be lost.')) {
       console.log('Cancelling KB indexing:', kbId);
-      // In a real app, this would call the service to cancel indexing
-      this.allKnowledgeBases.update(kbs => 
-        kbs.filter(kb => kb.id !== kbId)
-      );
+      // For MVP, treat cancel as delete
+      this.onDeleteKB(kbId);
     }
   }
 

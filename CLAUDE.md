@@ -522,23 +522,44 @@ export class ExampleComponent {
 RAG Studio enforces a standardized service structure for maintainability and consistency:
 
 ```
-core/src/services/
-├── sql/
-│   ├── mod.rs              # Re-exports: pub mod sql; pub use sql::*;
-│   └── sql.rs              # Complete service implementation
-├── vector/
-│   ├── mod.rs              # Re-exports: pub mod vector; pub use vector::*;
-│   └── vector.rs           # Complete service implementation
-├── schema/
-│   └── schema.rs           # Shared types and database schemas
-└── models/                 # (Future: model definitions if needed)
+core/src/
+├── lib.rs                  # Entry point with public exports
+├── modules/                # Domain-specific modules (business logic)
+│   ├── mod.rs
+│   └── kb/                 # Knowledge Base domain module
+│       ├── mod.rs
+│       ├── service.rs      # KB business logic and operations
+│       ├── models.rs       # KB-specific data structures
+│       ├── schema.rs       # KB database schema definitions
+│       └── errors.rs       # KB-specific error types
+├── services/               # Infrastructure services (cross-cutting concerns)
+│   ├── mod.rs
+│   ├── sql.rs              # SQLite service implementation
+│   ├── vector.rs           # LanceDB vector service implementation
+│   └── (future services to be added when needed)
+├── models/                 # Shared data structures used across modules
+│   ├── mod.rs
+│   └── common.rs           # Common types, DTOs, and shared models
+├── schemas/                # Shared database schemas and migrations
+│   ├── mod.rs
+│   └── schema.rs           # Database schema definitions
+├── errors/                 # Application-wide error handling
+│   ├── mod.rs
+│   └── core_errors.rs      # Core error types and conversions
+├── utils/                  # Utility functions and helpers
+│   ├── mod.rs
+│   └── helpers.rs          # Common utility functions
+└── state/                  # Application state management
+    ├── mod.rs
+    ├── app_state.rs        # Main application state structure
+    └── manager.rs          # State management logic
 ```
 
 #### Service Implementation Requirements
 
 Every service MUST implement this pattern:
 
-1. **Error Types**: Custom error enums with `thiserror::Error`
+1. **Error Types**: Custom error enums with `thiserror::Error` (domain-specific in modules/, shared in errors/)
 2. **Configuration Structs**:
    - `new_mvp()` - MVP configuration with simplified setup
    - `new_production()` - Production configuration with full features
@@ -548,27 +569,63 @@ Every service MUST implement this pattern:
 5. **Helper Functions**: Utility functions and type conversions
 6. **Test Helpers**: `#[cfg(test)]` helper methods only (NO inline tests)
 
+#### Module Organization Guidelines
+
+- **Domain Modules** (`modules/`): Business logic and domain-specific operations
+  - Contains `service.rs` (business logic), `models.rs` (domain types), `schema.rs` (domain schemas), `errors.rs` (domain errors)
+  - High cohesion within domain, minimal external dependencies
+  - Examples: KB management, Authentication, Flow composition
+
+- **Infrastructure Services** (`services/`): Technical cross-cutting concerns
+  - Each service implemented as a single `.rs` file (e.g., `sql.rs`, `vector.rs`)
+  - Database access, caching, storage, external service integrations
+  - Shared by multiple domain modules
+  - Focus on technical implementation rather than business rules
+
+- **Shared Components**: Common types, utilities, and infrastructure
+  - `models/` - Shared DTOs and common types used across domains
+  - `schemas/` - Database schema definitions and migration utilities
+  - `errors/` - Application-wide error types and conversion utilities
+  - `utils/` - Common helper functions and utilities
+  - `state/` - Application state management and coordination
+
 #### Testing Structure Requirements
 
 Tests follow Cargo standards with proper separation:
 
 **Unit Tests** (co-located with source code using `#[cfg(test)]` modules):
 ```
-core/src/services/
-├── sql/
-│   └── sql.rs                     # Contains #[cfg(test)] mod tests { ... }
-├── vector/
-│   └── vector.rs                  # Contains #[cfg(test)] mod tests { ... }
-└── state.rs                       # Contains #[cfg(test)] mod tests { ... }
+core/src/
+├── modules/
+│   ├── kb/
+│   │   ├── service.rs             # Contains #[cfg(test)] mod tests { ... }
+│   │   ├── models.rs              # Contains #[cfg(test)] mod tests { ... }
+│   │   └── schema.rs              # Contains #[cfg(test)] mod tests { ... }
+│   └── auth/
+│       ├── service.rs             # Contains #[cfg(test)] mod tests { ... }
+│       └── models.rs              # Contains #[cfg(test)] mod tests { ... }
+├── services/
+│   ├── sql/
+│   │   └── sql.rs                 # Contains #[cfg(test)] mod tests { ... }
+│   ├── vector/
+│   │   └── vector.rs              # Contains #[cfg(test)] mod tests { ... }
+│   └── cache/
+│       └── cache.rs               # Contains #[cfg(test)] mod tests { ... }
+└── state/
+    ├── app_state.rs               # Contains #[cfg(test)] mod tests { ... }
+    └── manager.rs                 # Contains #[cfg(test)] mod tests { ... }
 ```
 
 **Integration Tests** (standalone files in tests/ directory):
 ```
 core/tests/
+├── kb_module_integration.rs       # KB domain module integration tests
+├── auth_integration.rs            # Authentication workflow integration tests
 ├── sql_integration.rs             # SQL service integration tests
 ├── vector_integration.rs          # Vector service integration tests
 ├── state_manager_integration.rs   # State management integration tests
-└── [workflow_name]_integration.rs # Additional integration tests
+├── end_to_end_integration.rs      # Full workflow integration tests
+└── performance_benchmarks.rs      # Performance and benchmark tests
 ```
 
 #### Test Classification Rules
