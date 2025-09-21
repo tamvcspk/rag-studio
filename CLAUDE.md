@@ -108,6 +108,7 @@ The Manager initializes and manages all core services with hot-reload configurat
 
 - **Tauri v2**: Desktop application framework with tray icon support
 - **Angular 20+**: Frontend framework with standalone components and Angular CDK (DragDrop, Overlay, Dialog)
+- **NgRx Signals**: Modern reactive state management with signal-based stores
 - **Radix-inspired Design System**: Consistent UI components and design tokens
 - **Lucide Icons**: Icon system with 3,300+ icons
 - **Rust 1.80+**: Backend with Axum (async server), Tokio (concurrency), Diesel ORM
@@ -124,6 +125,7 @@ The Manager initializes and manages all core services with hot-reload configurat
     - `atomic/`: Basic UI primitives (buttons, inputs, icons, chips, etc.)
     - `semantic/`: Context-aware components (cards, forms, navigation, overlays)
     - `composite/`: Complex business components (wizards, designers, dashboards)
+  - `src/app/shared/store/`: NgRx Signal Stores for centralized state management
   - `src/app/shared/tokens/`: Design token system with CSS custom properties
   - `src/app/shared/layout/`: Layout components (main-layout with sidebar)
 - `src-tauri/`: Rust backend and Tauri configuration
@@ -192,11 +194,11 @@ The application uses a three-tier state management approach:
    - **Storage**: Single app_meta.db for MVP (split to events.db post-MVP), in-memory runtime with periodic saves
    - **Sync Flow**: Load SQL → In-Memory; Mutate → Direct SQL update, upgrade path to batched operations
 
-2. **Shared Mirrored State (Frontend NgRx)**
-   - 5-7 fields subset with pagination
+2. **Shared Mirrored State (NgRx Signals)**
+   - 5-7 fields subset with pagination using NgRx Signal Stores
    - KB Packs, Runs, Schedules/Flows, Metrics/Logs (~50 entries), Errors
-   - **Storage**: SQL persistent (aggregated), in-memory runtime (frontend ephemeral)
-   - **Sync Flow**: Delta push via Tauri events → NgRx; Pull paginated from backend
+   - **Storage**: SQL persistent (aggregated), in-memory reactive signals (frontend ephemeral)
+   - **Sync Flow**: Delta push via Tauri events → NgRx Signal Store; Direct async store methods for backend calls
 
 3. **Local Frontend State (Angular Signals)**
    - 4-6 signals (ephemeral)
@@ -206,10 +208,20 @@ The application uses a three-tier state management approach:
 
 ### State Management (MVP)
 
-- **Shared State Pattern**: Arc<RwLock<AppState>> for simple MVP state management
+- **Backend State Pattern**: Arc<RwLock<AppState>> for simple MVP backend state management
+- **Frontend State Management**: NgRx Signal Stores for reactive, centralized state management
 - **Direct Persistence**: SQL writes with periodic saves and load-on-startup pattern
-- **Event Broadcasting**: Tauri events for frontend state sync with debounced updates
+- **Event Broadcasting**: Tauri events for backend-to-frontend state sync with real-time updates
+- **Real-time Synchronization**: Event listeners in NgRx Signal Store for automatic state updates
 - **Event Sourcing Preparation**: Schema ready for event sourcing, upgrade path to full undo/redo support
+
+### NgRx Signals Architecture
+
+- **Signal Stores**: Centralized reactive state management using `@ngrx/signals`
+- **Computed Values**: Derived state calculations using computed signals
+- **Event Integration**: Real-time Tauri event listeners within store methods
+- **Async Operations**: Direct Tauri command integration with proper error handling
+- **Type Safety**: Full TypeScript integration with shared type definitions
 
 ## Development Notes
 
@@ -484,6 +496,14 @@ export class ExampleComponent {
 - **Lazy Loading**: Use `@defer` blocks for performance-critical components
 - **Tree Shaking**: Import only needed modules/components
 
+#### State Management Integration
+- Use NgRx Signal Stores for centralized state management instead of services
+- Components should inject stores directly using `inject(StoreClass)`
+- Expose store signals and computed values as component properties
+- Use async methods for Tauri command operations with proper error handling
+- Implement real-time event listeners within store initialization methods
+- Follow the pattern: Store → Component, not Service → Component
+
 #### Design System Integration
 - Use Radix-inspired design system components consistently
 - Use Lucide Icons for all iconography (3,300+ icons, tree-shakeable)
@@ -717,4 +737,3 @@ Generate complete, compilable code with a main function or lib entry point. If t
 - Minimize Python-Rust boundary crossings where possible
 - Use appropriate data structures for different use cases (SQLite for metadata, file-based for large data)
 - Profile and optimize critical paths in the RAG pipeline
-- to

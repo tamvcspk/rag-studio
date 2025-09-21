@@ -7,7 +7,7 @@ import {
   CreateKBFormData,
   KnowledgeBaseStatus 
 } from '../../shared/types';
-import { KnowledgeBasesService } from '../../shared/services/knowledge-bases.service';
+import { KnowledgeBasesStore } from '../../shared/store/knowledge-bases.store';
 import { KnowledgeBaseCard } from '../../shared/components/composite/knowledge-base-card/knowledge-base-card';
 import { CreateKBWizard } from '../../shared/components/composite/create-kb-wizard/create-kb-wizard';
 import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
@@ -32,7 +32,7 @@ type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
   styleUrl: './knowledge-bases.scss'
 })
 export class KnowledgeBases implements OnInit {
-  private readonly kbService = inject(KnowledgeBasesService);
+  private readonly store = inject(KnowledgeBasesStore);
   private readonly dialogService = inject(RagDialogService);
   private readonly toastService = inject(RagToastService);
   
@@ -43,12 +43,12 @@ export class KnowledgeBases implements OnInit {
   readonly ClockIcon = Clock;
   readonly PauseIcon = Pause;
 
-  // Use signals from the service for real-time updates
-  private readonly allKnowledgeBases = this.kbService.knowledgeBases;
+  // Use signals from the store for real-time updates
+  private readonly allKnowledgeBases = this.store.knowledgeBases;
   readonly searchQuery = signal('');
   readonly selectedFilters = signal<string[]>([]);
   private statusFilter = signal<FilterType>('all');
-  readonly isLoading = this.kbService.isLoading;
+  readonly isLoading = this.store.isLoading;
 
   // Computed filtered knowledge bases
   readonly filteredKBs = computed(() => {
@@ -101,9 +101,9 @@ export class KnowledgeBases implements OnInit {
   readonly totalCount = computed(() => this.allKnowledgeBases().length);
   readonly filteredCount = computed(() => this.filteredKBs().length);
 
-  // Use computed statistics from the service
+  // Use computed statistics from the store
   readonly kbStats = computed(() => {
-    const metrics = this.kbService.metrics();
+    const metrics = this.store.computedMetrics();
     return {
       total: metrics.total_kbs,
       indexed: metrics.indexed_kbs,
@@ -190,10 +190,12 @@ export class KnowledgeBases implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {
-    // Initial load is handled by the service automatically
-    // Real-time updates will come through service signals
-    console.log('KnowledgeBases component initialized with real-time service');
+  async ngOnInit(): Promise<void> {
+    // Initialize the store if not already initialized
+    if (!this.store.isInitialized()) {
+      await this.store.initialize();
+    }
+    console.log('KnowledgeBases component initialized with NgRx Signal Store');
   }
 
   onSearchChange(query: string): void {
@@ -225,93 +227,88 @@ export class KnowledgeBases implements OnInit {
     });
   }
 
-  onCreateKB(formData: CreateKBFormData): void {
-    this.kbService.createKnowledgeBase(formData).subscribe({
-      next: (newKB) => {
-        // State is automatically updated via real-time events
-        console.log('Knowledge base creation initiated:', newKB);
-        this.toastService.show({
-          variant: 'success',
-          title: 'Knowledge base creation started',
-          message: 'The indexing process will begin shortly.'
-        });
-      },
-      error: (error) => {
-        console.error('Failed to create knowledge base:', error);
-        this.toastService.show({
-          variant: 'error',
-          title: 'Creation failed',
-          message: error.message || 'Failed to create knowledge base'
-        });
-      }
-    });
+  async onCreateKB(formData: CreateKBFormData): Promise<void> {
+    try {
+      const newKB = await this.store.createKnowledgeBase(formData);
+      console.log('Knowledge base creation initiated:', newKB);
+      this.toastService.show({
+        variant: 'success',
+        title: 'Knowledge base creation started',
+        message: 'The indexing process will begin shortly.'
+      });
+    } catch (error: any) {
+      console.error('Failed to create knowledge base:', error);
+      this.toastService.show({
+        variant: 'error',
+        title: 'Creation failed',
+        message: error.message || 'Failed to create knowledge base'
+      });
+    }
   }
 
-  onReindexKB(kbId: string): void {
-    this.kbService.reindexKnowledgeBase(kbId).subscribe({
-      next: () => {
-        console.log('Reindexing started for KB:', kbId);
-        this.toastService.show({
-          variant: 'info',
-          title: 'Reindexing started',
-          message: 'The knowledge base will be reindexed.'
-        });
-      },
-      error: (error) => {
-        console.error('Failed to start reindexing:', error);
-        this.toastService.show({
-          variant: 'error',
-          title: 'Reindexing failed',
-          message: error.message || 'Failed to start reindexing'
-        });
-      }
-    });
+  async onReindexKB(kbId: string): Promise<void> {
+    try {
+      await this.store.reindexKnowledgeBase(kbId);
+      console.log('Reindexing started for KB:', kbId);
+      this.toastService.show({
+        variant: 'info',
+        title: 'Reindexing started',
+        message: 'The knowledge base will be reindexed.'
+      });
+    } catch (error: any) {
+      console.error('Failed to start reindexing:', error);
+      this.toastService.show({
+        variant: 'error',
+        title: 'Reindexing failed',
+        message: error.message || 'Failed to start reindexing'
+      });
+    }
   }
 
-  onExportKB(kbId: string): void {
+  async onExportKB(kbId: string): Promise<void> {
     const kb = this.allKnowledgeBases().find(kb => kb.id === kbId);
     if (!kb) return;
 
-    this.kbService.exportKnowledgeBase(kbId).subscribe({
-      next: (blob) => {
-        // Create download link
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${kb.product}-${kb.version}.kbpack`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        console.log('Export started for KB:', kbId);
-      },
-      error: (error) => {
-        console.error('Failed to export knowledge base:', error);
-      }
-    });
+    try {
+      const blob = await this.store.exportKnowledgeBase(kbId);
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${kb.product}-${kb.version}.kbpack`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      console.log('Export started for KB:', kbId);
+    } catch (error: any) {
+      console.error('Failed to export knowledge base:', error);
+      this.toastService.show({
+        variant: 'error',
+        title: 'Export failed',
+        message: error.message || 'Failed to export knowledge base'
+      });
+    }
   }
 
-  onDeleteKB(kbId: string): void {
+  async onDeleteKB(kbId: string): Promise<void> {
     if (confirm('Are you sure you want to delete this knowledge base? This action cannot be undone.')) {
-      this.kbService.deleteKnowledgeBase(kbId).subscribe({
-        next: () => {
-          // State is automatically updated via real-time events
-          console.log('Knowledge base deletion initiated:', kbId);
-          this.toastService.show({
-            variant: 'success',
-            title: 'Knowledge base deleted',
-            message: 'The knowledge base has been successfully deleted.'
-          });
-        },
-        error: (error) => {
-          console.error('Failed to delete knowledge base:', error);
-          this.toastService.show({
-            variant: 'error',
-            title: 'Deletion failed',
-            message: error.message || 'Failed to delete knowledge base'
-          });
-        }
-      });
+      try {
+        await this.store.deleteKnowledgeBase(kbId);
+        console.log('Knowledge base deletion initiated:', kbId);
+        this.toastService.show({
+          variant: 'success',
+          title: 'Knowledge base deleted',
+          message: 'The knowledge base has been successfully deleted.'
+        });
+      } catch (error: any) {
+        console.error('Failed to delete knowledge base:', error);
+        this.toastService.show({
+          variant: 'error',
+          title: 'Deletion failed',
+          message: error.message || 'Failed to delete knowledge base'
+        });
+      }
     }
   }
 
