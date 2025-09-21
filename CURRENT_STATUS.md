@@ -89,6 +89,35 @@
   - `get_app_state` - Initial state loading
   - `get_health_status` - Service health check
 
+### ✅ COMPLETED: Phase 3.2 - Real-time Features
+
+#### 3.2 Live Status & Performance Monitoring
+- **Dashboard Stats Grid**: ✅ Real-time KB metrics integration
+  - Live data computed from KnowledgeBasesStore
+  - Total KBs, indexing count, failed count from real backend data
+  - Dynamic size calculations based on chunk counts
+  - Active pipeline status from running indexing operations
+- **Query Performance Metrics**: ✅ Live performance monitoring
+  - Real-time P50/P95 latency calculations from store metrics
+  - Cache hit rate percentage from backend data
+  - Refresh functionality with actual backend data sync
+  - Performance trends computed from live metrics
+- **MCP Server Status**: ✅ Health monitoring integration
+  - Real-time health checks every 30 seconds via store.getHealthStatus()
+  - Live uptime calculation from component start time
+  - Server status mapping (healthy → active, failed → error)
+  - Active connections count from indexing KB operations
+- **Recent Activity Log**: ✅ Real-time event stream
+  - Direct Tauri event listeners for state_delta events
+  - Activity entries for KB creation, deletion, indexing progress
+  - Search completion events with latency tracking
+  - Real-time activity feed with automatic UI updates
+- **Dashboard Integration**: ✅ Centralized real-time state
+  - Dynamic status computed from store state (initializing, error, indexing, ready)
+  - Status-based alerts (error alerts, indexing progress notifications)
+  - Store initialization coordination across all components
+  - Error handling and recovery via store.clearError()
+
 ## 🧪 Test Status
 
 ### Test Coverage Summary
@@ -98,10 +127,11 @@
 - **New Test Structure**: Domain-based test organization
 - **Build Status**: ✅ Full project compilation successful
   - Rust Backend: ✅ Compiles with minor warnings only
-  - Angular Frontend: ✅ Builds successfully (886KB bundle, reduced from 888KB)
+  - Angular Frontend: ✅ Builds successfully (891KB bundle, up from 886KB with real-time features)
   - Tauri Integration: ✅ All 8 KB commands functional
   - NgRx Signals: ✅ Store-based state management working
   - Real-time Events: ✅ State synchronization via signal store
+  - Dashboard Integration: ✅ Live data components functional
 
 ### Test Structure (Reorganized - Cargo Compliant)
 ```
@@ -256,17 +286,26 @@ cargo test --package rag-core test_feature_flag_lancedb_test_config
 8. **✅ MVP Functionality**: Core RAG operations fully implemented
 
 ### 🆕 Recent Additions (September 21, 2025)
+
+#### Phase 3.1 Completion
 - **NgRx Signals Migration**: Complete migration from service-based to NgRx Signal Store pattern
 - **Simplified Architecture**: Removed service layer, components use stores directly
 - **Enhanced State Management**: Centralized reactive state with computed signals
 - **Real-time Integration**: Event listeners integrated within NgRx Signal Store methods
 - **Type Safety**: Full TypeScript integration with shared type definitions
 - **Code Cleanup**: Removed deprecated MockKnowledgeBasesService and KnowledgeBasesService
-- **Bundle Optimization**: Reduced bundle size from 888KB to 886KB after cleanup
-- **Async/Await Pattern**: Modern async operations replacing Observable-based service calls
+
+#### Phase 3.2 Completion
+- **Dashboard Real-time Integration**: All dashboard components now use live data from KnowledgeBasesStore
+- **Live Performance Monitoring**: Real-time P50/P95 latency tracking and cache hit rate monitoring
+- **Health Status Monitoring**: Automated health checks every 30 seconds with status mapping
+- **Activity Stream**: Real-time event stream with automatic activity log updates
+- **Dynamic Status Management**: Dashboard shows contextual status (initializing, indexing, error, ready)
+- **Error Recovery**: Built-in error handling with user-friendly recovery options
+- **Bundle Size**: Increased to 891KB (+5KB) with comprehensive real-time features
 
 ---
 
-**Status**: 🚀 **READY FOR PHASE 3.2** - Real-time Features
-**Quality**: ✅ **PRODUCTION GRADE** - All MVP requirements satisfied + Modern state management
-**Architecture**: ✅ **FUTURE-PROOF** - NgRx Signals + Clear upgrade paths documented
+**Status**: 🚀 **READY FOR PHASE 3.3** - Settings & Configuration
+**Quality**: ✅ **PRODUCTION GRADE** - All MVP Phase 3.2 requirements satisfied + Real-time monitoring
+**Architecture**: ✅ **FUTURE-PROOF** - NgRx Signals + Real-time event streams + Clear upgrade paths documented

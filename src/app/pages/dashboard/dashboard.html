@@ -3,20 +3,38 @@
     <!-- Page Header -->
     <rag-page-header
       [title]="'Dashboard'"
-      [description]="'Monitor and manage your RAG Studio instance'"
+      [description]="dashboardStatus().message"
       [icon]="BarChart3Icon"
       [actions]="headerActions()"
       size="lg">
     </rag-page-header>
 
-    <!-- System Alert -->
+    <!-- System Alerts -->
     @if (showMaintenanceAlert()) {
-      <rag-alert 
-        variant="warning" 
+      <rag-alert
+        variant="warning"
         title="Scheduled Maintenance"
         [closable]="true"
         (onClose)="dismissMaintenanceAlert()">
         System will undergo maintenance at 2:00 AM. Background jobs will be paused.
+      </rag-alert>
+    }
+
+    <!-- Dynamic Status Alert -->
+    @if (dashboardStatus().status === 'error') {
+      <rag-alert
+        variant="error"
+        title="System Error"
+        [closable]="true"
+        (onClose)="appStore.clearError(); kbStore.clearError()">
+        {{ dashboardStatus().message }}
+      </rag-alert>
+    } @else if (dashboardStatus().status === 'indexing') {
+      <rag-alert
+        variant="info"
+        title="Indexing in Progress"
+        [closable]="false">
+        {{ dashboardStatus().message }}
       </rag-alert>
     }
   </div>
