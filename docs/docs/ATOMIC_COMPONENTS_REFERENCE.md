@@ -37,6 +37,8 @@ This change provides better tree-shaking and type safety by only importing icons
 | `<rag-checkbox>` | Boolean selection | `checked`, `indeterminate`, `label` | Forms, bulk actions |
 | `<rag-radio>` | Single selection | `value`, `name`, `checked` | Forms, settings |
 | `<rag-switch>` | Toggle control | `checked`, `size`, `label` | Settings, features |
+| `<rag-toggle>` | Toggle with custom text | `variant`, `onText`, `offText`, `color` | Settings, boolean controls |
+| `<rag-slider>` | Range value selection | `min`, `max`, `step`, `unit`, `showValue` | Volume, brightness, ranges |
 | `<rag-chip>` | Status/count display | `variant`, `color`, `icon`, `dot` | Status, notifications |
 | `<rag-progress>` | Progress indication | `value`, `max`, `variant`, `indeterminate` | Loading, completion |
 | `<rag-skeleton>` | Loading placeholder | `width`, `height`, `variant`, `count` | Loading states |
@@ -130,6 +132,15 @@ interface ToastConfig {
   dismissible?: boolean;
   actions?: RagToastAction[];
 }
+
+// RagToggle
+type ToggleVariant = 'solid' | 'soft' | 'outline';
+type ToggleColor = 'blue' | 'green' | 'red';
+type ToggleSize = 'sm' | 'md' | 'lg';
+
+// RagSlider
+type SliderSize = 'sm' | 'md' | 'lg';
+type SliderColor = 'blue' | 'green' | 'red';
 
 // RagStatusIndicator
 type StatusType = 'online' | 'offline' | 'loading' | 'error' | 'warning';
@@ -233,12 +244,40 @@ type StatusVariant = 'dot' | 'chip' | 'text';
     [value]="'light'"
     [label]="'Light theme'"
     [formControl]="themeControl" />
-  <rag-radio 
+  <rag-radio
     [name]="'theme'"
     [value]="'dark'"
     [label]="'Dark theme'"
     [formControl]="themeControl" />
 </div>
+
+<!-- Toggle controls -->
+<rag-toggle
+  [label]="'Dark Mode'"
+  [onText]="'ON'"
+  [offText]="'OFF'"
+  [variant]="'soft'"
+  [color]="'blue'"
+  (onToggle)="toggleDarkMode($event)" />
+
+<!-- Range sliders -->
+<rag-slider
+  [label]="'Volume'"
+  [min]="0"
+  [max]="100"
+  [step]="5"
+  [unit]="'%'"
+  [color]="'green'"
+  (valueChange)="onVolumeChange($event)" />
+
+<rag-slider
+  [label]="'Font Size'"
+  [min]="12"
+  [max]="24"
+  [step]="1"
+  [unit]="'px'"
+  [color]="'blue'"
+  [size]="'lg'" />
 ```
 
 ### 5. Loading States
@@ -774,4 +813,4 @@ Design Tokens (Consistent styling)
 ---
 
 **Last Updated**: September 2, 2025  
-**Total Components**: 19 atomic components
+**Total Components**: 21 atomic components

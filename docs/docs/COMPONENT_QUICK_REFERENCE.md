@@ -21,7 +21,7 @@ Complete quick reference for all RAG Studio components - both atomic and semanti
 import {
   RagButton, RagInput, RagSelect, RagChip, RagAlert, RagBadge,
   RagIcon, RagSpinner, RagProgress, RagSkeleton, RagOverflowBar,
-  RagDivider, RagToggleGroup
+  RagDivider, RagToggleGroup, RagToggle, RagSlider
 } from './shared/components/atomic';
 
 // Services
@@ -45,7 +45,7 @@ import {
 ```typescript
 @Component({
   selector: 'app-example',
-  imports: [RagButton, RagInput, RagCard, RagIcon, RagBadge], // Standalone components
+  imports: [RagButton, RagInput, RagCard, RagIcon, RagBadge, RagToggle, RagSlider], // Standalone components
   template: `
     <rag-card>
       <rag-input [placeholder]="'Enter text'" />
@@ -526,6 +526,8 @@ export class ActionsComponent {
 | `<rag-overflow-bar>` | `<rag-overflow-bar><rag-chip>Tag</rag-chip></rag-overflow-bar>` | `scrollAmount`, `hideButtons` |
 | `<rag-divider>` | `<rag-divider [label]="'Settings'" spacing="lg">` | `orientation`, `variant`, `label`, `spacing` |
 | `<rag-toggle-group>` | `<rag-toggle-group [options]="themes" [multiple]="true">` | `options`, `multiple`, `variant`, `size` |
+| `<rag-toggle>` | `<rag-toggle [onText]="'ON'" [offText]="'OFF'" variant="soft">` | `variant`, `onText`, `offText`, `color` |
+| `<rag-slider>` | `<rag-slider [min]="0" [max]="100" [unit]="'%'">` | `min`, `max`, `step`, `unit`, `showValue` |
 
 ### 📊 Semantic Components (Business Logic)
 | Component | Quick Example | Most Common Props |
@@ -761,7 +763,37 @@ export class FormComponent {
       title="Appearance"
       description="Customize the look and feel"
       [icon]="PaletteIcon">
-      <!-- settings items -->
+
+      <!-- Toggle components for settings -->
+      <rag-toggle
+        [label]="'Dark Mode'"
+        [description]="'Use dark theme'"
+        [onText]="'ON'"
+        [offText]="'OFF'"
+        [variant]="'soft'"
+        [color]="'blue'"
+        (onToggle)="toggleDarkMode($event)" />
+
+      <!-- Slider components for ranges -->
+      <rag-slider
+        [label]="'UI Scale'"
+        [description]="'Adjust interface scaling'"
+        [min]="75"
+        [max]="150"
+        [step]="5"
+        [unit]="'%'"
+        [color]="'green'"
+        (valueChange)="onScaleChange($event)" />
+
+      <rag-slider
+        [label]="'Animation Speed'"
+        [min]="0.5"
+        [max]="2.0"
+        [step]="0.1"
+        [unit]="'x'"
+        [color]="'blue'"
+        [size]="'lg'" />
+
     </rag-settings-section>
   </ng-template>
   
@@ -1133,4 +1165,4 @@ it('should have no accessibility violations', async () => {
 ---
 
 **Last Updated**: September 2, 2025  
-**Components Covered**: 19 atomic + 19 semantic + composite components
+**Components Covered**: 21 atomic + 19 semantic + composite components
