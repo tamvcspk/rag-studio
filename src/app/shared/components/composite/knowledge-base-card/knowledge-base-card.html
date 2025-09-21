@@ -50,10 +50,10 @@
     <div class="stat-item">
       <span class="stat-label">Chunks</span>
       <span class="stat-value">
-        @if (isIndexing() && knowledgeBase().progressPercentage) {
-          {{ formatNumber(knowledgeBase().chunks) }}/{{ formatNumber(Math.round(knowledgeBase().chunks / (knowledgeBase().progressPercentage! / 100))) }}
+        @if (isIndexing() && knowledgeBase().progressPercentage && knowledgeBase().chunks) {
+          {{ formatNumber(knowledgeBase().chunks!) }}/{{ formatNumber(Math.round(knowledgeBase().chunks! / (knowledgeBase().progressPercentage! / 100))) }}
         } @else {
-          {{ formatNumber(knowledgeBase().chunks) }}
+          {{ formatNumber(knowledgeBase().chunks || knowledgeBase().chunk_count || 0) }}
         }
       </span>
     </div>
@@ -69,7 +69,7 @@
         @if (isIndexing() && knowledgeBase().documentsCount) {
           {{ formatNumber(knowledgeBase().documentsCount || 0) }}
         } @else {
-          {{ formatNumber(knowledgeBase().vectors) }}
+          {{ formatNumber(knowledgeBase().vectors || knowledgeBase().chunk_count || 0) }}
         }
       </span>
     </div>
@@ -85,7 +85,7 @@
         @if (isIndexing() && knowledgeBase().estimatedTimeRemaining) {
           {{ knowledgeBase().estimatedTimeRemaining }}
         } @else {
-          {{ formatNumber(knowledgeBase().bm25Terms) }}
+          {{ formatNumber(knowledgeBase().bm25Terms || 0) }}
         }
       </span>
     </div>

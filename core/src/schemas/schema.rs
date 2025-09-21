@@ -200,3 +200,66 @@ diesel::allow_tables_to_appear_in_same_query!(
     aggregate_snapshots,
     event_checkpoints,
 );
+
+// ============================================================================
+// Vector Database Types (shared across services)
+// ============================================================================
+
+use serde::{Deserialize, Serialize};
+
+/// Vector Schema Definition for vector database storage
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct VectorSchema {
+    pub chunk_id: String,
+    pub document_id: String,
+    pub kb_id: String,
+    pub content: String,
+    pub embedding: Vec<f32>,
+    pub metadata: serde_json::Value,
+    pub created_at: i64,
+    pub updated_at: i64,
+}
+
+/// Search result returned from vector database queries
+#[derive(Debug, Clone, Serialize)]
+pub struct SearchResult {
+    pub chunk_id: String,
+    pub document_id: String,
+    pub kb_id: String,
+    pub score: f32,
+    pub content: String,
+    pub snippet: String,
+    pub metadata: serde_json::Value,
+    pub citation: CitationInfo,
+}
+
+/// Citation information for search results
+#[derive(Debug, Clone, Serialize)]
+pub struct CitationInfo {
+    pub title: String,
+    pub source_path: String,
+    pub license: Option<String>,
+    pub version: Option<String>,
+    pub anchor: Option<String>,
+    pub page_number: Option<u32>,
+}
+
+/// Search query structure
+#[derive(Debug, Clone)]
+pub struct SearchQuery {
+    pub text: String,
+    pub vector: Option<Vec<f32>>,
+    pub kb_id: String,
+    pub filters: std::collections::HashMap<String, serde_json::Value>,
+    pub limit: usize,
+    pub offset: usize,
+    pub search_type: SearchType,
+}
+
+/// Types of search operations
+#[derive(Debug, Clone)]
+pub enum SearchType {
+    Vector,
+    Lexical,
+    Hybrid,
+}

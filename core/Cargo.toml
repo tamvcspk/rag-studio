@@ -19,8 +19,21 @@ dashmap = { workspace = true }
 notify = { workspace = true }
 ring = { workspace = true }
 # Additional dependencies specific to core
-async-trait = "0.1"
-tower = "0.4"
+async-trait = { workspace = true }
+tower = { workspace = true }
+# Vector Database Integration dependencies
+tantivy = "0.22"
+# Try much older LanceDB version
+lancedb = { version = "0.18", default-features = false }
+# Use compatible Arrow version
+arrow = { version = "50.0" }
+arrow-array = { version = "50.0" }
+# For async streams
+futures = "0.3"
+# For embedding model integration
+hf-hub = { version = "0.3", optional = true }
+# For utilities
+regex = "1.0"
 
 [dev-dependencies]
 tempfile = "3.8"

@@ -108,6 +108,7 @@ The Manager initializes and manages all core services with hot-reload configurat
 
 - **Tauri v2**: Desktop application framework with tray icon support
 - **Angular 20+**: Frontend framework with standalone components and Angular CDK (DragDrop, Overlay, Dialog)
+- **NgRx Signals**: Modern reactive state management with signal-based stores
 - **Radix-inspired Design System**: Consistent UI components and design tokens
 - **Lucide Icons**: Icon system with 3,300+ icons
 - **Rust 1.80+**: Backend with Axum (async server), Tokio (concurrency), Diesel ORM
@@ -124,6 +125,7 @@ The Manager initializes and manages all core services with hot-reload configurat
     - `atomic/`: Basic UI primitives (buttons, inputs, icons, chips, etc.)
     - `semantic/`: Context-aware components (cards, forms, navigation, overlays)
     - `composite/`: Complex business components (wizards, designers, dashboards)
+  - `src/app/shared/store/`: NgRx Signal Stores for centralized state management
   - `src/app/shared/tokens/`: Design token system with CSS custom properties
   - `src/app/shared/layout/`: Layout components (main-layout with sidebar)
 - `src-tauri/`: Rust backend and Tauri configuration
@@ -192,11 +194,11 @@ The application uses a three-tier state management approach:
    - **Storage**: Single app_meta.db for MVP (split to events.db post-MVP), in-memory runtime with periodic saves
    - **Sync Flow**: Load SQL → In-Memory; Mutate → Direct SQL update, upgrade path to batched operations
 
-2. **Shared Mirrored State (Frontend NgRx)**
-   - 5-7 fields subset with pagination
+2. **Shared Mirrored State (NgRx Signals)**
+   - 5-7 fields subset with pagination using NgRx Signal Stores
    - KB Packs, Runs, Schedules/Flows, Metrics/Logs (~50 entries), Errors
-   - **Storage**: SQL persistent (aggregated), in-memory runtime (frontend ephemeral)
-   - **Sync Flow**: Delta push via Tauri events → NgRx; Pull paginated from backend
+   - **Storage**: SQL persistent (aggregated), in-memory reactive signals (frontend ephemeral)
+   - **Sync Flow**: Delta push via Tauri events → NgRx Signal Store; Direct async store methods for backend calls
 
 3. **Local Frontend State (Angular Signals)**
    - 4-6 signals (ephemeral)
@@ -206,10 +208,20 @@ The application uses a three-tier state management approach:
 
 ### State Management (MVP)
 
-- **Shared State Pattern**: Arc<RwLock<AppState>> for simple MVP state management
+- **Backend State Pattern**: Arc<RwLock<AppState>> for simple MVP backend state management
+- **Frontend State Management**: NgRx Signal Stores for reactive, centralized state management
 - **Direct Persistence**: SQL writes with periodic saves and load-on-startup pattern
-- **Event Broadcasting**: Tauri events for frontend state sync with debounced updates
+- **Event Broadcasting**: Tauri events for backend-to-frontend state sync with real-time updates
+- **Real-time Synchronization**: Event listeners in NgRx Signal Store for automatic state updates
 - **Event Sourcing Preparation**: Schema ready for event sourcing, upgrade path to full undo/redo support
+
+### NgRx Signals Architecture
+
+- **Signal Stores**: Centralized reactive state management using `@ngrx/signals`
+- **Computed Values**: Derived state calculations using computed signals
+- **Event Integration**: Real-time Tauri event listeners within store methods
+- **Async Operations**: Direct Tauri command integration with proper error handling
+- **Type Safety**: Full TypeScript integration with shared type definitions
 
 ## Development Notes
 
@@ -335,9 +347,24 @@ The architecture is designed for optimal performance with significant improvemen
 
 ## Testing
 
-The project includes comprehensive testing across both frontend and backend:
+The project includes comprehensive testing following Cargo standards across both frontend and backend:
 
-### Rust Backend Testing
+### Core Service Testing (Rust)
+The core crate follows Cargo testing conventions with 42 total tests (91.3% success rate):
+
+**Unit Tests** (31 tests - all passing):
+- SQL service tests: Configuration, connections, transactions, migrations, health checks
+- Vector service tests: Collection management, search operations, generation management
+- State manager tests: Mutations, log buffering, knowledge base operations
+- Run with: `cargo test --lib` from `core/` directory
+
+**Integration Tests** (11 tests - 7 passing, 4 hanging):
+- `tests/sql_integration.rs`: Full setup, production config, transactions, backups
+- `tests/vector_integration.rs`: Complete workflows, concurrent operations, health monitoring
+- `tests/state_manager_integration.rs`: Cross-service interactions, state synchronization
+- Run individual tests: `cargo test --test sql_integration`
+
+### Tauri Backend Testing
 - Python integration tests in `src-tauri/src/lib.rs` (lines 107-129)
 - Run tests with `cargo test` from the `src-tauri/` directory
 - Run specific test: `cargo test test_python_integration`
@@ -350,11 +377,11 @@ The project includes comprehensive testing across both frontend and backend:
 - Tests located alongside components in their respective directories
 - Run tests with `ng test` (when test runner is configured)
 
-### Key Test Areas
-- Python-Rust integration via PyO3
-- MCP server initialization and commands
-- Component rendering and interaction
-- Design token system functionality
+### Test Organization Benefits
+- **Cargo Compliant**: Unit tests co-located with source, integration tests in dedicated files
+- **Fast Execution**: Unit tests run in ~0.08s, integration tests run independently
+- **Comprehensive Coverage**: Tests individual methods and complete workflows
+- **Easy Discovery**: Standard Cargo test structure makes tests easily findable and runnable
 
 ## Implementation Recommendations
 
@@ -469,6 +496,14 @@ export class ExampleComponent {
 - **Lazy Loading**: Use `@defer` blocks for performance-critical components
 - **Tree Shaking**: Import only needed modules/components
 
+#### State Management Integration
+- Use NgRx Signal Stores for centralized state management instead of services
+- Components should inject stores directly using `inject(StoreClass)`
+- Expose store signals and computed values as component properties
+- Use async methods for Tauri command operations with proper error handling
+- Implement real-time event listeners within store initialization methods
+- Follow the pattern: Store → Component, not Service → Component
+
 #### Design System Integration
 - Use Radix-inspired design system components consistently
 - Use Lucide Icons for all iconography (3,300+ icons, tree-shakeable)
@@ -497,6 +532,138 @@ export class ExampleComponent {
 - Use `provideCheckNoChangesConfig()` for zoneless debugging
 - Deep integration with Chrome DevTools for performance profiling
 - Test signal-based components with modern testing patterns
+
+### Service Structure Guidelines
+
+**IMPORTANT: All services must follow the consistent service structure pattern defined in CORE_DESIGN.md.**
+
+#### Service Organization
+
+RAG Studio enforces a standardized service structure for maintainability and consistency:
+
+```
+core/src/
+├── lib.rs                  # Entry point with public exports
+├── modules/                # Domain-specific modules (business logic)
+│   ├── mod.rs
+│   └── kb/                 # Knowledge Base domain module
+│       ├── mod.rs
+│       ├── service.rs      # KB business logic and operations
+│       ├── models.rs       # KB-specific data structures
+│       ├── schema.rs       # KB database schema definitions
+│       └── errors.rs       # KB-specific error types
+├── services/               # Infrastructure services (cross-cutting concerns)
+│   ├── mod.rs
+│   ├── sql.rs              # SQLite service implementation
+│   ├── vector.rs           # LanceDB vector service implementation
+│   └── (future services to be added when needed)
+├── models/                 # Shared data structures used across modules
+│   ├── mod.rs
+│   └── common.rs           # Common types, DTOs, and shared models
+├── schemas/                # Shared database schemas and migrations
+│   ├── mod.rs
+│   └── schema.rs           # Database schema definitions
+├── errors/                 # Application-wide error handling
+│   ├── mod.rs
+│   └── core_errors.rs      # Core error types and conversions
+├── utils/                  # Utility functions and helpers
+│   ├── mod.rs
+│   └── helpers.rs          # Common utility functions
+└── state/                  # Application state management
+    ├── mod.rs
+    ├── app_state.rs        # Main application state structure
+    └── manager.rs          # State management logic
+```
+
+#### Service Implementation Requirements
+
+Every service MUST implement this pattern:
+
+1. **Error Types**: Custom error enums with `thiserror::Error` (domain-specific in modules/, shared in errors/)
+2. **Configuration Structs**:
+   - `new_mvp()` - MVP configuration with simplified setup
+   - `new_production()` - Production configuration with full features
+   - `test_config()` - Test configuration for unit/integration tests
+3. **Service Trait**: Async trait defining the public interface
+4. **Service Implementation**: Concrete struct implementing the trait
+5. **Helper Functions**: Utility functions and type conversions
+6. **Test Helpers**: `#[cfg(test)]` helper methods only (NO inline tests)
+
+#### Module Organization Guidelines
+
+- **Domain Modules** (`modules/`): Business logic and domain-specific operations
+  - Contains `service.rs` (business logic), `models.rs` (domain types), `schema.rs` (domain schemas), `errors.rs` (domain errors)
+  - High cohesion within domain, minimal external dependencies
+  - Examples: KB management, Authentication, Flow composition
+
+- **Infrastructure Services** (`services/`): Technical cross-cutting concerns
+  - Each service implemented as a single `.rs` file (e.g., `sql.rs`, `vector.rs`)
+  - Database access, caching, storage, external service integrations
+  - Shared by multiple domain modules
+  - Focus on technical implementation rather than business rules
+
+- **Shared Components**: Common types, utilities, and infrastructure
+  - `models/` - Shared DTOs and common types used across domains
+  - `schemas/` - Database schema definitions and migration utilities
+  - `errors/` - Application-wide error types and conversion utilities
+  - `utils/` - Common helper functions and utilities
+  - `state/` - Application state management and coordination
+
+#### Testing Structure Requirements
+
+Tests follow Cargo standards with proper separation:
+
+**Unit Tests** (co-located with source code using `#[cfg(test)]` modules):
+```
+core/src/
+├── modules/
+│   ├── kb/
+│   │   ├── service.rs             # Contains #[cfg(test)] mod tests { ... }
+│   │   ├── models.rs              # Contains #[cfg(test)] mod tests { ... }
+│   │   └── schema.rs              # Contains #[cfg(test)] mod tests { ... }
+│   └── auth/
+│       ├── service.rs             # Contains #[cfg(test)] mod tests { ... }
+│       └── models.rs              # Contains #[cfg(test)] mod tests { ... }
+├── services/
+│   ├── sql/
+│   │   └── sql.rs                 # Contains #[cfg(test)] mod tests { ... }
+│   ├── vector/
+│   │   └── vector.rs              # Contains #[cfg(test)] mod tests { ... }
+│   └── cache/
+│       └── cache.rs               # Contains #[cfg(test)] mod tests { ... }
+└── state/
+    ├── app_state.rs               # Contains #[cfg(test)] mod tests { ... }
+    └── manager.rs                 # Contains #[cfg(test)] mod tests { ... }
+```
+
+**Integration Tests** (standalone files in tests/ directory):
+```
+core/tests/
+├── kb_module_integration.rs       # KB domain module integration tests
+├── auth_integration.rs            # Authentication workflow integration tests
+├── sql_integration.rs             # SQL service integration tests
+├── vector_integration.rs          # Vector service integration tests
+├── state_manager_integration.rs   # State management integration tests
+├── end_to_end_integration.rs      # Full workflow integration tests
+└── performance_benchmarks.rs      # Performance and benchmark tests
+```
+
+#### Test Classification Rules
+
+- **Unit Tests**: Test individual methods, error conditions, configuration validation, and isolated functionality. Located in `#[cfg(test)]` modules within service implementation files.
+- **Integration Tests**: Test complete workflows, cross-service interactions, database operations, and end-to-end scenarios. Located as standalone `.rs` files in the `tests/` directory.
+- **Current Status**: 42 tests passing (31 unit + 11 integration) with 91.3% success rate
+- **Test Helpers**: Service files may contain `#[cfg(test)]` helper functions for test configuration
+
+#### Benefits and Enforcement
+
+This structure provides:
+- **Consistency**: All services follow identical patterns
+- **Maintainability**: Clear separation of concerns
+- **Testability**: Comprehensive coverage with proper test separation
+- **Discoverability**: Developers can navigate any service using the same mental model
+
+When creating or modifying services, you MUST follow this structure. Any deviation from this pattern should be explicitly justified and documented.
 
 ### Rust Development Guidelines
 
@@ -570,4 +737,3 @@ Generate complete, compilable code with a main function or lib entry point. If t
 - Minimize Python-Rust boundary crossings where possible
 - Use appropriate data structures for different use cases (SQLite for metadata, file-based for large data)
 - Profile and optimize critical paths in the RAG pipeline
-- to

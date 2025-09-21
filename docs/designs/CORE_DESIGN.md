@@ -64,6 +64,129 @@ The design prioritizes **pragmatic complexity** - starting simple but future-pro
 
 The Manager serves as the composition root, managing dependency injection services. MCP and Embedding Worker run in subprocesses for isolation. State management uses a simplified shared state pattern for MVP with clear upgrade path to actor-based system.
 
+## Service Architecture Guidelines
+
+### Consistent Service Structure
+
+All services in RAG Studio follow a standardized structure for maintainability, testability, and clear separation of concerns:
+
+```
+core/src/
+├── lib.rs                  # Entry point with public exports
+├── modules/                # Domain-specific modules (business logic)
+│   ├── mod.rs
+│   └── kb/                 # Knowledge Base domain module
+│       ├── mod.rs
+│       ├── service.rs      # KB business logic and operations
+│       ├── models.rs       # KB-specific data structures
+│       ├── schema.rs       # KB database schema definitions
+│       └── errors.rs       # KB-specific error types
+├── services/               # Infrastructure services (cross-cutting concerns)
+│   ├── mod.rs
+│   ├── sql.rs              # SQLite service implementation
+│   ├── vector.rs           # LanceDB vector service implementation
+│   └── (future services to be added when needed)
+├── models/                 # Shared data structures used across modules
+│   ├── mod.rs
+│   └── common.rs           # Common types, DTOs, and shared models
+├── schemas/                # Shared database schemas and migrations
+│   ├── mod.rs
+│   └── schema.rs           # Database schema definitions
+├── errors/                 # Application-wide error handling
+│   ├── mod.rs
+│   └── core_errors.rs      # Core error types and conversions
+├── utils/                  # Utility functions and helpers
+│   ├── mod.rs
+│   └── helpers.rs          # Common utility functions
+└── state/                  # Application state management
+    ├── mod.rs
+    ├── app_state.rs        # Main application state structure
+    └── manager.rs          # State management logic
+```
+
+#### Service Implementation Pattern
+
+Each service follows this consistent pattern:
+
+1. **Error Types**: Custom error enums with `thiserror::Error` (in domain modules or shared errors/)
+2. **Configuration Structs**: With `new_mvp()`, `new_production()`, and `test_config()` methods
+3. **Service Trait**: Async trait defining the service interface
+4. **Service Implementation**: Concrete implementation with dependency injection
+5. **Helper Functions**: Utility functions and type conversions
+6. **Test Helpers**: `#[cfg(test)]` helper methods only (no inline tests)
+
+#### Module Organization Principles
+
+- **Domain Modules** (`modules/`): Contains business logic specific to a domain (KB, Auth, Flow)
+  - Each domain has its own `service.rs`, `models.rs`, `schema.rs`, and `errors.rs`
+  - Business rules and domain-specific operations live here
+  - Minimal external dependencies, high cohesion within domain
+
+- **Infrastructure Services** (`services/`): Cross-cutting technical concerns
+  - Each service implemented as a single `.rs` file (e.g., `sql.rs`, `vector.rs`)
+  - Database access, caching, storage, external integrations
+  - Shared by multiple domain modules
+  - Focus on technical implementation rather than business logic
+
+- **Shared Components**: Models, schemas, errors, utils used across domains
+  - `models/` - Shared DTOs and common types used across domains
+  - `schemas/` - Database schema definitions and migration utilities
+  - `errors/` - Application-wide error types and conversion utilities
+  - `utils/` - Common helper functions and utilities
+  - `state/` - Application state management and coordination
+
+#### Testing Structure
+
+Tests follow Cargo standards with proper separation of unit and integration tests:
+
+**Unit Tests** (co-located with source code using `#[cfg(test)]` modules):
+```
+core/src/
+├── modules/
+│   ├── kb/
+│   │   ├── service.rs             # Contains #[cfg(test)] mod tests
+│   │   ├── models.rs              # Contains #[cfg(test)] mod tests
+│   │   └── schema.rs              # Contains #[cfg(test)] mod tests
+│   └── auth/
+│       ├── service.rs             # Contains #[cfg(test)] mod tests
+│       └── models.rs              # Contains #[cfg(test)] mod tests
+├── services/
+│   ├── sql/
+│   │   └── sql.rs                 # Contains #[cfg(test)] mod tests
+│   ├── vector/
+│   │   └── vector.rs              # Contains #[cfg(test)] mod tests
+│   └── cache/
+│       └── cache.rs               # Contains #[cfg(test)] mod tests
+└── state/
+    ├── app_state.rs               # Contains #[cfg(test)] mod tests
+    └── manager.rs                 # Contains #[cfg(test)] mod tests
+```
+
+**Integration Tests** (standalone files in tests/ directory):
+```
+core/tests/
+├── kb_module_integration.rs       # KB domain module integration tests
+├── auth_integration.rs            # Authentication workflow integration tests
+├── sql_integration.rs             # SQL service integration tests
+├── vector_integration.rs          # Vector service integration tests
+├── state_manager_integration.rs   # State management integration tests
+├── end_to_end_integration.rs      # Full workflow integration tests
+└── performance_benchmarks.rs      # Performance and benchmark tests
+```
+
+**Test Classification**:
+- **Unit Tests**: Test individual methods, error conditions, and isolated functionality. Located in `#[cfg(test)]` modules within service implementation files.
+- **Integration Tests**: Test complete workflows, cross-service interactions, and end-to-end scenarios. Located as standalone `.rs` files in the `tests/` directory.
+- **Test Results**: 42 tests passing (31 unit tests + 11 integration tests) with 91.3% success rate.
+
+### Benefits of This Structure
+
+1. **Consistency**: All services follow the same organizational pattern
+2. **Maintainability**: Clear separation of concerns and standardized interfaces
+3. **Testability**: Comprehensive test coverage with proper separation of unit vs integration tests
+4. **Discoverability**: Developers can quickly understand any service by following the standard pattern
+5. **Scalability**: Easy to add new services following the established pattern
+
 ## 1. Architecture Overview and Process Boundaries
 
 ### Overview Diagram

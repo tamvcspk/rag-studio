@@ -1,9 +1,15 @@
 /*!
- * Services module for RAG Studio core
+ * Infrastructure Services Module
  *
- * Contains all service implementations that can be injected via the Manager.
+ * Cross-cutting technical services that can be injected via the Manager.
+ * Each service is implemented as a single file following Rust conventions.
  */
 
 pub mod sql;
-pub mod schema;
-pub mod models;
+pub mod vector;
+
+// Future services to be implemented when needed:
+// pub mod cache;
+// pub mod storage;
+// pub mod embedding;
+// pub mod logging;

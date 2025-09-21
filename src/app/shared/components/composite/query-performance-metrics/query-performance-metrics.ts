@@ -1,9 +1,10 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
 import { RagIcon } from '../../atomic/primitives/rag-icon/rag-icon';
 import { RefreshCw } from 'lucide-angular';
+import { AppStore } from '../../../store/app.store';
 
 export interface PerformanceMetrics {
   p50Latency: string;
@@ -19,36 +20,54 @@ export interface PerformanceMetrics {
   templateUrl: './query-performance-metrics.html',
   styleUrl: './query-performance-metrics.scss'
 })
-export class QueryPerformanceMetrics {
+export class QueryPerformanceMetrics implements OnInit, OnDestroy {
   // Icon components
   readonly RefreshCwIcon = RefreshCw;
-  
-  // Mock data - in real app this would come from a service
-  readonly metrics = signal<PerformanceMetrics>({
-    p50Latency: '124ms',
-    p95Latency: '287ms',
-    hitRate: '94.2%',
-    totalQueries: 1247,
-    period: 'Last 24 hours'
+
+  // Inject AppStore for performance metrics (not KB-specific)
+  private readonly appStore = inject(AppStore);
+
+  // Live metrics computed from AppStore
+  readonly metrics = computed((): PerformanceMetrics => {
+    const storeMetrics = this.appStore.performanceMetrics();
+
+    return {
+      p50Latency: `${storeMetrics.p50Latency}ms`,
+      p95Latency: `${storeMetrics.p95Latency}ms`,
+      hitRate: `${storeMetrics.hitRate.toFixed(1)}%`,
+      totalQueries: storeMetrics.totalQueries,
+      period: storeMetrics.period
+    };
   });
 
   readonly isRefreshing = signal(false);
 
-  refresh(): void {
+  async refresh(): Promise<void> {
     this.isRefreshing.set(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      // Update with new mock data
-      this.metrics.update(current => ({
-        ...current,
-        p50Latency: `${Math.floor(Math.random() * 50) + 100}ms`,
-        p95Latency: `${Math.floor(Math.random() * 100) + 250}ms`,
-        hitRate: `${(Math.random() * 5 + 92).toFixed(1)}%`,
-        totalQueries: Math.floor(Math.random() * 500) + 1000
-      }));
-      
+
+    try {
+      // Refresh performance metrics from AppStore
+      await this.appStore.refreshPerformanceMetrics();
+
+      // Note: Metrics are computed signals, so they'll automatically update
+      // when the store data refreshes
+
+    } catch (error) {
+      console.error('Failed to refresh performance metrics:', error);
+    } finally {
       this.isRefreshing.set(false);
-    }, 1000);
+    }
+  }
+
+  async ngOnInit() {
+    // Initialize the AppStore if not already done
+    if (!this.appStore.isInitialized()) {
+      await this.appStore.initialize();
+    }
+  }
+
+  ngOnDestroy() {
+    // Store cleanup is handled by the store itself (singleton)
+    // Individual components don't need to destroy the store
   }
 }
