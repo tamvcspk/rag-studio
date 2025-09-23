@@ -21,12 +21,12 @@ This document provides comprehensive development best practices for RAG Studio, 
 
 ### Component Development
 ```typescript
-// Modern Angular 20 component example
+// Modern Angular 20 component example (Atomic/Semantic component)
 import { Component, input, output, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-example',
+  selector: 'rag-example',  // rag- prefix for atomic/semantic components
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -41,7 +41,7 @@ import { CommonModule } from '@angular/common';
     }
   `
 })
-export class ExampleComponent {
+export class RagExampleComponent {  // Rag prefix for atomic/semantic components
   // Signal-based inputs with proper typing
   readonly items = input.required<Item[]>();
   readonly size = input<'sm' | 'md' | 'lg'>('md');
@@ -93,6 +93,9 @@ export class ExampleComponent {
 - Use Radix-inspired design system components consistently
 - Use Lucide Icons for all iconography (3,300+ icons, tree-shakeable)
 - 3-tier component architecture: Atomic → Semantic → Composite
+- **Component Naming**:
+  - Atomic and Semantic components use `rag-` prefix (`rag-button`, `rag-card`)
+  - Composite components and Pages do NOT use `rag-` prefix (`settings-panel`, `dashboard-page`)
 - SCSS with CSS custom properties for theming (light/dark mode support)
 - Responsive layouts using CSS Grid and Flexbox
 

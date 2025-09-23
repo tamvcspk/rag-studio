@@ -56,9 +56,17 @@ Components **must** use separate files for template and logic:
 - `component-name.scss` - Styles (SCSS)
 
 #### 3. Naming Conventions
+
+**Atomic and Semantic Components** (use `rag-` prefix):
 - **Component Selector**: `rag-component-name` (kebab-case with rag prefix)
 - **Class Name**: `RagComponentName` (PascalCase with Rag prefix)
 - **Directory Name**: `component-name` (kebab-case **without** rag prefix for directory)
+- **File Names**: `component-name.ts/html/scss` (kebab-case without rag prefix)
+
+**Composite Components and Pages** (NO `rag-` prefix):
+- **Component Selector**: `component-name` (kebab-case **without** rag prefix)
+- **Class Name**: `ComponentName` (PascalCase **without** Rag prefix)
+- **Directory Name**: `component-name` (kebab-case without rag prefix for directory)
 - **File Names**: `component-name.ts/html/scss` (kebab-case without rag prefix)
 
 #### 4. Component Categories
@@ -80,18 +88,18 @@ import { SomeStore } from '../../../store/some.store';
 
 #### 6. Component Implementation Standards
 ```typescript
-// Modern Angular 20 component example
+// Modern Angular 20 component example (Atomic/Semantic component)
 import { Component, input, output, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'rag-example-component',
+  selector: 'rag-example-component',  // rag- prefix for atomic/semantic
   standalone: true,
   imports: [CommonModule],
   templateUrl: './example-component.html',  // Always separate file
   styleUrls: ['./example-component.scss']
 })
-export class RagExampleComponent {
+export class RagExampleComponent {  // Rag prefix for atomic/semantic
   // Signal-based inputs with proper typing
   readonly items = input.required<Item[]>();
   readonly size = input<'sm' | 'md' | 'lg'>('md');
@@ -114,11 +122,14 @@ export class RagExampleComponent {
 ### Export and Index Structure
 Components are exported through barrel files at each level:
 ```typescript
-// atomic/index.ts
+// atomic/index.ts (with rag- prefix)
 export { RagButton } from './primitives/rag-button/rag-button';
 
-// composite/index.ts
-export { RagGeneralSettingsPanel } from './general-settings-panel/general-settings-panel';
+// semantic/index.ts (with rag- prefix)
+export { RagCard } from './rag-card/rag-card';
+
+// composite/index.ts (NO rag- prefix)
+export { GeneralSettingsPanel } from './general-settings-panel/general-settings-panel';
 ```
 
 ## Rust Backend Conventions

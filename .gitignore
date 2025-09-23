@@ -52,3 +52,4 @@ Thumbs.db
 /core/backups/
 *.sqlite
 *.sqlite3
+nul
