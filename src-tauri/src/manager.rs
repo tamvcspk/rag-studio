@@ -8,116 +8,26 @@
  */
 
 use std::sync::Arc;
-use tokio::sync::RwLock;
-use serde::{Serialize, Deserialize};
+use serde_json;
 use tauri::{AppHandle, Emitter};
 use tracing::{info, error};
 
 // Core imports
 use rag_core::{
-    SqlService, SqlConfig,
-    modules::kb::{KbService, KbServiceImpl, KbConfig},
-    services::vector::{VectorDbService, VectorDbConfig},
-    StateManager,
+    SqlService, SqlConfig, SqlError,
+    modules::kb::{KbService, KbServiceImpl, KbConfig, KbStats, KbInfo, KbError},
+    services::vector::{VectorDbService, VectorDbConfig, VectorDbError},
+    state::{AppState, StateManager, StateDelta, KnowledgeBaseState, KnowledgeBaseStatus},
+    CoreError, CoreResult,
 };
 
-/// Application State for MVP
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AppState {
-    pub knowledge_bases: Vec<KnowledgeBase>,
-    pub runs: Vec<IngestRun>,
-    pub metrics: AppMetrics,
-    pub is_loading: bool,
-    pub last_error: Option<String>,
-    pub mcp_server_running: bool,
-    pub air_gapped_mode: bool,
-}
+// Removed duplicate AppState and related types - now using canonical types from core crate
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct KnowledgeBase {
-    pub id: String,
-    pub name: String,
-    pub product: String,
-    pub version: String,
-    pub description: Option<String>,
-    pub status: KnowledgeBaseStatus,
-    pub document_count: u32,
-    pub chunk_count: u32,
-    pub index_size: u64,
-    pub health_score: f32,
-    pub created_at: String,
-    pub updated_at: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum KnowledgeBaseStatus {
-    #[serde(rename = "indexed")]
-    Indexed,
-    #[serde(rename = "indexing")]
-    Indexing,
-    #[serde(rename = "failed")]
-    Failed,
-    #[serde(rename = "pending")]
-    Pending,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct IngestRun {
-    pub id: String,
-    pub kb_id: String,
-    pub status: String,
-    pub progress: f32,
-    pub documents_processed: u32,
-    pub total_documents: u32,
-    pub started_at: String,
-    pub updated_at: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AppMetrics {
-    pub total_kbs: u32,
-    pub indexed_kbs: u32,
-    pub indexing_kbs: u32,
-    pub failed_kbs: u32,
-    pub total_documents: u32,
-    pub total_chunks: u32,
-    pub avg_query_latency_ms: f32,
-    pub cache_hit_rate: f32,
-}
-
-impl Default for AppState {
-    fn default() -> Self {
-        Self {
-            knowledge_bases: Vec::new(),
-            runs: Vec::new(),
-            metrics: AppMetrics::default(),
-            is_loading: false,
-            last_error: None,
-            mcp_server_running: false,
-            air_gapped_mode: false,
-        }
-    }
-}
-
-impl Default for AppMetrics {
-    fn default() -> Self {
-        Self {
-            total_kbs: 0,
-            indexed_kbs: 0,
-            indexing_kbs: 0,
-            failed_kbs: 0,
-            total_documents: 0,
-            total_chunks: 0,
-            avg_query_latency_ms: 0.0,
-            cache_hit_rate: 0.0,
-        }
-    }
-}
-
+/// Manager - Main composition root following CORE_DESIGN.md
 /// Manager - Main composition root following CORE_DESIGN.md
 #[derive(Clone)]
 pub struct Manager {
-    pub app_state: Arc<RwLock<AppState>>,
+    pub state_manager: Arc<StateManager>,
     pub sql_service: Arc<SqlService>,
     pub vector_service: Arc<VectorDbService>,
     pub kb_service: Arc<KbServiceImpl>,
@@ -125,24 +35,24 @@ pub struct Manager {
 }
 
 impl Manager {
-    /// Initialize Manager with MVP configuration
-    pub async fn new() -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
+    /// Initialize Manager with MVP configuration following CORE_DESIGN.md
+    pub async fn new() -> CoreResult<Self> {
         info!("Initializing Manager with MVP configuration");
 
         // Initialize SQL service with MVP config
         let sql_config = SqlConfig::new_mvp("./rag_studio.db");
-        let sql_service = Arc::new(SqlService::new(sql_config).await?);
+        let sql_service = Arc::new(SqlService::new(sql_config).await.map_err(|e| CoreError::Service(e.to_string()))?);
 
         // Run migrations
-        sql_service.run_migrations().await?;
+        sql_service.run_migrations().await.map_err(|e| CoreError::Service(e.to_string()))?;
         info!("SQL service initialized and migrations completed");
 
         // Initialize Vector service with MVP config (graceful fallback)
         let vector_config = VectorDbConfig::default(); // MVP with fallback
-        let vector_service = Arc::new(VectorDbService::new(vector_config).await?);
+        let vector_service = Arc::new(VectorDbService::new(vector_config).await.map_err(|e| CoreError::Service(e.to_string()))?);
         info!("Vector service initialized with MVP configuration");
 
-        // Initialize State Manager
+        // Initialize State Manager - canonical from core crate
         let state_manager = Arc::new(StateManager::new());
         info!("State manager initialized");
 
@@ -156,11 +66,8 @@ impl Manager {
         ));
         info!("KB service initialized");
 
-        // Initialize application state
-        let app_state = Arc::new(RwLock::new(AppState::default()));
-
         Ok(Self {
-            app_state,
+            state_manager,
             sql_service,
             vector_service,
             kb_service,
@@ -174,9 +81,9 @@ impl Manager {
         info!("Tauri app handle set for real-time events");
     }
 
-    /// Get application state for reading/writing
-    pub async fn get_app_state(&self) -> Arc<RwLock<AppState>> {
-        self.app_state.clone()
+    /// Get state manager for reading/writing application state
+    pub fn get_state_manager(&self) -> Arc<StateManager> {
+        self.state_manager.clone()
     }
 
     /// Emit state delta to frontend (real-time sync)
@@ -194,73 +101,62 @@ impl Manager {
         }
     }
 
-    /// Load initial state from database
-    pub async fn load_initial_state(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    /// Load initial state from database using StateManager pattern
+    pub async fn load_initial_state(&self) -> CoreResult<()> {
         info!("Loading initial state from database");
 
         // Load KBs from SQL service
-        let kb_stats = self.kb_service.get_stats(None, None).await?;
+        let kb_stats = self.kb_service.get_stats(None, None).await.map_err(|e| CoreError::Service(e.to_string()))?;
+        let kb_list = self.kb_service.list_collections(None).await.map_err(|e| CoreError::Service(e.to_string()))?;
 
-        let mut state = self.app_state.write().await;
-
-        // Update metrics (using available fields from KbStats)
-        state.metrics.total_kbs = 0; // Will be computed from loaded KBs
-        state.metrics.total_documents = kb_stats.document_count as u32;
-        state.metrics.total_chunks = kb_stats.chunk_count as u32;
-        state.metrics.avg_query_latency_ms = 0.0; // Will be updated by queries
-        state.metrics.cache_hit_rate = 0.0; // Will be updated by cache service
-
-        // Load KB list
-        let kb_list = self.kb_service.list_collections(None).await?;
-        state.knowledge_bases = kb_list.into_iter().map(|kb_info| {
+        // Convert KbInfo to KnowledgeBaseState for the canonical state
+        let kb_count = kb_list.len();
+        for kb_info in kb_list {
             let status = match kb_info.health_score {
-                score if score > 0.8 => KnowledgeBaseStatus::Indexed,
-                score if score > 0.0 => KnowledgeBaseStatus::Indexing,
-                _ => KnowledgeBaseStatus::Failed,
+                score if score > 0.8 => KnowledgeBaseStatus::Active,
+                score if score > 0.0 => KnowledgeBaseStatus::Building,
+                _ => KnowledgeBaseStatus::Error("Health check failed".to_string()),
             };
 
-            KnowledgeBase {
-                id: kb_info.id,
+            let kb_state = KnowledgeBaseState {
+                id: kb_info.id.clone(),
                 name: kb_info.name,
-                product: "default".to_string(), // MVP default
-                version: kb_info.version.to_string(),
-                description: kb_info.description,
+                version: kb_info.version,
                 status,
+                embedder_model: "sentence-transformers/all-MiniLM-L6-v2".to_string(), // MVP default
+                health_score: kb_info.health_score,
                 document_count: 0, // Will be loaded separately
                 chunk_count: 0,    // Will be loaded separately
-                index_size: 0,     // Will be loaded separately
-                health_score: kb_info.health_score as f32,
-                created_at: chrono::Utc::now().to_rfc3339(), // MVP fallback
-                updated_at: chrono::Utc::now().to_rfc3339(), // MVP fallback
-            }
-        }).collect();
+                last_updated: chrono::Utc::now(),
+                metadata: serde_json::json!({
+                    "description": kb_info.description,
+                    "product": "default"
+                }),
+            };
 
-        // Update computed metrics
-        state.metrics.indexed_kbs = state.knowledge_bases.iter()
-            .filter(|kb| matches!(kb.status, KnowledgeBaseStatus::Indexed))
-            .count() as u32;
-        state.metrics.indexing_kbs = state.knowledge_bases.iter()
-            .filter(|kb| matches!(kb.status, KnowledgeBaseStatus::Indexing))
-            .count() as u32;
-        state.metrics.failed_kbs = state.knowledge_bases.iter()
-            .filter(|kb| matches!(kb.status, KnowledgeBaseStatus::Failed))
-            .count() as u32;
+            // Add KB to state using StateManager
+            self.state_manager.mutate(StateDelta::KnowledgeBaseAdd { kb: kb_state })
+                .map_err(|e| CoreError::State(e))?;
+        }
 
         info!("Initial state loaded: {} KBs, {} documents",
-              state.knowledge_bases.len(), state.metrics.total_documents);
+              kb_count, kb_stats.document_count);
 
         Ok(())
     }
 
-    /// Update KB status and emit delta
-    pub async fn update_kb_status(&self, kb_id: &str, status: KnowledgeBaseStatus) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-        {
-            let mut state = self.app_state.write().await;
-            if let Some(kb) = state.knowledge_bases.iter_mut().find(|kb| kb.id == kb_id) {
-                kb.status = status.clone();
-                kb.updated_at = chrono::Utc::now().to_rfc3339();
-            }
-        }
+    /// Update KB status using StateManager pattern
+    pub async fn update_kb_status(&self, kb_id: &str, status: KnowledgeBaseStatus) -> CoreResult<()> {
+        // Update state using StateManager
+        let updates = serde_json::json!({
+            "status": status,
+            "last_updated": chrono::Utc::now()
+        });
+
+        self.state_manager.mutate(StateDelta::KnowledgeBaseUpdate {
+            id: kb_id.to_string(),
+            updates
+        }).map_err(|e| CoreError::State(e))?;
 
         // Emit delta to frontend
         self.emit_state_delta("kb_status_updated", serde_json::json!({
@@ -272,9 +168,9 @@ impl Manager {
     }
 
     /// Health check for all services
-    pub async fn health_check(&self) -> Result<serde_json::Value, Box<dyn std::error::Error + Send + Sync>> {
-        let sql_health = self.sql_service.health_check().await?;
-        let vector_health = self.vector_service.health_check().await?;
+    pub async fn health_check(&self) -> CoreResult<serde_json::Value> {
+        let sql_health = self.sql_service.health_check().await.map_err(|e| CoreError::Service(e.to_string()))?;
+        let vector_health = self.vector_service.health_check().await.map_err(|e| CoreError::Service(e.to_string()))?;
 
         Ok(serde_json::json!({
             "sql": {

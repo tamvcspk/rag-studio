@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use tauri::State;
+use tracing::{info, error};
 use crate::manager::Manager;
+use rag_core::state::StateDelta;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerSettings {
@@ -106,21 +108,32 @@ impl Default for AppSettings {
 pub async fn get_app_settings(
     manager: State<'_, Manager>
 ) -> Result<AppSettings, String> {
-    // For MVP, return default settings
-    // TODO: Load from configuration file or database
-    let app_state = manager.get_app_state().await;
-    let state = app_state.read().await;
+    info!("Getting application settings");
 
-    // Get MCP server status from actual state
-    let mcp_status = if state.mcp_server_running {
-        "running"
-    } else {
-        "stopped"
-    };
+    let state = manager.state_manager.read_state();
+
+    // Get MCP server status from settings
+    let mcp_status = state.settings.get("mcp_server_running")
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(false);
 
     let mut settings = AppSettings::default();
-    settings.server.mcp_server_status = mcp_status.to_string();
+    settings.server.mcp_server_status = if mcp_status { "running".to_string() } else { "stopped".to_string() };
 
+    // Load other settings from state if available
+    if let Some(air_gapped) = state.settings.get("air_gapped_mode") {
+        settings.security.air_gapped_mode = air_gapped.parse().unwrap_or(false);
+    }
+
+    if let Some(embedding_model) = state.settings.get("default_embedding_model") {
+        settings.kb.default_embedding_model = embedding_model.clone();
+    }
+
+    if let Some(data_dir) = state.settings.get("data_directory") {
+        settings.system.data_directory = data_dir.clone();
+    }
+
+    info!("Retrieved application settings");
     Ok(settings)
 }
 
@@ -130,21 +143,32 @@ pub async fn update_app_settings(
     manager: State<'_, Manager>,
     settings: AppSettings
 ) -> Result<AppSettings, String> {
-    // TODO: Validate settings and save to configuration
-    println!("Updating app settings: {:?}", settings);
+    info!("Updating application settings");
 
-    // Update MCP server status if needed
-    let app_state = manager.get_app_state().await;
-    {
-        let mut state = app_state.write().await;
+    // Update settings using StateManager
+    manager.state_manager.mutate(StateDelta::SettingsUpdate {
+        key: "air_gapped_mode".to_string(),
+        value: settings.security.air_gapped_mode.to_string(),
+    }).map_err(|e| format!("Failed to update air-gapped mode: {}", e))?;
 
-        // Update air-gapped mode
-        if state.air_gapped_mode != settings.security.air_gapped_mode {
-            state.air_gapped_mode = settings.security.air_gapped_mode;
-            println!("Air-gapped mode set to: {}", settings.security.air_gapped_mode);
-        }
-    }
+    manager.state_manager.mutate(StateDelta::SettingsUpdate {
+        key: "default_embedding_model".to_string(),
+        value: settings.kb.default_embedding_model.clone(),
+    }).map_err(|e| format!("Failed to update embedding model: {}", e))?;
 
+    manager.state_manager.mutate(StateDelta::SettingsUpdate {
+        key: "data_directory".to_string(),
+        value: settings.system.data_directory.clone(),
+    }).map_err(|e| format!("Failed to update data directory: {}", e))?;
+
+    // Emit state delta for frontend
+    manager.emit_state_delta("settings_updated", serde_json::json!({
+        "air_gapped_mode": settings.security.air_gapped_mode,
+        "embedding_model": settings.kb.default_embedding_model,
+        "data_directory": settings.system.data_directory
+    })).await;
+
+    info!("Air-gapped mode set to: {}", settings.security.air_gapped_mode);
     Ok(settings)
 }
 
@@ -153,13 +177,18 @@ pub async fn update_app_settings(
 pub async fn start_mcp_server(
     manager: State<'_, Manager>
 ) -> Result<String, String> {
-    println!("Starting MCP server...");
+    info!("Starting MCP server...");
 
-    let app_state = manager.get_app_state().await;
-    {
-        let mut state = app_state.write().await;
-        state.mcp_server_running = true;
-    }
+    // Update MCP server status using StateManager
+    manager.state_manager.mutate(StateDelta::SettingsUpdate {
+        key: "mcp_server_running".to_string(),
+        value: "true".to_string(),
+    }).map_err(|e| format!("Failed to update MCP server status: {}", e))?;
+
+    // Emit state delta
+    manager.emit_state_delta("mcp_server_started", serde_json::json!({
+        "status": "running"
+    })).await;
 
     // TODO: Actually start the MCP server process
 
@@ -171,13 +200,18 @@ pub async fn start_mcp_server(
 pub async fn stop_mcp_server(
     manager: State<'_, Manager>
 ) -> Result<String, String> {
-    println!("Stopping MCP server...");
+    info!("Stopping MCP server...");
 
-    let app_state = manager.get_app_state().await;
-    {
-        let mut state = app_state.write().await;
-        state.mcp_server_running = false;
-    }
+    // Update MCP server status using StateManager
+    manager.state_manager.mutate(StateDelta::SettingsUpdate {
+        key: "mcp_server_running".to_string(),
+        value: "false".to_string(),
+    }).map_err(|e| format!("Failed to update MCP server status: {}", e))?;
+
+    // Emit state delta
+    manager.emit_state_delta("mcp_server_stopped", serde_json::json!({
+        "status": "stopped"
+    })).await;
 
     // TODO: Actually stop the MCP server process
 
@@ -189,10 +223,13 @@ pub async fn stop_mcp_server(
 pub async fn get_mcp_server_status(
     manager: State<'_, Manager>
 ) -> Result<ServerSettings, String> {
-    let app_state = manager.get_app_state().await;
-    let state = app_state.read().await;
+    let state = manager.state_manager.read_state();
 
-    let status = if state.mcp_server_running {
+    let mcp_running = state.settings.get("mcp_server_running")
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(false);
+
+    let status = if mcp_running {
         "running"
     } else {
         "stopped"

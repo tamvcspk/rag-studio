@@ -82,13 +82,74 @@
 - **Rust Integration**: ✅ Backend compiles cleanly with minimal warnings
 - **Code Cleanup**: ✅ Removed deprecated components and unused interfaces
 
-**NEXT: Phase 5 Flows & Orchestration ready to begin**
+**NEXT: Critical Architecture Compliance - Implement Embedding Worker Subprocess**
 
 ## 🎯 Immediate Next Steps (Priority Order)
 
-### 1. **Phase 5: Flows & Orchestration** 🔄
-**Status**: ✅ **READY** - All Phase 4 building blocks completed
-**Timeline**: **CURRENT SPRINT** - Begin flow composition and orchestration
+### 0. **CRITICAL ARCHITECTURE COMPLIANCE** 🚨 **HIGHEST PRIORITY**
+**Status**: 🚫 **ARCHITECTURE VIOLATION** - Current implementation deviates from MVP plan
+**Timeline**: **IMMEDIATE** - Must align with documented MVP architecture before continuing
+
+**Why This is Critical**:
+- **MVP Plan Compliance**: The `embedding-worker/` subprocess is a core requirement, not optional
+- **Process Isolation**: Python AI functions need proper subprocess isolation for security and stability
+- **Error Recovery**: Integrated PyO3 can crash the entire application; subprocess isolation prevents this
+- **Resource Management**: Subprocess allows proper memory management and restart capabilities
+- **Production Readiness**: Current integrated approach is not suitable for production deployment
+- **Architecture Integrity**: All other components assume subprocess architecture per CORE_DESIGN.md
+
+### 1. **Complete State Management Refactoring** ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Full architectural alignment achieved with successful build validation
+**Timeline**: **COMPLETED September 24, 2025** - Architecture and command layer fully converted
+
+**✅ COMPLETED: Core Architecture Refactoring** - **September 24, 2025**
+- ✅ **Manager Refactoring**: Eliminated duplicate AppState, now uses canonical StateManager from core
+- ✅ **Architecture Compliance**: Full compliance with CORE_DESIGN.md specifications
+- ✅ **Type System**: Canonical types from core crate (KnowledgeBaseState, StateDelta patterns)
+- ✅ **Build Validation**: Core Manager compiles cleanly with proper dependency injection
+
+**✅ COMPLETED: Command Layer Conversion** - **September 24, 2025**
+- ✅ **KB Commands**: Updated all 8 kb_commands.rs functions to use StateManager pattern
+- ✅ **Settings Commands**: Converted all 9 settings_commands.rs to canonical state management
+- ✅ **Tools Commands**: Updated all 15+ tools_commands.rs to use StateManager and canonical types
+- ✅ **Pipeline Commands**: Converted all 8 pipeline_commands.rs to StateManager pattern framework
+- ✅ **Command Registration**: Re-enabled all 37 Tauri command handlers with successful integration
+- ✅ **Integration Testing**: Build validation completed with successful compilation
+
+**Technical Implementation Completed**:
+- ✅ Replaced `manager.app_state.read().await` with `manager.state_manager.read_state()`
+- ✅ Replaced direct state mutations with `manager.state_manager.mutate(StateDelta::*)`
+- ✅ Used canonical types (KnowledgeBaseState, ToolState, etc.) from core crate
+- ✅ Updated error handling to use CoreError and CoreResult patterns
+
+**🚀 READY FOR PHASE 5: Flows & Orchestration**
+
+### 2. **Implement Embedding Worker Subprocess** 🚨 **CRITICAL ARCHITECTURE GAP**
+**Status**: 🚫 **MISSING REQUIRED COMPONENT** - Current PyO3 integration violates MVP architecture
+**Timeline**: **IMMEDIATE PRIORITY** - Must be implemented before Phase 5 to align with MVP plan
+
+**🚫 CRITICAL ISSUE**: Current implementation uses integrated PyO3 instead of separate `embedding-worker/` subprocess as specified in MVP plan.
+
+**Required Implementation**:
+- [ ] **Create `embedding-worker/` Cargo workspace member** with own Cargo.toml
+- [ ] **Subprocess Communication**: JSON protocol over stdin/stdout with request/response IDs
+- [ ] **Process Management**: Start, stop, restart, health checks from Manager
+- [ ] **AI Functions**: Move embedding and reranking from integrated PyO3 to subprocess
+- [ ] **Error Handling**: Robust error propagation across process boundaries
+- [ ] **Performance**: Maintain <100ms search targets with subprocess overhead
+- [ ] **Integration**: Update Manager and KB service to use subprocess instead of direct PyO3
+
+**Technical Requirements**:
+- Separate Rust crate with PyO3 dependencies
+- JSON message protocol for embedding requests/responses
+- Process lifecycle management (spawn, monitor, restart)
+- Timeout handling and error recovery
+- Batch processing for efficiency
+- Model loading and caching within subprocess
+
+### 3. **Phase 5: Flows & Orchestration** 🔄
+**Status**: ⏸️ **BLOCKED** - Waiting for embedding worker architecture compliance
+**Timeline**: **AFTER EMBEDDING WORKER** - Cannot proceed until MVP architecture is properly implemented
 
 **✅ Phase 4.4: Pipeline Designer** - **COMPLETED**
 - ✅ **Pipeline Flow UI**: Complete visual pipeline builder with drag-and-drop interface

@@ -8,20 +8,36 @@
 
 This document outlines the Minimum Viable Product (MVP) implementation plan for RAG Studio, a local-first, no-code/low-code application for building and operating personal Retrieval-Augmented Generation (RAG) systems. The MVP focuses on delivering core RAG functionality with a desktop application built on Tauri, Angular 20+, and Rust.
 
-## Project layout
+## Project Layout Requirements
 
-The recommended project layout (workspace) is documented in `docs/designs/CORE_DESIGN.md` under the "Recommended Project Structure" section. That canonical layout includes `src/` (Angular), `src-tauri/` (Tauri Rust), `core/` (shared crate), and subprocess crates (`mcp/`, `embedding-worker/`). Use that layout as the source of truth when implementing the MVP phases in this plan.
+The canonical project layout is documented in `docs/designs/CORE_DESIGN.md`. **CRITICAL for MVP**: The following structure MUST be implemented:
+
+```
+rag-studio/
+├── src/                    # Angular 20+ frontend
+├── src-tauri/             # Tauri Rust main process
+├── core/                  # Shared Rust crate (types, state, services)
+├── mcp/                   # MCP server subprocess (✅ implemented)
+└── embedding-worker/      # Python AI subprocess (🚫 MISSING - REQUIRED FOR MVP)
+```
+
+**IMPORTANT**: The `embedding-worker/` subprocess is NOT optional - it's a core requirement for proper process isolation, security, and Python AI functionality. The current integrated PyO3 approach is a **temporary deviation** that must be replaced with the proper subprocess architecture.
 
 ## Current State Analysis ✅
 
 ### COMPLETED FOUNDATIONS
 - ✅ Angular 20+ frontend with standalone components and modern architecture
 - ✅ Tauri v2 desktop framework setup
-- ✅ Rust backend with PyO3 Python integration
+- ⚠️ **Rust backend with integrated PyO3** (temporary - needs embedding worker subprocess)
 - ✅ Complete component library (atomic/semantic/composite architecture)
 - ✅ Design token system with SCSS and CSS custom properties
-- ✅ MCP server foundation with basic structure
-- ✅ Project builds successfully (879KB bundle, needs optimization)
+- ✅ MCP server subprocess with proper process isolation
+- ✅ Project builds successfully (993KB bundle, needs optimization)
+
+### MISSING CRITICAL COMPONENTS
+- 🚫 **Embedding Worker Subprocess**: Current PyO3 integration violates MVP architecture
+- 🚫 **Process Isolation for AI**: Python AI functions lack proper subprocess isolation
+- 🚫 **Robust Process Management**: No health checks, restarts, or process monitoring for AI functions
 
 ### EXISTING COMPONENTS
 - ✅ 60+ UI components in 3-tier architecture
@@ -70,25 +86,32 @@ The recommended project layout (workspace) is documented in `docs/designs/CORE_D
   - Debounced updates for performance
   - NgRx store integration
 
-#### 1.3 Python Integration (Simplified MVP)
-- [ ] **Embedding Service**: Out-of-process worker with JSON communication
-  - Start with stdin/stdout JSON protocol for simplicity
-  - Basic batch processing for embeddings
-  - Health checks and process restart capability
-  - Upgrade to UDS/bincode post-MVP for performance
-- [ ] **PyO3 Integration**: Basic async patterns for MVP
-  - Simple Python function calls via PyO3
-  - Basic GIL management
-  - Timeout-based error handling
-  - Rust fallback implementations where possible
-- [ ] **AI Functions**: Core embedding and search functionality
-  - Sentence-Transformers for embeddings
-  - Basic reranking capabilities
-  - Simple model loading and caching
-- [ ] **Error Handling**: Clear error propagation Python→Rust→Angular
-  - Structured error types with context
-  - User-friendly error messages
-  - Basic recovery mechanisms
+#### 1.3 Python Integration (Embedding Worker Subprocess)
+- [ ] **Embedding Worker Module**: Separate `embedding-worker/` subprocess crate
+  - **CRITICAL**: Must be implemented as separate subprocess, not integrated PyO3
+  - Independent Cargo workspace member with own Cargo.toml
+  - Subprocess lifecycle management (start, stop, restart, health checks)
+  - Process isolation for security and stability
+- [ ] **Communication Protocol**: JSON over stdin/stdout for MVP
+  - Request/response message format with unique IDs
+  - Batch processing capabilities for multiple embeddings
+  - Error handling and timeout management
+  - Clear upgrade path to UDS/bincode for production
+- [ ] **AI Functions**: Core embedding and reranking functionality
+  - Sentence-Transformers model loading and caching
+  - Batch embedding generation with configurable models
+  - Cross-encoder reranking for search results
+  - Model switching and warm-pool management
+- [ ] **Process Management**: Robust subprocess handling
+  - Automatic restart on crashes or hangs
+  - Health check pings and process monitoring
+  - Graceful shutdown with cleanup
+  - Resource usage monitoring and limits
+- [ ] **Error Handling**: Structured error propagation across process boundary
+  - JSON error responses with context
+  - Process failure recovery mechanisms
+  - Timeout handling with fallback strategies
+  - Detailed logging for debugging
 
 ### Phase 2: Knowledge Base Core 🎯
 **Priority: HIGH | Estimated: 3-4 weeks**
@@ -369,9 +392,11 @@ The recommended project layout (workspace) is documented in `docs/designs/CORE_D
 ## Risk Assessment
 
 ### High Risk Items
-- **Python Integration Complexity**: PyO3 async patterns may require significant debugging
-- **Performance Targets**: <100ms search latency is aggressive for hybrid search
-- **Bundle Size**: Current 879KB needs 43% reduction to meet targets
+- **Embedding Worker Architecture Gap**: Current integrated PyO3 violates MVP subprocess architecture
+- **Process Management Complexity**: Subprocess lifecycle, health checks, and error recovery
+- **Performance Targets**: <100ms search latency is aggressive for hybrid search across process boundaries
+- **Bundle Size**: Current 993KB needs 50% reduction to meet targets
+- **Python Subprocess Communication**: JSON protocol performance and reliability at scale
 
 ### Mitigation Strategies
 - **Incremental Development**: Build and test each component independently

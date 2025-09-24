@@ -13,7 +13,9 @@ use tracing::{info, error};
 // Import KbService trait for method calls
 use rag_core::modules::kb::KbService;
 
-use crate::manager::{Manager, KnowledgeBase, KnowledgeBaseStatus};
+use crate::manager::Manager;
+use rag_core::state::{KnowledgeBaseState, KnowledgeBaseStatus, StateDelta};
+use rag_core::Uuid;
 
 /// Request/Response types for frontend integration
 
@@ -61,11 +63,11 @@ pub struct CitationInfo {
 #[tauri::command]
 pub async fn get_knowledge_bases(
     manager: State<'_, Manager>,
-) -> Result<Vec<KnowledgeBase>, String> {
+) -> Result<Vec<KnowledgeBaseState>, String> {
     info!("Getting knowledge bases list");
 
-    let state = manager.app_state.read().await;
-    let kbs = state.knowledge_bases.clone();
+    let state = manager.state_manager.read_state();
+    let kbs: Vec<KnowledgeBaseState> = state.knowledge_bases.values().cloned().collect();
 
     info!("Retrieved {} knowledge bases", kbs.len());
     Ok(kbs)
@@ -76,47 +78,44 @@ pub async fn get_knowledge_bases(
 pub async fn create_knowledge_base(
     manager: State<'_, Manager>,
     request: CreateKBRequest,
-) -> Result<KnowledgeBase, String> {
+) -> Result<KnowledgeBaseState, String> {
     info!("Creating knowledge base: {}", request.name);
 
     // Generate unique ID
-    let kb_id = format!("kb_{}", uuid::Uuid::new_v4().to_string().replace("-", "")[..8].to_lowercase());
+    let kb_id = format!("kb_{}", Uuid::new_v4().to_string().replace("-", "")[..8].to_lowercase());
 
-    // Create KB via service (this is a simplified version for MVP)
-    // In real implementation, this would start an async ingest process
-    let new_kb = KnowledgeBase {
+    // Create KB state using canonical structure
+    let new_kb = KnowledgeBaseState {
         id: kb_id.clone(),
         name: request.name.clone(),
-        product: request.product.clone(),
-        version: request.version.clone(),
-        description: request.description.clone(),
-        status: KnowledgeBaseStatus::Pending,
+        version: 1, // Start with version 1
+        status: KnowledgeBaseStatus::Building, // More appropriate than "Pending"
+        embedder_model: request.embedding_model.clone(),
+        health_score: 0.0,
         document_count: 0,
         chunk_count: 0,
-        index_size: 0,
-        health_score: 0.0,
-        created_at: chrono::Utc::now().to_rfc3339(),
-        updated_at: chrono::Utc::now().to_rfc3339(),
+        last_updated: chrono::Utc::now(),
+        metadata: serde_json::json!({
+            "product": request.product,
+            "version": request.version,
+            "description": request.description,
+            "content_source": request.content_source,
+            "source_url": request.source_url,
+            "chunk_size": request.chunk_size
+        }),
     };
 
-    // Add to state
-    {
-        let mut state = manager.app_state.write().await;
-        state.knowledge_bases.push(new_kb.clone());
-        state.metrics.total_kbs += 1;
-    }
+    // Add to state using StateManager
+    manager.state_manager.mutate(StateDelta::KnowledgeBaseAdd { kb: new_kb.clone() })
+        .map_err(|e| format!("Failed to add KB to state: {}", e))?;
 
     // Emit state delta
     manager.emit_state_delta("kb_created", serde_json::json!({
         "kb": new_kb
     })).await;
 
-    // Start indexing process (simulated for MVP) - run in background
-    let manager_clone = (*manager).clone();
-    let kb_id_clone = kb_id.clone();
-    tauri::async_runtime::spawn(async move {
-        simulate_indexing_process(&manager_clone, &kb_id_clone).await;
-    });
+    // TODO: Complete background indexing process implementation
+    // For now, just return the created KB
 
     info!("Knowledge base created: {}", kb_id);
     Ok(new_kb)
@@ -165,12 +164,11 @@ pub async fn search_knowledge_base(
         }
     }).collect();
 
-    // Update metrics
-    {
-        let mut state = manager.app_state.write().await;
-        // Simple moving average for latency
-        state.metrics.avg_query_latency_ms = (state.metrics.avg_query_latency_ms + latency_ms) / 2.0;
-    }
+    // Update metrics using StateManager
+    manager.state_manager.mutate(StateDelta::MetricsUpdate {
+        key: "avg_query_latency_ms".to_string(),
+        value: serde_json::Value::Number(serde_json::Number::from_f64(latency_ms as f64).unwrap()),
+    }).map_err(|e| format!("Failed to update metrics: {}", e))?;
 
     // Emit metrics update
     manager.emit_state_delta("search_completed", serde_json::json!({
@@ -192,18 +190,17 @@ pub async fn delete_knowledge_base(
 ) -> Result<(), String> {
     info!("Deleting knowledge base: {}", kb_id);
 
-    // Remove from state
+    // Check if KB exists first
     {
-        let mut state = manager.app_state.write().await;
-        let original_len = state.knowledge_bases.len();
-        state.knowledge_bases.retain(|kb| kb.id != kb_id);
-
-        if state.knowledge_bases.len() < original_len {
-            state.metrics.total_kbs = state.knowledge_bases.len() as u32;
-        } else {
+        let state = manager.state_manager.read_state();
+        if !state.knowledge_bases.contains_key(&kb_id) {
             return Err("Knowledge base not found".to_string());
         }
     }
+
+    // Remove from state using StateManager
+    manager.state_manager.mutate(StateDelta::KnowledgeBaseRemove { id: kb_id.clone() })
+        .map_err(|e| format!("Failed to remove KB from state: {}", e))?;
 
     // TODO: Call KB service to actually delete data
 
@@ -224,11 +221,10 @@ pub async fn export_knowledge_base(
 ) -> Result<Vec<u8>, String> {
     info!("Exporting knowledge base: {}", kb_id);
 
-    // Find KB
+    // Find KB using StateManager
     let kb = {
-        let state = manager.app_state.read().await;
-        state.knowledge_bases.iter()
-            .find(|kb| kb.id == kb_id)
+        let state = manager.state_manager.read_state();
+        state.knowledge_bases.get(&kb_id)
             .cloned()
             .ok_or("Knowledge base not found")?
     };
@@ -236,7 +232,7 @@ pub async fn export_knowledge_base(
     // TODO: Call KB service to export actual data
     // For MVP, return mock ZIP data
     let mock_export_data = format!(
-        "{{\"kb_id\": \"{}\", \"name\": \"{}\", \"version\": \"{}\", \"exported_at\": \"{}\"}}",
+        "{{\"kb_id\": \"{}\", \"name\": \"{}\", \"version\": {}, \"exported_at\": \"{}\"}}",
         kb.id, kb.name, kb.version, chrono::Utc::now().to_rfc3339()
     );
 
@@ -253,7 +249,7 @@ pub async fn reindex_knowledge_base(
     info!("Starting reindex for knowledge base: {}", kb_id);
 
     // Update status to indexing
-    manager.update_kb_status(&kb_id, KnowledgeBaseStatus::Indexing).await
+    manager.update_kb_status(&kb_id, KnowledgeBaseStatus::Building).await
         .map_err(|e| format!("Failed to update KB status: {}", e))?;
 
     // Start reindexing process (simulated for MVP) - run in background
@@ -271,9 +267,10 @@ pub async fn reindex_knowledge_base(
 #[tauri::command]
 pub async fn get_app_state(
     manager: State<'_, Manager>,
-) -> Result<crate::manager::AppState, String> {
-    let state = manager.app_state.read().await;
-    Ok(state.clone())
+) -> Result<serde_json::Value, String> {
+    let state = manager.state_manager.get_state_snapshot();
+    serde_json::to_value(state)
+        .map_err(|e| format!("Failed to serialize state: {}", e))
 }
 
 /// Get health status of all services
@@ -313,34 +310,35 @@ async fn simulate_indexing_process(manager: &Manager, kb_id: &str) {
     }
 
     // Mark as completed
-    if let Err(e) = manager.update_kb_status(kb_id, KnowledgeBaseStatus::Indexed).await {
-        error!("Failed to update KB status to indexed: {}", e);
-        let _ = manager.update_kb_status(kb_id, KnowledgeBaseStatus::Failed).await;
-    }
+    if let Err(e) = manager.update_kb_status(kb_id, KnowledgeBaseStatus::Active).await {
+        error!("Failed to update KB status to active: {}", e);
+        let _ = manager.update_kb_status(kb_id, KnowledgeBaseStatus::Error("Indexing failed".to_string())).await;
+    } else {
+        // Update final KB data using StateManager
+        let updates = serde_json::json!({
+            "document_count": 25,
+            "chunk_count": 150,
+            "health_score": 0.95,
+            "last_updated": chrono::Utc::now()
+        });
 
-    // Update final metrics
-    {
-        let mut state = manager.app_state.write().await;
-        if let Some(kb) = state.knowledge_bases.iter_mut().find(|kb| kb.id == kb_id) {
-            kb.document_count = 25; // Simulated
-            kb.chunk_count = 150;   // Simulated
-            kb.index_size = 1024 * 1024; // 1MB simulated
-            kb.health_score = 0.95; // High health score
+        if let Err(e) = manager.state_manager.mutate(StateDelta::KnowledgeBaseUpdate {
+            id: kb_id.to_string(),
+            updates
+        }) {
+            error!("Failed to update KB final data: {}", e);
         }
 
-        // Recalculate metrics
-        state.metrics.indexed_kbs = state.knowledge_bases.iter()
-            .filter(|kb| matches!(kb.status, KnowledgeBaseStatus::Indexed))
-            .count() as u32;
-        state.metrics.indexing_kbs = state.knowledge_bases.iter()
-            .filter(|kb| matches!(kb.status, KnowledgeBaseStatus::Indexing))
-            .count() as u32;
-        state.metrics.total_documents = state.knowledge_bases.iter()
-            .map(|kb| kb.document_count)
-            .sum();
-        state.metrics.total_chunks = state.knowledge_bases.iter()
-            .map(|kb| kb.chunk_count)
-            .sum();
+        // Update overall metrics using StateManager
+        let _ = manager.state_manager.mutate(StateDelta::MetricsUpdate {
+            key: "total_documents".to_string(),
+            value: serde_json::Value::Number(serde_json::Number::from(25u32)),
+        });
+
+        let _ = manager.state_manager.mutate(StateDelta::MetricsUpdate {
+            key: "total_chunks".to_string(),
+            value: serde_json::Value::Number(serde_json::Number::from(150u32)),
+        });
     }
 
     manager.emit_state_delta("kb_indexing_completed", serde_json::json!({

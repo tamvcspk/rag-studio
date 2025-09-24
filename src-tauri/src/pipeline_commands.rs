@@ -8,8 +8,10 @@
 use tauri::State;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use tracing::{info, error};
 
 use crate::manager::Manager;
+use rag_core::state::StateDelta;
 // Import pipeline types when implemented
 // use rag_core::models::pipeline::{Pipeline, PipelineSpec, PipelineRun, PipelineTemplate};
 
@@ -159,8 +161,9 @@ pub struct GetPipelinesResponse {
 
 #[tauri::command]
 pub async fn get_pipelines(
-    _manager_state: State<'_, Manager>,
+    manager: State<'_, Manager>,
 ) -> Result<GetPipelinesResponse, String> {
+    info!("Getting pipelines list");
     // TODO: Implement actual pipeline retrieval from backend
     // For now, return mock data for Phase 4.4 implementation
 
@@ -236,8 +239,9 @@ pub async fn get_pipelines(
 #[tauri::command]
 pub async fn create_pipeline(
     request: CreatePipelineRequest,
-    _manager_state: State<'_, Manager>,
+    manager: State<'_, Manager>,
 ) -> Result<Pipeline, String> {
+    info!("Creating pipeline: {}", request.name);
     // TODO: Implement actual pipeline creation
     // For now, return a mock pipeline
 

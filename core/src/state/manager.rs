@@ -107,7 +107,19 @@ impl StateManager {
             }
 
             StateDelta::MetricsUpdate { key, value } => {
-                state.metrics.insert(key, value);
+                // Convert serde_json::Value to MetricValue
+                let metric_value = if let Ok(metric) = serde_json::from_value::<MetricValue>(value.clone()) {
+                    metric
+                } else {
+                    // Create a simple MetricValue from primitive types
+                    MetricValue {
+                        value: value.as_f64().unwrap_or(0.0),
+                        timestamp: chrono::Utc::now(),
+                        unit: "".to_string(),
+                        tags: std::collections::HashMap::new(),
+                    }
+                };
+                state.metrics.insert(key, metric_value);
             }
 
             StateDelta::LogAdd { entry } => {
@@ -136,6 +148,13 @@ impl StateManager {
                 } else {
                     state.loading_states.remove(&key);
                 }
+            }
+
+            StateDelta::SettingsUpdate { key, value } => {
+                state.settings.insert(key, value);
+            }
+            StateDelta::SettingsRemove { key } => {
+                state.settings.remove(&key);
             }
         }
 

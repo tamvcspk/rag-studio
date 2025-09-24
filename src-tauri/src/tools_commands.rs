@@ -13,8 +13,10 @@ use chrono::{DateTime, Utc};
 use anyhow::Result;
 use sha2::{Sha256, Digest};
 use base64::Engine;
+use tracing::{info, error};
 
 use crate::manager::Manager;
+use rag_core::state::{StateDelta, ToolState};
 
 // Tool data structures
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -255,11 +257,53 @@ pub struct BulkExportResult {
 // Tauri Commands
 
 #[tauri::command]
-pub async fn get_tools(_manager: State<'_, Manager>) -> Result<GetToolsResponse, String> {
-    println!("🔧 get_tools command called");
+pub async fn get_tools(manager: State<'_, Manager>) -> Result<GetToolsResponse, String> {
+    info!("Getting tools list");
 
-    // For MVP, return mock data until backend tools management is implemented
-    let mock_tools = vec![
+    let state = manager.state_manager.read_state();
+
+    // Convert ToolState from state to Tool format for frontend
+    let mut tools: Vec<Tool> = state.tools.values().map(|tool_state| {
+        Tool {
+            id: tool_state.id.clone(),
+            name: tool_state.name.clone(),
+            endpoint: format!("tool.{}", tool_state.tool_type),
+            description: tool_state.config.get("description")
+                .and_then(|v| v.as_str())
+                .unwrap_or("No description")
+                .to_string(),
+            status: if tool_state.enabled { ToolStatus::Active } else { ToolStatus::Inactive },
+            base_operation: BaseOperation::RagSearch, // Default for MVP
+            knowledge_base: KnowledgeBaseRef {
+                name: tool_state.config.get("knowledge_base")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("default_kb")
+                    .to_string(),
+                version: "1.0".to_string(),
+            },
+            config: ToolConfig {
+                top_k: tool_state.config.get("top_k")
+                    .and_then(|v| v.as_u64())
+                    .unwrap_or(10) as u32,
+                top_n: tool_state.config.get("top_n")
+                    .and_then(|v| v.as_u64())
+                    .unwrap_or(5) as u32,
+            },
+            permissions: vec!["kb.read".to_string()],
+            created_at: Utc::now(),
+            updated_at: Utc::now(),
+            last_used: tool_state.last_used,
+            error_message: None,
+            usage: Some(ToolUsageStats {
+                total_calls: tool_state.usage_count,
+                avg_latency: 250.5, // Mock value for MVP
+            }),
+        }
+    }).collect();
+
+    // If no tools in state, return mock data for MVP
+    if tools.is_empty() {
+        tools = vec![
         Tool {
             id: "tool_1".to_string(),
             name: "RAG Search Tool".to_string(),
@@ -310,21 +354,23 @@ pub async fn get_tools(_manager: State<'_, Manager>) -> Result<GetToolsResponse,
                 avg_latency: 1200.0,
             }),
         },
-    ];
+        ];
+    }
 
     let metrics = ToolExecutionMetrics {
-        total_tools: mock_tools.len() as u32,
-        active_tools: mock_tools.iter().filter(|t| matches!(t.status, ToolStatus::Active)).count() as u32,
-        error_tools: mock_tools.iter().filter(|t| matches!(t.status, ToolStatus::Error)).count() as u32,
-        inactive_tools: mock_tools.iter().filter(|t| matches!(t.status, ToolStatus::Inactive)).count() as u32,
-        pending_tools: mock_tools.iter().filter(|t| matches!(t.status, ToolStatus::Pending)).count() as u32,
+        total_tools: tools.len() as u32,
+        active_tools: tools.iter().filter(|t| matches!(t.status, ToolStatus::Active)).count() as u32,
+        error_tools: tools.iter().filter(|t| matches!(t.status, ToolStatus::Error)).count() as u32,
+        inactive_tools: tools.iter().filter(|t| matches!(t.status, ToolStatus::Inactive)).count() as u32,
+        pending_tools: tools.iter().filter(|t| matches!(t.status, ToolStatus::Pending)).count() as u32,
         avg_response_time: 725.25,
         total_executions: 235,
         success_rate: 0.96,
     };
 
+    info!("Retrieved {} tools", tools.len());
     Ok(GetToolsResponse {
-        tools: mock_tools,
+        tools,
         metrics,
     })
 }
@@ -335,15 +381,40 @@ pub async fn create_tool(
     manager: State<'_, Manager>,
     app_handle: tauri::AppHandle,
 ) -> Result<Tool, String> {
-    println!("🔧 create_tool command called: {}", tool_data.name);
+    info!("Creating tool: {}", tool_data.name);
 
-    // For MVP, create a mock tool
+    let tool_id = Uuid::new_v4().to_string();
+
+    // Create ToolState for StateManager
+    let tool_state = ToolState {
+        id: tool_id.clone(),
+        name: tool_data.name.clone(),
+        tool_type: tool_data.base_operation.to_string(),
+        enabled: true,
+        last_used: None,
+        usage_count: 0,
+        config: serde_json::json!({
+            "description": tool_data.description,
+            "endpoint": tool_data.endpoint,
+            "knowledge_base": tool_data.knowledge_base.name,
+            "top_k": tool_data.config.top_k,
+            "top_n": tool_data.config.top_n,
+            "permissions": tool_data.permissions
+        }),
+        schema: serde_json::json!({}), // MVP: empty schema
+    };
+
+    // Add to state using StateManager
+    manager.state_manager.mutate(StateDelta::ToolAdd { tool: tool_state.clone() })
+        .map_err(|e| format!("Failed to add tool to state: {}", e))?;
+
+    // Create response tool format
     let new_tool = Tool {
-        id: Uuid::new_v4().to_string(),
+        id: tool_id.clone(),
         name: tool_data.name,
         endpoint: tool_data.endpoint,
         description: tool_data.description,
-        status: ToolStatus::Pending,
+        status: ToolStatus::Active, // Start as active
         base_operation: tool_data.base_operation,
         knowledge_base: tool_data.knowledge_base,
         config: tool_data.config,
@@ -352,32 +423,25 @@ pub async fn create_tool(
         updated_at: Utc::now(),
         last_used: None,
         error_message: None,
-        usage: None,
+        usage: Some(ToolUsageStats {
+            total_calls: 0,
+            avg_latency: 0.0,
+        }),
     };
 
     // Emit event for real-time UI updates
     if let Err(e) = app_handle.emit("tool_created", &new_tool) {
-        eprintln!("Failed to emit tool_created event: {}", e);
+        error!("Failed to emit tool_created event: {}", e);
     }
 
-    // Simulate async processing (would register with MCP server in real implementation)
-    tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
+    // Emit state delta via manager
+    manager.emit_state_delta("tool_created", serde_json::json!({
+        "tool_id": tool_id,
+        "name": new_tool.name
+    })).await;
 
-    // Update status to active (simulate successful registration)
-    let mut active_tool = new_tool.clone();
-    active_tool.status = ToolStatus::Active;
-    active_tool.updated_at = Utc::now();
-
-    // Emit status update event
-    if let Err(e) = app_handle.emit("tool_status_changed", serde_json::json!({
-        "toolId": active_tool.id,
-        "status": "ACTIVE",
-        "errorMessage": null
-    })) {
-        eprintln!("Failed to emit tool_status_changed event: {}", e);
-    }
-
-    Ok(active_tool)
+    info!("Tool created: {}", tool_id);
+    Ok(new_tool)
 }
 
 #[tauri::command]

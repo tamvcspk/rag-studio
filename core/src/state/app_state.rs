@@ -231,7 +231,7 @@ pub enum StateDelta {
     // Metrics mutations
     MetricsUpdate {
         key: String,
-        value: MetricValue,
+        value: serde_json::Value,
     },
 
     // Log mutations
@@ -254,5 +254,14 @@ pub enum StateDelta {
     LoadingSet {
         key: String,
         loading: bool,
+    },
+
+    // Settings mutations
+    SettingsUpdate {
+        key: String,
+        value: String,
+    },
+    SettingsRemove {
+        key: String,
     },
 }

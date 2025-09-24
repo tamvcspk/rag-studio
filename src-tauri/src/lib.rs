@@ -103,7 +103,6 @@ pub fn run() {
             test_tool,
             export_tool,
             import_tool,
-            // Phase 4.3: Tool Import/Export & Templates
             import_tool_from_ragpack,
             validate_tool_import,
             bulk_export_tools,
@@ -111,7 +110,7 @@ pub fn run() {
             get_tool_templates,
             create_tool_from_template,
             save_tool_as_template,
-            // Phase 4.4: Pipeline Management Commands
+            // Pipeline Management Commands
             get_pipelines,
             create_pipeline,
             update_pipeline,
