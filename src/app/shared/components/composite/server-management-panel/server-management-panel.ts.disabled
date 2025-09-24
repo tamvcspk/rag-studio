@@ -71,23 +71,25 @@ interface ServerManagementForm {
           </div>
         </div>
 
-        <div class="status-metrics" *ngIf="serverSettings()">
-          <div class="metric">
-            <rag-icon [img]="UsersIcon" size="sm" />
-            <span class="metric-label">Port</span>
-            <span class="metric-value">{{ serverSettings()!.mcp_server_port }}</span>
+        @if (serverSettings()) {
+          <div class="status-metrics">
+            <div class="metric">
+              <rag-icon [img]="UsersIcon" size="sm" />
+              <span class="metric-label">Port</span>
+              <span class="metric-value">{{ serverSettings()!.mcp_server_port }}</span>
+            </div>
+            <div class="metric">
+              <rag-icon [img]="ActivityIcon" size="sm" />
+              <span class="metric-label">Max Connections</span>
+              <span class="metric-value">{{ serverSettings()!.max_connections }}</span>
+            </div>
+            <div class="metric">
+              <rag-icon [img]="ClockIcon" size="sm" />
+              <span class="metric-label">Timeout</span>
+              <span class="metric-value">{{ serverSettings()!.request_timeout }}s</span>
+            </div>
           </div>
-          <div class="metric">
-            <rag-icon [img]="ActivityIcon" size="sm" />
-            <span class="metric-label">Max Connections</span>
-            <span class="metric-value">{{ serverSettings()!.max_connections }}</span>
-          </div>
-          <div class="metric">
-            <rag-icon [img]="ClockIcon" size="sm" />
-            <span class="metric-label">Timeout</span>
-            <span class="metric-value">{{ serverSettings()!.request_timeout }}s</span>
-          </div>
-        </div>
+        }
 
         <div class="status-actions">
           @if (isServerRunning()) {

@@ -73,36 +73,38 @@ interface KbConfigurationForm {
           </div>
         </div>
 
-        <div class="current-config" *ngIf="kbSettings()">
-          <div class="config-grid">
-            <div class="config-item">
-              <rag-icon [img]="CpuIcon" size="sm" />
-              <span class="config-label">Embedding Model</span>
-              <span class="config-value">{{ getModelDisplayName(kbSettings()!.default_embedding_model) }}</span>
-            </div>
-            <div class="config-item">
-              <rag-icon [img]="FileTextIcon" size="sm" />
-              <span class="config-label">Chunk Size</span>
-              <span class="config-value">{{ kbSettings()!.chunk_size }} tokens</span>
-            </div>
-            <div class="config-item">
-              <rag-icon [img]="SearchIcon" size="sm" />
-              <span class="config-label">Search Top-K</span>
-              <span class="config-value">{{ kbSettings()!.search_top_k }} results</span>
-            </div>
-            <div class="config-item">
-              <rag-icon [img]="TargetIcon" size="sm" />
-              <span class="config-label">Search Mode</span>
-              <span class="config-value">
-                @if (kbSettings()!.enable_hybrid_search) {
-                  Hybrid (Vector + BM25)
-                } @else {
-                  Vector Only
-                }
-              </span>
+        @if (kbSettings()) {
+          <div class="current-config">
+            <div class="config-grid">
+              <div class="config-item">
+                <rag-icon [img]="CpuIcon" size="sm" />
+                <span class="config-label">Embedding Model</span>
+                <span class="config-value">{{ getModelDisplayName(kbSettings()!.default_embedding_model) }}</span>
+              </div>
+              <div class="config-item">
+                <rag-icon [img]="FileTextIcon" size="sm" />
+                <span class="config-label">Chunk Size</span>
+                <span class="config-value">{{ kbSettings()!.chunk_size }} tokens</span>
+              </div>
+              <div class="config-item">
+                <rag-icon [img]="SearchIcon" size="sm" />
+                <span class="config-label">Search Top-K</span>
+                <span class="config-value">{{ kbSettings()!.search_top_k }} results</span>
+              </div>
+              <div class="config-item">
+                <rag-icon [img]="TargetIcon" size="sm" />
+                <span class="config-label">Search Mode</span>
+                <span class="config-value">
+                  @if (kbSettings()!.enable_hybrid_search) {
+                    Hybrid (Vector + BM25)
+                  } @else {
+                    Vector Only
+                  }
+                </span>
+              </div>
             </div>
           </div>
-        </div>
+        }
       </rag-card>
 
       <!-- Configuration Form -->

@@ -1,6 +1,6 @@
 import { Component, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Search, MessageSquare, Pause, Edit, Trash2, Play, AlertCircle, RefreshCw, FileText } from 'lucide-angular';
+import { Search, MessageSquare, Pause, Edit, Trash2, Play, AlertCircle, RefreshCw, FileText, TestTube } from 'lucide-angular';
 import { RagCard } from '../../semantic/data-display/rag-card/rag-card';
 import { RagChip } from '../../atomic/primitives/rag-chip/rag-chip';
 import { RagButton } from '../../atomic/primitives/rag-button/rag-button';
@@ -32,6 +32,7 @@ export class ToolCard {
   readonly onDelete = output<string>();
   readonly onRetry = output<string>();
   readonly onViewLogs = output<string>();
+  readonly onTest = output<string>();
 
   // Lucide icons
   readonly Search = Search;
@@ -43,6 +44,7 @@ export class ToolCard {
   readonly AlertCircle = AlertCircle;
   readonly RefreshCw = RefreshCw;
   readonly FileText = FileText;
+  readonly TestTube = TestTube;
 
   getStatusIcon() {
     const tool = this.tool();
@@ -108,6 +110,9 @@ export class ToolCard {
         break;
       case 'logs':
         this.onViewLogs.emit(toolId);
+        break;
+      case 'test':
+        this.onTest.emit(toolId);
         break;
     }
   }

@@ -83,31 +83,33 @@ interface SecuritySettingsForm {
         </div>
 
         <!-- Storage Overview -->
-        <div class="storage-overview" *ngIf="systemSettings()">
-          <div class="storage-metrics">
-            <div class="metric">
-              <rag-icon [img]="DatabaseIcon" size="sm" />
-              <span class="metric-label">Storage Quota</span>
-              <span class="metric-value">{{ systemSettings()!.storage_quota_gb }} GB</span>
-            </div>
-            <div class="metric">
-              <rag-icon [img]="FolderOpenIcon" size="sm" />
-              <span class="metric-label">Data Directory</span>
-              <span class="metric-value">{{ systemSettings()!.data_directory }}</span>
-            </div>
-            <div class="metric">
-              <rag-icon [img]="ArchiveIcon" size="sm" />
-              <span class="metric-label">Auto Backup</span>
-              <span class="metric-value">
-                @if (systemSettings()!.auto_backup) {
-                  Every {{ systemSettings()!.backup_interval_hours }}h
-                } @else {
-                  Disabled
-                }
-              </span>
+        @if (systemSettings()) {
+          <div class="storage-overview">
+            <div class="storage-metrics">
+              <div class="metric">
+                <rag-icon [img]="DatabaseIcon" size="sm" />
+                <span class="metric-label">Storage Quota</span>
+                <span class="metric-value">{{ systemSettings()!.storage_quota_gb }} GB</span>
+              </div>
+              <div class="metric">
+                <rag-icon [img]="FolderOpenIcon" size="sm" />
+                <span class="metric-label">Data Directory</span>
+                <span class="metric-value">{{ systemSettings()!.data_directory }}</span>
+              </div>
+              <div class="metric">
+                <rag-icon [img]="ArchiveIcon" size="sm" />
+                <span class="metric-label">Auto Backup</span>
+                <span class="metric-value">
+                  @if (systemSettings()!.auto_backup) {
+                    Every {{ systemSettings()!.backup_interval_hours }}h
+                  } @else {
+                    Disabled
+                  }
+                </span>
+              </div>
             </div>
           </div>
-        </div>
+        }
 
         @if (settingsStore.error()) {
           <rag-alert variant="error" [icon]="'alert-circle'">

@@ -117,16 +117,24 @@
 
     <div class="tool-actions">
       @if (tool().status === 'ACTIVE') {
-        <rag-button 
-          variant="outline" 
+        <rag-button
+          variant="solid"
+          size="sm"
+          (click)="handleAction('test')">
+          <rag-icon [img]="TestTube" size="xs" />
+          Test
+        </rag-button>
+
+        <rag-button
+          variant="outline"
           size="sm"
           (click)="handleAction('deactivate')">
           <rag-icon [img]="Pause" size="xs" />
           Deactivate
         </rag-button>
       } @else {
-        <rag-button 
-          variant="outline" 
+        <rag-button
+          variant="outline"
           size="sm"
           (click)="handleAction('activate')">
           <rag-icon [img]="Play" size="xs" />
@@ -134,16 +142,16 @@
         </rag-button>
       }
 
-      <rag-button 
-        variant="ghost" 
+      <rag-button
+        variant="ghost"
         size="sm"
         (click)="handleAction('edit')">
         <rag-icon [img]="Edit" size="xs" />
         Edit
       </rag-button>
 
-      <rag-button 
-        variant="ghost" 
+      <rag-button
+        variant="ghost"
         size="sm"
         class="delete-button"
         (click)="handleAction('delete')">

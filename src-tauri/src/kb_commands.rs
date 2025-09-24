@@ -13,7 +13,7 @@ use tracing::{info, error};
 // Import KbService trait for method calls
 use rag_core::modules::kb::KbService;
 
-use crate::manager::{Manager, KnowledgeBase, KnowledgeBaseStatus, IngestRun};
+use crate::manager::{Manager, KnowledgeBase, KnowledgeBaseStatus};
 
 /// Request/Response types for frontend integration
 

@@ -35,4 +35,10 @@ tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 uuid = { workspace = true }
 async-trait = { workspace = true }
+anyhow = { workspace = true }
+# Additional dependencies for .ragpack export/import
+zip = "2.2"
+sha2 = "0.10"
+base64 = "0.22"
+serde_yaml = "0.9"
 

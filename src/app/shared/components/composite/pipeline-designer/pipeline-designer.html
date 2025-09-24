@@ -1,0 +1,423 @@
+<rag-dialog
+  [title]="pipeline() ? 'Edit Pipeline - ' + pipeline()!.name : 'Pipeline Designer'"
+  [description]="pipeline() ? 'Design and configure your ETL pipeline steps and connections.' : ''"
+  size="xl">
+
+  <div class="pipeline-designer-content">
+    @if (!readonly()) {
+    <div class="designer-toolbar">
+      <div class="toolbar-left">
+        <rag-button
+          [variant]="isDesignMode() ? 'solid' : 'outline'"
+          [size]="'sm'"
+          (click)="toggleDesignMode()">
+          <rag-icon [img]="edit3Icon" [size]="14"></rag-icon>
+          {{ isDesignMode() ? 'View Mode' : 'Design Mode' }}
+        </rag-button>
+
+        @if (isDesignMode()) {
+        <rag-button
+          [variant]="showStepPalette() ? 'solid' : 'outline'"
+          [size]="'sm'"
+          (click)="toggleStepPalette()">
+          <rag-icon [img]="plusIcon" [size]="14"></rag-icon>
+          Add Steps
+        </rag-button>
+        }
+      </div>
+
+      <div class="toolbar-right">
+        @if (pipeline() && nodes().length > 0) {
+        <rag-button
+          [variant]="'outline'"
+          [size]="'sm'"
+          (click)="validatePipeline()">
+          <rag-icon [img]="checkCircleIcon" [size]="14"></rag-icon>
+          Validate
+        </rag-button>
+
+        <rag-button
+          [variant]="'solid'"
+          [size]="'sm'"
+          (click)="executePipeline()">
+          <rag-icon [img]="playIcon" [size]="14"></rag-icon>
+          Execute
+        </rag-button>
+        }
+      </div>
+    </div>
+    }
+
+    <div class="designer-workspace">
+      <!-- Step Palette -->
+      @if (showStepPalette() && isDesignMode()) {
+      <div class="step-palette">
+        <div class="palette-header">
+          <h4>Pipeline Steps</h4>
+          <button
+            class="close-palette"
+            (click)="toggleStepPalette()"
+            aria-label="Close step palette">
+            <rag-icon [img]="xIcon" [size]="16"></rag-icon>
+          </button>
+        </div>
+
+        <div class="palette-content">
+          @for (categoryItem of stepsByCategory() | keyvalue; track categoryItem.key) {
+          <div class="step-category">
+            <h5>{{ categoryItem.key | titlecase }}</h5>
+            <div class="step-items">
+              @for (step of categoryItem.value; track step.type) {
+              <div
+                class="step-item"
+                (click)="addStep(step.type)"
+                [title]="step.description">
+                <div class="step-icon">
+                  <rag-icon [img]="step.icon" [size]="16"></rag-icon>
+                </div>
+                <div class="step-info">
+                  <div class="step-name">{{ step.name }}</div>
+                  <rag-chip
+                    [variant]="'soft'"
+                    [color]="step.color"
+                    size="xs">
+                    {{ step.type }}
+                  </rag-chip>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      }
+
+      <!-- Pipeline Canvas -->
+      <div class="designer-canvas" [class.with-palette]="showStepPalette() && isDesignMode()">
+        @if (nodes().length === 0) {
+        <rag-empty-state-panel
+          [icon]="workflowIcon"
+          [title]="'No Pipeline Steps'"
+          [description]="isDesignMode() ? 'Add steps to your pipeline to start designing the ETL workflow.' : 'This pipeline has no steps configured yet.'"
+          [actionLabel]="isDesignMode() ? 'Add Steps' : undefined"
+          (action)="toggleStepPalette()">
+        </rag-empty-state-panel>
+        } @else {
+        <div class="pipeline-canvas">
+          <!-- Connection lines -->
+          <svg class="connections-layer" width="100%" height="100%">
+            @for (connection of connections(); track connection.id) {
+            <g
+              class="connection"
+              [class.selected]="selectedConnection()?.id === connection.id"
+              (click)="selectConnection(connection)">
+              <!-- Find source and target positions for line drawing -->
+              @if (getNodeById(connection.sourceNodeId) && getNodeById(connection.targetNodeId)) {
+              <line
+                [attr.x1]="getNodeById(connection.sourceNodeId)!.position.x + 180"
+                [attr.y1]="getNodeById(connection.sourceNodeId)!.position.y + 50"
+                [attr.x2]="getNodeById(connection.targetNodeId)!.position.x"
+                [attr.y2]="getNodeById(connection.targetNodeId)!.position.y + 50"
+                class="connection-line"
+                [attr.stroke]="selectedConnection()?.id === connection.id ? '#3b82f6' : '#94a3b8'"
+                stroke-width="2"
+                marker-end="url(#arrowhead)">
+              </line>
+              }
+            </g>
+            }
+
+            <!-- Arrow marker definition -->
+            <defs>
+              <marker
+                id="arrowhead"
+                markerWidth="10"
+                markerHeight="7"
+                refX="9"
+                refY="3.5"
+                orient="auto">
+                <polygon
+                  points="0 0, 10 3.5, 0 7"
+                  fill="#94a3b8">
+                </polygon>
+              </marker>
+            </defs>
+          </svg>
+
+          <!-- Pipeline nodes -->
+          <div class="nodes-layer">
+            @for (node of nodes(); track node.id) {
+            <div
+              class="pipeline-node"
+              [class.selected]="selectedNode()?.id === node.id"
+              [class.running]="node.status === 'running'"
+              [class.completed]="node.status === 'completed'"
+              [class.failed]="node.status === 'failed'"
+              [style.left.px]="node.position.x"
+              [style.top.px]="node.position.y"
+              (click)="selectNode(node)">
+
+              <div class="node-header">
+                <div class="node-icon">
+                  <rag-icon [img]="getNodeIcon(node.type)" [size]="16"></rag-icon>
+                </div>
+                <div class="node-title">{{ node.name }}</div>
+                @if (isDesignMode()) {
+                <div class="node-actions">
+                  <button
+                    class="node-action"
+                    (click)="cloneStep(node)"
+                    title="Clone step">
+                    <rag-icon [img]="copyIcon" [size]="12"></rag-icon>
+                  </button>
+                  <button
+                    class="node-action delete"
+                    (click)="removeStep(node)"
+                    title="Remove step">
+                    <rag-icon [img]="trash2Icon" [size]="12"></rag-icon>
+                  </button>
+                </div>
+                }
+              </div>
+
+              <div class="node-content">
+                <rag-chip
+                  [variant]="'soft'"
+                  [color]="getNodeColor(node.type)"
+                  size="sm">
+                  {{ node.type }}
+                </rag-chip>
+
+                @if (node.status) {
+                <div class="node-status">
+                  @switch (node.status) {
+                    @case ('running') {
+                      <rag-icon [img]="playIcon" [size]="12" class="status-running"></rag-icon>
+                    }
+                    @case ('completed') {
+                      <rag-icon [img]="checkCircleIcon" [size]="12" class="status-completed"></rag-icon>
+                    }
+                    @case ('failed') {
+                      <rag-icon [img]="alertCircleIcon" [size]="12" class="status-failed"></rag-icon>
+                    }
+                  }
+                </div>
+                }
+              </div>
+
+              <!-- Input/Output ports -->
+              <div class="node-ports">
+                @for (input of node.inputs; track input.id) {
+                <div
+                  class="input-port"
+                  [class.connected]="input.connected"
+                  [title]="input.name + ' (' + input.type + ')'">
+                </div>
+                }
+                @for (output of node.outputs; track output.id) {
+                <div
+                  class="output-port"
+                  [class.connected]="output.connected"
+                  [title]="output.name + ' (' + output.type + ')'">
+                </div>
+                }
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+        }
+      </div>
+
+      <!-- Properties Panel -->
+      @if ((selectedNode() || selectedConnection()) && isDesignMode()) {
+      <div class="properties-panel">
+        <div class="panel-header">
+          <h4>
+            @if (selectedNode()) {
+              Step Properties
+            } @else if (selectedConnection()) {
+              Connection Properties
+            }
+          </h4>
+          <button
+            class="close-panel"
+            (click)="selectedNode.set(null); selectedConnection.set(null)"
+            aria-label="Close properties panel">
+            <rag-icon [img]="xIcon" [size]="16"></rag-icon>
+          </button>
+        </div>
+
+        <div class="panel-content">
+          @if (selectedNode(); as node) {
+          <!-- Node Properties -->
+          <div class="property-group">
+            <label for="node-name">Step Name</label>
+            <rag-input
+              id="node-name"
+              [value]="node.name"
+              (valueChange)="updateNodeName(node.id, $event)"
+              placeholder="Enter step name">
+            </rag-input>
+          </div>
+
+          <div class="property-group">
+            <label>Step Type</label>
+            <rag-chip
+              [variant]="'soft'"
+              [color]="getNodeColor(node.type)">
+              {{ node.type }}
+            </rag-chip>
+          </div>
+
+          <div class="property-group">
+            <label>Configuration</label>
+            <div class="config-editor">
+              @for (configItem of node.config | keyvalue; track configItem.key) {
+              <div class="config-item">
+                <label>{{ configItem.key }}</label>
+                @if (typeof configItem.value === 'boolean') {
+                <input
+                  type="checkbox"
+                  [checked]="configItem.value"
+                  (change)="updateNodeConfigBoolValue(node.id, configItem.key, $any($event.target).checked)">
+                } @else if (typeof configItem.value === 'number') {
+                <rag-input
+                  type="number"
+                  [value]="configItem.value.toString()"
+                  (valueChange)="updateNodeConfigNumberValue(node.id, configItem.key, $event)">
+                </rag-input>
+                } @else {
+                <rag-input
+                  [value]="configItem.value.toString()"
+                  (valueChange)="updateNodeConfigStringValue(node.id, configItem.key, $event)">
+                </rag-input>
+                }
+              </div>
+              }
+            </div>
+          </div>
+
+          <div class="property-group">
+            <label>Input Ports</label>
+            <div class="ports-list">
+              @for (input of node.inputs; track input.id) {
+              <div class="port-item" [class.connected]="input.connected">
+                <span class="port-name">{{ input.name }}</span>
+                <rag-chip [variant]="'outline'" size="xs">{{ input.type }}</rag-chip>
+                @if (input.connected) {
+                <rag-icon [img]="checkCircleIcon" [size]="12" class="connected-icon"></rag-icon>
+                }
+              </div>
+              }
+              @if (node.inputs.length === 0) {
+              <span class="no-ports">No input ports</span>
+              }
+            </div>
+          </div>
+
+          <div class="property-group">
+            <label>Output Ports</label>
+            <div class="ports-list">
+              @for (output of node.outputs; track output.id) {
+              <div class="port-item" [class.connected]="output.connected">
+                <span class="port-name">{{ output.name }}</span>
+                <rag-chip [variant]="'outline'" size="xs">{{ output.type }}</rag-chip>
+                @if (output.connected) {
+                <rag-icon [img]="checkCircleIcon" [size]="12" class="connected-icon"></rag-icon>
+                }
+              </div>
+              }
+              @if (node.outputs.length === 0) {
+              <span class="no-ports">No output ports</span>
+              }
+            </div>
+          </div>
+          }
+
+          @if (selectedConnection(); as connection) {
+          <!-- Connection Properties -->
+          <div class="property-group">
+            <label>Connection ID</label>
+            <div class="property-value">{{ connection.id }}</div>
+          </div>
+
+          <div class="property-group">
+            <label>Data Type</label>
+            <rag-chip [variant]="'outline'">{{ connection.dataType }}</rag-chip>
+          </div>
+
+          <div class="property-group">
+            <label>Source</label>
+            <div class="property-value">
+              {{ getNodeById(connection.sourceNodeId)?.name || 'Unknown' }} → {{ connection.sourcePortId.split('-').pop() }}
+            </div>
+          </div>
+
+          <div class="property-group">
+            <label>Target</label>
+            <div class="property-value">
+              {{ getNodeById(connection.targetNodeId)?.name || 'Unknown' }} → {{ connection.targetPortId.split('-').pop() }}
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </div>
+
+    @if (nodes().length > 0) {
+    <div class="designer-status">
+      <span class="step-count">{{ nodes().length }} steps</span>
+      <span class="connection-count">{{ connections().length }} connections</span>
+      @if (selectedNode()) {
+      <span class="selected-info">• {{ selectedNode()?.name }} selected</span>
+      }
+      @if (selectedConnection()) {
+      <span class="selected-info">• Connection selected</span>
+      }
+      @if (isDesignMode()) {
+      <span class="mode-indicator">• Design mode active</span>
+      }
+    </div>
+    }
+  </div>
+
+  @if (!readonly()) {
+  <div slot="footer" class="dialog-actions">
+    @if (nodes().length > 0) {
+    <div class="footer-controls">
+      <rag-button
+        [variant]="'ghost'"
+        [size]="'sm'"
+        title="Fit pipeline to screen">
+        <rag-icon [img]="maximize2Icon" [size]="14"></rag-icon>
+        Fit View
+      </rag-button>
+      <rag-button
+        [variant]="'ghost'"
+        [size]="'sm'"
+        title="Reset zoom and position">
+        <rag-icon [img]="refreshCwIcon" [size]="14"></rag-icon>
+        Reset
+      </rag-button>
+    </div>
+    }
+    <div class="primary-actions">
+      <rag-button
+        [variant]="'outline'"
+        (click)="cancel()">
+        Cancel
+      </rag-button>
+      <rag-button
+        [variant]="'solid'"
+        (click)="savePipeline()"
+        [disabled]="!pipeline()">
+        <rag-icon [img]="saveIcon" [size]="14"></rag-icon>
+        Save Pipeline
+      </rag-button>
+    </div>
+  </div>
+  }
+</rag-dialog>

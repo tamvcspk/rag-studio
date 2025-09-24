@@ -39,11 +39,13 @@
       </div>
     </div>
 
-    <div class="flow-tags" *ngIf="flow().tags.length > 0">
-      @for (tag of flow().tags; track tag) {
-        <rag-chip [variant]="'outline'" size="sm">{{ tag }}</rag-chip>
-      }
-    </div>
+    @if (flow().tags.length > 0) {
+      <div class="flow-tags">
+        @for (tag of flow().tags; track tag) {
+          <rag-chip [variant]="'outline'" size="sm">{{ tag }}</rag-chip>
+        }
+      </div>
+    }
 
     <div class="flow-stats">
       <div class="stat-item">
@@ -58,10 +60,12 @@
         <span class="stat-label">Avg Duration</span>
         <span class="stat-value">{{ formatDuration(flow().avgExecutionTime) }}</span>
       </div>
-      <div class="stat-item" *ngIf="flow().lastExecutedAt">
-        <span class="stat-label">Last Run</span>
-        <span class="stat-value">{{ flow().lastExecutedAt | date:'short' }}</span>
-      </div>
+      @if (flow().lastExecutedAt) {
+        <div class="stat-item">
+          <span class="stat-label">Last Run</span>
+          <span class="stat-value">{{ flow().lastExecutedAt | date:'short' }}</span>
+        </div>
+      }
     </div>
 
     <div class="flow-actions">

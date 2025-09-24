@@ -1,0 +1,327 @@
+/*!
+ * Tool Testing Interface Styles
+ *
+ * Follows established design patterns from the RAG Studio Design System.
+ * Uses CSS custom properties for consistent theming and responsive design.
+ */
+
+.tool-header {
+  margin-bottom: var(--rag-primitive-spacing-lg);
+  padding-bottom: var(--rag-primitive-spacing-md);
+  border-bottom: 1px solid var(--rag-semantic-color-border-default);
+
+  .tool-info {
+    .tool-name {
+      font-size: var(--rag-primitive-fontSize-lg);
+      font-weight: var(--rag-primitive-fontWeight-semibold);
+      color: var(--rag-semantic-color-text-default);
+      margin: 0 0 var(--rag-primitive-spacing-xs) 0;
+    }
+
+    .tool-endpoint {
+      font-family: monospace;
+      font-size: var(--rag-primitive-fontSize-sm);
+      color: var(--rag-semantic-color-text-subtle);
+      background: var(--rag-semantic-color-background-muted);
+      padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+      border-radius: var(--rag-primitive-radius-sm);
+      display: inline-block;
+      margin-bottom: var(--rag-primitive-spacing-sm);
+    }
+
+    .tool-meta {
+      display: flex;
+      gap: var(--rag-primitive-spacing-sm);
+      flex-wrap: wrap;
+    }
+  }
+}
+
+.server-warning {
+  margin-bottom: var(--rag-primitive-spacing-lg);
+}
+
+.test-form {
+  .form-section {
+    margin-bottom: var(--rag-primitive-spacing-lg);
+
+    .sample-queries {
+      margin-top: var(--rag-primitive-spacing-md);
+
+      .sample-queries-label {
+        display: block;
+        font-size: var(--rag-primitive-fontSize-sm);
+        font-weight: var(--rag-primitive-fontWeight-medium);
+        color: var(--rag-semantic-color-text-subtle);
+        margin-bottom: var(--rag-primitive-spacing-sm);
+      }
+
+      .sample-query-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--rag-primitive-spacing-sm);
+
+        .sample-query-btn {
+          text-align: left;
+          max-width: 300px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: var(--rag-primitive-fontSize-sm);
+        }
+      }
+    }
+
+    .code-input {
+      font-family: monospace;
+      font-size: var(--rag-primitive-fontSize-sm);
+    }
+  }
+
+  .test-controls {
+    display: flex;
+    gap: var(--rag-primitive-spacing-md);
+    align-items: center;
+    margin-bottom: var(--rag-primitive-spacing-lg);
+
+    .execute-btn {
+      min-width: 140px;
+    }
+  }
+}
+
+.result-section {
+  margin-bottom: var(--rag-primitive-spacing-lg);
+
+  .result-title {
+    font-size: var(--rag-primitive-fontSize-md);
+    font-weight: var(--rag-primitive-fontWeight-semibold);
+    color: var(--rag-semantic-color-text-default);
+    margin: 0 0 var(--rag-primitive-spacing-md) 0;
+  }
+
+  .result-card {
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--rag-primitive-spacing-md);
+      padding-bottom: var(--rag-primitive-spacing-sm);
+      border-bottom: 1px solid var(--rag-semantic-color-border-default);
+
+      .result-status {
+        display: flex;
+        align-items: center;
+        gap: var(--rag-primitive-spacing-sm);
+
+        .status-text {
+          font-weight: var(--rag-primitive-fontWeight-medium);
+
+          &.success {
+            color: var(--rag-semantic-color-success-700);
+          }
+
+          &.error {
+            color: var(--rag-semantic-color-danger-700);
+          }
+        }
+
+        .success-icon {
+          color: var(--rag-semantic-color-success-600);
+        }
+
+        .error-icon {
+          color: var(--rag-semantic-color-danger-600);
+        }
+      }
+
+      .result-meta {
+        display: flex;
+        gap: var(--rag-primitive-spacing-sm);
+        align-items: center;
+      }
+
+      .result-actions {
+        display: flex;
+        gap: var(--rag-primitive-spacing-sm);
+      }
+    }
+
+    .result-content {
+      .response-code {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+    }
+  }
+}
+
+.history-section {
+  .history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--rag-primitive-spacing-md);
+
+    .history-title {
+      font-size: var(--rag-primitive-fontSize-md);
+      font-weight: var(--rag-primitive-fontWeight-semibold);
+      color: var(--rag-semantic-color-text-default);
+      margin: 0;
+    }
+
+    .history-actions {
+      display: flex;
+      gap: var(--rag-primitive-spacing-sm);
+    }
+  }
+
+  .history-list {
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--rag-primitive-spacing-sm);
+
+    .history-item {
+      padding: var(--rag-primitive-spacing-md);
+
+      .history-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--rag-primitive-spacing-sm);
+
+        .history-status {
+          display: flex;
+          align-items: center;
+          gap: var(--rag-primitive-spacing-sm);
+
+          .success-icon {
+            color: var(--rag-semantic-color-success-600);
+          }
+
+          .error-icon {
+            color: var(--rag-semantic-color-danger-600);
+          }
+
+          .history-timestamp {
+            font-size: var(--rag-primitive-fontSize-sm);
+            color: var(--rag-semantic-color-text-subtle);
+          }
+        }
+      }
+
+      .history-preview {
+        font-size: var(--rag-primitive-fontSize-sm);
+        color: var(--rag-semantic-color-text-subtle);
+        line-height: 1.4;
+        max-height: 3em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      &:hover {
+        background-color: var(--rag-semantic-color-background-muted);
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--rag-primitive-spacing-md);
+  margin-top: var(--rag-primitive-spacing-lg);
+  padding-top: var(--rag-primitive-spacing-md);
+  border-top: 1px solid var(--rag-semantic-color-border-default);
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .tool-header .tool-info .tool-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .result-card .result-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--rag-primitive-spacing-sm);
+
+    .result-meta,
+    .result-actions {
+      align-self: stretch;
+      justify-content: flex-start;
+    }
+  }
+
+  .history-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--rag-primitive-spacing-sm);
+
+    .history-actions {
+      align-self: stretch;
+      justify-content: flex-end;
+    }
+  }
+
+  .test-controls {
+    flex-direction: column;
+    align-items: stretch;
+
+    .execute-btn {
+      min-width: auto;
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .tool-endpoint {
+    background: var(--rag-semantic-color-background-muted);
+    color: var(--rag-semantic-color-text-subtle);
+  }
+
+  .result-card .result-header {
+    border-bottom-color: var(--rag-semantic-color-border-default);
+  }
+
+  .history-item {
+    &:hover {
+      background-color: var(--rag-semantic-color-background-muted);
+    }
+  }
+}
+
+// Loading states
+.execute-btn {
+  transition: all 0.2s ease;
+
+  &[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &.loading {
+    position: relative;
+
+    rag-icon {
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,261 @@
+<rag-dialog title="Tool Testing Interface"
+  [description]="'Test ' + (tool()?.name || 'Tool') + ' in real-time with custom queries'"
+  size="xl"
+  [showCloseButton]="true">
+
+  @if (tool()) {
+    <!-- Tool Information Header -->
+    <div class="tool-header">
+      <div class="tool-info">
+        <h3 class="tool-name">{{ tool()!.name }}</h3>
+        <code class="tool-endpoint">{{ tool()!.endpoint }}</code>
+        <div class="tool-meta">
+          <rag-chip variant="outline" size="sm">
+            {{ tool()!.baseOperation }}
+          </rag-chip>
+          <rag-chip variant="outline" size="sm">
+            KB: {{ tool()!.knowledgeBase.name }}
+          </rag-chip>
+          <rag-chip
+            [variant]="tool()!.status === 'ACTIVE' ? 'solid' : 'soft'"
+            [color]="tool()!.status === 'ACTIVE' ? 'green' : 'gray'"
+            size="sm">
+            {{ tool()!.status }}
+          </rag-chip>
+        </div>
+      </div>
+    </div>
+
+    <!-- Server Status Check -->
+    @if (!toolsStore.isServerRunning()) {
+      <rag-alert variant="warning" class="server-warning">
+        <rag-icon [img]="AlertCircleIcon" size="sm" />
+        <div>
+          <strong>MCP Server Not Running</strong>
+          <p>The MCP server must be running to test tools. Please start the server from Settings.</p>
+        </div>
+      </rag-alert>
+    }
+
+    <!-- Test Form -->
+    <form [formGroup]="testForm" class="test-form">
+      <!-- Test Query Section -->
+      <div class="form-section">
+        <rag-form-field
+          label="Test Query"
+          [required]="true"
+          hint="Enter a query to test the tool's functionality"
+          [error]="testForm.get('testQuery')?.invalid && testForm.get('testQuery')?.touched ? 'Query is required (min 3 characters)' : ''">
+          <rag-textarea
+            formControlName="testQuery"
+            placeholder="Enter your test query here..."
+            [rows]="3"
+            class="full-width">
+          </rag-textarea>
+        </rag-form-field>
+
+        <!-- Sample Queries -->
+        @if (sampleQueries().length > 0) {
+          <div class="sample-queries">
+            <label class="sample-queries-label">Sample Queries:</label>
+            <div class="sample-query-buttons">
+              @for (query of sampleQueries(); track query) {
+                <rag-button
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  (click)="useSampleQuery(query)"
+                  class="sample-query-btn">
+                  {{ query }}
+                </rag-button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Advanced Parameters -->
+      <div class="form-section">
+        <rag-form-field
+          label="Custom Parameters (JSON)"
+          hint="Optional JSON parameters for advanced testing"
+          [error]="testForm.get('customParams')?.invalid ? 'Invalid JSON format' : ''">
+          <rag-textarea
+            formControlName="customParams"
+            placeholder="{&#10;  &quot;filters&quot;: {},&#10;  &quot;options&quot;: {}&#10;}"
+            [rows]="4"
+            class="full-width code-input">
+          </rag-textarea>
+        </rag-form-field>
+      </div>
+
+      <!-- Test Controls -->
+      <div class="test-controls">
+        <rag-button
+          variant="solid"
+          size="md"
+          type="button"
+          [disabled]="!canExecuteTest()"
+          [loading]="isExecuting()"
+          (click)="executeTest()"
+          class="execute-btn">
+          @if (isExecuting()) {
+            <rag-icon [img]="LoaderIcon" size="sm" />
+            Executing...
+          } @else {
+            <rag-icon [img]="PlayIcon" size="sm" />
+            Execute Test
+          }
+        </rag-button>
+
+        @if (isExecuting()) {
+          <rag-button
+            variant="outline"
+            size="md"
+            type="button"
+            (click)="stopTest()"
+            class="stop-btn">
+            <rag-icon [img]="SquareIcon" size="sm" />
+            Stop
+          </rag-button>
+        }
+      </div>
+    </form>
+
+    <!-- Current Test Result -->
+    @if (currentTestResult()) {
+      <div class="result-section">
+        <h4 class="result-title">Test Result</h4>
+
+        <rag-card class="result-card">
+          <!-- Result Header -->
+          <div class="result-header">
+            <div class="result-status">
+              @if (currentTestResult()!.success) {
+                <rag-icon [img]="CheckCircleIcon" size="sm" class="success-icon" />
+                <span class="status-text success">Success</span>
+              } @else {
+                <rag-icon [img]="AlertCircleIcon" size="sm" class="error-icon" />
+                <span class="status-text error">Failed</span>
+              }
+            </div>
+
+            <div class="result-meta">
+              @if (currentTestResult()!.latency) {
+                <rag-chip variant="outline" size="sm">
+                  <rag-icon [img]="ClockIcon" size="xs" />
+                  {{ formatLatency(currentTestResult()!.latency) }}
+                </rag-chip>
+              }
+              <rag-chip variant="outline" size="sm">
+                {{ formatTimestamp(currentTestResult()!.timestamp) }}
+              </rag-chip>
+            </div>
+
+            <div class="result-actions">
+              <rag-button
+                variant="ghost"
+                size="sm"
+                (click)="copyResult()"
+                title="Copy to clipboard">
+                <rag-icon [img]="CopyIcon" size="xs" />
+              </rag-button>
+            </div>
+          </div>
+
+          <!-- Result Content -->
+          <div class="result-content">
+            @if (currentTestResult()!.success && currentTestResult()!.response) {
+              <rag-code-block
+                [code]="currentTestResult()!.response | json"
+                language="json"
+                [copyable]="true"
+                class="response-code">
+              </rag-code-block>
+            } @else if (currentTestResult()!.error) {
+              <rag-alert variant="error">
+                <rag-icon [img]="AlertCircleIcon" size="sm" />
+                <div>
+                  <strong>Error:</strong>
+                  <p>{{ currentTestResult()!.error }}</p>
+                </div>
+              </rag-alert>
+            }
+          </div>
+        </rag-card>
+      </div>
+    }
+
+    <!-- Test History -->
+    @if (testHistory().length > 0) {
+      <div class="history-section">
+        <div class="history-header">
+          <h4 class="history-title">Test History</h4>
+          <div class="history-actions">
+            <rag-button
+              variant="ghost"
+              size="sm"
+              (click)="exportResults()"
+              title="Export results">
+              <rag-icon [img]="DownloadIcon" size="xs" />
+              Export
+            </rag-button>
+            <rag-button
+              variant="ghost"
+              size="sm"
+              (click)="clearHistory()"
+              title="Clear history">
+              Clear
+            </rag-button>
+          </div>
+        </div>
+
+        <div class="history-list">
+          @for (result of testHistory(); track result.timestamp) {
+            <rag-card class="history-item">
+              <div class="history-item-header">
+                <div class="history-status">
+                  @if (result.success) {
+                    <rag-icon [img]="CheckCircleIcon" size="sm" class="success-icon" />
+                  } @else {
+                    <rag-icon [img]="AlertCircleIcon" size="sm" class="error-icon" />
+                  }
+                  <span class="history-timestamp">{{ formatTimestamp(result.timestamp) }}</span>
+                </div>
+
+                @if (result.latency) {
+                  <rag-chip variant="outline" size="sm">
+                    {{ formatLatency(result.latency) }}
+                  </rag-chip>
+                }
+              </div>
+
+              <div class="history-preview">
+                {{ getResultPreview(result) }}
+              </div>
+            </rag-card>
+          }
+        </div>
+      </div>
+    }
+  } @else {
+    <rag-alert variant="error">
+      <rag-icon [img]="AlertCircleIcon" size="sm" />
+      <div>
+        <strong>No Tool Selected</strong>
+        <p>Please select a tool to test.</p>
+      </div>
+    </rag-alert>
+  }
+
+  <!-- Dialog Footer -->
+  <div slot="footer" class="dialog-footer">
+    <rag-button
+      variant="outline"
+      size="md"
+      type="button"
+      (click)="close()">
+      Close
+    </rag-button>
+  </div>
+</rag-dialog>

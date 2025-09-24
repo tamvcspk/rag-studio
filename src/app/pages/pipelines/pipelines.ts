@@ -1,11 +1,15 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Plus, Workflow, Search, CheckCircle, AlertTriangle, Clock, Pause } from 'lucide-angular';
+import { Dialog } from '@angular/cdk/dialog';
+import { Plus, Workflow, Search, CheckCircle, AlertTriangle, Clock, Pause, Edit, Play } from 'lucide-angular';
 import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
-import { PipelineCard, type Pipeline } from '../../shared/components/composite/pipeline-card/pipeline-card';
+import { PipelineCard, type Pipeline as PipelineCardType } from '../../shared/components/composite/pipeline-card/pipeline-card';
 import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
 import { RagStatsOverview, StatItem } from '../../shared/components/semantic/data-display/rag-stats-overview';
 import { RagToastService } from '../../shared/components/atomic/feedback/rag-toast/rag-toast.service';
+import { PipelinesStore, CreatePipelineRequest, ExecutePipelineRequest } from '../../shared/store/pipelines.store';
+import { Pipeline, PipelineStatus } from '../../shared/models/pipeline.model';
+import { PipelineDesigner } from '../../shared/components/composite/pipeline-designer/pipeline-designer';
 
 @Component({
   selector: 'app-pipelines',
@@ -20,8 +24,10 @@ import { RagToastService } from '../../shared/components/atomic/feedback/rag-toa
   templateUrl: './pipelines.html',
   styleUrl: './pipelines.scss'
 })
-export class Pipelines {
+export class Pipelines implements OnInit, OnDestroy {
   private readonly toastService = inject(RagToastService);
+  private readonly dialog = inject(Dialog);
+  private readonly pipelinesStore = inject(PipelinesStore);
   
   // Icon components
   readonly PlusIcon = Plus;
@@ -31,6 +37,8 @@ export class Pipelines {
   readonly AlertTriangleIcon = AlertTriangle;
   readonly ClockIcon = Clock;
   readonly PauseIcon = Pause;
+  readonly EditIcon = Edit;
+  readonly PlayIcon = Play;
 
   // Reactive signals
   readonly searchQuery = signal('');
@@ -43,77 +51,35 @@ export class Pipelines {
       label: 'Design Pipeline',
       icon: this.PlusIcon,
       variant: 'solid' as const,
-      action: () => this.onCreatePipeline()
+      action: () => this.openPipelineDesigner()
     }
   ]);
 
-  // Mock data signals
-  readonly pipelines = signal<Pipeline[]>([
-    {
-      id: '1',
-      name: 'Documentation Sync',
-      description: 'Syncs docs from GitHub repositories',
-      status: 'running',
-      schedule: 'Every 6 hours',
-      lastRun: '2 hours ago',
-      duration: '12m 34s',
-      documentsProcessed: 1234,
-      steps: [
-        { name: 'fetch', type: 'GitHub' },
-        { name: 'parse', type: 'Markdown' },
-        { name: 'chunk', type: 'Smart Split' },
-        { name: 'embed', type: 'MiniLM' },
-        { name: 'index', type: 'FAISS' }
-      ]
-    },
-    {
-      id: '2',
-      name: 'Research Paper Ingestion',
-      description: 'Processes papers from arXiv',
-      status: 'scheduled',
-      schedule: 'Daily at 2 AM',
-      nextRun: 'In 8h 15m',
-      avgDuration: '45m',
-      successRate: '98.5%',
-      steps: [
-        { name: 'fetch', type: 'arXiv API' },
-        { name: 'parse', type: 'PDF' },
-        { name: 'normalize', type: 'Clean' },
-        { name: 'chunk', type: 'Sections' },
-        { name: 'embed', type: 'E5-Large' },
-        { name: 'index', type: 'Store' }
-      ]
-    },
-    {
-      id: '3',
-      name: 'Web Documentation Crawler',
-      description: 'Crawls and indexes web documentation',
-      status: 'paused',
-      schedule: 'Weekly',
-      lastRun: '3 days ago',
-      duration: '2h 15m',
-      documentsProcessed: 5678,
-      steps: [
-        { name: 'crawl', type: 'Web Scraper' },
-        { name: 'filter', type: 'Content Filter' },
-        { name: 'parse', type: 'HTML' },
-        { name: 'chunk', type: 'Semantic' },
-        { name: 'embed', type: 'MiniLM' },
-        { name: 'index', type: 'FAISS' }
-      ]
-    }
-  ]);
+  // Store computed signals
+  readonly pipelines = this.pipelinesStore.pipelines;
+  readonly isStoreLoading = this.pipelinesStore.isLoading;
+  readonly storeError = this.pipelinesStore.lastError;
+  readonly selectedPipeline = this.pipelinesStore.selectedPipeline;
+  readonly recentRuns = this.pipelinesStore.recentRuns;
+  readonly runningExecutions = this.pipelinesStore.runningExecutions;
+  readonly metrics = this.pipelinesStore.computedMetrics;
+
+  // Convert store pipelines to card format
+  readonly pipelineCards = computed((): PipelineCardType[] => {
+    const storePipelines = this.pipelines();
+    return storePipelines.map(pipeline => this.convertPipelineToCard(pipeline));
+  });
 
   // Computed filtered pipelines
   readonly filteredPipelines = computed(() => {
-    const pipelines = this.pipelines();
+    const pipelines = this.pipelineCards();
     const query = this.searchQuery().toLowerCase().trim();
     const selectedFilters = this.selectedFilters();
-    
+
     if (!pipelines || pipelines.length === 0) {
       return [];
     }
-    
+
     // First filter by search query
     let filteredPipelines = !query ? pipelines : pipelines.filter(pipeline => {
       if (!pipeline) return false;
@@ -125,31 +91,31 @@ export class Pipelines {
         pipeline.status?.toLowerCase() || ''
       ].some(field => field.includes(query));
     });
-    
+
     // Then filter by selected status filters if any
     if (selectedFilters.length > 0) {
       filteredPipelines = filteredPipelines.filter(pipeline => {
         if (!pipeline.status) return false;
-        
+
         // Check if pipeline status matches any selected filter
         return selectedFilters.some(filterId => {
           return pipeline.status === filterId;
         });
       });
     }
-    
+
     return filteredPipelines;
   });
   
-  // Computed statistics
+  // Computed statistics from store metrics
   readonly pipelineStats = computed(() => {
-    const pipelines = this.pipelines();
+    const metrics = this.metrics();
     return {
-      total: pipelines.length,
-      running: pipelines.filter(p => p.status === 'running').length,
-      scheduled: pipelines.filter(p => p.status === 'scheduled').length,
-      paused: pipelines.filter(p => p.status === 'paused').length,
-      failed: pipelines.filter(p => p.status === 'error').length
+      total: metrics.total_pipelines,
+      running: metrics.running_executions,
+      active: metrics.active_pipelines,
+      paused: metrics.total_pipelines - metrics.active_pipelines - metrics.error_pipelines,
+      failed: metrics.error_pipelines
     };
   });
   
@@ -176,9 +142,9 @@ export class Pipelines {
         clickable: true
       },
       {
-        id: 'scheduled',
-        label: 'Scheduled',
-        value: stats.scheduled,
+        id: 'active',
+        label: 'Active',
+        value: stats.active,
         icon: this.ClockIcon,
         color: 'amber',
         variant: 'solid',
@@ -206,6 +172,14 @@ export class Pipelines {
     return items;
   });
 
+  ngOnInit(): void {
+    this.pipelinesStore.initialize();
+  }
+
+  ngOnDestroy(): void {
+    this.pipelinesStore.destroy();
+  }
+
   onSearchChange(query: string): void {
     this.searchQuery.set(query);
   }
@@ -220,39 +194,217 @@ export class Pipelines {
     this.selectedFilters.set(selectedFilters);
   }
 
-  onCreatePipeline(): void {
-    console.log('Create pipeline clicked');
-    this.toastService.info('Pipeline designer coming soon!', 'Info');
-    // TODO: Navigate to pipeline designer or open wizard
+  async openPipelineDesigner(pipeline?: Pipeline): Promise<void> {
+    const dialogRef = this.dialog.open(PipelineDesigner, {
+      data: { pipeline },
+      disableClose: false,
+      width: '95vw',
+      height: '90vh',
+      maxWidth: '1600px',
+      maxHeight: '1000px'
+    });
+
+    dialogRef.closed.subscribe(result => {
+      if (result && typeof result === 'object') {
+        if (pipeline) {
+          // Update existing pipeline
+          this.updatePipeline(result as Pipeline);
+        } else {
+          // Create new pipeline
+          this.createPipeline(result as Pipeline);
+        }
+      }
+    });
   }
 
-  onPipelinePause(pipeline: Pipeline): void {
-    console.log('Pause pipeline:', pipeline.name);
-    this.toastService.success(`Pipeline "${pipeline.name}" paused successfully!`, 'Success');
-    // TODO: Implement pause functionality
+  async createPipeline(pipelineData: Pipeline): Promise<void> {
+    const request: CreatePipelineRequest = {
+      name: pipelineData.name,
+      description: pipelineData.description,
+      tags: pipelineData.tags
+    };
+
+    const result = await this.pipelinesStore.createPipeline(request);
+    if (result) {
+      this.toastService.success(`Pipeline "${result.name}" created successfully!`, 'Success');
+    } else {
+      this.toastService.error('Failed to create pipeline', 'Error');
+    }
   }
 
-  onPipelinePlay(pipeline: Pipeline): void {
-    console.log('Play/Run pipeline:', pipeline.name);
-    this.toastService.success(`Pipeline "${pipeline.name}" started successfully!`, 'Success');
-    // TODO: Implement run functionality
+  async updatePipeline(pipelineData: Pipeline): Promise<void> {
+    const result = await this.pipelinesStore.updatePipeline({
+      id: pipelineData.id,
+      name: pipelineData.name,
+      description: pipelineData.description,
+      spec: pipelineData.spec,
+      tags: pipelineData.tags
+    });
+
+    if (result) {
+      this.toastService.success(`Pipeline "${result.name}" updated successfully!`, 'Success');
+    } else {
+      this.toastService.error('Failed to update pipeline', 'Error');
+    }
   }
 
-  onPipelineEdit(pipeline: Pipeline): void {
-    console.log('Edit pipeline:', pipeline.name);
-    this.toastService.info('Pipeline editor coming soon!', 'Info');
-    // TODO: Navigate to pipeline editor
+  async onPipelinePause(pipelineCard: PipelineCardType): Promise<void> {
+    const pipeline = this.findPipelineById(pipelineCard.id);
+    if (pipeline) {
+      const result = await this.pipelinesStore.updatePipeline({
+        id: pipeline.id,
+        status: 'paused'
+      });
+
+      if (result) {
+        this.toastService.success(`Pipeline "${pipeline.name}" paused successfully!`, 'Success');
+      } else {
+        this.toastService.error('Failed to pause pipeline', 'Error');
+      }
+    }
   }
 
-  onPipelineSchedule(pipeline: Pipeline): void {
-    console.log('Schedule pipeline:', pipeline.name);
+  async onPipelinePlay(pipelineCard: PipelineCardType): Promise<void> {
+    const pipeline = this.findPipelineById(pipelineCard.id);
+    if (pipeline) {
+      if (pipeline.status === 'paused') {
+        // Resume pipeline
+        const result = await this.pipelinesStore.updatePipeline({
+          id: pipeline.id,
+          status: 'active'
+        });
+
+        if (result) {
+          this.toastService.success(`Pipeline "${pipeline.name}" resumed successfully!`, 'Success');
+        } else {
+          this.toastService.error('Failed to resume pipeline', 'Error');
+        }
+      } else {
+        // Execute pipeline
+        const result = await this.pipelinesStore.executePipeline({
+          pipelineId: pipeline.id,
+          triggeredBy: {
+            type: 'manual',
+            userId: 'current-user',
+            source: 'pipelines-page'
+          }
+        });
+
+        if (result) {
+          this.toastService.success(`Pipeline "${pipeline.name}" started successfully!`, 'Success');
+        } else {
+          this.toastService.error('Failed to start pipeline', 'Error');
+        }
+      }
+    }
+  }
+
+  onPipelineEdit(pipelineCard: PipelineCardType): void {
+    const pipeline = this.findPipelineById(pipelineCard.id);
+    if (pipeline) {
+      this.openPipelineDesigner(pipeline);
+    }
+  }
+
+  onPipelineSchedule(pipelineCard: PipelineCardType): void {
+    console.log('Schedule pipeline:', pipelineCard.name);
     this.toastService.info('Schedule configuration coming soon!', 'Info');
     // TODO: Open schedule configuration
   }
 
-  onPipelineRunNow(pipeline: Pipeline): void {
-    console.log('Run now pipeline:', pipeline.name);
-    this.toastService.success(`Pipeline "${pipeline.name}" triggered to run now!`, 'Success');
-    // TODO: Trigger immediate run
+  async onPipelineRunNow(pipelineCard: PipelineCardType): Promise<void> {
+    const pipeline = this.findPipelineById(pipelineCard.id);
+    if (pipeline) {
+      const result = await this.pipelinesStore.executePipeline({
+        pipelineId: pipeline.id,
+        triggeredBy: {
+          type: 'manual',
+          userId: 'current-user',
+          source: 'pipelines-page'
+        }
+      });
+
+      if (result) {
+        this.toastService.success(`Pipeline "${pipeline.name}" triggered to run now!`, 'Success');
+      } else {
+        this.toastService.error('Failed to trigger pipeline execution', 'Error');
+      }
+    }
+  }
+
+  // Helper methods
+  private findPipelineById(id: string): Pipeline | undefined {
+    return this.pipelines().find(p => p.id === id);
+  }
+
+  private convertPipelineToCard(pipeline: Pipeline): PipelineCardType {
+    const recentRuns = this.recentRuns().filter(run => run.pipelineId === pipeline.id);
+    const lastRun = recentRuns[0];
+    const nextRun = undefined; // TODO: Calculate from schedule
+
+    return {
+      id: pipeline.id,
+      name: pipeline.name,
+      description: pipeline.description,
+      status: this.mapPipelineStatus(pipeline.status),
+      schedule: 'Manual', // TODO: Extract from pipeline spec
+      lastRun: lastRun ? this.formatRelativeTime(lastRun.startedAt) : undefined,
+      nextRun,
+      duration: lastRun?.metrics.duration ? this.formatDuration(lastRun.metrics.duration) : undefined,
+      documentsProcessed: lastRun?.metrics.recordsProcessed,
+      successRate: this.calculateSuccessRate(recentRuns),
+      avgDuration: this.calculateAverageDuration(recentRuns),
+      steps: pipeline.spec.steps.map(step => ({
+        name: step.type,
+        type: step.name,
+        description: step.config?.['description']
+      }))
+    };
+  }
+
+  private mapPipelineStatus(status: PipelineStatus): 'running' | 'scheduled' | 'paused' | 'error' {
+    switch (status) {
+      case 'active': return 'scheduled';
+      case 'paused': return 'paused';
+      case 'error': return 'error';
+      case 'draft': return 'paused';
+      default: return 'paused';
+    }
+  }
+
+  private formatRelativeTime(timestamp: string): string {
+    const now = new Date();
+    const time = new Date(timestamp);
+    const diff = now.getTime() - time.getTime();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    if (hours > 0) {
+      return `${hours}h ${minutes}m ago`;
+    } else {
+      return `${minutes}m ago`;
+    }
+  }
+
+  private formatDuration(milliseconds: number): string {
+    const minutes = Math.floor(milliseconds / (1000 * 60));
+    const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
+    return `${minutes}m ${seconds}s`;
+  }
+
+  private calculateSuccessRate(runs: any[]): string {
+    if (runs.length === 0) return '0%';
+    const successful = runs.filter(run => run.status === 'completed').length;
+    return `${Math.round((successful / runs.length) * 100)}%`;
+  }
+
+  private calculateAverageDuration(runs: any[]): string {
+    if (runs.length === 0) return '0m';
+    const completed = runs.filter(run => run.status === 'completed' && run.metrics.duration);
+    if (completed.length === 0) return '0m';
+
+    const totalDuration = completed.reduce((sum, run) => sum + run.metrics.duration, 0);
+    const avgDuration = totalDuration / completed.length;
+    return this.formatDuration(avgDuration);
   }
 }

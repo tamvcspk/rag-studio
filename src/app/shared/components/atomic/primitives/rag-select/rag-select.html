@@ -52,24 +52,25 @@
     }
     
     <ul class="rt-select-options" role="listbox">
-      <li
-        *ngFor="let option of filteredOptions()"
-        class="rt-select-option"
-        [class.rt-selected]="option.value === selectedValue"
-        [class.rt-disabled]="option.disabled"
-        role="option"
-        [attr.aria-selected]="option.value === selectedValue"
-        (click)="selectOption(option)"
-      >
-        <span class="rt-option-label">{{ option.label }}</span>
-        @if (option.value === selectedValue) {
-          <rag-icon 
-            [img]="CheckIcon" 
-            size="xs" 
-            class="rt-option-check"
-          />
-        }
-      </li>
+      @for (option of filteredOptions(); track option.value) {
+        <li
+          class="rt-select-option"
+          [class.rt-selected]="option.value === selectedValue"
+          [class.rt-disabled]="option.disabled"
+          role="option"
+          [attr.aria-selected]="option.value === selectedValue"
+          (click)="selectOption(option)"
+        >
+          <span class="rt-option-label">{{ option.label }}</span>
+          @if (option.value === selectedValue) {
+            <rag-icon 
+              [img]="CheckIcon" 
+              size="xs" 
+              class="rt-option-check"
+            />
+          }
+        </li>
+      }
       
       @if (filteredOptions().length === 0) {
         <li class="rt-select-empty">

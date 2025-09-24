@@ -76,16 +76,18 @@
                 Add
               </rag-button>
             </div>
-            <div class="tags-list" *ngIf="formData().tags.length > 0">
-              @for (tag of formData().tags; track tag) {
-                <rag-chip [variant]="'soft'" class="tag-item">
-                  {{ tag }}
-                  <button class="remove-tag" (click)="removeTag(tag)">
-                    <rag-icon [img]="xIcon" [size]="12"></rag-icon>
-                  </button>
-                </rag-chip>
-              }
-            </div>
+            @if (formData().tags.length > 0) {
+              <div class="tags-list">
+                @for (tag of formData().tags; track tag) {
+                  <rag-chip [variant]="'soft'" class="tag-item">
+                    {{ tag }}
+                    <button class="remove-tag" (click)="removeTag(tag)">
+                      <rag-icon [img]="xIcon" [size]="12"></rag-icon>
+                    </button>
+                  </rag-chip>
+                }
+              </div>
+            }
           </div>
         </div>
       }
@@ -118,24 +120,28 @@
                     }
                   </div>
                 </div>
-                <div class="component-description" *ngIf="component.description">
-                  {{ component.description }}
-                </div>
+                @if (component.description) {
+                  <div class="component-description">
+                    {{ component.description }}
+                  </div>
+                }
               </div>
             }
           </div>
 
-          <div class="selected-summary" *ngIf="selectedComponents().length > 0">
-            <h4>Selected Components ({{ selectedComponents().length }})</h4>
-            <div class="selected-list">
-              @for (component of selectedComponents(); track component.id) {
-                <rag-chip [variant]="'outline'">
-                  <rag-icon [img]="getComponentIcon(component.type)" [size]="12"></rag-icon>
-                  {{ component.name }}
-                </rag-chip>
-              }
+          @if (selectedComponents().length > 0) {
+            <div class="selected-summary">
+              <h4>Selected Components ({{ selectedComponents().length }})</h4>
+              <div class="selected-list">
+                @for (component of selectedComponents(); track component.id) {
+                  <rag-chip [variant]="'outline'">
+                    <rag-icon [img]="getComponentIcon(component.type)" [size]="12"></rag-icon>
+                    {{ component.name }}
+                  </rag-chip>
+                }
+              </div>
             </div>
-          </div>
+          }
         </div>
       }
 
@@ -190,14 +196,16 @@
                 <span class="label">Description:</span>
                 <span class="value">{{ formData().description }}</span>
               </div>
-              <div class="review-item" *ngIf="formData().tags.length > 0">
-                <span class="label">Tags:</span>
-                <div class="tags-list">
-                  @for (tag of formData().tags; track tag) {
-                    <rag-chip [variant]="'soft'">{{ tag }}</rag-chip>
-                  }
+              @if (formData().tags.length > 0) {
+                <div class="review-item">
+                  <span class="label">Tags:</span>
+                  <div class="tags-list">
+                    @for (tag of formData().tags; track tag) {
+                      <rag-chip [variant]="'soft'">{{ tag }}</rag-chip>
+                    }
+                  </div>
                 </div>
-              </div>
+              }
             </div>
 
             <div class="review-section">

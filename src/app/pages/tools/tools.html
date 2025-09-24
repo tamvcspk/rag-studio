@@ -39,7 +39,7 @@
       @for (tool of filteredTools(); track tool.id) {
       <app-tool-card [tool]="tool" (onActivate)="onToolActivate($event)"
         (onDeactivate)="onToolDeactivate($event)" (onEdit)="onToolEdit($event)" (onDelete)="onToolDelete($event)"
-        (onRetry)="onToolRetry($event)" (onViewLogs)="onToolViewLogs($event)">
+        (onRetry)="onToolRetry($event)" (onViewLogs)="onToolViewLogs($event)" (onTest)="onToolTest($event)">
       </app-tool-card>
       } @empty {
       <rag-empty-state-panel

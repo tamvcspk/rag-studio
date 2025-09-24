@@ -42,7 +42,7 @@
 
       <rag-form-field label="Knowledge Base" [required]="true"
         [error]="toolForm.get('knowledgeBaseId')?.invalid && toolForm.get('knowledgeBaseId')?.touched ? 'Please select a knowledge base' : ''">
-        <rag-select formControlName="knowledgeBaseId" [options]="knowledgeBaseOptions"
+        <rag-select formControlName="knowledgeBaseId" [options]="knowledgeBaseOptions()"
           placeholder="Select a knowledge base" class="full-width">
         </rag-select>
       </rag-form-field>
@@ -79,7 +79,7 @@
         @if (getSelectedKnowledgeBase()) {
         <div class="preview-item">
           <strong>Knowledge Base:</strong>
-          {{ getSelectedKnowledgeBase()!.displayName }}
+          {{ getSelectedKnowledgeBase()!.name }} v{{ getSelectedKnowledgeBase()!.version || '1.0' }}
         </div>
         }
         <div class="preview-item">

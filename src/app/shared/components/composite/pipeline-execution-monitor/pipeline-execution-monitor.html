@@ -1,0 +1,216 @@
+<rag-card>
+  <div class="execution-monitor">
+    <div class="monitor-header" (click)="toggleExpanded()">
+      <div class="execution-info">
+        <div class="execution-title">
+          <rag-icon [img]="statusIcon()" [size]="16" [class]="'status-icon ' + statusColor()"></rag-icon>
+          <span class="run-id">Run {{ pipelineRun().id.slice(-8) }}</span>
+          <rag-chip
+            [variant]="'soft'"
+            [color]="statusColor()"
+            size="sm">
+            {{ pipelineRun().status | titlecase }}
+          </rag-chip>
+        </div>
+
+        <div class="execution-details">
+          <span class="start-time">Started: {{ formattedStartTime() }}</span>
+          @if (pipelineRun().status === 'running') {
+            <span class="duration">Running for {{ formattedDuration() }}</span>
+            @if (estimatedTimeRemaining()) {
+              <span class="eta">{{ formatTimeRemaining(estimatedTimeRemaining()!) }}</span>
+            }
+          } @else {
+            <span class="duration">Duration: {{ formattedDuration() }}</span>
+            <span class="end-time">Ended: {{ formattedEndTime() }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="execution-progress">
+        @if (pipelineRun().status === 'running' || pipelineRun().status === 'completed') {
+        <div class="progress-info">
+          <span class="progress-text">
+            {{ pipelineRun().metrics.stepsCompleted }} / {{ pipelineRun().metrics.stepsTotal }} steps
+          </span>
+          <span class="progress-percentage">{{ runProgress() }}%</span>
+        </div>
+        <rag-progress
+          [value]="runProgress()"
+          [variant]="statusVariant()"
+          size="sm">
+        </rag-progress>
+        }
+
+        @if (pipelineRun().metrics.recordsProcessed) {
+        <div class="records-info">
+          <rag-icon [img]="fileTextIcon" [size]="14"></rag-icon>
+          <span>{{ pipelineRun().metrics.recordsProcessed | number }} records processed</span>
+        </div>
+        }
+      </div>
+
+      <div class="execution-actions">
+        @if (canCancel()) {
+        <rag-button
+          [variant]="'outline'"
+          [size]="'sm'"
+          (click)="cancelExecution(); $event.stopPropagation()"
+          title="Cancel execution">
+          <rag-icon [img]="stopIcon" [size]="14"></rag-icon>
+          Cancel
+        </rag-button>
+        }
+
+        @if (canRetry()) {
+        <rag-button
+          [variant]="'outline'"
+          [size]="'sm'"
+          (click)="retryExecution(); $event.stopPropagation()"
+          title="Retry execution">
+          <rag-icon [img]="refreshCwIcon" [size]="14"></rag-icon>
+          Retry
+        </rag-button>
+        }
+
+        <rag-button
+          [variant]="'ghost'"
+          [size]="'sm'"
+          (click)="viewLogs(); $event.stopPropagation()"
+          title="View logs">
+          <rag-icon [img]="fileTextIcon" [size]="14"></rag-icon>
+          Logs
+        </rag-button>
+
+        <rag-button
+          [variant]="'ghost'"
+          [size]="'sm'"
+          (click)="refreshStatus(); $event.stopPropagation()"
+          title="Refresh status">
+          <rag-icon [img]="refreshCwIcon" [size]="14"></rag-icon>
+        </rag-button>
+
+        @if (showDetails()) {
+        <button
+          class="expand-toggle"
+          (click)="$event.stopPropagation()"
+          [title]="isExpanded() ? 'Collapse details' : 'Expand details'">
+          <rag-icon
+            [img]="isExpanded() ? 'chevron-up' : 'chevron-down'"
+            [size]="16">
+          </rag-icon>
+        </button>
+        }
+      </div>
+    </div>
+
+    @if (showDetails() && isExpanded()) {
+    <div class="monitor-details">
+      @if (pipelineRun().stepRuns && pipelineRun().stepRuns.length > 0) {
+      <div class="steps-section">
+        <h4>Pipeline Steps</h4>
+        <div class="steps-list">
+          @for (stepRun of pipelineRun().stepRuns; track stepRun.id) {
+          <div class="step-item" [class]="'status-' + stepRun.status">
+            <div class="step-header">
+              <rag-icon
+                [img]="getStepStatusIcon(stepRun.status)"
+                [size]="14"
+                [class]="'step-status-icon ' + getStepStatusColor(stepRun.status)">
+              </rag-icon>
+              <span class="step-name">{{ stepRun.stepId }}</span>
+              <rag-chip
+                [variant]="'soft'"
+                [color]="getStepStatusColor(stepRun.status)"
+                size="xs">
+                {{ stepRun.status | titlecase }}
+              </rag-chip>
+            </div>
+
+            <div class="step-details">
+              @if (stepRun.duration) {
+              <span class="step-duration">{{ formatDuration(stepRun.duration) }}</span>
+              }
+              @if (stepRun.metrics.recordsProcessed) {
+              <span class="step-records">{{ stepRun.metrics.recordsProcessed | number }} records</span>
+              }
+              @if (stepRun.retryCount > 0) {
+              <span class="step-retries">{{ stepRun.retryCount }} retries</span>
+              }
+            </div>
+
+            @if (stepRun.errorMessage) {
+            <div class="step-error">
+              <rag-icon [img]="alertCircleIcon" [size]="12"></rag-icon>
+              <span>{{ stepRun.errorMessage }}</span>
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+      }
+
+      <div class="metrics-section">
+        <h4>Execution Metrics</h4>
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <label>Execution ID</label>
+            <span>{{ pipelineRun().id }}</span>
+          </div>
+          <div class="metric-item">
+            <label>Pipeline ID</label>
+            <span>{{ pipelineRun().pipelineId }}</span>
+          </div>
+          <div class="metric-item">
+            <label>Triggered By</label>
+            <span>{{ pipelineRun().triggeredBy.type | titlecase }}</span>
+          </div>
+          @if (pipelineRun().metrics.dataProcessed) {
+          <div class="metric-item">
+            <label>Data Processed</label>
+            <span>{{ pipelineRun().metrics.dataProcessed | number }} bytes</span>
+          </div>
+          }
+          @if (pipelineRun().metrics.memoryUsed) {
+          <div class="metric-item">
+            <label>Memory Used</label>
+            <span>{{ pipelineRun().metrics.memoryUsed | number }} MB</span>
+          </div>
+          }
+          @if (pipelineRun().metrics.cpuUsed) {
+          <div class="metric-item">
+            <label>CPU Usage</label>
+            <span>{{ pipelineRun().metrics.cpuUsed | number:'1.1-1' }}%</span>
+          </div>
+          }
+        </div>
+      </div>
+
+      @if (pipelineRun().warnings && pipelineRun().warnings.length > 0) {
+      <div class="warnings-section">
+        <h4>Warnings</h4>
+        <div class="warnings-list">
+          @for (warning of pipelineRun().warnings; track $index) {
+          <div class="warning-item">
+            <rag-icon [img]="alertCircleIcon" [size]="14" class="warning-icon"></rag-icon>
+            <span>{{ warning }}</span>
+          </div>
+          }
+        </div>
+      </div>
+      }
+
+      @if (pipelineRun().errorMessage) {
+      <div class="error-section">
+        <h4>Error Details</h4>
+        <div class="error-message">
+          <rag-icon [img]="alertCircleIcon" [size]="16" class="error-icon"></rag-icon>
+          <span>{{ pipelineRun().errorMessage }}</span>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+</rag-card>

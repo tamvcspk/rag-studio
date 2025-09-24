@@ -22,7 +22,7 @@
       [title]="'No pipelines created yet'"
       [description]="'Pipelines automate data ingestion, processing, and indexing workflows. Create your first one to get started.'"
       [actionLabel]="'Create Your First Pipeline'"
-      (action)="onCreatePipeline()">
+      (action)="openPipelineDesigner()">
     </rag-empty-state-panel>
     } @else if (filteredPipelines().length === 0) {
     <!-- No results for current filters -->

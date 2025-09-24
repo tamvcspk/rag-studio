@@ -2,6 +2,8 @@ mod python_integration;
 mod manager;
 mod kb_commands;
 mod settings_commands;
+mod tools_commands;
+mod pipeline_commands;
 
 use python_integration::PythonContext;
 use std::sync::OnceLock;
@@ -9,10 +11,12 @@ use std::sync::Arc;
 use tauri::Manager as TauriManager; // Add Tauri Manager trait
 // Import our core crate and KB module
 use rag_core::{SqlService, SqlConfig};
-use rag_core::modules::kb::{KbService, KbServiceImpl};
+// use rag_core::modules::kb::KbService; // Commented out as it's unused currently
 use manager::Manager;
 use kb_commands::*;
 use settings_commands::*;
+use tools_commands::*;
+use pipeline_commands::*;
 
 // Global Python context instance using OnceLock for thread-safe lazy initialization
 static PYTHON_CONTEXT: OnceLock<PythonContext> = OnceLock::new();
@@ -89,7 +93,33 @@ pub fn run() {
             select_data_directory,
             clear_application_cache,
             export_settings,
-            import_settings
+            import_settings,
+            // Tools Management Commands
+            get_tools,
+            create_tool,
+            update_tool,
+            delete_tool,
+            update_tool_status,
+            test_tool,
+            export_tool,
+            import_tool,
+            // Phase 4.3: Tool Import/Export & Templates
+            import_tool_from_ragpack,
+            validate_tool_import,
+            bulk_export_tools,
+            bulk_import_tools,
+            get_tool_templates,
+            create_tool_from_template,
+            save_tool_as_template,
+            // Phase 4.4: Pipeline Management Commands
+            get_pipelines,
+            create_pipeline,
+            update_pipeline,
+            delete_pipeline,
+            execute_pipeline,
+            cancel_pipeline_execution,
+            get_pipeline_templates,
+            validate_pipeline
         ])
         .setup(|app| {
             println!("RAG Studio application initializing...");
