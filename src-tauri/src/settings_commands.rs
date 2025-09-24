@@ -219,7 +219,7 @@ pub async fn select_data_directory() -> Result<Option<String>, String> {
 /// Clear application cache
 #[tauri::command]
 pub async fn clear_application_cache(
-    manager: State<'_, Manager>
+    _manager: State<'_, Manager>
 ) -> Result<String, String> {
     println!("Clearing application cache...");
 
