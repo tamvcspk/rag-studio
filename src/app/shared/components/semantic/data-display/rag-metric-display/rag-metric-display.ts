@@ -17,6 +17,7 @@ export interface PerformanceMetric {
 
 @Component({
   selector: 'rag-metric-display',
+  standalone: true,
   imports: [CommonModule, RagIcon],
   templateUrl: './rag-metric-display.html',
   styleUrl: './rag-metric-display.scss'

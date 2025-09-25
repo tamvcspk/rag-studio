@@ -17,6 +17,10 @@ use rag_core::{
     SqlService, SqlConfig, SqlError,
     modules::kb::{KbService, KbServiceImpl, KbConfig, KbStats, KbInfo, KbError},
     services::vector::{VectorDbService, VectorDbConfig, VectorDbError},
+    services::embedding::{EmbeddingService, EmbeddingConfig},
+    services::cache::{CacheService, CacheConfig, StringCache},
+    services::storage::{StorageService, StorageConfig},
+    EmbeddingHealthStatus,
     state::{AppState, StateManager, StateDelta, KnowledgeBaseState, KnowledgeBaseStatus},
     CoreError, CoreResult,
 };
@@ -30,6 +34,9 @@ pub struct Manager {
     pub state_manager: Arc<StateManager>,
     pub sql_service: Arc<SqlService>,
     pub vector_service: Arc<VectorDbService>,
+    pub embedding_service: Arc<EmbeddingService>,
+    pub cache_service: Arc<StringCache>,
+    pub storage_service: Arc<tokio::sync::RwLock<StorageService>>,
     pub kb_service: Arc<KbServiceImpl>,
     pub app_handle: Option<AppHandle>,
 }
@@ -56,6 +63,31 @@ impl Manager {
         let state_manager = Arc::new(StateManager::new());
         info!("State manager initialized");
 
+        // Initialize Cache service with MVP config
+        let cache_config = CacheConfig::new_mvp();
+        let cache_service = Arc::new(CacheService::new(cache_config).await.map_err(|e| CoreError::Service(e.to_string()))?);
+        info!("Cache service initialized");
+
+        // Initialize Storage service with MVP config
+        let storage_config = StorageConfig::new_mvp("./rag_storage");
+        let storage_service = Arc::new(tokio::sync::RwLock::new(
+            StorageService::new(storage_config).await.map_err(|e| CoreError::Service(e.to_string()))?
+        ));
+        info!("Storage service initialized");
+
+        // Initialize Embedding service with MVP config
+        let embedding_config = EmbeddingConfig::mvp();
+        let embedding_service = Arc::new(EmbeddingService::new(embedding_config));
+        info!("Embedding service initialized");
+
+        // Start embedding worker subprocess
+        if let Err(e) = embedding_service.start_worker().await {
+            error!("Failed to start embedding worker: {}", e);
+            // Continue without embedding service for MVP graceful degradation
+        } else {
+            info!("✅ Embedding worker subprocess started successfully");
+        }
+
         // Initialize KB service
         let kb_config = KbConfig::mvp();
         let kb_service = Arc::new(KbServiceImpl::new(
@@ -70,6 +102,9 @@ impl Manager {
             state_manager,
             sql_service,
             vector_service,
+            embedding_service,
+            cache_service,
+            storage_service,
             kb_service,
             app_handle: None,
         })
@@ -172,6 +207,23 @@ impl Manager {
         let sql_health = self.sql_service.health_check().await.map_err(|e| CoreError::Service(e.to_string()))?;
         let vector_health = self.vector_service.health_check().await.map_err(|e| CoreError::Service(e.to_string()))?;
 
+        // Check embedding service health
+        let embedding_health = match self.embedding_service.health_check().await {
+            Ok(health) => serde_json::json!({
+                "status": "healthy",
+                "python_ready": health.python_ready,
+                "models": health.models,
+                "uptime_seconds": health.uptime_seconds,
+                "processed_requests": health.processed_requests,
+                "worker_running": self.embedding_service.is_worker_running()
+            }),
+            Err(e) => serde_json::json!({
+                "status": "error",
+                "error": e.to_string(),
+                "worker_running": self.embedding_service.is_worker_running()
+            })
+        };
+
         Ok(serde_json::json!({
             "sql": {
                 "status": "healthy",
@@ -186,7 +238,23 @@ impl Manager {
                 },
                 "mode": format!("{:?}", vector_health)
             },
+            "embedding": embedding_health,
             "overall": "healthy"
         }))
+    }
+
+    /// Get embedding service for external access
+    pub fn get_embedding_service(&self) -> Arc<EmbeddingService> {
+        self.embedding_service.clone()
+    }
+
+    /// Start embedding worker if not running
+    pub async fn start_embedding_worker(&self) -> CoreResult<()> {
+        self.embedding_service.start_worker().await
+    }
+
+    /// Stop embedding worker
+    pub async fn stop_embedding_worker(&self) -> CoreResult<()> {
+        self.embedding_service.stop_worker().await
     }
 }

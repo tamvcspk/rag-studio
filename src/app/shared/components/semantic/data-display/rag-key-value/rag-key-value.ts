@@ -12,6 +12,7 @@ export interface KeyValuePair {
 
 @Component({
   selector: 'rag-key-value',
+  standalone: true,
   imports: [CommonModule, RagIcon],
   templateUrl: './rag-key-value.html',
   styleUrl: './rag-key-value.scss'

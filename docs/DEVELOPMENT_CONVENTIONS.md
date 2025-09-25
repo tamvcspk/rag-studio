@@ -10,6 +10,7 @@ This document consolidates all development conventions, coding standards, and ar
 - [Testing Conventions](#testing-conventions)
 - [File Naming Conventions](#file-naming-conventions)
 - [Project Structure Conventions](#project-structure-conventions)
+- [Pipeline Template Patterns](#pipeline-template-patterns)
 
 ## Angular Frontend Conventions
 
@@ -18,7 +19,7 @@ This document consolidates all development conventions, coding standards, and ar
 **IMPORTANT: This project uses Angular 20 (latest as of August 2025). Always use Angular 20 syntax and features.**
 
 #### Core Principles
-- **Standalone Architecture**: All components, directives, and pipes use `standalone: true` by default
+- **Standalone Architecture**: All components, directives, and pipes use `standalone: true` by default (set `standalone: true` explicitly in every `@Component` metadata block across atomic, semantic, and composite layers)
 - **Modern Reactivity**: Use `signal()`, `computed()`, and `effect()` instead of RxJS BehaviorSubject where possible
 - **Signal-based Inputs/Outputs**: Use `input()`, `input.required()`, and `output()` instead of `@Input()` and `@Output()`
 - **Control Flow Syntax**: Use `@if`, `@for`, `@switch` instead of `*ngIf`, `*ngFor`, `*ngSwitch`
@@ -284,6 +285,152 @@ All components leverage the **RAG Studio Design Token System** with three layers
 - **Primitive Tokens**: Raw values (colors, spacing, typography)
 - **Semantic Tokens**: Contextual meanings (primary, success, warning, etc.)
 - **Component Archetypes**: Ready-to-use patterns for consistent component styling
+
+## Pipeline Template Patterns
+
+### Architectural Integration Convention
+
+**IMPORTANT**: Knowledge Base creation uses Pipeline templates instead of separate wizard system to eliminate code duplication and provide unified ETL workflows.
+
+#### Pipeline Template Structure
+
+All KB creation workflows follow the standardized Pipeline template pattern:
+
+```typescript
+interface KBCreationTemplate extends PipelineTemplate {
+  name: string;                    // "KB Creation - [Source Type]"
+  category: "data_ingestion";      // Always data_ingestion for KB templates
+  steps: KBPipelineStep[];         // fetch → parse → normalize → chunk → embed → index → eval → pack
+  parameters: KBTemplateParameters;
+}
+
+interface KBPipelineStep extends PipelineStep {
+  type: ETLStepType;              // One of: fetch, parse, normalize, chunk, annotate, embed, index, eval, pack
+  config: Record<string, any>;    // Step-specific configuration
+  dependencies: string[];         // Previous step dependencies
+}
+
+interface KBTemplateParameters {
+  sourceUrl: ParameterDef;        // Content source path/URL
+  embeddingModel: ParameterDef;   // Model selection with enum validation
+  name: ParameterDef;            // KB name (required)
+  product: ParameterDef;         // Product/domain identifier (required)
+  version?: ParameterDef;        // KB version (optional, defaults to 1.0.0)
+  description?: ParameterDef;    // KB description (optional)
+}
+```
+
+#### Standard KB Creation Templates
+
+**1. Local Folder Template** (`local-folder-kb-creation`):
+```typescript
+{
+  name: "KB Creation - Local Folder",
+  category: "data_ingestion",
+  steps: [
+    { type: "fetch", config: { source: "local-folder", path: "{{sourceUrl}}" }},
+    { type: "parse", config: { formats: ["pdf", "md", "txt", "docx", "html"] }},
+    { type: "normalize", config: { cleanMarkdown: true, deduplication: true }},
+    { type: "chunk", config: { strategy: "semantic", maxTokens: 512, overlap: 50 }},
+    { type: "embed", config: { model: "{{embeddingModel}}", batchSize: 32 }},
+    { type: "index", config: { vectorDb: "lancedb", sqlDb: "sqlite", enableBM25: true }},
+    { type: "eval", config: { validateRecall: true, qualityThreshold: 0.8 }},
+    { type: "pack", config: { createKB: true, name: "{{name}}", product: "{{product}}" }}
+  ],
+  parameters: {
+    sourceUrl: { type: "string", required: true, description: "Local directory path" },
+    embeddingModel: { type: "string", required: true, enum: ["all-MiniLM-L6-v2", "all-mpnet-base-v2", "e5-large-v2"] },
+    name: { type: "string", required: true, minLength: 2 },
+    product: { type: "string", required: true, minLength: 2 }
+  }
+}
+```
+
+**2. Web Documentation Template** (`web-docs-kb-creation`):
+```typescript
+{
+  name: "KB Creation - Web Documentation",
+  category: "data_ingestion",
+  steps: [
+    { type: "fetch", config: { source: "web-crawler", baseUrl: "{{sourceUrl}}", respectRobots: true, maxDepth: 3 }},
+    { type: "parse", config: { extractMainContent: true, removeNav: true, preserveLinks: true }},
+    { type: "normalize", config: { deduplication: true, urlCanonical: true, removeAds: true }},
+    { type: "chunk", config: { respectHeaders: true, maxTokens: 512, preserveStructure: true }},
+    { type: "embed", config: { model: "{{embeddingModel}}", batchSize: 32 }},
+    { type: "index", config: { vectorDb: "lancedb", sqlDb: "sqlite", enableBM25: true, includeUrl: true }},
+    { type: "eval", config: { validateLinks: true, qualityThreshold: 0.8, checkAccessibility: true }},
+    { type: "pack", config: { createKB: true, name: "{{name}}", product: "{{product}}" }}
+  ]
+}
+```
+
+**3. GitHub Repository Template** (`github-repo-kb-creation`):
+```typescript
+{
+  name: "KB Creation - GitHub Repository",
+  category: "data_ingestion",
+  steps: [
+    { type: "fetch", config: { source: "git-clone", repo: "{{sourceUrl}}", shallow: true, includeBranch: "main" }},
+    { type: "parse", config: { includeCode: true, includeReadmes: true, includeDocs: true, excludeBinary: true }},
+    { type: "normalize", config: { respectGitignore: true, pathNormalization: true, removeGenerated: true }},
+    { type: "chunk", config: { codeAware: true, language: "auto", maxTokens: 512, preserveContext: true }},
+    { type: "embed", config: { model: "{{embeddingModel}}", batchSize: 32 }},
+    { type: "index", config: { vectorDb: "lancedb", sqlDb: "sqlite", enableBM25: true, includeFilePath: true }},
+    { type: "eval", config: { validateStructure: true, qualityThreshold: 0.8, checkSyntax: true }},
+    { type: "pack", config: { createKB: true, name: "{{name}}", product: "{{product}}" }}
+  ]
+}
+```
+
+#### Template Development Guidelines
+
+1. **Step Naming**: Use descriptive step IDs following the pattern `[action]-[target]` (e.g., `fetch-docs`, `parse-code`)
+2. **Parameter Validation**: Always include JSON-Schema validation for required parameters
+3. **Error Handling**: Each step must define failure modes and recovery strategies
+4. **Dependency Management**: Clearly specify step dependencies using step IDs
+5. **Configuration Inheritance**: Support template parameter substitution using `{{paramName}}` syntax
+6. **Quality Assurance**: Include eval step with appropriate quality thresholds for content type
+
+#### Frontend Integration Patterns
+
+**Template Selection Interface**:
+- Replace KB creation wizard with template selection grid
+- Group templates by content source type with clear descriptions
+- Provide parameter form with validation based on template parameter definitions
+- Show preview of pipeline steps before execution
+
+**Pipeline Integration**:
+- KB creation templates extend standard Pipeline system
+- Use existing Pipeline designer for customization
+- Leverage Pipeline execution monitoring for progress tracking
+- Reuse Pipeline NgRx Signal Store for state management
+
+#### Backend Implementation Patterns
+
+**Template Registration**:
+```typescript
+// Template service pattern
+interface TemplateService {
+  registerKBTemplate(template: KBCreationTemplate): Promise<void>;
+  getKBTemplates(): Promise<KBCreationTemplate[]>;
+  instantiateTemplate(templateId: string, parameters: Record<string, any>): Promise<Pipeline>;
+}
+```
+
+**Step Implementation**:
+- Extend existing ETL step implementations
+- Add `pack` step type specifically for KB creation
+- Implement parameter validation and substitution
+- Ensure compatibility with Pipeline execution engine
+
+### Benefits and Conventions
+
+1. **Code Deduplication**: Single ETL implementation serves both KB creation and general data processing
+2. **Consistent UX**: Same Pipeline designer interface for all data workflows
+3. **Enhanced Flexibility**: Users can customize KB creation by modifying template steps
+4. **Unified Error Handling**: Consistent error reporting and retry logic across all data ingestion
+5. **Template Reusability**: KB creation templates can be shared, exported, and customized
+6. **Extensibility**: Easy to add new content source types by creating new templates
 
 ## Performance and Security Guidelines
 

@@ -29,6 +29,12 @@ pub use services::vector::{
     VectorDbService, VectorDbConfig, VectorDbError,
     HybridConfig, GenerationManager
 };
+pub use services::embedding::{
+    EmbeddingService, EmbeddingConfig, EmbeddingRequest, EmbeddingResponse,
+    DocumentToRerank, RankedDocument, HealthStatus as EmbeddingHealthStatus
+};
+pub use services::cache::{CacheService, CacheConfig, CacheError, CacheStats, StringCache, BytesCache, JsonCache};
+pub use services::storage::{StorageService, StorageConfig, StorageError, StorageStats, FileMetadata, PackManifest};
 pub use schemas::{VectorSchema, SearchResult, SearchQuery, SearchType, CitationInfo};
 
 // Re-export state management

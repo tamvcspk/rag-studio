@@ -1,0 +1,35 @@
+[package]
+name = "embedding-worker"
+version = "0.1.0"
+description = "RAG Studio Embedding Worker - AI Functions Subprocess"
+edition = "2021"
+
+# Binary crate for subprocess execution
+[[bin]]
+name = "embedding-worker"
+path = "src/main.rs"
+
+[dependencies]
+# Core dependencies
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }
+
+# Python integration with PyO3
+pyo3 = { version = "0.22.0", features = ["auto-initialize"] }
+
+# For batch processing and request management
+uuid = { workspace = true }
+
+[build-dependencies]
+# Enable PyOxidizer support similar to src-tauri
+pyo3-build-config = "0.22.0"
+
+[features]
+default = ["production"]
+development = []
+production = []

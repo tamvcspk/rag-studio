@@ -6,6 +6,7 @@ export type RagCardVariant = 'default' | 'elevated' | 'floating';
 
 @Component({
   selector: 'rag-card',
+  standalone: true,
   imports: [CommonModule, RagSpinner],
   templateUrl: './rag-card.html',
   styleUrl: './rag-card.scss'

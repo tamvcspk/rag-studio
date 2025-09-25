@@ -1,13 +1,11 @@
-mod python_integration;
 mod manager;
 mod kb_commands;
 mod settings_commands;
 mod tools_commands;
 mod pipeline_commands;
+mod embedding_commands;
 
-use python_integration::PythonContext;
-use std::sync::OnceLock;
-use std::sync::Arc;
+use std::sync::{Arc, OnceLock};
 use tauri::Manager as TauriManager; // Add Tauri Manager trait
 // Import our core crate and KB module
 use rag_core::{SqlService, SqlConfig};
@@ -17,17 +15,10 @@ use kb_commands::*;
 use settings_commands::*;
 use tools_commands::*;
 use pipeline_commands::*;
+use embedding_commands::*;
 
-// Global Python context instance using OnceLock for thread-safe lazy initialization
-static PYTHON_CONTEXT: OnceLock<PythonContext> = OnceLock::new();
 // Global Manager instance for application services
 static MANAGER: OnceLock<Arc<Manager>> = OnceLock::new();
-
-fn get_python_context() -> &'static PythonContext {
-    PYTHON_CONTEXT.get_or_init(|| {
-        PythonContext::new().expect("Failed to initialize Python context")
-    })
-}
 
 async fn get_manager() -> Arc<Manager> {
     MANAGER.get().unwrap().clone()
@@ -39,12 +30,6 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
-// Clean Rust -> Python call using reorganized module
-#[tauri::command]
-fn rust_call_python(name: &str) -> Result<String, String> {
-    let python_ctx = get_python_context();
-    python_ctx.call_greeting(name)
-}
 
 #[tauri::command]
 async fn test_sql_setup() -> Result<String, String> {
@@ -73,7 +58,6 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             greet,
-            rust_call_python,
             test_sql_setup,
             // KB Management Commands
             get_knowledge_bases,
@@ -118,7 +102,15 @@ pub fn run() {
             execute_pipeline,
             cancel_pipeline_execution,
             get_pipeline_templates,
-            validate_pipeline
+            validate_pipeline,
+            // Embedding Worker Commands
+            start_embedding_worker,
+            stop_embedding_worker,
+            get_embedding_worker_status,
+            generate_embedding,
+            rerank_documents,
+            test_embedding_worker,
+            restart_embedding_worker
         ])
         .setup(|app| {
             println!("RAG Studio application initializing...");
@@ -159,26 +151,3 @@ pub fn run() {
         .expect("error while running tauri application");
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_python_integration() {
-        let ctx = get_python_context();
-        let result = ctx.call_greeting("Test");
-        
-        match result {
-            Ok(message) => {
-                println!("✅ Python integration test successful: {}", message);
-                assert!(message.contains("Test"));
-                assert!(message.contains("Python"));
-            },
-            Err(e) => {
-                println!("❌ Python integration test failed: {}", e);
-                panic!("Python integration failed: {}", e);
-            }
-        }
-    }
-    
-}

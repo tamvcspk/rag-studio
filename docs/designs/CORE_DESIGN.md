@@ -376,6 +376,115 @@ sequenceDiagram
 - **Performance**: Async WAL, buffered upserts, backpressure, quotas prune (SDD §13.3).
 - **Resilience**: Rollback/undo via SQL event sourcing (FR-9/11), eval alerts (FR-8.3).
 
+## 3.1. KB Creation via Pipeline Templates (Architectural Integration)
+
+Knowledge Base creation is implemented through the Pipeline system using specialized templates, providing unified ETL workflows and eliminating code duplication. This architectural pattern treats KB creation as a specific application of the general-purpose Pipeline infrastructure.
+
+#### 1. KB Creation Pipeline Templates
+
+**Local Folder Template:**
+```typescript
+{
+  name: "KB Creation - Local Folder",
+  category: "data_ingestion",
+  steps: [
+    { type: "fetch", config: { source: "local-folder", path: "{{sourceUrl}}" }},
+    { type: "parse", config: { formats: ["pdf", "md", "txt", "docx"] }},
+    { type: "normalize", config: { cleanMarkdown: true, deduplication: true }},
+    { type: "chunk", config: { strategy: "semantic", maxTokens: 512 }},
+    { type: "embed", config: { model: "{{embeddingModel}}" }},
+    { type: "index", config: { vectorDb: "lancedb", sqlDb: "sqlite" }},
+    { type: "eval", config: { validateRecall: true, qualityThreshold: 0.8 }},
+    { type: "pack", config: { createKB: true, name: "{{name}}", product: "{{product}}" }}
+  ],
+  parameters: {
+    sourceUrl: { type: "string", required: true, description: "Local directory path" },
+    embeddingModel: { type: "string", required: true, enum: ["all-MiniLM-L6-v2", "all-mpnet-base-v2", "e5-large-v2"] },
+    name: { type: "string", required: true, description: "Knowledge base name" },
+    product: { type: "string", required: true, description: "Product/domain identifier" }
+  }
+}
+```
+
+**Web Documentation Template:**
+```typescript
+{
+  name: "KB Creation - Web Documentation",
+  category: "data_ingestion",
+  steps: [
+    { type: "fetch", config: { source: "web-crawler", baseUrl: "{{sourceUrl}}", respectRobots: true }},
+    { type: "parse", config: { extractMainContent: true, removeNav: true, preserveLinks: true }},
+    { type: "normalize", config: { deduplication: true, urlCanonical: true }},
+    { type: "chunk", config: { respectHeaders: true, maxTokens: 512 }},
+    { type: "embed", config: { model: "{{embeddingModel}}" }},
+    { type: "index", config: { vectorDb: "lancedb", sqlDb: "sqlite" }},
+    { type: "eval", config: { validateLinks: true, qualityThreshold: 0.8 }},
+    { type: "pack", config: { createKB: true, name: "{{name}}", product: "{{product}}" }}
+  ]
+}
+```
+
+**GitHub Repository Template:**
+```typescript
+{
+  name: "KB Creation - GitHub Repository",
+  category: "data_ingestion",
+  steps: [
+    { type: "fetch", config: { source: "git-clone", repo: "{{sourceUrl}}", shallow: true }},
+    { type: "parse", config: { includeCode: true, includeReadmes: true, excludeBinary: true }},
+    { type: "normalize", config: { respectGitignore: true, pathNormalization: true }},
+    { type: "chunk", config: { codeAware: true, language: "auto", maxTokens: 512 }},
+    { type: "embed", config: { model: "{{embeddingModel}}" }},
+    { type: "index", config: { vectorDb: "lancedb", sqlDb: "sqlite", includeFilePath: true }},
+    { type: "eval", config: { validateStructure: true, qualityThreshold: 0.8 }},
+    { type: "pack", config: { createKB: true, name: "{{name}}", product: "{{product}}" }}
+  ]
+}
+```
+
+#### 2. Enhanced Pipeline Steps
+
+**New `pack` Step Type:**
+- Creates KB from pipeline output with metadata
+- Validates completion of all prerequisite steps
+- Registers KB in StateManager with proper versioning
+- Generates manifest with processing statistics
+
+**Enhanced Parameter System:**
+- Content source enumeration with validation
+- Embedding model selection with performance characteristics
+- KB metadata (name, product, version, description)
+- Processing options (chunking strategy, quality thresholds)
+
+#### 3. Architectural Benefits
+
+**Unified ETL Architecture:**
+- Single implementation serves both KB creation and general data processing workflows
+- Consistent error handling, retry logic, and progress tracking across all operations
+- Standardized logging and metrics collection for all data ingestion patterns
+
+**Flexible Workflow Composition:**
+- Template-based approach supports customizable KB creation workflows
+- Pipeline step library enables preprocessing extensions (OCR, translation, custom parsers)
+- Configurable chunking strategies and content source adapters
+- Multi-source KB creation through pipeline composition
+
+**Consistent System Interface:**
+- Unified Pipeline designer UI for all data processing operations
+- Shared monitoring and debugging infrastructure
+- Template library provides guided workflow patterns
+- Common execution engine and progress tracking across system
+
+**Architectural Coherence:**
+- Implements ETL → KB pattern described in core architecture specifications
+- Leverages Pipeline infrastructure and StateManager patterns
+- Supports "KB as pipeline output" model throughout system
+- Maintains clear separation between UI layer and processing logic
+
+#### 4. Template Architecture
+
+KB creation templates extend the standard Pipeline template system with domain-specific parameters and validation. Templates define complete ETL workflows from data source through knowledge base creation, supporting the full spectrum of content ingestion patterns while maintaining architectural consistency with the broader Pipeline system.
+
 ## 4. DI & Wiring (Service Integration and Dependency Management)
 
 Manager initializes/injects DI services into modules; MCP uses RPC for state. It includes Embedding Worker DI, StateManager actors, cache layering, and logging multi-sinks.
@@ -442,6 +551,300 @@ graph TB
 - **MCP**: Default-deny permissions with policy engine, escalation prompts (FR-1.7). RPC proxies to StateManager with versioning.
 - **Logging**: Multi-sinks (SQL critical events ACID, JSONL non-critical with redaction/rotation). Subscribes StateManager for metrics (histograms).
 - **Tauri**: Portable <100MB, tray mode, IPC streams with debounce/non-blocking. State deltas pushed via events.
+
+## 4.1. Model Management Service Architecture
+
+The Model Management system provides dynamic model lifecycle management integrated with the embedding worker subprocess, supporting HuggingFace downloads, local discovery, and manual imports while maintaining the system's local-first and performance-focused design.
+
+### Model Service Integration
+
+**Service Architecture:**
+```rust
+// core/src/services/model.rs
+pub struct ModelService {
+    config: ModelConfig,
+    model_cache: Arc<DashMap<String, ModelMetadata>>,  // Concurrent access optimization
+    storage_service: Arc<StorageService>,
+    embedding_service: Arc<EmbeddingService>,
+    lru_policy: Arc<Mutex<ModelLruPolicy>>,            // Worker memory management
+}
+
+pub struct ModelConfig {
+    pub models_directory: PathBuf,                     // ./models/
+    pub cache_size_gb: Option<u64>,                    // Auto-detect from available space
+    pub min_free_space_gb: u64,                        // 2GB minimum free space
+    pub auto_cleanup_threshold: f32,                   // 0.8 = cleanup at 80% full
+    pub worker_memory_limit_gb: f64,                   // 2GB default for embedding worker
+    pub auto_download: bool,                           // HuggingFace integration
+    pub offline_mode: bool,                            // Air-gapped operation
+    pub bundled_models: Vec<String>,                   // Shipped with application
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ModelMetadata {
+    pub id: String,                                    // "sentence-transformers/all-MiniLM-L6-v2"
+    pub name: String,                                  // "All MiniLM L6 v2"
+    pub description: String,
+    pub model_type: ModelType,                         // Embedding, Reranking, Combined
+    pub size_mb: u64,
+    pub dimensions: u32,                               // 384 for MiniLM
+    pub max_sequence_length: u32,                      // 512 tokens
+    pub source: ModelSource,                           // HuggingFace, Local, Manual, Bundled
+    pub status: ModelStatus,                           // Available, Downloading, Error
+    pub local_path: Option<PathBuf>,
+    pub checksum: Option<String>,                      // SHA-256 integrity verification
+    pub performance_metrics: PerformanceMetrics,      // Load time, throughput benchmarks
+    pub last_used: Option<DateTime<Utc>>,             // LRU cleanup support
+    pub compatibility: Vec<String>,                    // Supported frameworks (sentence-transformers, transformers)
+}
+```
+
+**Dynamic Model Discovery:**
+- **HuggingFace Integration**: Search and download models with progress tracking and retry logic
+- **Local Discovery**: Auto-scan `./models/`, `~/.cache/huggingface/`, and user-specified directories
+- **Manual Import**: Drag-drop model files with auto-detection of format and metadata
+- **Bundled Models**: Ship with lightweight models (90MB MiniLM) for offline operation
+
+### Embedding Worker Integration
+
+**LRU Memory Management:**
+The embedding worker implements intelligent model caching to prevent memory thrashing while maintaining performance:
+
+```rust
+// embedding-worker/src/model_cache.rs
+pub struct ModelCache {
+    loaded_models: LruCache<String, LoadedModel>,
+    max_memory_gb: f64,                                // Configurable worker memory limit
+    current_memory_gb: f64,
+    warm_models: HashSet<String>,                      // Pre-loaded frequently used models
+}
+
+impl ModelCache {
+    pub async fn ensure_model_loaded(&mut self, model_id: &str) -> Result<&LoadedModel> {
+        // Check if model already loaded
+        if self.loaded_models.contains(model_id) {
+            return Ok(self.loaded_models.get(model_id).unwrap());
+        }
+
+        // Free memory if approaching limit (90% threshold)
+        while self.current_memory_gb > self.max_memory_gb * 0.9 {
+            if let Some((_, old_model)) = self.loaded_models.pop_lru() {
+                self.current_memory_gb -= old_model.memory_usage_gb;
+                info!("Unloaded model {} to free memory", old_model.id);
+            } else {
+                break; // No more models to unload
+            }
+        }
+
+        // Load new model with progress tracking
+        let loaded_model = self.load_model_from_disk(model_id).await?;
+        self.current_memory_gb += loaded_model.memory_usage_gb;
+        self.loaded_models.put(model_id.to_string(), loaded_model);
+
+        Ok(self.loaded_models.get(model_id).unwrap())
+    }
+}
+```
+
+**Performance Optimization:**
+- **Warm-up Caching**: Pre-load frequently used models during app startup
+- **Batch Loading**: Efficient model switching for pipeline operations
+- **Fallback Support**: Rust-based fallback (candle) for PyO3 timeouts with performance benchmarking
+
+### Storage and Database Integration
+
+**Directory Structure:**
+```
+./models/
+├── cache/
+│   └── huggingface/                    # HuggingFace download cache
+├── local/                              # User imported models
+├── bundled/                            # Shipped models (MiniLM-L6-v2)
+└── metadata/
+    ├── models.db                       # SQLite model registry
+    └── checksums.json                  # Integrity verification
+```
+
+**Database Schema Extensions:**
+```sql
+-- Add to existing app_meta.db
+CREATE TABLE models (
+    id TEXT PRIMARY KEY,                -- "sentence-transformers/all-MiniLM-L6-v2"
+    name TEXT NOT NULL,
+    description TEXT,
+    model_type TEXT NOT NULL,           -- 'embedding', 'reranking', 'combined'
+    source_type TEXT NOT NULL,          -- 'huggingface', 'local', 'bundled', 'manual'
+    source_data JSON NOT NULL,          -- Repo ID, path, upload info
+    local_path TEXT,
+    size_mb INTEGER,
+    dimensions INTEGER,
+    max_sequence_length INTEGER,
+    status TEXT NOT NULL,               -- 'available', 'downloading', 'error', 'not_downloaded'
+    checksum TEXT,                      -- SHA-256 hash
+    performance_metrics JSON,           -- Load time, throughput, accuracy benchmarks
+    compatibility JSON,                 -- Supported frameworks and versions
+    last_used TIMESTAMP,                -- LRU cleanup support
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_models_status ON models(status);
+CREATE INDEX idx_models_last_used ON models(last_used);
+CREATE INDEX idx_models_type ON models(model_type);
+```
+
+### KB Creation and Pipeline Integration
+
+**Dynamic Model Selection:**
+KB creation and pipeline templates support dynamic model selection with validation and fallback:
+
+```typescript
+// Enhanced embedding model interface
+export interface EmbeddingModel {
+    id: string;                         // Model identifier
+    name: string;                       // Display name
+    description: string;                // User-friendly description
+    dimensions: number;                 // Vector dimensions (384, 768, 1024)
+    maxTokens: number;                  // Maximum sequence length
+    sizeMB: number;                     // Model size for storage planning
+    modelType: 'embedding' | 'reranking' | 'combined';
+    status: 'available' | 'downloading' | 'not_downloaded' | 'error';
+    source: 'bundled' | 'huggingface' | 'local' | 'manual';
+    performance: {
+        loadTimeMs: number;             // Model loading latency
+        throughputVecsPerSec: number;   // Embedding generation speed
+        accuracyScore?: number;         // Benchmark accuracy (if available)
+    };
+    downloadProgress?: number;          // 0-100 for downloading models
+    errorMessage?: string;              // Error details if status is 'error'
+}
+```
+
+**Pipeline Pre-validation:**
+Pipeline steps validate model availability before execution to prevent runtime failures:
+
+```rust
+// Enhanced pipeline step validation
+impl PipelineStep {
+    pub async fn validate_model_dependencies(&self, model_service: &ModelService) -> Result<Vec<ValidationWarning>> {
+        let mut warnings = Vec::new();
+
+        if let Some(model_id) = self.config.get("model") {
+            match model_service.get_model_status(model_id).await? {
+                ModelStatus::Available => {
+                    // Check if model is optimal for this content type
+                    if let Some(suggestion) = model_service.suggest_better_model(model_id, &self.step_type).await? {
+                        warnings.push(ValidationWarning::SuboptimalModel {
+                            current: model_id.clone(),
+                            suggested: suggestion,
+                            reason: "Better accuracy for this content type".to_string()
+                        });
+                    }
+                },
+                ModelStatus::NotDownloaded => {
+                    return Err(PipelineError::ModelNotAvailable {
+                        model_id: model_id.clone(),
+                        suggestion: format!("Download model or use fallback: {}",
+                            model_service.get_fallback_model(&self.step_type).await?)
+                    });
+                },
+                ModelStatus::Downloading { progress, eta_seconds } => {
+                    warnings.push(ValidationWarning::ModelDownloading {
+                        model_id: model_id.clone(),
+                        progress,
+                        eta_seconds
+                    });
+                },
+                ModelStatus::Error { message } => {
+                    return Err(PipelineError::ModelError {
+                        model_id: model_id.clone(),
+                        message,
+                        fallback: model_service.get_fallback_model(&self.step_type).await?
+                    });
+                }
+            }
+        }
+
+        Ok(warnings)
+    }
+}
+```
+
+### Frontend Integration Patterns
+
+**Models Store (NgRx Signals):**
+```typescript
+// src/app/shared/store/models.store.ts
+@Injectable({ providedIn: 'root' })
+export class ModelsStore extends ComponentStore<ModelsState> {
+    // Signals for reactive UI
+    readonly models = signal<EmbeddingModel[]>([]);
+    readonly downloadProgress = signal<Map<string, number>>(new Map());
+    readonly storageUsage = signal<StorageInfo>({ used: 0, total: 0, available: 0 });
+
+    // Computed values
+    readonly availableModels = computed(() =>
+        this.models().filter(m => m.status === 'available')
+    );
+    readonly recommendedModels = computed(() =>
+        this.models().filter(m => m.source === 'bundled' || m.performance.accuracyScore > 0.8)
+    );
+    readonly storageUsagePercent = computed(() =>
+        (this.storageUsage().used / this.storageUsage().total) * 100
+    );
+
+    // Tauri commands with error handling
+    async searchHuggingFaceModels(query: string, modelType?: string): Promise<HuggingFaceModel[]>
+    async downloadModel(repoId: string, onProgress?: (progress: number) => void): Promise<void>
+    async importLocalModel(path: string): Promise<EmbeddingModel>
+    async deleteModel(modelId: string): Promise<void>
+    async benchmarkModel(modelId: string): Promise<PerformanceMetrics>
+    async preloadFrequentModels(): Promise<void>
+
+    // Real-time event handlers
+    constructor() {
+        super(initialState);
+        this.listenToModelEvents();
+        this.loadInitialModels();
+    }
+
+    private async listenToModelEvents(): Promise<void> {
+        await listen('model_download_progress', (event: Event<{modelId: string, progress: number}>) => {
+            this.downloadProgress.update(map => map.set(event.payload.modelId, event.payload.progress));
+        });
+
+        await listen('model_status_changed', (event: Event<{modelId: string, status: string}>) => {
+            this.models.update(models =>
+                models.map(m => m.id === event.payload.modelId
+                    ? { ...m, status: event.payload.status as any }
+                    : m
+                )
+            );
+        });
+    }
+}
+```
+
+### Security and Performance Considerations
+
+**Security Features:**
+- **Checksum Verification**: SHA-256 validation for all downloaded models
+- **Sandboxed Execution**: Model loading isolated in embedding worker subprocess
+- **Format Validation**: Whitelist supported formats (safetensors, ONNX, PyTorch)
+- **No Code Execution**: Models treated as data only, no arbitrary code execution
+
+**Performance Optimizations:**
+- **Background Downloads**: Non-blocking model downloads with priority queuing
+- **Progressive Loading**: Lazy model loading with warm-up caching for frequent models
+- **Storage Efficiency**: Automatic cleanup, LRU eviction, and shared cache directories
+- **Benchmarking**: Built-in performance metrics (load time <500ms for small models, <2s for large)
+
+**Quota Management:**
+- **Dynamic Sizing**: Auto-detect available disk space, default to 50% usage with 2GB minimum free
+- **Smart Cleanup**: Remove least-used models when approaching storage limits
+- **User Control**: Configurable cache size limits and retention policies
+
+This model management architecture seamlessly integrates with the existing RAG Studio design patterns while providing enterprise-grade model lifecycle management, supporting both air-gapped operation and cloud-integrated workflows.
 
 ## 5. Boundaries & Implementation Decisions
 

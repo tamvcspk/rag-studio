@@ -7,7 +7,7 @@ This document provides comprehensive development best practices for RAG Studio, 
 **IMPORTANT: This project uses Angular 20 (latest as of August 2025). Always use Angular 20 syntax and features.**
 
 ### Core Angular 20 Principles
-- **Standalone Architecture**: All components, directives, and pipes use `standalone: true` by default
+- **Standalone Architecture**: All components, directives, and pipes use `standalone: true` by default and must declare `standalone: true` explicitly in each `@Component` metadata block
 - **Modern Reactivity**: Use `signal()`, `computed()`, and `effect()` instead of RxJS BehaviorSubject where possible
 - **Signal-based Inputs/Outputs**: Use `input()`, `input.required()`, and `output()` instead of `@Input()` and `@Output()`
 - **Control Flow Syntax**: Use `@if`, `@for`, `@switch` instead of `*ngIf`, `*ngFor`, `*ngSwitch`
@@ -20,6 +20,7 @@ This document provides comprehensive development best practices for RAG Studio, 
 - Enable zoneless change detection where Zone.js isn't required
 
 ### Component Development
+Semantic components follow the same signal-first conventions as atomic primitives: use `readonly` signal inputs/outputs, computed class arrays, and explicit `imports` arrays.
 ```typescript
 // Modern Angular 20 component example (Atomic/Semantic component)
 import { Component, input, output, signal, computed } from '@angular/core';

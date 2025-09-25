@@ -7,9 +7,9 @@
 
 pub mod sql;
 pub mod vector;
+pub mod embedding;
+pub mod cache;
+pub mod storage;
 
 // Future services to be implemented when needed:
-// pub mod cache;
-// pub mod storage;
-// pub mod embedding;
 // pub mod logging;

@@ -14,6 +14,7 @@ export interface TabNavItem {
 
 @Component({
   selector: 'rag-tab-navigation',
+  standalone: true,
   imports: [CommonModule, RouterModule, RagIcon],
   templateUrl: './rag-tab-navigation.html',
   styleUrl: './rag-tab-navigation.scss'

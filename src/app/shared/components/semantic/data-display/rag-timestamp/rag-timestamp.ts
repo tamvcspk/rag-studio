@@ -5,6 +5,7 @@ import { RagIcon } from '../../../atomic/primitives/rag-icon/rag-icon';
 
 @Component({
   selector: 'rag-timestamp',
+  standalone: true,
   imports: [CommonModule, RagIcon],
   templateUrl: './rag-timestamp.html',
   styleUrl: './rag-timestamp.scss'

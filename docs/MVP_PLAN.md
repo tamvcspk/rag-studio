@@ -39,6 +39,13 @@ rag-studio/
 - 🚫 **Process Isolation for AI**: Python AI functions lack proper subprocess isolation
 - 🚫 **Robust Process Management**: No health checks, restarts, or process monitoring for AI functions
 
+### ARCHITECTURAL IMPROVEMENTS IDENTIFIED
+- ⚠️ **KB Creation - Pipeline Integration**: Current KB creation wizard duplicates Pipeline ETL functionality
+  - **Problem**: Separate implementations for KB creation and Pipeline processing
+  - **Solution**: Use Pipeline templates for KB creation (local-folder, web-docs, github, pdf templates)
+  - **Benefits**: Eliminates code duplication, unified error handling, enhanced flexibility
+  - **Status**: Documented in CORE_DESIGN.md, requires implementation
+
 ### EXISTING COMPONENTS
 - ✅ 60+ UI components in 3-tier architecture
 - ✅ Dashboard, Tools, Knowledge Bases, Pipelines, Flows, Settings pages
@@ -125,10 +132,15 @@ rag-studio/
   - Zero-copy promotion via symlinks
   - Rollback to previous versions
   - Epoch-based garbage collection
-- [ ] **Ingest Pipeline**: fetch→parse→chunk→embed→index workflow
+- [ ] **KB Creation Pipeline System**: Unified ETL workflow for both KB creation and data processing
+  - **ARCHITECTURAL INTEGRATION**: KB creation uses Pipeline templates instead of separate wizard
+  - Pipeline Step Types: `fetch`, `parse`, `normalize`, `chunk`, `annotate`, `embed`, `index`, `eval`, `pack`
+  - New `pack` step type for KB creation from pipeline output
+  - Template-based workflows for different content sources
   - Parallel ETL processing with Tokio
   - Retry/backoff for failed operations
   - Progress tracking and reporting
+  - Unified error handling across KB creation and general data processing
 - [ ] **Hybrid Search**: Vector (LanceDB) + BM25 (Rust implementation)
   - Parallel search execution
   - Adaptive candidate sets
@@ -156,7 +168,29 @@ rag-studio/
   - Basic performance metrics
   - Upgrade to full P50/P95 monitoring post-MVP
 
-#### 2.3 Citations & Quality
+#### 2.3 Model Management System
+- [ ] **ModelService Integration**: Dynamic model lifecycle management via DI services
+  - Integrate with existing embedding worker subprocess for model loading/unloading
+  - `Arc<DashMap<String, ModelMetadata>>` for concurrent model metadata access
+  - LRU memory management in embedding worker (2GB default limit)
+  - Storage quota management with auto-cleanup (50% disk usage, 2GB minimum free)
+- [ ] **Dynamic Model Discovery**: Support multiple model sources
+  - **Bundled Models**: Ship with lightweight model (all-MiniLM-L6-v2, ~90MB) for offline operation
+  - **Local Discovery**: Auto-scan `./models/`, `~/.cache/huggingface/`, user directories
+  - **Manual Import**: Drag-drop model files with auto-detection of format and metadata
+  - **HuggingFace Integration**: Search and download models (Phase 3 enhancement)
+- [ ] **Model Metadata & Validation**: Comprehensive model information system
+  - Model metadata (dimensions, size, performance metrics, compatibility)
+  - SHA-256 checksum verification for integrity
+  - Model status tracking (available, downloading, error, not_downloaded)
+  - Pipeline pre-validation to ensure model availability before execution
+- [ ] **Enhanced KB Creation**: Dynamic model selection in KB workflows
+  - Replace hardcoded `EmbeddingModel` enum with dynamic model registry
+  - Model selector in KB creation with real-time availability status
+  - Fallback model support for pipeline reliability
+  - Model performance recommendations based on content type
+
+#### 2.4 Citations & Quality
 - [ ] **Mandatory Citations**: All responses include source citations
   - "No citation → no answer" policy
   - Citation enrichment with metadata
@@ -182,10 +216,20 @@ rag-studio/
   - Sortable/filterable collection grid
   - Status indicators and health metrics
   - Quick actions (search, delete, export)
-- [ ] **Create KB Wizard**: Multi-step creation workflow
-  - Document source selection
-  - Configuration options (chunk size, embedding model)
-  - Progress tracking with cancellation
+- [ ] **KB Creation via Pipeline Templates**: Unified creation workflow using Pipeline system
+  - **ARCHITECTURAL CHANGE**: KB creation replaces wizard with Pipeline template instantiation
+  - Content source selection via predefined Pipeline templates:
+    - Local Folder Template (local-folder → fetch → parse → chunk → embed → index → pack)
+    - Web Documentation Template (web-crawler → parse → normalize → chunk → embed → index → pack)
+    - GitHub Repository Template (git-clone → parse → chunk → embed → index → pack)
+    - PDF Collection Template (pdf-parse → normalize → chunk → embed → index → pack)
+  - **Dynamic Embedding Model Selection**: Real-time model availability with download options
+    - Model selector with performance characteristics (dimensions, speed, accuracy)
+    - "Download missing model" option integrated into KB creation flow
+    - Model recommendations based on content type and size
+    - Fallback model suggestions for reliability
+  - Pipeline execution with real-time progress tracking
+  - Unified error handling and retry logic via Pipeline system
 - [ ] **Document Upload**: Drag-drop interface with progress
   - Bulk upload support
   - File type validation
@@ -230,6 +274,28 @@ rag-studio/
   - Outbound connection control
   - Security status indicators
   - Compliance reporting
+
+#### 3.4 Models Management UI
+- [ ] **Models Library**: Grid view of installed and available models
+  - Model cards with metadata (size, dimensions, performance, source)
+  - Status indicators (available, downloading, error) with progress tracking
+  - Storage usage visualization with cleanup controls
+  - Model comparison table (speed vs accuracy trade-offs)
+- [ ] **HuggingFace Integration**: Search and download models from HuggingFace hub
+  - Model search with filtering by type, size, and performance
+  - Model preview with description, examples, and benchmarks
+  - Background downloading with pause/resume/cancel capabilities
+  - Download progress tracking with bandwidth management
+- [ ] **Local Model Management**: Import and organize user models
+  - Drag-drop interface for manual model import
+  - Auto-detection of model format and metadata extraction
+  - Local directory scanning and model discovery
+  - Model validation and compatibility checking
+- [ ] **ModelsStore (NgRx Signals)**: Reactive state management for model operations
+  - Real-time model status updates via Tauri events
+  - Computed signals for available models, recommendations, and storage usage
+  - Background operations (download, import, delete) with proper error handling
+  - Integration with existing KB creation and pipeline workflows
 
 ### Phase 4: Tools & Flows Foundation 🔧
 **Priority: MEDIUM | Estimated: 2-3 weeks**
@@ -408,8 +474,8 @@ rag-studio/
 | Phase | Duration | Key Deliverables |
 |-------|----------|-----------------|
 | Phase 1 | 2-3 weeks | Backend infrastructure, state management |
-| Phase 2 | 3-4 weeks | Knowledge base core, MCP server |
-| Phase 3 | 2-3 weeks | Frontend integration, real-time features |
+| Phase 2 | 3-4 weeks | Knowledge base core, MCP server, model management system |
+| Phase 3 | 2-3 weeks | Frontend integration, real-time features, models UI |
 | Phase 4 | 2-3 weeks | Tools system, basic flows |
 | Phase 5 | 1-2 weeks | Production readiness, optimization |
 | **Total** | **10-15 weeks** | **Complete MVP** |

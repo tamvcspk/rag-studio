@@ -15,6 +15,7 @@ export interface StatCardData {
 
 @Component({
   selector: 'rag-stat-card',
+  standalone: true,
   imports: [CommonModule, RagIcon],
   templateUrl: './rag-stat-card.html',
   styleUrl: './rag-stat-card.scss'

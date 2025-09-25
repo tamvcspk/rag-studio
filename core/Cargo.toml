@@ -34,6 +34,9 @@ futures = "0.3"
 hf-hub = { version = "0.3", optional = true }
 # For utilities
 regex = "1.0"
+# For StorageService
+sha2 = "0.10"
+zip = "0.6"
 
 [dev-dependencies]
 tempfile = "3.8"
