@@ -2,7 +2,8 @@ export type KnowledgeBaseStatus = 'indexed' | 'indexing' | 'failed' | 'pending';
 
 export type ContentSourceType = 'local-folder' | 'web-documentation' | 'github-repository' | 'pdf-collection';
 
-export type EmbeddingModel = 'all-MiniLM-L6-v2' | 'all-mpnet-base-v2' | 'e5-large-v2';
+// Import dynamic EmbeddingModel from models store
+import type { EmbeddingModel } from '../store/models.store';
 
 export interface KnowledgeBase {
   id: string;

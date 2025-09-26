@@ -47,6 +47,33 @@ pub enum WorkerRequest {
     Shutdown {
         request_id: Uuid,
     },
+
+    /// Load model into cache
+    LoadModel {
+        request_id: Uuid,
+        model_id: String,
+    },
+
+    /// Unload model from cache
+    UnloadModel {
+        request_id: Uuid,
+        model_id: String,
+    },
+
+    /// Get model cache statistics
+    GetCacheStats {
+        request_id: Uuid,
+    },
+
+    /// Warm up models (preload frequently used models)
+    WarmUpModels {
+        request_id: Uuid,
+    },
+
+    /// Clear all cached models
+    ClearCache {
+        request_id: Uuid,
+    },
 }
 
 impl WorkerRequest {
@@ -59,6 +86,11 @@ impl WorkerRequest {
             WorkerRequest::Reranking { request_id, .. } => *request_id,
             WorkerRequest::BatchEmbedding { request_id, .. } => *request_id,
             WorkerRequest::Shutdown { request_id } => *request_id,
+            WorkerRequest::LoadModel { request_id, .. } => *request_id,
+            WorkerRequest::UnloadModel { request_id, .. } => *request_id,
+            WorkerRequest::GetCacheStats { request_id } => *request_id,
+            WorkerRequest::WarmUpModels { request_id } => *request_id,
+            WorkerRequest::ClearCache { request_id } => *request_id,
         }
     }
 }
@@ -94,6 +126,43 @@ pub enum WorkerResponse {
     BatchEmbedding {
         request_id: Uuid,
         batch_responses: Vec<EmbeddingResponse>,
+    },
+
+    /// Model loaded successfully
+    ModelLoaded {
+        request_id: Uuid,
+        model_id: String,
+        success: bool,
+        error_message: Option<String>,
+    },
+
+    /// Model unloaded successfully
+    ModelUnloaded {
+        request_id: Uuid,
+        model_id: String,
+        success: bool,
+        error_message: Option<String>,
+    },
+
+    /// Cache statistics response
+    CacheStats {
+        request_id: Uuid,
+        stats: CacheStatsData,
+    },
+
+    /// Models warmed up successfully
+    ModelsWarmedUp {
+        request_id: Uuid,
+        success: bool,
+        models_loaded: Vec<String>,
+        error_message: Option<String>,
+    },
+
+    /// Cache cleared successfully
+    CacheCleared {
+        request_id: Uuid,
+        success: bool,
+        error_message: Option<String>,
     },
 
     /// Shutdown acknowledgment
@@ -240,6 +309,27 @@ pub struct HealthStatus {
 
     /// Average processing time in milliseconds
     pub avg_processing_time_ms: Option<f64>,
+}
+
+/// Cache statistics data for model cache
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CacheStatsData {
+    /// Number of models currently loaded
+    pub loaded_models: usize,
+    /// Total memory usage in GB
+    pub memory_usage_gb: f64,
+    /// Memory usage percentage (0.0-1.0)
+    pub memory_usage_percent: f64,
+    /// Number of cache hits
+    pub cache_hits: u64,
+    /// Number of cache misses
+    pub cache_misses: u64,
+    /// Number of models evicted
+    pub evictions: u64,
+    /// Cache hit rate (0.0-1.0)
+    pub hit_rate: f64,
+    /// Models currently warm (preloaded)
+    pub warm_models: Vec<String>,
 }
 
 impl Default for EmbeddingParameters {

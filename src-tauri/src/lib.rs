@@ -4,6 +4,7 @@ mod settings_commands;
 mod tools_commands;
 mod pipeline_commands;
 mod embedding_commands;
+mod model_commands;
 
 use std::sync::{Arc, OnceLock};
 use tauri::Manager as TauriManager; // Add Tauri Manager trait
@@ -16,6 +17,7 @@ use settings_commands::*;
 use tools_commands::*;
 use pipeline_commands::*;
 use embedding_commands::*;
+use model_commands::*;
 
 // Global Manager instance for application services
 static MANAGER: OnceLock<Arc<Manager>> = OnceLock::new();
@@ -110,7 +112,21 @@ pub fn run() {
             generate_embedding,
             rerank_documents,
             test_embedding_worker,
-            restart_embedding_worker
+            restart_embedding_worker,
+            // Model Management Commands
+            get_models,
+            get_models_by_type,
+            get_available_models,
+            get_model_by_id,
+            get_model_storage_stats,
+            scan_local_models,
+            import_model,
+            validate_model_for_context,
+            remove_model,
+            touch_model,
+            get_fallback_model,
+            load_model_into_cache,
+            get_model_cache_stats
         ])
         .setup(|app| {
             println!("RAG Studio application initializing...");

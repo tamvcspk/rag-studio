@@ -11,6 +11,7 @@
 mod protocol;
 mod python_ai;
 mod batch;
+mod model_cache;
 
 use anyhow::{Result, Context};
 use serde::{Deserialize, Serialize};

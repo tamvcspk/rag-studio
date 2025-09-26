@@ -2838,6 +2838,8 @@ name = "embedding-worker"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "chrono",
+ "lru",
  "pyo3",
  "pyo3-build-config",
  "serde",

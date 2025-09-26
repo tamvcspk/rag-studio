@@ -20,6 +20,7 @@ use rag_core::{
     services::embedding::{EmbeddingService, EmbeddingConfig},
     services::cache::{CacheService, CacheConfig, StringCache},
     services::storage::{StorageService, StorageConfig},
+    services::model::{ModelService, ModelConfig},
     EmbeddingHealthStatus,
     state::{AppState, StateManager, StateDelta, KnowledgeBaseState, KnowledgeBaseStatus},
     CoreError, CoreResult,
@@ -37,6 +38,7 @@ pub struct Manager {
     pub embedding_service: Arc<EmbeddingService>,
     pub cache_service: Arc<StringCache>,
     pub storage_service: Arc<tokio::sync::RwLock<StorageService>>,
+    pub model_service: Arc<tokio::sync::RwLock<ModelService>>,
     pub kb_service: Arc<KbServiceImpl>,
     pub app_handle: Option<AppHandle>,
 }
@@ -88,6 +90,15 @@ impl Manager {
             info!("✅ Embedding worker subprocess started successfully");
         }
 
+        // Initialize Model service with MVP config
+        let model_config = ModelConfig::new_mvp("./rag_models");
+        let model_service = Arc::new(tokio::sync::RwLock::new(
+            ModelService::new(model_config, storage_service.clone(), embedding_service.clone())
+                .await
+                .map_err(|e| CoreError::Service(e.to_string()))?
+        ));
+        info!("Model service initialized");
+
         // Initialize KB service
         let kb_config = KbConfig::mvp();
         let kb_service = Arc::new(KbServiceImpl::new(
@@ -105,6 +116,7 @@ impl Manager {
             embedding_service,
             cache_service,
             storage_service,
+            model_service,
             kb_service,
             app_handle: None,
         })

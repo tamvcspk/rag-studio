@@ -35,6 +35,10 @@ pub use services::embedding::{
 };
 pub use services::cache::{CacheService, CacheConfig, CacheError, CacheStats, StringCache, BytesCache, JsonCache};
 pub use services::storage::{StorageService, StorageConfig, StorageError, StorageStats, FileMetadata, PackManifest};
+pub use services::model::{
+    ModelService, ModelConfig, ModelError, ModelMetadata, ModelType, ModelSource,
+    ModelStatus, PerformanceMetrics, ModelStorageStats, ValidationWarning
+};
 pub use schemas::{VectorSchema, SearchResult, SearchQuery, SearchType, CitationInfo};
 
 // Re-export state management
