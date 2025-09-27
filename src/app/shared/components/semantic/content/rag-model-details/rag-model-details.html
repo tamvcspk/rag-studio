@@ -1,0 +1,215 @@
+<!-- Model Details Component -->
+<div class="rag-model-details" [class.compact]="compact()">
+
+  <!-- Model Header -->
+  <rag-card variant="elevated" class="model-header">
+    <div class="header-content">
+      <div class="model-title">
+        <div class="title-row">
+          <rag-icon [img]="modelTypeIcon()" size="lg" class="model-type-icon"></rag-icon>
+          <div class="title-info">
+            <h2 class="model-name">{{ model().name }}</h2>
+            <code class="model-id">{{ model().id }}</code>
+          </div>
+        </div>
+        <div class="status-row">
+          <rag-chip
+            [variant]="'soft'"
+            [color]="statusColor()"
+            size="sm">
+            <rag-icon [img]="statusIcon()" size="xs"></rag-icon>
+            {{ model().status }}
+          </rag-chip>
+          <rag-chip
+            [variant]="'outline'"
+            [color]="modelTypeColor()"
+            size="sm">
+            {{ model().model_type }}
+          </rag-chip>
+          <rag-chip
+            [variant]="'soft'"
+            [color]="sourceColor()"
+            size="sm">
+            <rag-icon [img]="sourceIcon()" size="xs"></rag-icon>
+            {{ model().source }}
+          </rag-chip>
+        </div>
+      </div>
+
+      @if (showActions()) {
+        <div class="header-actions">
+          @if (model().status === 'not_downloaded') {
+            <rag-button variant="solid" size="sm" (click)="onDownloadModel()">
+              <rag-icon [img]="DownloadIcon" size="sm"></rag-icon>
+              Download
+            </rag-button>
+          }
+          @if (model().source === 'huggingface') {
+            <rag-button variant="outline" size="sm" (click)="onViewSource()">
+              <rag-icon [img]="ExternalLinkIcon" size="sm"></rag-icon>
+              View Source
+            </rag-button>
+          }
+          @if (model().status === 'available') {
+            <rag-button variant="outline" size="sm" (click)="onRunBenchmark()">
+              <rag-icon [img]="ActivityIcon" size="sm"></rag-icon>
+              Benchmark
+            </rag-button>
+          }
+        </div>
+      }
+    </div>
+
+    @if (model().description) {
+      <div class="model-description">
+        <p>{{ model().description }}</p>
+      </div>
+    }
+  </rag-card>
+
+  <div class="details-grid">
+    <!-- Model Specifications -->
+    <rag-card variant="default" class="specifications-card">
+      <div class="card-header">
+        <rag-icon [img]="CpuIcon" size="md"></rag-icon>
+        <h3>Specifications</h3>
+      </div>
+
+      <div class="specs-list">
+        <div class="spec-item">
+          <span class="spec-label">Dimensions</span>
+          <span class="spec-value">{{ formatNumber(model().dimensions) }}D</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Max Sequence Length</span>
+          <span class="spec-value">{{ formatNumber(model().max_sequence_length) }}</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Model Size</span>
+          <span class="spec-value">{{ formatFileSize(model().size_mb) }}</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Memory Usage</span>
+          <span class="spec-value">{{ formatFileSize(memoryUsage()) }}</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Compatibility</span>
+          <span class="spec-value">{{ formatCompatibility(model().compatibility) }}</span>
+        </div>
+      </div>
+    </rag-card>
+
+    <!-- Performance Metrics -->
+    <rag-card variant="default" class="performance-card">
+      <div class="card-header">
+        <rag-icon [img]="ActivityIcon" size="md"></rag-icon>
+        <h3>Performance</h3>
+      </div>
+
+      <div class="metrics-list">
+        @if (model().performance_metrics.load_time_ms) {
+          <div class="metric-item">
+            <span class="metric-label">Load Time</span>
+            <span class="metric-value">{{ formatDuration(model().performance_metrics.load_time_ms!) }}</span>
+          </div>
+        }
+
+        @if (model().performance_metrics.throughput_vecs_per_sec) {
+          <div class="metric-item">
+            <span class="metric-label">Throughput</span>
+            <span class="metric-value">{{ formatNumber(model().performance_metrics.throughput_vecs_per_sec!) }}/sec</span>
+          </div>
+        }
+
+        @if (performanceScore()) {
+          <div class="metric-item">
+            <span class="metric-label">Accuracy Score</span>
+            <span class="metric-value performance-score">{{ performanceScore() }}%</span>
+          </div>
+        }
+
+        @if (model().performance_metrics.memory_usage_mb) {
+          <div class="metric-item">
+            <span class="metric-label">Runtime Memory</span>
+            <span class="metric-value">{{ formatFileSize(model().performance_metrics.memory_usage_mb!) }}</span>
+          </div>
+        }
+
+        @if (benchmarkDate()) {
+          <div class="metric-item">
+            <span class="metric-label">Last Benchmark</span>
+            <span class="metric-value">{{ benchmarkDate() }}</span>
+          </div>
+        } @else {
+          <div class="metric-item no-data">
+            <span class="metric-label">Performance Data</span>
+            <span class="metric-value">No benchmark data available</span>
+          </div>
+        }
+      </div>
+    </rag-card>
+
+    @if (!compact()) {
+      <!-- File Information -->
+      <rag-card variant="default" class="file-info-card">
+        <div class="card-header">
+          <rag-icon [img]="HardDriveIcon" size="md"></rag-icon>
+          <h3>File Information</h3>
+        </div>
+
+        <div class="file-info-list">
+          @if (model().local_path) {
+            <div class="file-item">
+              <span class="file-label">Local Path</span>
+              <code class="file-value">{{ model().local_path }}</code>
+            </div>
+          }
+
+          @if (model().checksum) {
+            <div class="file-item">
+              <span class="file-label">Checksum</span>
+              <code class="file-value checksum">{{ model().checksum }}</code>
+            </div>
+          }
+
+          <div class="file-item">
+            <span class="file-label">Created</span>
+            <span class="file-value">{{ createdAtFormatted() }}</span>
+          </div>
+
+          <div class="file-item">
+            <span class="file-label">Updated</span>
+            <span class="file-value">{{ updatedAtFormatted() }}</span>
+          </div>
+
+          <div class="file-item">
+            <span class="file-label">Last Used</span>
+            <span class="file-value">{{ lastUsedFormatted() }}</span>
+          </div>
+        </div>
+      </rag-card>
+
+      <!-- Model Actions (when not in header) -->
+      @if (showActions() && (model().status === 'available' || model().status === 'error')) {
+        <rag-card variant="default" class="actions-card">
+          <div class="card-header">
+            <rag-icon [img]="ActivityIcon" size="md"></rag-icon>
+            <h3>Actions</h3>
+          </div>
+
+          <div class="actions-grid">
+            <rag-button variant="outline" size="md" (click)="onRunBenchmark()" class="action-button">
+              <rag-icon [img]="ActivityIcon" size="sm"></rag-icon>
+              Run Benchmark
+            </rag-button>
+
+            <rag-button variant="outline" size="md" color="red" (click)="onDeleteModel()" class="action-button">
+              <rag-icon [img]="XCircleIcon" size="sm"></rag-icon>
+              Delete Model
+            </rag-button>
+          </div>
+        </rag-card>
+      }
+    }
+  </div>
+</div>

@@ -22,6 +22,13 @@ pub mod utils;
 
 // Re-export commonly used domain types
 pub use modules::kb::{KbService, KbServiceImpl, KbError, KbConfig, DocumentInfo, KbStats, KbInfo};
+pub use modules::pipeline::{
+    PipelineService, PipelineServiceImpl, PipelineError, PipelineResult,
+    Pipeline, PipelineRun, PipelineTemplate, ETLStepType, PipelineStatus,
+    PipelineExecutor, ExecutionContext, StepResult, KB_CREATION_TEMPLATES,
+    get_kb_creation_template, PipelineRunStatus, PipelineSpec, PipelineRunMetrics,
+    RunTrigger, PipelineStep
+};
 
 // Re-export commonly used infrastructure services
 pub use services::sql::{SqlService, SqlConfig, SqlError};

@@ -6,6 +6,7 @@ import { Plus, X } from 'lucide-angular';
 import { ContentSourceType, EmbeddingModel, CreateKBFormData } from '../../../types';
 import { RagDialog } from '../../semantic/overlay/rag-dialog/rag-dialog';
 import { RagFormField } from '../../semantic/forms/rag-form-field/rag-form-field';
+import { RagModelSelector } from '../../semantic/forms/rag-model-selector/rag-model-selector';
 import { RagInput } from '../../atomic/primitives/rag-input/rag-input';
 import { RagTextarea } from '../../atomic/primitives/rag-textarea/rag-textarea';
 import { RagSelect } from '../../atomic/primitives/rag-select/rag-select';
@@ -18,11 +19,6 @@ interface ContentSourceOption {
   description: string;
 }
 
-interface EmbeddingModelOption {
-  value: EmbeddingModel;
-  label: string;
-  description: string;
-}
 
 @Component({
   selector: 'app-create-kb-wizard',
@@ -33,6 +29,7 @@ interface EmbeddingModelOption {
     RagIcon,
     RagDialog,
     RagFormField,
+    RagModelSelector,
     RagInput,
     RagTextarea,
     RagSelect,
@@ -55,7 +52,7 @@ export class CreateKBWizard {
     description: [''],
     contentSource: ['local-folder' as ContentSourceType, [Validators.required]],
     sourceUrl: [''],
-    embeddingModel: ['all-MiniLM-L6-v2' as EmbeddingModel, [Validators.required]]
+    embeddingModel: ['', [Validators.required]]
   });
 
   readonly contentSourceOptions: ContentSourceOption[] = [
@@ -81,23 +78,6 @@ export class CreateKBWizard {
     }
   ];
 
-  readonly embeddingModelOptions: EmbeddingModelOption[] = [
-    {
-      value: 'all-MiniLM-L6-v2',
-      label: 'all-MiniLM-L6-v2',
-      description: 'Fast, 384 dimensions - Good for general purpose'
-    },
-    {
-      value: 'all-mpnet-base-v2',
-      label: 'all-mpnet-base-v2', 
-      description: 'Balanced, 768 dimensions - Better accuracy'
-    },
-    {
-      value: 'e5-large-v2',
-      label: 'e5-large-v2',
-      description: 'Accurate, 1024 dimensions - Highest quality'
-    }
-  ];
 
   readonly selectedContentSource = computed(() => {
     const value = this.kbForm.get('contentSource')?.value as ContentSourceType;

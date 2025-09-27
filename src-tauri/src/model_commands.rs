@@ -6,7 +6,7 @@
  */
 
 use std::sync::Arc;
-use tauri::{State, AppHandle, Manager as TauriManager};
+use tauri::{State, AppHandle, Manager as TauriManager, Emitter};
 use tracing::{info, error, warn, debug};
 use serde::{Serialize, Deserialize};
 
@@ -72,16 +72,9 @@ pub async fn get_models(
     let manager = app.state::<Arc<Manager>>();
     let model_service = manager.model_service.read().await;
 
-    match model_service.list_models().await {
-        Ok(models) => {
-            info!("✅ Retrieved {} models", models.len());
-            Ok(models)
-        }
-        Err(e) => {
-            error!("❌ Failed to get models: {}", e);
-            Err(format!("Failed to get models: {}", e))
-        }
-    }
+    let models = model_service.list_models().await;
+    info!("✅ Retrieved {} models", models.len());
+    Ok(models)
 }
 
 /// Get models by type (embedding, reranking, combined)
@@ -105,16 +98,9 @@ pub async fn get_models_by_type(
         }
     };
 
-    match model_service.list_models_by_type(parsed_type).await {
-        Ok(models) => {
-            info!("✅ Retrieved {} models of type {}", models.len(), model_type);
-            Ok(models)
-        }
-        Err(e) => {
-            error!("❌ Failed to get models by type: {}", e);
-            Err(format!("Failed to get models by type: {}", e))
-        }
-    }
+    let models = model_service.list_models_by_type(parsed_type).await;
+    info!("✅ Retrieved {} models of type {}", models.len(), model_type);
+    Ok(models)
 }
 
 /// Get available (ready-to-use) models
@@ -127,16 +113,9 @@ pub async fn get_available_models(
     let manager = app.state::<Arc<Manager>>();
     let model_service = manager.model_service.read().await;
 
-    match model_service.list_available_models().await {
-        Ok(models) => {
-            info!("✅ Retrieved {} available models", models.len());
-            Ok(models)
-        }
-        Err(e) => {
-            error!("❌ Failed to get available models: {}", e);
-            Err(format!("Failed to get available models: {}", e))
-        }
-    }
+    let models = model_service.list_available_models().await;
+    info!("✅ Retrieved {} available models", models.len());
+    Ok(models)
 }
 
 /// Get model by ID
@@ -193,7 +172,7 @@ pub async fn scan_local_models(
     info!("🔍 Scanning for local models");
 
     let manager = app.state::<Arc<Manager>>();
-    let mut model_service = manager.model_service.write().await;
+    let model_service = manager.model_service.write().await;
 
     match model_service.scan_local_models().await {
         Ok(discovered_models) => {
@@ -222,7 +201,7 @@ pub async fn import_model(
     info!("📥 Importing model from: {}", request.local_path);
 
     let manager = app.state::<Arc<Manager>>();
-    let mut model_service = manager.model_service.write().await;
+    let model_service = manager.model_service.write().await;
 
     // For now, we'll use the basic detection from scan_local_models
     // In the future, this would have more sophisticated import logic
@@ -327,7 +306,7 @@ pub async fn remove_model(
     info!("🗑️  Removing model: {}", model_id);
 
     let manager = app.state::<Arc<Manager>>();
-    let mut model_service = manager.model_service.write().await;
+    let model_service = manager.model_service.write().await;
 
     match model_service.remove_model(&model_id).await {
         Ok(()) => {
@@ -439,7 +418,7 @@ pub async fn load_model_into_cache(
 /// Get embedding worker cache statistics
 #[tauri::command]
 pub async fn get_model_cache_stats(
-    app: AppHandle,
+    _app: AppHandle,
 ) -> Result<serde_json::Value, String> {
     info!("📊 Getting model cache statistics");
 

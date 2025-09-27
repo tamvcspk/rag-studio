@@ -58,20 +58,15 @@
 
       <rag-form-field label="Embedding Model"
         description="Choose the model that will generate vector embeddings for your content">
-        <rag-select formControlName="embeddingModel">
-          @for (option of embeddingModelOptions; track option.value) {
-          <option [value]="option.value">{{ option.label }}</option>
-          }
-        </rag-select>
+        <rag-model-selector
+          formControlName="embeddingModel"
+          variant="dropdown"
+          filterType="embedding"
+          placeholder="Select an embedding model"
+          [showStatus]="true"
+          [showMetrics]="true">
+        </rag-model-selector>
       </rag-form-field>
-
-      <div class="model-description">
-        @for (option of embeddingModelOptions; track option.value) {
-        @if (kbForm.get('embeddingModel')?.value === option.value) {
-        <p class="description-text">{{ option.description }}</p>
-        }
-        }
-      </div>
     </div>
   </form>
 

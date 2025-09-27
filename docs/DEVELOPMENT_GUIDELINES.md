@@ -91,14 +91,43 @@ export class RagExampleComponent {  // Rag prefix for atomic/semantic components
 ### Design System Integration
 **NOTE**: Complete design system and component architecture standards are documented in `docs/DEVELOPMENT_CONVENTIONS.md`.
 
-- Use Radix-inspired design system components consistently
-- Use Lucide Icons for all iconography (3,300+ icons, tree-shakeable)
-- 3-tier component architecture: Atomic → Semantic → Composite
-- **Component Naming**:
-  - Atomic and Semantic components use `rag-` prefix (`rag-button`, `rag-card`)
-  - Composite components and Pages do NOT use `rag-` prefix (`settings-panel`, `dashboard-page`)
-- SCSS with CSS custom properties for theming (light/dark mode support)
-- Responsive layouts using CSS Grid and Flexbox
+#### **CRITICAL: Always Use Existing Components and Design Tokens**
+
+1. **Use Existing Components First**: Before creating new UI elements, check the existing component library:
+   - **Atomic Components**: `rag-button`, `rag-card`, `rag-icon`, `rag-chip`, `rag-input`, etc.
+   - **Semantic Components**: `rag-page-header`, `rag-stats-overview`, `rag-dialog`, etc.
+   - **Composite Components**: `empty-state-panel`, `create-*-wizard`, etc.
+   - Check `docs/docs/ATOMIC_COMPONENTS_REFERENCE.md` for complete component reference
+
+2. **Design Token System**: **MANDATORY** - All styling must use design tokens from `docs/docs/DESIGN_TOKENS_GUIDE.md`:
+   - **Primitive Tokens**: `var(--rag-primitive-spacing-md)`, `var(--rag-primitive-color-blue-500)`
+   - **Semantic Tokens**: `var(--rag-semantic-color-background-default)`, `var(--rag-semantic-color-text-default)`
+   - **Component Archetypes**: Use `ComponentArchetypes.button.solid`, `ComponentArchetypes.size.md`
+   - **NO Custom CSS**: Avoid custom spacing, colors, or sizing - use design tokens exclusively
+
+3. **Icon Usage Pattern**: Follow the established pattern from `docs/docs/ATOMIC_COMPONENTS_REFERENCE.md`:
+   ```typescript
+   // ✅ Correct: Import specific icons and use rag-icon component
+   import { CheckIcon, CpuIcon } from 'lucide-angular';
+
+   @Component({
+     imports: [RagIcon],
+     template: `<rag-icon [img]="CheckIcon" size="md"></rag-icon>`
+   })
+   export class MyComponent {
+     readonly CheckIcon = CheckIcon;
+   }
+   ```
+
+4. **Component Architecture Guidelines**:
+   - Use Radix-inspired design system components consistently
+   - Use Lucide Icons for all iconography (3,300+ icons, tree-shakeable)
+   - 3-tier component architecture: Atomic → Semantic → Composite
+   - **Component Naming**:
+     - Atomic and Semantic components use `rag-` prefix (`rag-button`, `rag-card`)
+     - Composite components and Pages do NOT use `rag-` prefix (`settings-panel`, `dashboard-page`)
+   - SCSS with CSS custom properties for theming (light/dark mode support)
+   - Responsive layouts using CSS Grid and Flexbox
 
 ### Migration from Older Angular Versions
 - Replace `@Input()` with `input()` or `input.required()`

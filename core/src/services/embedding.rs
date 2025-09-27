@@ -12,8 +12,7 @@ use std::process::{Child, Command, Stdio};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 use serde::{Deserialize, Serialize};
-use tokio::sync::mpsc;
-use tracing::{debug, error, info, warn};
+use tracing::{error, info, warn};
 use uuid::Uuid;
 
 use crate::CoreError;
@@ -206,7 +205,7 @@ impl EmbeddingService {
         info!("🛑 Stopping embedding worker subprocess");
 
         // Take the worker process out of the option
-        let mut worker_process_opt = {
+        let worker_process_opt = {
             let mut process_guard = self.worker_process.lock()
                 .map_err(|e| CoreError::Service(format!("Failed to acquire process lock: {}", e)))?;
             process_guard.take()
@@ -393,7 +392,7 @@ impl EmbeddingService {
     /// Check if worker process is running
     pub fn is_worker_running(&self) -> bool {
         if let Ok(process_guard) = self.worker_process.lock() {
-            if let Some(worker_process) = process_guard.as_ref() {
+            if let Some(_worker_process) = process_guard.as_ref() {
                 // Check if process is still running (simplified check)
                 return true; // In a real implementation, check process status
             }

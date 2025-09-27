@@ -1,0 +1,154 @@
+<div class="models-page">
+  <div class="sticky-header">
+    <!-- Page Header with Search -->
+    <rag-page-header [title]="'Model Management'"
+      [description]="'Manage embedding and reranking models for RAG operations'"
+      [icon]="CpuIcon"
+      [actions]="headerActions()"
+      [showSearch]="true"
+      [searchPlaceholder]="'Search models by name, type, or description...'"
+      [searchValue]="searchQuery()"
+      (searchChange)="onSearchChange($event)"
+      (searchClear)="onSearchClear()"
+      size="lg">
+    </rag-page-header>
+
+    <!-- Statistics Overview -->
+    <rag-stats-overview
+      [stats]="modelStatsItems()"
+      [loading]="loading()"
+      (filterChange)="onFilterChange($event)">
+    </rag-stats-overview>
+  </div>
+
+  <!-- Models Content -->
+  <div class="models-content">
+    @if (filteredModels().length === 0 && searchQuery() === '' && selectedFilters().length === 0) {
+      <!-- Empty state - no models available -->
+      <rag-empty-state-panel
+        [icon]="CpuIcon"
+        [title]="'No models available'"
+        [description]="'Import your first embedding model to get started with RAG operations'"
+        [actionLabel]="'Import Model'"
+        (action)="onImportModel()">
+      </rag-empty-state-panel>
+    } @else if (filteredModels().length === 0) {
+      <!-- No results for current filters -->
+      <rag-empty-state-panel
+        [icon]="SearchIcon"
+        [title]="'No models found'"
+        [description]="'Try adjusting your search or filter criteria'"
+        [actionLabel]="'Clear Filters'"
+        (action)="onSearchClear()">
+      </rag-empty-state-panel>
+    } @else {
+      <!-- Models Grid -->
+      <div class="models-grid">
+        @for (model of filteredModels(); track model.id) {
+          <rag-card variant="elevated" [interactive]="true">
+            <!-- Model Header -->
+            <div class="model-header">
+              <div class="model-icon">
+                <rag-icon [img]="CpuIcon" size="md"></rag-icon>
+              </div>
+              <div class="model-title">
+                <h3>{{ model.name }}</h3>
+                <span class="model-id">{{ model.id }}</span>
+              </div>
+              <div class="model-status">
+                @if (model.status === 'available') {
+                  <rag-chip variant="soft" color="green">
+                    <rag-icon [img]="CheckCircleIcon" size="xs"></rag-icon>
+                    Available
+                  </rag-chip>
+                } @else if (model.status === 'downloading') {
+                  <rag-chip variant="soft" color="blue">
+                    <rag-icon [img]="DownloadIcon" size="xs"></rag-icon>
+                    Downloading
+                  </rag-chip>
+                } @else if (model.status === 'error') {
+                  <rag-chip variant="soft" color="red">
+                    <rag-icon [img]="AlertTriangleIcon" size="xs"></rag-icon>
+                    Error
+                  </rag-chip>
+                } @else {
+                  <rag-chip variant="soft" color="gray">
+                    {{ model.status }}
+                  </rag-chip>
+                }
+              </div>
+            </div>
+
+            <!-- Model Details -->
+            <div class="model-body">
+              <p class="model-description">{{ model.description }}</p>
+
+              <div class="model-metadata">
+                <div class="metadata-item">
+                  <span class="metadata-label">Type:</span>
+                  <span class="metadata-value">{{ model.model_type }}</span>
+                </div>
+                <div class="metadata-item">
+                  <span class="metadata-label">Source:</span>
+                  <span class="metadata-value">{{ model.source }}</span>
+                </div>
+                <div class="metadata-item">
+                  <span class="metadata-label">Size:</span>
+                  <span class="metadata-value">{{ model.size_mb }} MB</span>
+                </div>
+                <div class="metadata-item">
+                  <span class="metadata-label">Dimensions:</span>
+                  <span class="metadata-value">{{ model.dimensions }}</span>
+                </div>
+              </div>
+
+              @if (model.performance_metrics.accuracy_score) {
+                <div class="model-performance">
+                  <span class="performance-label">Accuracy:</span>
+                  <span class="performance-value">{{ (model.performance_metrics.accuracy_score * 100).toFixed(1) }}%</span>
+                </div>
+              }
+            </div>
+
+            <!-- Model Actions -->
+            <div class="model-actions">
+              @if (model.status === 'available') {
+                <rag-button
+                  variant="solid"
+                  size="sm"
+                  (onClick)="onModelLoadCache(model.id)">
+                  <rag-icon [img]="ActivityIcon" size="xs"></rag-icon>
+                  Load Cache
+                </rag-button>
+              }
+
+              <rag-button
+                variant="outline"
+                size="sm"
+                (onClick)="onModelDetails(model.id)">
+                Details
+              </rag-button>
+
+              @if (model.source === 'local' || model.source === 'manual') {
+                <rag-button
+                  variant="outline"
+                  size="sm"
+                  color="red"
+                  (onClick)="onModelRemove(model.id)">
+                  Remove
+                </rag-button>
+              }
+            </div>
+          </rag-card>
+        } @empty {
+          <rag-empty-state-panel
+            [icon]="CpuIcon"
+            [title]="'No models available'"
+            [description]="'This shouldn\'t happen. Please try refreshing the page.'"
+            [showAction]="false">
+          </rag-empty-state-panel>
+        }
+      </div>
+    }
+  </div>
+</div>

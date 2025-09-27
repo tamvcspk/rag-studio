@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { RagTabNavigation, type TabNavItem } from '../../components/semantic/navigation/rag-tab-navigation/rag-tab-navigation';
 import { filter } from 'rxjs';
-import { 
+import {
   LayoutDashboardIcon,
   WrenchIcon,
+  CpuIcon,
   BookOpenIcon,
   WorkflowIcon,
   GitBranchIcon,
@@ -32,6 +33,7 @@ export class TabsLayout {
   readonly navItems: NavItem[] = [
     { path: '/dashboard', title: 'Dashboard', icon: LayoutDashboardIcon },
     { path: '/tools', title: 'Tools', icon: WrenchIcon },
+    { path: '/models', title: 'Models', icon: CpuIcon },
     { path: '/knowledge-bases', title: 'Knowledge Bases', icon: BookOpenIcon },
     { path: '/pipelines', title: 'Pipelines', icon: WorkflowIcon },
     { path: '/flows', title: 'Flows', icon: GitBranchIcon }

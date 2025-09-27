@@ -1,0 +1,222 @@
+<!-- Model Import Wizard Component -->
+<rag-dialog title="Import Model" description="Import a new model from Hugging Face or local files"
+  size="lg" [showCloseButton]="true">
+
+  <form [formGroup]="importForm" (ngSubmit)="onSubmit()" class="import-form">
+
+    <!-- Basic Information Section -->
+    <div class="form-section">
+      <h3 class="section-title">Basic Information</h3>
+
+      <rag-form-field label="Model Name" [error]="getFieldError('name')">
+        <rag-input formControlName="name" placeholder="e.g., all-MiniLM-L6-v2" [error]="!!getFieldError('name')">
+        </rag-input>
+      </rag-form-field>
+
+      <div class="form-row">
+        <rag-form-field label="Model Type" [error]="getFieldError('model_type')">
+          <rag-select formControlName="model_type">
+            @for (option of modelTypeOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+            }
+          </rag-select>
+        </rag-form-field>
+
+        <rag-form-field label="Compatibility" [error]="getFieldError('compatibility')">
+          <rag-select formControlName="compatibility">
+            @for (option of compatibilityOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+            }
+          </rag-select>
+        </rag-form-field>
+      </div>
+
+      <rag-form-field label="Description (Optional)">
+        <rag-textarea formControlName="description" placeholder="Describe this model's capabilities..."
+          [rows]="3">
+        </rag-textarea>
+      </rag-form-field>
+    </div>
+
+    <!-- Source Configuration Section -->
+    <div class="form-section">
+      <h3 class="section-title">Source Configuration</h3>
+
+      <rag-form-field label="Import Source" [description]="sourceDescription()">
+        <rag-select formControlName="source">
+          @for (option of sourceOptions; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+          }
+        </rag-select>
+      </rag-form-field>
+
+      <!-- Hugging Face URL Input -->
+      @if (showUrlInput()) {
+        <rag-form-field label="Model URL" [error]="getFieldError('source_url')">
+          <rag-input formControlName="source_url"
+            placeholder="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2"
+            [error]="!!getFieldError('source_url')">
+          </rag-input>
+        </rag-form-field>
+      }
+
+      <!-- File Upload Section -->
+      @if (showFileUpload()) {
+        <rag-form-field label="Model Files">
+          <!-- Drag & Drop Zone -->
+          <div class="file-upload-zone"
+               [class.drag-over]="dragOver()"
+               [class.has-files]="selectedFiles().length > 0"
+               (dragover)="onDragOver($event)"
+               (dragleave)="onDragLeave($event)"
+               (drop)="onDrop($event)">
+
+            @if (selectedFiles().length === 0) {
+              <!-- Empty State -->
+              <div class="upload-empty-state">
+                <rag-icon [img]="iconComponents.Upload" size="xl" class="upload-icon"></rag-icon>
+                <h4>Drag and drop model files here</h4>
+                <p>Or click to browse and select files</p>
+                <p class="file-info">
+                  Supported: .bin, .safetensors, .pt, .onnx, .json, .txt, .cfg, .yaml
+                </p>
+                <rag-button variant="outline" size="md" type="button" class="browse-button">
+                  <rag-icon [img]="iconComponents.Upload" size="sm"></rag-icon>
+                  Browse Files
+                </rag-button>
+              </div>
+            } @else {
+              <!-- Files List -->
+              <div class="files-list">
+                <div class="files-header">
+                  <h4>Selected Files ({{ selectedFiles().length }})</h4>
+                  <div class="files-stats">
+                    <span class="total-size">{{ formatFileSize(totalFileSize()) }}</span>
+                    @if (invalidFiles().length > 0) {
+                      <rag-chip variant="soft" color="red" size="xs">
+                        {{ invalidFiles().length }} error{{ invalidFiles().length > 1 ? 's' : '' }}
+                      </rag-chip>
+                    }
+                  </div>
+                </div>
+
+                <div class="file-items">
+                  @for (fileValidation of selectedFiles(); track fileValidation.file.name; let i = $index) {
+                    <rag-card variant="default" class="file-item" [class.invalid]="!fileValidation.isValid">
+                      <div class="file-content">
+                        <div class="file-main">
+                          <rag-icon [img]="getFileIcon(fileValidation)" size="md" class="file-icon"></rag-icon>
+                          <div class="file-details">
+                            <span class="file-name">{{ fileValidation.file.name }}</span>
+                            <span class="file-meta">
+                              {{ formatFileSize(fileValidation.size) }} • {{ fileValidation.type }}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div class="file-actions">
+                          @if (fileValidation.isValid) {
+                            <rag-chip variant="soft" color="green" size="xs">
+                              <rag-icon [img]="iconComponents.CheckCircle" size="xs"></rag-icon>
+                              Valid
+                            </rag-chip>
+                          } @else {
+                            <rag-chip variant="soft" color="red" size="xs">
+                              <rag-icon [img]="iconComponents.AlertCircle" size="xs"></rag-icon>
+                              Error
+                            </rag-chip>
+                          }
+                          <rag-button variant="outline" size="sm" color="red" (click)="removeFile(i)">
+                            <rag-icon [img]="iconComponents.X" size="xs"></rag-icon>
+                          </rag-button>
+                        </div>
+                      </div>
+
+                      @if (!fileValidation.isValid && fileValidation.errors.length > 0) {
+                        <div class="file-errors">
+                          @for (error of fileValidation.errors; track error) {
+                            <div class="error-item">
+                              <rag-icon [img]="iconComponents.AlertCircle" size="xs"></rag-icon>
+                              <span>{{ error }}</span>
+                            </div>
+                          }
+                        </div>
+                      }
+                    </rag-card>
+                  }
+                </div>
+
+                <div class="add-more-files">
+                  <rag-button variant="outline" size="sm" type="button" class="add-files-button">
+                    <rag-icon [img]="iconComponents.Upload" size="sm"></rag-icon>
+                    Add More Files
+                  </rag-button>
+                </div>
+              </div>
+            }
+
+            <!-- Hidden File Input -->
+            <input type="file"
+                   #fileInput
+                   multiple
+                   accept=".bin,.safetensors,.pt,.pth,.onnx,.json,.txt,.cfg,.yaml,.yml"
+                   (change)="onFileSelect($event)"
+                   class="hidden-file-input">
+          </div>
+
+          @if (isValidating()) {
+            <div class="validation-status">
+              <rag-icon [img]="iconComponents.Download" size="sm" class="spinning"></rag-icon>
+              <span>Validating files...</span>
+            </div>
+          }
+        </rag-form-field>
+      }
+    </div>
+
+    <!-- Summary Section -->
+    @if (showFileUpload() && selectedFiles().length > 0) {
+      <div class="form-section">
+        <h3 class="section-title">Import Summary</h3>
+        <rag-card variant="default" class="summary-card">
+          <div class="summary-stats">
+            <div class="stat-item">
+              <span class="stat-label">Files</span>
+              <span class="stat-value">{{ selectedFiles().length }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Valid</span>
+              <span class="stat-value success">{{ validFiles().length }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Errors</span>
+              <span class="stat-value error">{{ invalidFiles().length }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Total Size</span>
+              <span class="stat-value">{{ formatFileSize(totalFileSize()) }}</span>
+            </div>
+          </div>
+        </rag-card>
+      </div>
+    }
+  </form>
+
+  <div slot="footer" class="wizard-actions">
+    <rag-button variant="outline" size="md" type="button" (click)="cancel()" [disabled]="isSubmitting()">
+      Cancel
+    </rag-button>
+
+    <rag-button variant="solid" size="md" type="button"
+                [disabled]="!canSubmit() || isSubmitting()"
+                [loading]="isSubmitting()"
+                (click)="onSubmit()">
+      @if (isSubmitting()) {
+        Importing...
+      } @else {
+        <rag-icon [img]="iconComponents.Download" size="sm" />
+        Import Model
+      }
+    </rag-button>
+  </div>
+</rag-dialog>

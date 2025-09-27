@@ -265,7 +265,9 @@ export const KnowledgeBasesStore = signalStore(
           description: formData.description,
           content_source: formData.contentSource,
           source_url: formData.sourceUrl,
-          embedding_model: formData.embeddingModel,
+          embedding_model: typeof formData.embeddingModel === 'string'
+            ? formData.embeddingModel
+            : formData.embeddingModel?.id || 'sentence-transformers/all-MiniLM-L6-v2',
           chunk_size: formData.chunkSize
         };
 

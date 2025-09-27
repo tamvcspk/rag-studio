@@ -22,10 +22,6 @@ use model_commands::*;
 // Global Manager instance for application services
 static MANAGER: OnceLock<Arc<Manager>> = OnceLock::new();
 
-async fn get_manager() -> Arc<Manager> {
-    MANAGER.get().unwrap().clone()
-}
-
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -131,34 +127,53 @@ pub fn run() {
         .setup(|app| {
             println!("RAG Studio application initializing...");
 
-            // Initialize Manager in async context
+            // Initialize Manager synchronously to avoid race conditions
             let app_handle = app.handle().clone();
-            tauri::async_runtime::spawn(async move {
-                match Manager::new().await {
-                    Ok(mut manager) => {
-                        manager.set_app_handle(app_handle.clone());
 
-                        // Load initial state
-                        if let Err(e) = manager.load_initial_state().await {
-                            eprintln!("Failed to load initial state: {}", e);
-                        }
-
-                        // Store manager globally
-                        let manager_arc = Arc::new(manager);
-                        if MANAGER.set(manager_arc.clone()).is_err() {
-                            eprintln!("Failed to set global manager instance");
-                        }
-
-                        // Add manager to app state for Tauri commands
-                        app_handle.manage(manager_arc.as_ref().clone());
-
-                        println!("✅ RAG Studio Manager initialized successfully");
-                    }
-                    Err(e) => {
-                        eprintln!("❌ Failed to initialize Manager: {}", e);
-                    }
-                }
+            // Use block_on to ensure Manager is initialized before setup completes
+            let manager_result = tauri::async_runtime::block_on(async {
+                Manager::new().await
             });
+
+            match manager_result {
+                Ok(mut manager) => {
+                    manager.set_app_handle(app_handle.clone());
+
+                    // Load initial state
+                    let manager_arc = Arc::new(manager);
+
+                    // Store manager globally
+                    if MANAGER.set(manager_arc.clone()).is_err() {
+                        eprintln!("Failed to set global manager instance");
+                        return Err(Box::new(std::io::Error::new(
+                            std::io::ErrorKind::Other,
+                            "Failed to set global manager instance"
+                        )));
+                    }
+
+                    // Add manager to app state for Tauri commands BEFORE any commands can be called
+                    app.manage(manager_arc);
+
+                    // Load initial state asynchronously after manager is available
+                    let manager_for_loading = MANAGER.get().unwrap().clone();
+                    tauri::async_runtime::spawn(async move {
+                        if let Err(e) = manager_for_loading.load_initial_state().await {
+                            eprintln!("Failed to load initial state: {}", e);
+                        } else {
+                            println!("✅ RAG Studio initial state loaded successfully");
+                        }
+                    });
+
+                    println!("✅ RAG Studio Manager initialized successfully");
+                }
+                Err(e) => {
+                    eprintln!("❌ Failed to initialize Manager: {}", e);
+                    return Err(Box::new(std::io::Error::new(
+                        std::io::ErrorKind::Other,
+                        format!("Failed to initialize Manager: {}", e)
+                    )));
+                }
+            }
 
             println!("RAG Studio application setup completed.");
             Ok(())

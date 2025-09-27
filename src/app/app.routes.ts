@@ -1,6 +1,7 @@
 import { Routes } from "@angular/router";
 import { Dashboard } from "./pages/dashboard/dashboard";
 import { Tools } from "./pages/tools/tools";
+import { Models } from "./pages/models/models";
 import { KnowledgeBases } from "./pages/knowledge-bases/knowledge-bases";
 import { Pipelines } from "./pages/pipelines/pipelines";
 import { Flows } from "./pages/flows/flows";
@@ -30,6 +31,11 @@ export const routes: Routes = [
             path: 'tools',
             component: Tools,
             data: { title: 'Tools', icon: 'wrench' }
+          },
+          {
+            path: 'models',
+            component: Models,
+            data: { title: 'Models', icon: 'cpu' }
           },
           {
             path: 'knowledge-bases',

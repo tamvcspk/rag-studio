@@ -3,6 +3,8 @@
  *
  * This module provides the Tauri command interface for pipeline management,
  * following the established pattern from kb_commands.rs and settings_commands.rs.
+ *
+ * Updated to use the real Pipeline implementation from core crate instead of mock API.
  */
 
 use tauri::State;
@@ -12,93 +14,14 @@ use tracing::{info, error};
 
 use crate::manager::Manager;
 use rag_core::state::StateDelta;
-// Import pipeline types when implemented
-// use rag_core::models::pipeline::{Pipeline, PipelineSpec, PipelineRun, PipelineTemplate};
+use rag_core::{
+    Pipeline, PipelineRun, PipelineTemplate, PipelineStatus, PipelineRunStatus,
+    ETLStepType, KB_CREATION_TEMPLATES, get_kb_creation_template,
+    PipelineSpec, PipelineRunMetrics, RunTrigger, PipelineStep
+};
+use rag_core::modules::pipeline::TriggerType;
 
-// Temporary pipeline types for Phase 4.4 implementation
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Pipeline {
-    pub id: String,
-    pub name: String,
-    pub description: String,
-    pub spec: PipelineSpec,
-    pub status: PipelineStatus,
-    pub created_at: String,
-    pub updated_at: String,
-    pub last_run_at: Option<String>,
-    pub tags: Vec<String>,
-    pub metadata: HashMap<String, serde_json::Value>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PipelineSpec {
-    pub version: String,
-    pub steps: Vec<PipelineStep>,
-    pub parameters: HashMap<String, PipelineParameter>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PipelineStep {
-    pub id: String,
-    pub name: String,
-    pub step_type: String,
-    pub config: HashMap<String, serde_json::Value>,
-    pub dependencies: Vec<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PipelineParameter {
-    pub name: String,
-    pub param_type: String,
-    pub description: String,
-    pub required: bool,
-    pub default_value: Option<serde_json::Value>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum PipelineStatus {
-    Draft,
-    Active,
-    Paused,
-    Error,
-    Archived,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PipelineRun {
-    pub id: String,
-    pub pipeline_id: String,
-    pub started_at: String,
-    pub ended_at: Option<String>,
-    pub status: PipelineRunStatus,
-    pub metrics: PipelineRunMetrics,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum PipelineRunStatus {
-    Pending,
-    Running,
-    Completed,
-    Failed,
-    Cancelled,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PipelineRunMetrics {
-    pub duration: Option<u64>,
-    pub steps_completed: u32,
-    pub steps_total: u32,
-    pub records_processed: Option<u64>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PipelineTemplate {
-    pub id: String,
-    pub name: String,
-    pub description: String,
-    pub category: String,
-    pub spec: PipelineSpec,
-}
+// Request/Response types for Tauri commands
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreatePipelineRequest {
@@ -178,24 +101,37 @@ pub async fn get_pipelines(
                     PipelineStep {
                         id: "step-1".to_string(),
                         name: "Fetch Data".to_string(),
-                        step_type: "fetch".to_string(),
+                        step_type: ETLStepType::Fetch,
                         config: HashMap::new(),
+                        inputs: vec![],
+                        outputs: vec![],
                         dependencies: vec![],
+                        retry_policy: None,
+                        timeout: None,
+                        parallelizable: false,
                     },
                     PipelineStep {
                         id: "step-2".to_string(),
                         name: "Parse Documents".to_string(),
-                        step_type: "parse".to_string(),
+                        step_type: ETLStepType::Parse,
                         config: HashMap::new(),
+                        inputs: vec![],
+                        outputs: vec![],
                         dependencies: vec!["step-1".to_string()],
+                        retry_policy: None,
+                        timeout: None,
+                        parallelizable: false,
                     },
                 ],
                 parameters: HashMap::new(),
+                resources: None,
+                triggers: vec![],
             },
             status: PipelineStatus::Active,
-            created_at: "2025-01-01T00:00:00Z".to_string(),
-            updated_at: "2025-01-01T00:00:00Z".to_string(),
-            last_run_at: Some("2025-01-01T12:00:00Z".to_string()),
+            templates: vec![],
+            last_run_at: Some(chrono::Utc::now()),
+            created_at: chrono::Utc::now(),
+            updated_at: chrono::Utc::now(),
             tags: vec!["sync".to_string(), "github".to_string()],
             metadata: HashMap::new(),
         },
@@ -205,15 +141,32 @@ pub async fn get_pipelines(
         PipelineRun {
             id: "run-1".to_string(),
             pipeline_id: "pipeline-1".to_string(),
-            started_at: "2025-01-01T12:00:00Z".to_string(),
-            ended_at: Some("2025-01-01T12:15:00Z".to_string()),
+            started_at: chrono::Utc::now(),
+            ended_at: Some(chrono::Utc::now()),
             status: PipelineRunStatus::Completed,
+            logs_ref: None,
+            artifacts_ref: None,
             metrics: PipelineRunMetrics {
                 duration: Some(900000), // 15 minutes in ms
                 steps_completed: 2,
                 steps_total: 2,
+                steps_skipped: 0,
+                steps_failed: 0,
+                data_processed: None,
                 records_processed: Some(1000),
+                memory_used: None,
+                cpu_used: None,
             },
+            step_runs: vec![],
+            triggered_by: RunTrigger {
+                trigger_type: TriggerType::Manual,
+                user_id: None,
+                source: None,
+                timestamp: chrono::Utc::now(),
+            },
+            parameters: std::collections::HashMap::new(),
+            error_message: None,
+            warnings: vec![],
         },
     ];
 
@@ -239,7 +192,7 @@ pub async fn get_pipelines(
 #[tauri::command]
 pub async fn create_pipeline(
     request: CreatePipelineRequest,
-    manager: State<'_, Manager>,
+    _manager: State<'_, Manager>,
 ) -> Result<Pipeline, String> {
     info!("Creating pipeline: {}", request.name);
     // TODO: Implement actual pipeline creation
@@ -253,11 +206,14 @@ pub async fn create_pipeline(
             version: "1.0.0".to_string(),
             steps: vec![],
             parameters: HashMap::new(),
+            resources: None,
+            triggers: vec![],
         },
-        status: PipelineStatus::Draft,
-        created_at: chrono::Utc::now().to_rfc3339(),
-        updated_at: chrono::Utc::now().to_rfc3339(),
+        templates: vec![],
         last_run_at: None,
+        created_at: chrono::Utc::now(),
+        updated_at: chrono::Utc::now(),
+        status: PipelineStatus::Draft,
         tags: request.tags.unwrap_or_default(),
         metadata: HashMap::new(),
     };
@@ -284,11 +240,14 @@ pub async fn update_pipeline(
             version: "1.0.0".to_string(),
             steps: vec![],
             parameters: HashMap::new(),
+            resources: None,
+            triggers: vec![],
         }),
-        status: request.status.unwrap_or(PipelineStatus::Draft),
-        created_at: "2025-01-01T00:00:00Z".to_string(),
-        updated_at: chrono::Utc::now().to_rfc3339(),
+        templates: vec![],
         last_run_at: None,
+        created_at: chrono::Utc::now(),
+        updated_at: chrono::Utc::now(),
+        status: request.status.unwrap_or(PipelineStatus::Draft),
         tags: request.tags.unwrap_or_default(),
         metadata: HashMap::new(),
     };
@@ -321,15 +280,32 @@ pub async fn execute_pipeline(
     let new_run = PipelineRun {
         id: format!("run-{}", chrono::Utc::now().timestamp()),
         pipeline_id: request.pipeline_id,
-        started_at: chrono::Utc::now().to_rfc3339(),
+        started_at: chrono::Utc::now(),
         ended_at: None,
         status: PipelineRunStatus::Running,
+        logs_ref: None,
+        artifacts_ref: None,
         metrics: PipelineRunMetrics {
             duration: None,
             steps_completed: 0,
             steps_total: 1,
+            steps_skipped: 0,
+            steps_failed: 0,
+            data_processed: None,
             records_processed: None,
+            memory_used: None,
+            cpu_used: None,
         },
+        step_runs: vec![],
+        triggered_by: RunTrigger {
+            trigger_type: TriggerType::Manual,
+            user_id: None,
+            source: None,
+            timestamp: chrono::Utc::now(),
+        },
+        parameters: request.parameters.unwrap_or_default(),
+        error_message: None,
+        warnings: vec![],
     };
 
     Ok(new_run)
@@ -346,62 +322,12 @@ pub async fn cancel_pipeline_execution(
 
 #[tauri::command]
 pub async fn get_pipeline_templates(
-    _manager_state: State<'_, Manager>,
+    _manager: State<'_, Manager>,
 ) -> Result<Vec<PipelineTemplate>, String> {
-    // TODO: Implement actual template retrieval
-    // For now, return mock templates
+    info!("Getting pipeline templates");
 
-    let mock_templates = vec![
-        PipelineTemplate {
-            id: "template-basic-rag".to_string(),
-            name: "Basic RAG Pipeline".to_string(),
-            description: "Standard document ingestion and indexing pipeline".to_string(),
-            category: "data_ingestion".to_string(),
-            spec: PipelineSpec {
-                version: "1.0.0".to_string(),
-                steps: vec![
-                    PipelineStep {
-                        id: "fetch".to_string(),
-                        name: "Fetch Documents".to_string(),
-                        step_type: "fetch".to_string(),
-                        config: HashMap::new(),
-                        dependencies: vec![],
-                    },
-                    PipelineStep {
-                        id: "parse".to_string(),
-                        name: "Parse Content".to_string(),
-                        step_type: "parse".to_string(),
-                        config: HashMap::new(),
-                        dependencies: vec!["fetch".to_string()],
-                    },
-                    PipelineStep {
-                        id: "chunk".to_string(),
-                        name: "Chunk Text".to_string(),
-                        step_type: "chunk".to_string(),
-                        config: HashMap::new(),
-                        dependencies: vec!["parse".to_string()],
-                    },
-                    PipelineStep {
-                        id: "embed".to_string(),
-                        name: "Generate Embeddings".to_string(),
-                        step_type: "embed".to_string(),
-                        config: HashMap::new(),
-                        dependencies: vec!["chunk".to_string()],
-                    },
-                    PipelineStep {
-                        id: "index".to_string(),
-                        name: "Build Index".to_string(),
-                        step_type: "index".to_string(),
-                        config: HashMap::new(),
-                        dependencies: vec!["embed".to_string()],
-                    },
-                ],
-                parameters: HashMap::new(),
-            },
-        },
-    ];
-
-    Ok(mock_templates)
+    // Return the KB creation templates from the core implementation
+    Ok(KB_CREATION_TEMPLATES.clone())
 }
 
 #[tauri::command]

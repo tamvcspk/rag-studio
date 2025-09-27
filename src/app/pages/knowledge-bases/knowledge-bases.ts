@@ -10,6 +10,7 @@ import {
 import { KnowledgeBasesStore } from '../../shared/store/knowledge-bases.store';
 import { KnowledgeBaseCard } from '../../shared/components/composite/knowledge-base-card/knowledge-base-card';
 import { CreateKBWizard } from '../../shared/components/composite/create-kb-wizard/create-kb-wizard';
+import { KBPipelineCreator } from '../../shared/components/composite/kb-pipeline-creator/kb-pipeline-creator';
 import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
 import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
 import { RagStatsOverview, StatItem } from '../../shared/components/semantic/data-display/rag-stats-overview';
@@ -213,16 +214,21 @@ export class KnowledgeBases implements OnInit {
   }
 
   openCreateWizard(): void {
-    const dialogRef = this.dialogService.open(CreateKBWizard, {
-      title: 'Create Knowledge Base',
-      description: 'Create a new versioned knowledge base from your content',
+    // Use the new Pipeline-based KB creator instead of the old wizard
+    const dialogRef = this.dialogService.open(KBPipelineCreator, {
+      title: 'Create Knowledge Base via Pipeline',
+      description: 'Create a new knowledge base using Pipeline templates',
       size: 'lg',
       showCloseButton: true
     });
 
-    dialogRef.closed.subscribe((result: CreateKBFormData | undefined) => {
-      if (result) {
-        this.onCreateKB(result);
+    dialogRef.closed.subscribe((result: any) => {
+      if (result && result.type === 'pipeline-execution') {
+        this.toastService.show({
+          variant: 'success',
+          title: 'Knowledge base creation started',
+          message: `Pipeline execution initiated for "${result.kbParameters.name}". Check the Pipelines page for progress.`
+        });
       }
     });
   }

@@ -1,0 +1,189 @@
+/*!
+ * KB Pipeline Creator Styles
+ *
+ * Styles for the new KB creation interface using Pipeline templates.
+ * Follows the design system patterns and replaces the old wizard approach.
+ */
+
+.kb-creator-form {
+  .form-section {
+    margin-bottom: var(--space-6);
+
+    .section-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+
+    .section-description {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-4);
+    }
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+}
+
+// Template Selection Grid
+.loading-templates {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  color: var(--text-secondary);
+}
+
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.template-card {
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 2px solid transparent;
+
+  &:hover {
+    border-color: var(--border-interactive);
+    box-shadow: var(--shadow-sm);
+  }
+
+  &.selected {
+    border-color: var(--color-primary-500);
+    background-color: var(--color-primary-50);
+    box-shadow: var(--shadow-md);
+
+    .template-name {
+      color: var(--color-primary-700);
+    }
+  }
+
+  .template-content {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .template-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-600);
+    flex-shrink: 0;
+
+    .selected & {
+      background-color: var(--color-primary-100);
+      color: var(--color-primary-600);
+    }
+  }
+
+  .template-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .template-name {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+    line-height: var(--line-height-tight);
+  }
+
+  .template-description {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+    margin: 0;
+  }
+}
+
+// Pipeline Preview
+.pipeline-preview {
+  margin-top: var(--space-6);
+  padding: var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background-color: var(--color-gray-50);
+
+  .preview-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-3);
+  }
+
+  .pipeline-steps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .pipeline-step {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--color-white);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+
+    .step-name {
+      font-weight: var(--font-weight-medium);
+      color: var(--text-primary);
+    }
+
+    .step-type {
+      font-family: var(--font-mono);
+      font-size: var(--font-size-xs);
+      color: var(--text-tertiary);
+      background-color: var(--color-gray-100);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      text-transform: lowercase;
+    }
+  }
+}
+
+// Dialog Actions
+.creator-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .template-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .pipeline-step {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+}

@@ -10,7 +10,6 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::fs;
 use std::io::{self, Write};
-use std::time::Instant;
 use chrono::{DateTime, Utc};
 use thiserror::Error;
 use serde::{Serialize, Deserialize};
@@ -139,15 +138,17 @@ impl StorageService {
             })?;
         }
 
-        // Verify directory is writable
-        let test_file = config.base_path.join(".storage_test");
-        File::create(&test_file).and_then(|_| fs::remove_file(&test_file)).map_err(|e| {
-            StorageError::PermissionDenied(format!(
-                "Storage directory {} is not writable: {}",
-                config.base_path.display(),
-                e
-            ))
-        })?;
+        // Verify directory is writable (skip in development mode to avoid file watcher issues)
+        if !cfg!(debug_assertions) {
+            let test_file = config.base_path.join(".storage_test");
+            File::create(&test_file).and_then(|_| fs::remove_file(&test_file)).map_err(|e| {
+                StorageError::PermissionDenied(format!(
+                    "Storage directory {} is not writable: {}",
+                    config.base_path.display(),
+                    e
+                ))
+            })?;
+        }
 
         let mut service = Self {
             config,

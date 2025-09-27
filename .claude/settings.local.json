@@ -31,7 +31,10 @@
       "Bash(del /Q unit*.rs)",
       "Bash(del /Q integration*.rs)",
       "Bash(timeout 30 cargo test --test state_manager_integration)",
-      "Bash(ng test:*)"
+      "Bash(ng test:*)",
+      "Bash(npx ng build:*)",
+      "Bash(npx tsc:*)",
+      "Bash(timeout 30 ng build:*)"
     ],
     "deny": [],
     "ask": [],

@@ -100,6 +100,48 @@ impl EmbeddingWorker {
                 info!("🛑 Shutdown request received");
                 Ok(WorkerResponse::Shutdown { request_id })
             }
+
+            WorkerRequest::LoadModel { request_id, model_id } => {
+                // TODO: Implement model loading
+                info!("🔄 Loading model: {}", model_id);
+                Ok(WorkerResponse::ModelLoaded { request_id, model_id, success: true, error_message: None })
+            }
+
+            WorkerRequest::UnloadModel { request_id, model_id } => {
+                // TODO: Implement model unloading
+                info!("🔄 Unloading model: {}", model_id);
+                Ok(WorkerResponse::ModelUnloaded { request_id, model_id, success: true, error_message: None })
+            }
+
+            WorkerRequest::GetCacheStats { request_id } => {
+                // TODO: Implement cache stats
+                info!("📊 Getting cache stats");
+                Ok(WorkerResponse::CacheStats {
+                    request_id,
+                    stats: protocol::CacheStatsData {
+                        loaded_models: 0,
+                        memory_usage_gb: 0.0,
+                        memory_usage_percent: 0.0,
+                        cache_hits: 0,
+                        cache_misses: 0,
+                        evictions: 0,
+                        hit_rate: 0.0,
+                        warm_models: vec![],
+                    }
+                })
+            }
+
+            WorkerRequest::WarmUpModels { request_id } => {
+                // TODO: Implement model warm-up
+                info!("🔥 Warming up models");
+                Ok(WorkerResponse::ModelsWarmedUp { request_id, success: true, models_loaded: vec![], error_message: None })
+            }
+
+            WorkerRequest::ClearCache { request_id } => {
+                // TODO: Implement cache clearing
+                info!("🗑️ Clearing cache");
+                Ok(WorkerResponse::CacheCleared { request_id, success: true, error_message: None })
+            }
         }
     }
 

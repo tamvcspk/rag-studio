@@ -53,3 +53,9 @@ Thumbs.db
 *.sqlite
 *.sqlite3
 nul
+
+# RAG Studio storage and runtime files
+/rag_storage/
+/src-tauri/rag_storage/
+.storage_test
+*.storage_test

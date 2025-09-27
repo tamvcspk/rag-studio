@@ -6754,6 +6754,7 @@ dependencies = [
  "futures",
  "hf-hub",
  "lancedb",
+ "lazy_static",
  "libsqlite3-sys",
  "notify",
  "regex",

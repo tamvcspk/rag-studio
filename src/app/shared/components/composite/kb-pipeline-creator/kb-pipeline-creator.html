@@ -1,0 +1,158 @@
+<rag-dialog title="Create Knowledge Base" description="Create a new knowledge base using Pipeline templates"
+  size="lg" [showCloseButton]="true">
+
+  <form [formGroup]="kbForm" (ngSubmit)="onSubmit()" class="kb-creator-form">
+
+    <!-- Template Selection Section -->
+    <div class="form-section">
+      <h3 class="section-title">Choose Data Source</h3>
+      <p class="section-description">Select how you want to create your knowledge base</p>
+
+      @if (isLoadingTemplates()) {
+        <div class="loading-templates">
+          <span>Loading templates...</span>
+        </div>
+      } @else {
+        <div class="template-grid">
+          @for (option of templateOptions(); track option.template.id) {
+            <rag-card
+              class="template-card"
+              [class.selected]="selectedTemplateId() === option.template.id"
+              (click)="selectTemplate(option.template.id)">
+              <div class="template-content">
+                <div class="template-icon">
+                  <rag-icon [img]="option.icon" size="lg" />
+                </div>
+                <div class="template-info">
+                  <h4 class="template-name">{{ option.label }}</h4>
+                  <p class="template-description">{{ option.description }}</p>
+                </div>
+              </div>
+            </rag-card>
+          }
+        </div>
+      }
+
+      <!-- Hidden form control for template selection -->
+      <input type="hidden" formControlName="templateId">
+    </div>
+
+    @if (selectedTemplate()) {
+      <!-- Basic Information Section -->
+      <div class="form-section">
+        <h3 class="section-title">Basic Information</h3>
+
+        <rag-form-field label="Knowledge Base Name" [error]="getFieldError('name')">
+          <rag-input formControlName="name" placeholder="e.g., Product Documentation" [error]="!!getFieldError('name')">
+          </rag-input>
+        </rag-form-field>
+
+        <div class="form-row">
+          <rag-form-field label="Product" [error]="getFieldError('product')">
+            <rag-input formControlName="product" placeholder="e.g., myapp" [error]="!!getFieldError('product')">
+            </rag-input>
+          </rag-form-field>
+
+          <rag-form-field label="Version" [error]="getFieldError('version')">
+            <rag-input formControlName="version" placeholder="e.g., 1.0.0" [error]="!!getFieldError('version')">
+            </rag-input>
+          </rag-form-field>
+        </div>
+
+        <rag-form-field label="Description (Optional)">
+          <rag-textarea formControlName="description" placeholder="Describe what this knowledge base contains..."
+            [rows]="3">
+          </rag-textarea>
+        </rag-form-field>
+      </div>
+
+      <!-- Data Source Configuration -->
+      <div class="form-section">
+        <h3 class="section-title">Data Source Configuration</h3>
+
+        @if (showSourceUrl()) {
+          <rag-form-field
+            [label]="selectedTemplate()!.sourceLabel"
+            [description]="selectedTemplate()!.sourceDescription"
+            [error]="getFieldError('sourceUrl')">
+            <rag-input formControlName="sourceUrl"
+              [placeholder]="getSourceUrlPlaceholder()"
+              [error]="!!getFieldError('sourceUrl')">
+            </rag-input>
+          </rag-form-field>
+        }
+      </div>
+
+      <!-- Model Configuration Section -->
+      <div class="form-section">
+        <h3 class="section-title">Model Configuration</h3>
+
+        <rag-form-field label="Embedding Model"
+          description="Choose the model that will generate vector embeddings for your content">
+          <rag-model-selector
+            formControlName="embeddingModel"
+            variant="dropdown"
+            filterType="embedding"
+            placeholder="Select an embedding model"
+            [showStatus]="true"
+            [showMetrics]="true">
+          </rag-model-selector>
+        </rag-form-field>
+
+        <!-- Pipeline Preview -->
+        <div class="pipeline-preview">
+          <h4 class="preview-title">
+            <rag-icon [img]="iconComponents.Settings" size="sm" />
+            Pipeline Steps
+          </h4>
+          <div class="pipeline-steps">
+            @for (step of selectedTemplate()!.template.spec.steps; track step.id) {
+              <div class="pipeline-step">
+                <span class="step-name">{{ step.name }}</span>
+                <span class="step-type">{{ step.type }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </form>
+
+  <div slot="footer" class="creator-actions">
+    <rag-button variant="outline" size="md" type="button" (click)="cancel()" [disabled]="isSubmitting()">
+      Cancel
+    </rag-button>
+
+    <rag-button variant="solid" size="md" type="button"
+      [disabled]="kbForm.invalid || isSubmitting() || !selectedTemplate()"
+      [loading]="isSubmitting()" (click)="onSubmit()">
+      @if (isSubmitting()) {
+        Creating Knowledge Base...
+      } @else {
+        <rag-icon [img]="iconComponents.Play" size="sm" />
+        Create via Pipeline
+      }
+    </rag-button>
+  </div>
+</rag-dialog>
+
+<script>
+  // Helper method for template placeholders
+  getSourceUrlPlaceholder(): string {
+    const template = this.selectedTemplate();
+    if (!template) return '';
+
+    switch (template.template.id) {
+      case 'kb-creation-local-folder':
+        return '/path/to/documents';
+      case 'kb-creation-web-documentation':
+        return 'https://docs.example.com';
+      case 'kb-creation-github-repository':
+        return 'https://github.com/owner/repo';
+      case 'kb-creation-pdf-collection':
+        return '/path/to/pdfs';
+      default:
+        return '';
+    }
+  }
+</script>
