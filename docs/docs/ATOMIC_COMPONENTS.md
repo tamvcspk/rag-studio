@@ -26,6 +26,7 @@ All atomic components leverage the **RAG Studio Design Token System** with three
   - [RagCheckbox](#ragcheckbox)
   - [RagIcon](#ragicon)
   - [RagInput](#raginput)
+  - [RagFileInput](#ragfileinput)
   - [RagProgress](#ragprogress)
   - [RagRadio](#ragradio)
   - [RagSelect](#ragselect)
@@ -367,7 +368,7 @@ export class NotificationExampleComponent {
 
 ### RagInput
 
-A flexible input component with support for icons, validation, and form integration.
+A flexible input component with support for icons, validation, path browsing, and form integration.
 
 **Selector:** `rag-input`
 
@@ -376,15 +377,17 @@ A flexible input component with support for icons, validation, and form integrat
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `placeholder` | `string` | `''` | Placeholder text |
-| `type` | `'text' \| 'email' \| 'password' \| 'number' \| 'search'` | `'text'` | Input type |
+| `type` | `'text' \| 'email' \| 'password' \| 'number' \| 'search' \| 'path'` | `'text'` | Input type |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the input |
 | `disabled` | `boolean` | `false` | Disabled state |
 | `readonly` | `boolean` | `false` | Read-only state |
 | `error` | `boolean` | `false` | Error state styling |
-| `leftIcon` | `string \| undefined` | `undefined` | Left side icon name |
-| `rightIcon` | `string \| undefined` | `undefined` | Right side icon name |
+| `leftIcon` | `any \| undefined` | `undefined` | Left side Lucide icon component |
+| `rightIcon` | `any \| undefined` | `undefined` | Right side Lucide icon component |
 | `maxlength` | `number \| undefined` | `undefined` | Maximum character length |
 | `value` | `string` | `''` | Current value |
+| `browseMode` | `'file' \| 'folder'` | `'folder'` | For path type: what to browse for |
+| `browseTitle` | `string` | `''` | Title for the browse dialog |
 
 #### Events
 
@@ -394,6 +397,7 @@ A flexible input component with support for icons, validation, and form integrat
 | `onFocus` | `EventEmitter<FocusEvent>` | Emitted on focus |
 | `onBlur` | `EventEmitter<FocusEvent>` | Emitted on blur |
 | `onRightIconClick` | `EventEmitter<void>` | Emitted when right icon is clicked |
+| `onBrowse` | `EventEmitter<void>` | Emitted when browse button is clicked |
 
 #### Usage Examples
 
@@ -414,12 +418,279 @@ A flexible input component with support for icons, validation, and form integrat
 </rag-input>
 
 <!-- Form control integration -->
-<rag-input 
+<rag-input
   [formControl]="emailControl"
   [type]="'email'"
   [error]="emailControl.invalid && emailControl.touched">
 </rag-input>
+
+<!-- Path input with browse button -->
+<rag-input
+  [type]="'path'"
+  [placeholder]="'Select directory...'"
+  [browseMode]="'folder'"
+  [browseTitle]="'Choose Data Directory'"
+  [formControl]="directoryControl"
+  (onBrowse)="selectDirectory()">
+</rag-input>
+
+<!-- File path input -->
+<rag-input
+  [type]="'path'"
+  [placeholder]="'Select configuration file...'"
+  [browseMode]="'file'"
+  [browseTitle]="'Choose Configuration File'"
+  (onBrowse)="selectConfigFile()">
+</rag-input>
 ```
+
+```typescript
+// Component handling path input with browse functionality
+import { Component, signal } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { invoke } from '@tauri-apps/api/core';
+import { RagInput } from './shared/components/atomic';
+
+@Component({
+  selector: 'app-path-example',
+  imports: [RagInput],
+  template: `
+    <rag-input
+      [type]="'path'"
+      [placeholder]="'Select directory...'"
+      [browseMode]="'folder'"
+      [browseTitle]="'Choose Data Directory'"
+      [formControl]="directoryControl"
+      (onBrowse)="selectDirectory()">
+    </rag-input>
+
+    <rag-input
+      [type]="'path'"
+      [placeholder]="'Select file...'"
+      [browseMode]="'file'"
+      [browseTitle]="'Choose Configuration File'"
+      [formControl]="fileControl"
+      (onBrowse)="selectFile()">
+    </rag-input>
+  `
+})
+export class PathExampleComponent {
+  directoryControl = new FormControl('');
+  fileControl = new FormControl('');
+
+  async selectDirectory() {
+    try {
+      const selectedPath = await invoke<string | null>('select_folder', {
+        title: 'Choose Data Directory'
+      });
+
+      if (selectedPath) {
+        this.directoryControl.setValue(selectedPath);
+      }
+    } catch (error) {
+      console.error('Failed to select directory:', error);
+    }
+  }
+
+  async selectFile() {
+    try {
+      const selectedPath = await invoke<string | null>('select_file', {
+        title: 'Choose Configuration File'
+      });
+
+      if (selectedPath) {
+        this.fileControl.setValue(selectedPath);
+      }
+    } catch (error) {
+      console.error('Failed to select file:', error);
+    }
+  }
+}
+```
+
+#### Path Input Features
+
+- **Manual Entry**: Users can type paths directly into the input field
+- **Browse Button**: Automatically appears for `type="path"` inputs on the right side
+- **File/Folder Selection**: Configure with `browseMode` to select files or folders
+- **Form Integration**: Full `ControlValueAccessor` support for reactive forms
+- **Custom Dialog Titles**: Use `browseTitle` to customize the file/folder picker dialog
+- **Tauri Integration**: Uses Tauri commands (`select_file`, `select_folder`) for native dialogs
+- **Visual Feedback**: Browse button shows appropriate icon (folder/file) based on `browseMode`
+- **Disabled State**: Browse button is disabled when input is disabled
+
+---
+
+### RagFileInput
+
+A comprehensive file input component with drag-and-drop support, file validation, error handling via RagAlert, and form integration.
+
+**Selector:** `rag-file-input`
+
+#### Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `accept` | `string` | `''` | File types to accept (e.g., '.pdf,.doc,.jpg') |
+| `multiple` | `boolean` | `false` | Allow multiple file selection |
+| `disabled` | `boolean` | `false` | Disabled state |
+| `placeholder` | `string` | `'Choose files...'` | Placeholder text |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the input |
+| `variant` | `'default' \| 'dashed' \| 'solid'` | `'default'` | Visual style variant |
+| `maxFiles` | `number \| undefined` | `undefined` | Maximum number of files allowed |
+| `maxFileSize` | `number \| undefined` | `undefined` | Maximum file size in bytes |
+| `showFileList` | `boolean` | `true` | Show list of selected files |
+| `clearable` | `boolean` | `true` | Allow clearing all files |
+| `dragDrop` | `boolean` | `true` | Enable drag and drop functionality |
+
+#### Events
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `filesChange` | `EventEmitter<FileList \| null>` | Emitted when files change (for form control) |
+| `filesSelected` | `EventEmitter<File[]>` | Emitted when files are selected |
+| `fileRemoved` | `EventEmitter<File>` | Emitted when a file is removed |
+| `onError` | `EventEmitter<string>` | Emitted when validation fails |
+
+#### Key Features
+
+- **Drag & Drop Support**: Full drag-and-drop functionality with visual feedback
+- **File Validation**: Automatic validation of file types, sizes, and count limits
+- **Error Handling**: Uses RagAlert component to display validation errors
+- **Form Integration**: Full `ControlValueAccessor` support for reactive forms
+- **Visual Feedback**: Different states for empty, filled, error, and drag-over
+- **File Management**: Individual file removal and clear all functionality
+- **Size Variants**: Multiple size options (sm, md, lg)
+- **Style Variants**: Different visual styles (default, dashed, solid)
+- **Accessibility**: Proper ARIA attributes and keyboard navigation
+
+#### Usage Examples
+
+```html
+<!-- Basic file input -->
+<rag-file-input
+  [placeholder]="'Choose files...'"
+  (filesChange)="onFilesChange($event)">
+</rag-file-input>
+
+<!-- File input with validation and restrictions -->
+<rag-file-input
+  [accept]="'.pdf,.doc,.docx'"
+  [multiple]="true"
+  [maxFiles]="5"
+  [maxFileSize]="10485760"
+  [placeholder]="'Upload documents (max 5 files, 10MB each)'"
+  [size]="'lg'"
+  [variant]="'dashed'"
+  (filesSelected)="onFilesSelected($event)"
+  (onError)="handleFileError($event)">
+</rag-file-input>
+
+<!-- Form control integration -->
+<rag-file-input
+  [formControl]="documentsControl"
+  [accept]="'.jpg,.png,.gif'"
+  [multiple]="false"
+  [showFileList]="true"
+  [clearable]="false">
+</rag-file-input>
+
+<!-- Disabled state -->
+<rag-file-input
+  [disabled]="isProcessing()"
+  [placeholder]="'File upload disabled'"
+  [dragDrop]="false">
+</rag-file-input>
+```
+
+```typescript
+// Component using file input with comprehensive error handling
+import { Component, signal } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { RagFileInput } from './shared/components/atomic';
+
+@Component({
+  selector: 'app-file-upload',
+  imports: [RagFileInput],
+  template: `
+    <rag-file-input
+      [accept]="acceptedTypes"
+      [multiple]="allowMultiple"
+      [maxFiles]="maxFiles"
+      [maxFileSize]="maxFileSize"
+      [formControl]="filesControl"
+      [placeholder]="placeholderText"
+      [size]="'lg'"
+      [variant]="'dashed'"
+      (filesSelected)="onFilesSelected($event)"
+      (fileRemoved)="onFileRemoved($event)"
+      (onError)="handleFileError($event)">
+    </rag-file-input>
+  `
+})
+export class FileUploadComponent {
+  // Configuration
+  acceptedTypes = '.pdf,.doc,.docx,.txt,.jpg,.png';
+  allowMultiple = true;
+  maxFiles = 10;
+  maxFileSize = 5 * 1024 * 1024; // 5MB
+  placeholderText = 'Drag files here or click to browse';
+
+  // Form control
+  filesControl = new FormControl(null, [Validators.required]);
+
+  // State
+  private uploadProgress = signal(0);
+
+  onFilesSelected(files: File[]) {
+    console.log('Files selected:', files);
+    this.processFiles(files);
+  }
+
+  onFileRemoved(file: File) {
+    console.log('File removed:', file.name);
+  }
+
+  handleFileError(error: string) {
+    console.error('File validation error:', error);
+    // Error is automatically displayed via rag-alert in the component
+  }
+
+  private processFiles(files: File[]) {
+    // Process selected files
+    files.forEach(file => {
+      console.log(`Processing ${file.name} (${this.formatFileSize(file.size)})`);
+    });
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  }
+}
+```
+
+#### Error Handling
+
+The component automatically handles validation and displays errors using the RagAlert component:
+
+- **File Type Validation**: Checks against the `accept` property
+- **File Size Validation**: Validates against `maxFileSize` limit
+- **File Count Validation**: Validates against `maxFiles` limit
+- **Automatic Prevention**: Invalid files are prevented from being selected
+- **User Feedback**: Errors are displayed immediately via RagAlert
+- **Form Integration**: Validation errors integrate with Angular form validation
+
+#### Accessibility Features
+
+- **Screen Reader Support**: Proper ARIA labels and descriptions
+- **Keyboard Navigation**: Full keyboard accessibility
+- **Focus Management**: Proper focus states and navigation
+- **Error Announcements**: Validation errors are announced to screen readers
+- **File List Navigation**: Selected files can be navigated and removed via keyboard
 
 ---
 

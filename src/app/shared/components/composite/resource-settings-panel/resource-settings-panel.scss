@@ -1,0 +1,37 @@
+.resource-settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rag-semantic-spacing-section-gap);
+
+  .metric-display {
+    display: flex;
+    align-items: center;
+    gap: var(--rag-semantic-spacing-inline-sm);
+    font-size: var(--rag-semantic-typography-body-size);
+    color: var(--rag-semantic-color-text-secondary);
+  }
+
+  .input-group {
+    display: flex;
+    gap: var(--rag-semantic-spacing-inline-sm);
+    align-items: center;
+
+    .form-input {
+      flex: 1;
+    }
+  }
+
+  .form-grid {
+    display: grid;
+    gap: var(--rag-semantic-spacing-form-gap);
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--rag-semantic-spacing-inline-md);
+    padding-top: var(--rag-semantic-spacing-section-gap);
+    border-top: 1px solid var(--rag-semantic-color-border-default);
+    margin-top: var(--rag-semantic-spacing-section-gap);
+  }
+}

@@ -1,6 +1,6 @@
 <div class="security-settings-panel">
   @if (settingsStore.error()) {
-    <rag-alert variant="error" [icon]="'alert-circle'">
+    <rag-alert variant="error">
       {{ settingsStore.error() }}
     </rag-alert>
   }
@@ -33,14 +33,9 @@
 
         @if (!settingsForm.value.airGappedMode) {
           <rag-form-field label="Network Policy">
-            <select
+            <rag-select
               formControlName="networkPolicy"
-              [disabled]="settingsStore.isLoading()"
-              class="form-select">
-              <option value="strict">Strict (Minimal connections)</option>
-              <option value="moderate">Moderate (Required connections only)</option>
-              <option value="open">Open (All connections allowed)</option>
-            </select>
+              [options]="networkPolicyOptions" />
           </rag-form-field>
 
           <rag-form-field label="Connection Options">
@@ -52,7 +47,7 @@
       </div>
 
       @if (settingsForm.value.airGappedMode) {
-        <rag-alert variant="warning" [icon]="'alert-triangle'">
+        <rag-alert variant="warning">
           Air-gapped mode will be enabled after application restart. All network connections will be blocked.
         </rag-alert>
       }
@@ -77,14 +72,9 @@
 
         @if (settingsForm.value.encryptData) {
           <rag-form-field label="Encryption Strength">
-            <select
+            <rag-select
               formControlName="encryptionStrength"
-              [disabled]="settingsStore.isLoading()"
-              class="form-select">
-              <option value="aes-128">AES-128 (Standard)</option>
-              <option value="aes-256">AES-256 (High Security)</option>
-              <option value="chacha20">ChaCha20-Poly1305 (Modern)</option>
-            </select>
+              [options]="encryptionStrengthOptions" />
           </rag-form-field>
         }
       </div>
@@ -114,13 +104,11 @@
         </rag-form-field>
 
         <rag-form-field label="Log Retention (days)">
-          <input
+          <rag-input
             type="number"
             formControlName="logRetention"
-            [disabled]="settingsStore.isLoading()"
             min="7"
-            max="365"
-            class="form-input" />
+            max="365" />
         </rag-form-field>
 
         <rag-form-field label="Privacy Options">
@@ -151,14 +139,9 @@
         </rag-form-field>
 
         <rag-form-field label="Permission Level">
-          <select
+          <rag-select
             formControlName="permissionLevel"
-            [disabled]="settingsStore.isLoading()"
-            class="form-select">
-            <option value="basic">Basic (Read-only operations)</option>
-            <option value="standard">Standard (Read-write operations)</option>
-            <option value="admin">Admin (Full system access)</option>
-          </select>
+            [options]="permissionLevelOptions" />
         </rag-form-field>
       </div>
     </rag-settings-section>
@@ -168,8 +151,8 @@
       <rag-button
         type="button"
         variant="outline"
-        (click)="resetSettings()"
-        [disabled]="settingsStore.isLoading()">
+        [loading]="settingsStore.isLoading()"
+        (click)="resetSettings()">
         Reset to Defaults
       </rag-button>
 

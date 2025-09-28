@@ -27,13 +27,14 @@ This change provides better tree-shaking and type safety by only importing icons
 
 ## 📋 Component Index
 
-### 🎯 Primitive Components (14 components)
+### 🎯 Primitive Components (15 components)
 | Component | Purpose | Key Props | Use Case |
 |-----------|---------|-----------|----------|
 | `<rag-button>` | Action triggers | `variant`, `size`, `loading`, `disabled` | Forms, CTAs, navigation |
-| `<rag-input>` | Text input | `type`, `placeholder`, `leftIcon`, `rightIcon` | Forms, search, data entry |
+| `<rag-input>` | Text input with path browsing | `type`, `placeholder`, `leftIcon`, `browseMode` | Forms, search, data entry, path selection |
 | `<rag-textarea>` | Multi-line text | `rows`, `resize`, `maxlength` | Comments, descriptions |
 | `<rag-select>` | Dropdown selection | `options`, `searchable`, `clearable` | Forms, filters |
+| `<rag-file-input>` | File selection | `accept`, `multiple`, `maxFiles`, `maxFileSize` | File uploads, attachments |
 | `<rag-checkbox>` | Boolean selection | `checked`, `indeterminate`, `label` | Forms, bulk actions |
 | `<rag-radio>` | Single selection | `value`, `name`, `checked` | Forms, settings |
 | `<rag-switch>` | Toggle control | `checked`, `size`, `label` | Settings, features |
@@ -71,8 +72,9 @@ type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'soft';
 type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 // RagInput
-type InputType = 'text' | 'email' | 'password' | 'number' | 'search';
+type InputType = 'text' | 'email' | 'password' | 'number' | 'search' | 'path';
 type InputSize = 'sm' | 'md' | 'lg';
+type BrowseMode = 'file' | 'folder';
 
 // RagSelect
 interface RagSelectOption<T = any> {
@@ -81,6 +83,10 @@ interface RagSelectOption<T = any> {
   disabled?: boolean;
   group?: string;
 }
+
+// RagFileInput
+type RagFileInputSize = 'sm' | 'md' | 'lg';
+type RagFileInputVariant = 'default' | 'dashed' | 'solid';
 
 // RagChip
 type BadgeVariant = 'solid' | 'soft' | 'outline';
@@ -168,13 +174,100 @@ type StatusVariant = 'dot' | 'chip' | 'text';
   (onRightIconClick)="clearSearch()" />
 
 <!-- Password input with toggle -->
-<rag-input 
+<rag-input
   [type]="showPassword ? 'text' : 'password'"
   [rightIcon]="showPassword ? 'eye-off' : 'eye'"
   (onRightIconClick)="togglePassword()" />
+
+<!-- Path input with browse button -->
+<rag-input
+  [type]="'path'"
+  [placeholder]="'Select directory...'"
+  [browseMode]="'folder'"
+  [browseTitle]="'Choose Data Directory'"
+  (onBrowse)="selectDirectory()" />
+
+<!-- File path input -->
+<rag-input
+  [type]="'path'"
+  [placeholder]="'Select file...'"
+  [browseMode]="'file'"
+  [browseTitle]="'Choose Configuration File'"
+  (onBrowse)="selectFile()" />
 ```
 
-### 2. Button Action Groups
+### 2. File Input Patterns
+```html
+<!-- Basic file input -->
+<rag-file-input
+  [placeholder]="'Choose files...'"
+  (filesChange)="onFilesChange($event)">
+</rag-file-input>
+
+<!-- File input with restrictions -->
+<rag-file-input
+  [accept]="'.pdf,.doc,.docx'"
+  [multiple]="true"
+  [maxFiles]="5"
+  [maxFileSize]="10485760"
+  [placeholder]="'Upload documents (max 5 files, 10MB each)'"
+  (filesSelected)="onFilesSelected($event)"
+  (onError)="handleFileError($event)">
+</rag-file-input>
+
+<!-- Form control integration -->
+<rag-file-input
+  [formControl]="documentsControl"
+  [accept]="'.jpg,.png,.gif'"
+  [multiple]="false"
+  [showFileList]="true"
+  [dragDrop]="true">
+</rag-file-input>
+
+<!-- Disabled state with error handling -->
+<rag-file-input
+  [disabled]="isProcessing()"
+  [placeholder]="'File upload disabled'"
+  [variant]="'dashed'"
+  [size]="'lg'">
+</rag-file-input>
+```
+
+```typescript
+// Component using file input with error handling
+@Component({
+  selector: 'app-file-upload',
+  imports: [RagFileInput, RagAlert],
+  template: `
+    <rag-file-input
+      [accept]="acceptedTypes"
+      [multiple]="true"
+      [maxFiles]="maxFiles"
+      [maxFileSize]="maxFileSize"
+      [formControl]="filesControl"
+      (onError)="handleFileError($event)">
+    </rag-file-input>
+  `
+})
+export class FileUploadComponent {
+  acceptedTypes = '.pdf,.doc,.docx,.txt';
+  maxFiles = 10;
+  maxFileSize = 5 * 1024 * 1024; // 5MB
+
+  filesControl = new FormControl();
+
+  handleFileError(error: string) {
+    console.error('File validation error:', error);
+    // Error is automatically displayed via rag-alert in component
+  }
+
+  onFilesSelected(files: File[]) {
+    console.log('Files selected:', files);
+  }
+}
+```
+
+### 3. Button Action Groups
 ```html
 <!-- Primary and secondary actions -->
 <div class="button-group">
@@ -812,5 +905,5 @@ Design Tokens (Consistent styling)
 
 ---
 
-**Last Updated**: September 2, 2025  
-**Total Components**: 21 atomic components
+**Last Updated**: September 27, 2025
+**Total Components**: 22 atomic components

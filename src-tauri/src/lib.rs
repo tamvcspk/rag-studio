@@ -73,6 +73,8 @@ pub fn run() {
             stop_mcp_server,
             get_mcp_server_status,
             select_data_directory,
+            select_file,
+            select_folder,
             clear_application_cache,
             export_settings,
             import_settings,

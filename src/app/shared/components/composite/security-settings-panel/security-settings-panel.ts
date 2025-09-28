@@ -1,12 +1,14 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Shield, Lock, Network, FileText, Eye } from 'lucide-angular';
+import { Shield, Lock, Network, FileText, Eye, ShieldCheck, AlertTriangle, ShieldX } from 'lucide-angular';
 
 import {
   RagButton,
   RagCheckbox,
-  RagAlert
+  RagAlert,
+  RagInput,
+  RagSelect
 } from '../../atomic';
 import {
   RagFormField,
@@ -36,7 +38,7 @@ interface SecuritySettingsForm {
 }
 
 @Component({
-  selector: 'rag-security-settings-panel',
+  selector: 'security-settings-panel',
   standalone: true,
   imports: [
     CommonModule,
@@ -44,13 +46,15 @@ interface SecuritySettingsForm {
     RagButton,
     RagCheckbox,
     RagAlert,
+    RagInput,
+    RagSelect,
     RagFormField,
     RagSettingsSection
   ],
   templateUrl: './security-settings-panel.html',
   styleUrls: ['./security-settings-panel.scss']
 })
-export class RagSecuritySettingsPanel {
+export class SecuritySettingsPanel {
   // Dependencies
   readonly settingsStore = inject(SettingsStore);
 
@@ -60,6 +64,25 @@ export class RagSecuritySettingsPanel {
   readonly NetworkIcon = Network;
   readonly FileTextIcon = FileText;
   readonly EyeIcon = Eye;
+
+  // Select options
+  readonly networkPolicyOptions = [
+    { value: 'strict', label: 'Strict (Minimal connections)' },
+    { value: 'moderate', label: 'Moderate (Required connections only)' },
+    { value: 'open', label: 'Open (All connections allowed)' }
+  ];
+
+  readonly encryptionStrengthOptions = [
+    { value: 'aes-128', label: 'AES-128 (Standard)' },
+    { value: 'aes-256', label: 'AES-256 (High Security)' },
+    { value: 'chacha20', label: 'ChaCha20-Poly1305 (Modern)' }
+  ];
+
+  readonly permissionLevelOptions = [
+    { value: 'basic', label: 'Basic (Read-only operations)' },
+    { value: 'standard', label: 'Standard (Read-write operations)' },
+    { value: 'admin', label: 'Admin (Full system access)' }
+  ];
 
   // Form
   readonly settingsForm = new FormGroup<SecuritySettingsForm>({
@@ -119,8 +142,8 @@ export class RagSecuritySettingsPanel {
 
   readonly securityStatusIcon = computed(() => {
     const variant = this.securityStatusVariant();
-    return variant === 'success' ? 'shield-check' :
-           variant === 'warning' ? 'alert-triangle' : 'shield-x';
+    return variant === 'success' ? ShieldCheck :
+           variant === 'warning' ? AlertTriangle : ShieldX;
   });
 
   readonly securityStatusMessage = computed(() => {
@@ -148,6 +171,15 @@ export class RagSecuritySettingsPanel {
     // Initialize store and sync form when settings change
     this.initializeStore();
     this.syncFormWithSettings();
+
+    // Handle form state based on loading status
+    effect(() => {
+      if (this.settingsStore.isLoading()) {
+        this.settingsForm.disable();
+      } else {
+        this.settingsForm.enable();
+      }
+    });
   }
 
   private async initializeStore() {

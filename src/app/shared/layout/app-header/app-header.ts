@@ -1,13 +1,14 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { RagIcon, RagButton, RagChip } from '../../components/atomic';
-import { 
+import {
   ServerIcon,
   ServerOffIcon,
   AlertCircleIcon,
   Database,
-  Settings
+  Settings,
+  ArrowLeft
 } from 'lucide-angular';
 
 @Component({
@@ -23,9 +24,13 @@ import {
   styleUrl: './app-header.scss'
 })
 export class AppHeader {
+  // Input for back button configuration
+  showBackButton = input<boolean>(false);
+
   // Icon constants
   readonly DatabaseIcon = Database;
   readonly SettingsIcon = Settings;
+  readonly ArrowLeftIcon = ArrowLeft;
 
   private readonly mcpStatus = signal<'active' | 'inactive' | 'error'>('active');
 
@@ -48,5 +53,9 @@ export class AppHeader {
 
   onSettingsClick(): void {
     this.router.navigate(['/settings']);
+  }
+
+  onBackClick(): void {
+    this.router.navigate(['/']);
   }
 }

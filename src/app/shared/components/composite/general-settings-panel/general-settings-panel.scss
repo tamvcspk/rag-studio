@@ -1,75 +1,42 @@
 .general-settings-panel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--rag-primitive-spacing-lg);
   max-width: 800px;
 
   .settings-form {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--rag-primitive-spacing-lg);
   }
 
   .form-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--space-3);
+    gap: var(--rag-primitive-spacing-md);
 
-    @media (min-width: 768px) {
+    @media (min-width: var(--rag-primitive-breakpoint-md)) {
       grid-template-columns: 1fr 1fr;
     }
   }
 
   .input-group {
     display: flex;
-    gap: var(--space-2);
+    gap: var(--rag-primitive-spacing-sm);
 
-    .form-input {
+    rag-input {
       flex: 1;
-    }
-
-    .form-input-readonly {
-      background-color: var(--color-surface-secondary);
-      cursor: not-allowed;
-    }
-  }
-
-  .form-input,
-  .form-select {
-    width: 100%;
-    padding: var(--space-2);
-    border: 1px solid var(--color-border-primary);
-    border-radius: var(--radius-md);
-    font-size: var(--text-sm);
-    background-color: var(--color-surface-primary);
-    color: var(--color-text-primary);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-
-    &:focus {
-      outline: none;
-      border-color: var(--color-primary-500);
-      box-shadow: 0 0 0 3px var(--color-primary-100);
-    }
-
-    &:disabled {
-      background-color: var(--color-surface-secondary);
-      color: var(--color-text-tertiary);
-      cursor: not-allowed;
-    }
-
-    &::placeholder {
-      color: var(--color-text-tertiary);
     }
   }
 
   .form-actions {
     display: flex;
     justify-content: flex-end;
-    gap: var(--space-3);
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--color-border-secondary);
+    gap: var(--rag-primitive-spacing-md);
+    padding-top: var(--rag-primitive-spacing-lg);
+    border-top: var(--rag-primitive-borderWidth-1) solid var(--rag-semantic-color-border-subtle);
 
-    @media (max-width: 768px) {
+    @media (max-width: var(--rag-primitive-breakpoint-md)) {
       flex-direction: column-reverse;
 
       rag-button {

@@ -16,6 +16,8 @@ export { RagInput } from './rag-input/rag-input';
 export { RagTextarea } from './rag-textarea/rag-textarea';
 export { RagSelect } from './rag-select/rag-select';
 export type { RagSelectOption } from './rag-select/rag-select';
+export { RagFileInput } from './rag-file-input/rag-file-input';
+export type { RagFileInputSize, RagFileInputVariant } from './rag-file-input/rag-file-input';
 export { RagToggleGroup } from './rag-toggle-group/rag-toggle-group';
 export type { RagToggleGroupOption } from './rag-toggle-group/rag-toggle-group';
 export { RagSlider } from './rag-slider/rag-slider';

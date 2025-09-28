@@ -1,15 +1,15 @@
 import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Settings as SettingsIcon, Shield, Code, Database, Info } from 'lucide-angular';
+import { Settings as SettingsIcon, Shield, Code, Database, Info, HardDrive } from 'lucide-angular';
 
 import {
   RagTabs,
   RagTabPanelDirective
 } from '../../shared/components/semantic/navigation/rag-tabs/rag-tabs';
 import {
-  RagSimpleSettingsPanel,
-  RagGeneralSettingsPanel,
-  RagSecuritySettingsPanel,
+  GeneralSettingsPanel,
+  SecuritySettingsPanel,
+  ResourceSettingsPanel,
   EmptyStatePanel
 } from '../../shared/components/composite';
 import {
@@ -27,9 +27,9 @@ import { SettingsStore } from '../../shared/store/settings.store';
     CommonModule,
     RagTabs,
     RagTabPanelDirective,
-    RagSimpleSettingsPanel,
-    RagGeneralSettingsPanel,
-    RagSecuritySettingsPanel,
+    GeneralSettingsPanel,
+    SecuritySettingsPanel,
+    ResourceSettingsPanel,
     EmptyStatePanel,
     RagButton,
     RagIcon,
@@ -49,6 +49,7 @@ export class Settings {
   readonly CodeIcon = Code;
   readonly DatabaseIcon = Database;
   readonly InfoIcon = Info;
+  readonly HardDriveIcon = HardDrive;
 
   // Modern Angular 20: Use signals for reactive state
   private readonly selectedTabIndex = signal<number>(0);

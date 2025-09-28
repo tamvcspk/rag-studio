@@ -1,6 +1,6 @@
 <div class="general-settings-panel">
   @if (settingsStore.error()) {
-    <rag-alert variant="error" [icon]="'alert-circle'">
+    <rag-alert variant="error">
       {{ settingsStore.error() }}
     </rag-alert>
   }
@@ -15,31 +15,20 @@
 
       <div class="form-grid">
         <rag-form-field label="Workspace Name">
-          <input
+          <rag-input
             type="text"
             formControlName="workspaceName"
-            [disabled]="settingsStore.isLoading()"
-            placeholder="My RAG Studio Workspace"
-            class="form-input" />
+            placeholder="My RAG Studio Workspace" />
         </rag-form-field>
 
         <rag-form-field label="Data Directory">
-          <div class="input-group">
-            <input
-              type="text"
-              formControlName="dataDirectory"
-              [disabled]="settingsStore.isLoading()"
-              readonly
-              class="form-input form-input-readonly" />
-            <rag-button
-              type="button"
-              variant="outline"
-              size="sm"
-              (click)="selectDataDirectory()"
-              [disabled]="settingsStore.isLoading()">
-              Browse
-            </rag-button>
-          </div>
+          <rag-input
+            type="path"
+            formControlName="dataDirectory"
+            [browseMode]="'folder'"
+            [browseTitle]="'Select Data Directory'"
+            [placeholder]="'Choose data directory...'"
+            (onBrowse)="selectDataDirectory()" />
         </rag-form-field>
       </div>
     </rag-settings-section>
@@ -65,24 +54,17 @@
 
         @if (settingsForm.value.autoBackup) {
           <rag-form-field label="Backup Interval">
-            <select
+            <rag-select
               formControlName="backupInterval"
-              [disabled]="settingsStore.isLoading()"
-              class="form-select">
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-            </select>
+              [options]="backupIntervalOptions" />
           </rag-form-field>
 
           <rag-form-field label="Max Backup Files">
-            <input
+            <rag-input
               type="number"
               formControlName="maxBackups"
-              [disabled]="settingsStore.isLoading()"
               min="1"
-              max="50"
-              class="form-input" />
+              max="50" />
           </rag-form-field>
         }
       </div>
@@ -96,38 +78,107 @@
 
       <div class="form-grid">
         <rag-form-field label="Theme">
-          <select
+          <rag-select
             formControlName="theme"
-            [disabled]="settingsStore.isLoading()"
-            class="form-select">
-            <option value="system">Follow System</option>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
+            [options]="themeOptions" />
         </rag-form-field>
 
         <rag-form-field label="Language">
-          <select
+          <rag-select
             formControlName="language"
-            [disabled]="settingsStore.isLoading()"
-            class="form-select">
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-          </select>
+            [options]="languageOptions" />
         </rag-form-field>
 
         <rag-form-field label="Log Level">
-          <select
+          <rag-select
             formControlName="logLevel"
-            [disabled]="settingsStore.isLoading()"
-            class="form-select">
-            <option value="error">Error Only</option>
-            <option value="warn">Warnings</option>
-            <option value="info">Information</option>
-            <option value="debug">Debug</option>
-          </select>
+            [options]="logLevelOptions" />
+        </rag-form-field>
+      </div>
+    </rag-settings-section>
+
+    <!-- Server Settings Section -->
+    <rag-settings-section
+      title="Server Settings"
+      description="Configure MCP server and connection settings"
+      [icon]="ServerIcon">
+
+      <div class="server-status" slot="header-actions">
+        Status: {{ serverStatus() }}
+      </div>
+
+      <div class="form-grid">
+        <rag-form-field label="Enable MCP Server">
+          <rag-checkbox formControlName="mcpServerEnabled">
+            Start server automatically
+          </rag-checkbox>
+        </rag-form-field>
+
+        <rag-form-field label="Server Port">
+          <rag-input
+            type="number"
+            formControlName="mcpServerPort"
+            min="1024"
+            max="65535" />
+        </rag-form-field>
+
+        <rag-form-field label="Max Connections">
+          <rag-input
+            type="number"
+            formControlName="maxConnections"
+            min="1"
+            max="1000" />
+        </rag-form-field>
+      </div>
+
+      <div class="section-actions">
+        @if (isServerRunning()) {
+          <rag-button
+            variant="outline"
+            color="red"
+            [loading]="settingsStore.isLoading()"
+            (click)="stopServer()">
+            Stop Server
+          </rag-button>
+        } @else {
+          <rag-button
+            variant="solid"
+            color="green"
+            [loading]="settingsStore.isLoading()"
+            (click)="startServer()">
+            Start Server
+          </rag-button>
+        }
+      </div>
+    </rag-settings-section>
+
+    <!-- Knowledge Base Settings Section -->
+    <rag-settings-section
+      title="Knowledge Base Settings"
+      description="Configure embedding models, chunk size, and search parameters"
+      [icon]="DatabaseIcon">
+
+      <div class="form-grid">
+        <rag-form-field label="Chunk Size (tokens)">
+          <rag-input
+            type="number"
+            formControlName="chunkSize"
+            min="128"
+            max="2048" />
+        </rag-form-field>
+
+        <rag-form-field label="Search Top-K Results">
+          <rag-input
+            type="number"
+            formControlName="searchTopK"
+            min="1"
+            max="50" />
+        </rag-form-field>
+
+        <rag-form-field label="Search Options">
+          <rag-checkbox formControlName="enableHybridSearch">
+            Enable hybrid search (Vector + BM25)
+          </rag-checkbox>
         </rag-form-field>
       </div>
     </rag-settings-section>

@@ -74,6 +74,10 @@
   &.rt-has-right-icon {
     padding-right: 2rem !important;
   }
+
+  &.rt-path-input {
+    padding-right: 6rem !important; // Extra space for browse button
+  }
 }
 
 // Size variants
@@ -136,6 +140,37 @@
   }
 }
 
+// Browse button for path inputs
+.rt-input-browse-button {
+  position: absolute;
+  right: var(--rag-primitive-spacing-xs);
+  z-index: 2;
+  height: calc(100% - 4px);
+  margin: 2px;
+  min-width: auto;
+  padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+  font-size: var(--rag-primitive-fontSize-xs);
+  border-radius: calc(var(--rag-primitive-radius-md) - 2px);
+
+  // Ensure the button text and icon are properly aligned
+  display: flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-xs);
+
+  // Size-specific adjustments
+  .rt-size-sm & {
+    padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-xs);
+    font-size: var(--rag-primitive-fontSize-xs);
+    border-radius: calc(var(--rag-primitive-radius-sm) - 2px);
+  }
+
+  .rt-size-lg & {
+    padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+    font-size: var(--rag-primitive-fontSize-sm);
+    border-radius: calc(var(--rag-primitive-radius-md) - 2px);
+  }
+}
+
 // Disabled state
 .rt-TextField.rt-disabled {
 
@@ -147,5 +182,10 @@
   .rt-input-right-icon {
     cursor: not-allowed;
     pointer-events: none;
+  }
+
+  .rt-input-browse-button {
+    pointer-events: none;
+    opacity: 0.5;
   }
 }

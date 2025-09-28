@@ -22,12 +22,25 @@
     />
     
     @if (rightIcon()) {
-      <rag-icon 
-        [img]="rightIcon()!" 
-        size="sm" 
+      <rag-icon
+        [img]="rightIcon()!"
+        size="sm"
         class="rt-input-right-icon"
         (click)="handleRightIconClick()"
       />
+    }
+
+    @if (showBrowseButton()) {
+      <rag-button
+        type="button"
+        variant="outline"
+        size="sm"
+        class="rt-input-browse-button"
+        [disabled]="disabled()"
+        (onClick)="handleBrowseClick()">
+        <rag-icon [img]="browseIcon()" size="sm" />
+        Browse
+      </rag-button>
     }
   </div>
 </div>

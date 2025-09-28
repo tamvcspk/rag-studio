@@ -253,6 +253,24 @@ pub async fn select_data_directory() -> Result<Option<String>, String> {
     Ok(Some("./data".to_string()))
 }
 
+/// Select file using system dialog
+#[tauri::command]
+pub async fn select_file(title: Option<String>) -> Result<Option<String>, String> {
+    // TODO: Implement file selection dialog with Tauri v2 API
+    // For now, return a placeholder
+    let _ = title; // Avoid unused parameter warning
+    Ok(Some("./example-file.txt".to_string()))
+}
+
+/// Select folder using system dialog
+#[tauri::command]
+pub async fn select_folder(title: Option<String>) -> Result<Option<String>, String> {
+    // TODO: Implement folder selection dialog with Tauri v2 API
+    // For now, return a placeholder
+    let _ = title; // Avoid unused parameter warning
+    Ok(Some("./example-folder".to_string()))
+}
+
 /// Clear application cache
 #[tauri::command]
 pub async fn clear_application_cache(

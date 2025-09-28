@@ -1,0 +1,203 @@
+<div class="resource-settings-panel">
+  @if (settingsStore.error()) {
+    <rag-alert variant="error">
+      {{ settingsStore.error() }}
+    </rag-alert>
+  }
+
+  <form [formGroup]="resourceForm">
+    <!-- Storage Management -->
+    <rag-settings-section
+      title="Storage Management"
+      description="Configure storage quotas, data directory, and cleanup settings"
+      [icon]="HardDriveIcon">
+
+      <!-- Storage Overview -->
+      @if (systemSettings()) {
+        <rag-card variant="elevated" class="storage-overview">
+          <div class="form-grid">
+            <rag-form-field label="Storage Quota">
+              <div class="metric-display">
+                <rag-icon [img]="DatabaseIcon" size="sm" />
+                <span>{{ systemSettings()!.storage_quota_gb }} GB</span>
+              </div>
+            </rag-form-field>
+            <rag-form-field label="Data Directory">
+              <div class="metric-display">
+                <rag-icon [img]="FolderOpenIcon" size="sm" />
+                <span>{{ systemSettings()!.data_directory }}</span>
+              </div>
+            </rag-form-field>
+            <rag-form-field label="Auto Backup">
+              <div class="metric-display">
+                <rag-icon [img]="ArchiveIcon" size="sm" />
+                <span>
+                  @if (systemSettings()!.auto_backup) {
+                    Every {{ systemSettings()!.backup_interval_hours }}h
+                  } @else {
+                    Disabled
+                  }
+                </span>
+              </div>
+            </rag-form-field>
+          </div>
+        </rag-card>
+      }
+
+      <div class="form-grid">
+      <!-- Storage Quota -->
+      <rag-form-field
+        label="Storage Quota"
+        description="Maximum storage space for knowledge bases and cache">
+        <rag-input
+          type="number"
+          formControlName="storageQuotaGb"
+          min="1"
+          max="50" />
+      </rag-form-field>
+
+      <!-- Data Directory -->
+      <rag-form-field
+        label="Data Directory"
+        description="Location where knowledge bases and application data are stored">
+        <rag-input
+          type="path"
+          formControlName="dataDirectory"
+          [browseMode]="'folder'"
+          [browseTitle]="'Select Data Directory'"
+          [placeholder]="'Choose data directory...'"
+          (onBrowse)="selectDataDirectory()" />
+      </rag-form-field>
+
+      <!-- Auto Backup -->
+      <rag-form-field
+        label="Automatic Backup"
+        description="Automatically create backups of knowledge bases and settings">
+        <rag-checkbox
+          formControlName="autoBackup">
+          Enable automatic backups
+        </rag-checkbox>
+      </rag-form-field>
+
+      @if (resourceForm.value.autoBackup) {
+        <!-- Backup Interval -->
+        <rag-form-field
+          label="Backup Interval (hours)"
+          description="How often to create automatic backups">
+          <rag-input
+            type="number"
+            formControlName="backupIntervalHours"
+            min="1"
+            max="168" />
+        </rag-form-field>
+
+        <!-- Max Backups -->
+        <rag-form-field
+          label="Maximum Backups"
+          description="Number of backup files to keep (older backups are deleted)">
+          <rag-input
+            type="number"
+            formControlName="maxBackups"
+            min="1"
+            max="30" />
+        </rag-form-field>
+      }
+      </div>
+    </rag-settings-section>
+
+    <!-- Cache & Performance -->
+    <rag-settings-section
+      title="Cache & Performance"
+      description="Memory allocation and caching configuration"
+      [icon]="MemoryStickIcon">
+
+      <div class="form-grid">
+      <!-- Cache Size -->
+      <rag-form-field
+        label="Cache Size (MB)"
+        description="Memory allocated for caching search results and embeddings">
+        <rag-input
+          type="number"
+          formControlName="cacheSizeMb"
+          min="64"
+          max="2048"
+          step="64" />
+      </rag-form-field>
+
+      <!-- Cache TTL -->
+      <rag-form-field
+        label="Cache TTL (seconds)"
+        description="How long to keep cached items before expiration">
+        <rag-input
+          type="number"
+          formControlName="cacheTtlSeconds"
+          min="300"
+          max="86400"
+          step="300" />
+      </rag-form-field>
+
+      <!-- Clear Cache Button -->
+      <rag-form-field
+        label="Cache Management"
+        description="Clear cached data to free up memory and force fresh results">
+        <rag-button
+          type="button"
+          variant="outline"
+          [loading]="settingsStore.isLoading()"
+          (click)="clearCache()">
+          <rag-icon [img]="Trash2Icon" size="sm" />
+          Clear All Cache
+        </rag-button>
+      </rag-form-field>
+      </div>
+    </rag-settings-section>
+
+    <!-- Logging Configuration -->
+    <rag-settings-section
+      title="Logging Configuration"
+      description="Log level and retention settings"
+      [icon]="SettingsIcon">
+
+      <div class="form-grid">
+      <!-- Log Level -->
+      <rag-form-field
+        label="Log Level"
+        description="Minimum severity level for log messages">
+        <rag-select
+          formControlName="logLevel"
+          [options]="logLevels"
+          placeholder="Select log level" />
+      </rag-form-field>
+
+      <!-- Log Retention -->
+      <rag-form-field
+        label="Log Retention (days)"
+        description="How long to keep log files before automatic deletion">
+        <rag-input
+          type="number"
+          formControlName="logRetentionDays"
+          min="1"
+          max="365" />
+      </rag-form-field>
+      </div>
+    </rag-settings-section>
+
+    <!-- Actions -->
+    <div class="form-actions">
+    <rag-button
+      variant="outline"
+      [loading]="settingsStore.isLoading()"
+      (click)="resetSettings()">
+      Reset to Defaults
+    </rag-button>
+
+    <rag-button
+      variant="solid"
+      [loading]="settingsStore.isLoading()"
+      [disabled]="!hasUnsavedChanges()"
+      (click)="saveSettings()">
+      Save Resource Settings
+    </rag-button>
+    </div>
+  </form>
+</div>

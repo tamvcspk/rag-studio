@@ -19,7 +19,7 @@ Complete quick reference for all RAG Studio components - both atomic and semanti
 ```typescript
 // Atomic components
 import {
-  RagButton, RagInput, RagSelect, RagChip, RagAlert, RagBadge,
+  RagButton, RagInput, RagSelect, RagFileInput, RagChip, RagAlert, RagBadge,
   RagIcon, RagSpinner, RagProgress, RagSkeleton, RagOverflowBar,
   RagDivider, RagToggleGroup, RagToggle, RagSlider
 } from './shared/components/atomic';
@@ -45,10 +45,11 @@ import {
 ```typescript
 @Component({
   selector: 'app-example',
-  imports: [RagButton, RagInput, RagCard, RagIcon, RagBadge, RagToggle, RagSlider], // Standalone components
+  imports: [RagButton, RagInput, RagFileInput, RagCard, RagIcon, RagBadge, RagToggle, RagSlider], // Standalone components
   template: `
     <rag-card>
       <rag-input [placeholder]="'Enter text'" />
+      <rag-file-input [accept]="'.pdf,.doc'" [multiple]="true" />
       <rag-button (onClick)="submit()" [ragBadge]="notificationCount() > 0 ? notificationCount() : null">
         Submit
       </rag-button>
@@ -517,8 +518,9 @@ export class ActionsComponent {
 |-----------|---------------|-------------------|
 | `<rag-button>` | `<rag-button variant="solid">Save</rag-button>` | `variant`, `loading`, `disabled` |
 | `[ragBadge]` | `<button [ragBadge]="count()">Notifications</button>` | `ragBadge`, `badgeVariant`, `badgeColor` |
-| `<rag-input>` | `<rag-input [placeholder]="'Email'" [leftIcon]="'mail'">` | `type`, `error`, `leftIcon` |
+| `<rag-input>` | `<rag-input [placeholder]="'Email'" [leftIcon]="'mail'">` | `type`, `error`, `leftIcon`, `browseMode` |
 | `<rag-select>` | `<rag-select [options]="items" [searchable]="true">` | `options`, `searchable`, `clearable` |
+| `<rag-file-input>` | `<rag-file-input [accept]="'.pdf,.doc'" [multiple]="true">` | `accept`, `multiple`, `maxFiles`, `maxFileSize` |
 | `<rag-chip>` | `<rag-chip color="green">Active</rag-chip>` | `variant`, `color`, `icon` |
 | `<rag-alert>` | `<rag-alert variant="success">Success!</rag-alert>` | `variant`, `closable`, `title` |
 | `<rag-toast>` | `toastService.success('Done!', 'Success')` | Service-based, `variant`, `actions` |
@@ -700,10 +702,19 @@ export class FormComponent {
   </rag-form-field>
 
   <rag-form-field label="Email">
-    <rag-input 
+    <rag-input
       formControlName="email"
       [type]="'email'"
       [leftIcon]="'mail'" />
+  </rag-form-field>
+
+  <rag-form-field label="Data Directory">
+    <rag-input
+      formControlName="dataDirectory"
+      [type]="'path'"
+      [browseMode]="'folder'"
+      [browseTitle]="'Select Data Directory'"
+      (onBrowse)="selectDirectory()" />
   </rag-form-field>
 
   <rag-form-field label="Role">

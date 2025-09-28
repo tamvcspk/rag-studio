@@ -34,7 +34,8 @@
       "Bash(ng test:*)",
       "Bash(npx ng build:*)",
       "Bash(npx tsc:*)",
-      "Bash(timeout 30 ng build:*)"
+      "Bash(timeout 30 ng build:*)",
+      "Bash(del \"C:\\Src\\project\\rag-studio\\src\\app\\shared\\components\\composite\\kb-configuration-panel\\kb-configuration-panel.ts.disabled\")"
     ],
     "deny": [],
     "ask": [],
