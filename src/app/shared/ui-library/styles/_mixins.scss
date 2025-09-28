@@ -1,0 +1,243 @@
+// UI Library Mixins - Reusable SCSS mixins for RAG Studio components
+// This file will be part of the future UI library package
+
+// =============================================================================
+// CARD MIXINS - Base card styling patterns
+// =============================================================================
+
+@mixin card-base {
+  padding: var(--rag-primitive-spacing-lg);
+  background: var(--rag-semantic-color-background-default);
+  border: 1px solid var(--rag-semantic-color-border-default);
+  border-radius: var(--rag-primitive-radius-md);
+  transition: all 0.2s ease;
+}
+
+@mixin card-interactive {
+  @include card-base;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--rag-semantic-color-border-subtle);
+    box-shadow: var(--rag-primitive-shadow-xs);
+  }
+}
+
+@mixin card-selected {
+  border-color: var(--rag-semantic-color-primary-300);
+  background: var(--rag-semantic-color-primary-25);
+}
+
+// =============================================================================
+// WIZARD MIXINS - Multi-step wizard components
+// =============================================================================
+
+@mixin wizard-step-item {
+  display: flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-md);
+  padding: var(--rag-primitive-spacing-lg);
+  @include card-interactive;
+  min-width: 200px;
+  flex-shrink: 0;
+
+  &.active {
+    background: var(--rag-semantic-color-primary-50);
+    border-color: var(--rag-semantic-color-primary-200);
+  }
+
+  &.completed {
+    .step-icon {
+      background: var(--rag-semantic-color-success-600);
+      color: white;
+    }
+  }
+}
+
+@mixin wizard-step-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--rag-primitive-spacing-xl);
+  height: var(--rag-primitive-spacing-xl);
+  background: var(--rag-semantic-color-background-muted);
+  border-radius: 50%;
+  font-size: var(--rag-primitive-fontSize-sm);
+  font-weight: 600;
+  color: var(--rag-semantic-color-text-muted);
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+@mixin wizard-progress-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-lg);
+  margin-bottom: calc(var(--rag-primitive-spacing-xl) * 2);
+  min-width: 200px;
+}
+
+// =============================================================================
+// GRID LAYOUT MIXINS - Generic grid patterns
+// =============================================================================
+
+@mixin auto-fit-grid($min-width: 280px) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
+  gap: var(--rag-primitive-spacing-lg);
+}
+
+@mixin responsive-two-column($breakpoint: 768px) {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--rag-primitive-spacing-xl);
+  align-items: start;
+
+  @media (max-width: #{$breakpoint}) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// =============================================================================
+// FORM MIXINS - Form styling patterns
+// =============================================================================
+
+@mixin form-group {
+  margin-bottom: var(--rag-primitive-spacing-xl);
+
+  label {
+    display: block;
+    font-size: var(--rag-primitive-fontSize-sm);
+    font-weight: 500;
+    color: var(--rag-semantic-color-text-subtle);
+    margin-bottom: var(--rag-primitive-spacing-sm);
+  }
+}
+
+@mixin form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-sm);
+
+  .secondary-actions,
+  .primary-actions {
+    display: flex;
+    gap: var(--rag-primitive-spacing-sm);
+  }
+}
+
+// =============================================================================
+// LAYOUT MIXINS - Generic layout patterns
+// =============================================================================
+
+@mixin horizontal-scroll-container {
+  display: flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-lg);
+  padding: var(--rag-primitive-spacing-xl);
+  overflow-x: auto;
+}
+
+@mixin centered-icon($size: 3rem) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+}
+
+// =============================================================================
+// NOTIFICATION MIXINS - Alerts, toasts, status indicators
+// =============================================================================
+
+@mixin notification-base {
+  display: flex;
+  gap: var(--rag-primitive-spacing-md);
+  padding: var(--rag-primitive-spacing-lg);
+  border-radius: var(--rag-primitive-radius-md);
+
+  rag-icon {
+    flex-shrink: 0;
+    margin-top: var(--rag-primitive-spacing-xs);
+  }
+}
+
+@mixin notification-info {
+  @include notification-base;
+  background: var(--rag-semantic-color-primary-25);
+  border: 1px solid var(--rag-semantic-color-primary-200);
+  color: var(--rag-semantic-color-primary-800);
+}
+
+@mixin notification-success {
+  @include notification-base;
+  background: var(--rag-semantic-color-success-25);
+  border: 1px solid var(--rag-semantic-color-success-200);
+  color: var(--rag-semantic-color-success-800);
+}
+
+@mixin notification-warning {
+  @include notification-base;
+  background: var(--rag-semantic-color-warning-25);
+  border: 1px solid var(--rag-semantic-color-warning-200);
+  color: var(--rag-semantic-color-warning-800);
+}
+
+@mixin notification-error {
+  @include notification-base;
+  background: var(--rag-semantic-color-error-25);
+  border: 1px solid var(--rag-semantic-color-error-200);
+  color: var(--rag-semantic-color-error-800);
+}
+
+// =============================================================================
+// RESPONSIVE MIXINS - Common responsive patterns
+// =============================================================================
+
+@mixin mobile-only {
+  @media (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin tablet-and-up {
+  @media (min-width: 769px) {
+    @content;
+  }
+}
+
+@mixin desktop-only {
+  @media (min-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin mobile-wizard-adjustments {
+  @include mobile-only {
+    .wizard-progress {
+      width: 100%;
+      min-width: auto;
+    }
+
+    .step-navigation {
+      flex-direction: column;
+
+      .step-item {
+        min-width: auto;
+      }
+    }
+
+    .wizard-actions {
+      flex-direction: column;
+      gap: var(--rag-primitive-spacing-lg);
+      align-items: stretch;
+
+      .secondary-actions,
+      .primary-actions {
+        justify-content: center;
+      }
+    }
+  }
+}

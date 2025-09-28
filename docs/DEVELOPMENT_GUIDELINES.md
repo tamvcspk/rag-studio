@@ -98,6 +98,7 @@ export class RagExampleComponent {  // Rag prefix for atomic/semantic components
    - **Semantic Components**: `rag-page-header`, `rag-stats-overview`, `rag-dialog`, etc.
    - **Composite Components**: `empty-state-panel`, `create-*-wizard`, etc.
    - Check `docs/docs/ATOMIC_COMPONENTS_REFERENCE.md` for complete component reference
+   - See `docs/docs/UI_LIBRARY_MIXINS.md` for SCSS mixins and utilities reference
 
 2. **Design Token System**: **MANDATORY** - All styling must use design tokens from `docs/docs/DESIGN_TOKENS_GUIDE.md`:
    - **Primitive Tokens**: `var(--rag-primitive-spacing-md)`, `var(--rag-primitive-color-blue-500)`

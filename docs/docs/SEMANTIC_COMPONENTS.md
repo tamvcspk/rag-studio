@@ -32,6 +32,7 @@ Components that appear above content:
 Components for app navigation:
 - **Tabs**: Content switching with container and trigger state styling
 - **Breadcrumb**: Hierarchical navigation with item states and separators
+- **Stepper**: Multi-step progress indication with completion states
 - **Sidebar**: Main navigation menu
 
 ### 📋 Data Display Archetype
@@ -75,7 +76,7 @@ For detailed archetype documentation and implementation details, see [ARCHETYPE_
 |----------|------------|---------|
 | **Data Display** | 6 components | Presenting information and data visualization |
 | **Forms** | 7 components | Advanced form controls and input patterns |
-| **Navigation** | 4 components | User navigation and wayfinding |
+| **Navigation** | 5 components | User navigation and wayfinding |
 | **Overlay** | 3 components | Modal dialogs, dropdowns, and layered content |
 
 ---
@@ -958,6 +959,134 @@ The RagPageHeader uses the RagSearchInput component to provide:
 
 ---
 
+### RagStepper
+**Purpose**: Multi-step progress indicator and content wizard for step-by-step workflows. Steps are defined using the `ragStepPanel` directive with automatic progress tracking and content display.
+
+#### Props
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `currentStep` | `number` | `1` | Currently active step number |
+| `totalSteps` | `number` | `1` | Total number of steps |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Component size |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout orientation |
+| `variant` | `'default' \| 'compact'` | `'default'` | Display variant |
+
+#### Usage
+```html
+<!-- Basic horizontal stepper -->
+<rag-stepper
+  [currentStep]="currentStep()"
+  [totalSteps]="3"
+  size="md"
+  variant="default"
+  (stepClick)="onStepClick($event)"
+  (currentStepChange)="onStepChange($event)">
+
+  <div ragStepPanel="step1" label="Basic Information" [stepNumber]="1">
+    <h3>Basic Information</h3>
+    <p>Configure the basic settings for your wizard...</p>
+    <!-- Your step 1 content here -->
+  </div>
+
+  <div ragStepPanel="step2" label="Configuration" [stepNumber]="2">
+    <h3>Configuration</h3>
+    <p>Configure advanced settings and options...</p>
+    <!-- Your step 2 content here -->
+  </div>
+
+  <div ragStepPanel="step3" label="Review & Create" [stepNumber]="3">
+    <h3>Review & Create</h3>
+    <p>Review your configuration and create the item...</p>
+    <!-- Your step 3 content here -->
+  </div>
+</rag-stepper>
+
+<!-- Compact variant without labels -->
+<rag-stepper
+  [currentStep]="currentStep()"
+  [totalSteps]="3"
+  variant="compact"
+  size="sm">
+
+  <div ragStepPanel="setup" label="Setup" [stepNumber]="1">
+    <p>Setup content...</p>
+  </div>
+
+  <div ragStepPanel="config" label="Config" [stepNumber]="2">
+    <p>Configuration content...</p>
+  </div>
+
+  <div ragStepPanel="finish" label="Finish" [stepNumber]="3">
+    <p>Completion content...</p>
+  </div>
+</rag-stepper>
+
+<!-- Vertical orientation -->
+<rag-stepper
+  [currentStep]="currentStep()"
+  [totalSteps]="3"
+  orientation="vertical">
+
+  <div ragStepPanel="start" label="Start" [stepNumber]="1">
+    <p>Starting step content...</p>
+  </div>
+
+  <div ragStepPanel="middle" label="Process" [stepNumber]="2">
+    <p>Processing step content...</p>
+  </div>
+
+  <div ragStepPanel="end" label="Complete" [stepNumber]="3">
+    <p>Completion step content...</p>
+  </div>
+</rag-stepper>
+```
+
+```typescript
+// Component setup
+readonly currentStep = signal(1);
+
+onStepClick(event: { step: number; id: string }) {
+  console.log('Step clicked:', event);
+  this.currentStep.set(event.step);
+}
+
+onStepChange(stepNumber: number) {
+  this.currentStep.set(stepNumber);
+}
+```
+
+#### RagStepPanel Directive
+For content steppers, use the `ragStepPanel` directive:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `ragStepPanel` | `string` | ✅ | Unique step ID |
+| `label` | `string` | ✅ | Step label shown in stepper |
+| `stepNumber` | `number` | ✅ | Step number (1-based) |
+| `completed` | `boolean` | ❌ | Mark step as completed |
+| `disabled` | `boolean` | ❌ | Mark step as disabled |
+
+#### Events
+| Event | Type | Description |
+|-------|------|-------------|
+| `stepClick` | `{ step: number; id: string }` | Emitted when a step is clicked (disabled steps cannot be clicked) |
+| `currentStepChange` | `number` | Emitted when the current step changes |
+
+#### Features
+- **Content-First Design**: Steps are defined through `ragStepPanel` directives with automatic discovery
+- **Visual Progress**: Clear indication of completed, current, and pending steps with automatic state management
+- **Check Icons**: Completed steps show check marks automatically based on current step
+- **Connector Lines**: Visual flow between steps with completion state indicators
+- **Clickable Navigation**: All non-disabled steps are clickable for direct navigation
+- **Content Display**: Automatic content panel switching based on current step
+- **Responsive Design**: Adapts to different screen sizes and orientations
+- **Accessibility**: Screen reader support with step progress announcements and ARIA labels
+- **Size Variants**: Multiple size options (sm, md, lg) for different use cases
+- **Layout Orientations**: Both horizontal and vertical layouts supported
+- **Variant Support**: Default (with labels) and compact (minimal) display variants
+
+---
+
 ### RagSidebarItem
 **Purpose**: Sidebar navigation item with nested children, chips, and state management.
 
@@ -1446,6 +1575,6 @@ These components form the building blocks for complex RAG Studio interfaces, pro
 
 ---
 
-**Last Updated**: September 2, 2025  
-**Version**: 2.1.0  
-**Total Components**: 19 semantic components
+**Last Updated**: September 28, 2025
+**Version**: 2.1.1
+**Total Components**: 20 semantic components

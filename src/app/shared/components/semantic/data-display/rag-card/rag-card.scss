@@ -1,4 +1,4 @@
-@use '../../../../styles/animations';
+@use '../../../../styles/index' as styles;
 
 :host {
   display: block;
@@ -59,7 +59,7 @@
   }
 
   &__loading-overlay {
-    @include animations.loading-overlay();
+    @include styles.loading-overlay();
   }
 
   &__loading-content {

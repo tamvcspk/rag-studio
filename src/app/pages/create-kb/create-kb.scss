@@ -1,0 +1,504 @@
+.create-kb-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--rag-semantic-color-background-subtle);
+
+  .sticky-header {
+    padding: 0 var(--rag-primitive-spacing-xl);
+  }
+
+  .progress-section {
+    padding: var(--rag-primitive-spacing-lg) 0;
+    border-bottom: 1px solid var(--rag-semantic-color-border-default);
+    background-color: var(--rag-semantic-color-background-default);
+  }
+
+  .create-kb-content {
+    flex: 1;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl) var(--rag-primitive-spacing-xl);
+  }
+}
+
+.progress-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.progress-step {
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  .step-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--rag-primitive-fontSize-sm);
+    font-weight: var(--rag-primitive-fontWeight-medium);
+    border: 2px solid var(--rag-semantic-color-border-default);
+    background-color: var(--rag-semantic-color-background-default);
+    color: var(--rag-semantic-color-text-subtle);
+    transition: all 0.2s ease;
+  }
+
+  &.current .step-circle {
+    border-color: var(--rag-semantic-color-primary-500);
+    background-color: var(--rag-semantic-color-primary-500);
+    color: white;
+  }
+
+  &.completed .step-circle {
+    border-color: var(--rag-semantic-color-success-500);
+    background-color: var(--rag-semantic-color-success-500);
+    color: white;
+  }
+}
+
+.step-connector {
+  width: 80px;
+  height: 2px;
+  background-color: var(--rag-semantic-color-border-default);
+  margin: 0 var(--rag-primitive-spacing-sm);
+  transition: background-color 0.2s ease;
+
+  &.completed {
+    background-color: var(--rag-semantic-color-success-500);
+  }
+}
+
+.step-content {
+  padding: var(--rag-primitive-spacing-lg) 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.step-header {
+  text-align: center;
+  margin-bottom: var(--rag-primitive-spacing-xl);
+
+  h2 {
+    font-size: var(--rag-primitive-fontSize-xl);
+    font-weight: var(--rag-primitive-fontWeight-semibold);
+    color: var(--rag-semantic-color-text-default);
+    margin-bottom: var(--rag-primitive-spacing-sm);
+  }
+
+  p {
+    font-size: var(--rag-primitive-fontSize-md);
+    color: var(--rag-semantic-color-text-subtle);
+  }
+}
+
+// Step 1: Template Selection
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--rag-primitive-spacing-lg);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.template-card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--rag-primitive-shadow-lg);
+  }
+
+  &.selected {
+    border-color: var(--rag-semantic-color-primary-500);
+    box-shadow: 0 0 0 2px var(--rag-semantic-color-primary-100);
+  }
+
+  &.recommended::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    background: linear-gradient(45deg, var(--rag-semantic-color-primary-500), var(--rag-color-secondary-500));
+    border-radius: inherit;
+    z-index: -1;
+  }
+}
+
+.template-content {
+  text-align: center;
+  padding: var(--rag-primitive-spacing-xl);
+
+  .recommended-badge {
+    position: absolute;
+    top: var(--rag-primitive-spacing-md);
+    right: var(--rag-primitive-spacing-md);
+    background-color: var(--rag-semantic-color-primary-500);
+    color: white;
+    font-size: var(--rag-primitive-fontSize-xs);
+    font-weight: var(--rag-primitive-fontWeight-medium);
+    padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+    border-radius: var(--rag-primitive-radius-sm);
+  }
+
+  .template-icon {
+    margin-bottom: var(--rag-primitive-spacing-lg);
+    color: var(--rag-semantic-color-primary-500);
+  }
+
+  h3 {
+    font-size: var(--rag-primitive-fontSize-lg);
+    font-weight: var(--rag-primitive-fontWeight-semibold);
+    color: var(--rag-semantic-color-text-default);
+    margin-bottom: var(--rag-primitive-spacing-sm);
+  }
+
+  p {
+    font-size: var(--rag-primitive-fontSize-sm);
+    color: var(--rag-semantic-color-text-subtle);
+    line-height: 1.5;
+  }
+}
+
+// Step 2: Basic Information
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--rag-primitive-spacing-lg);
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+}
+
+// Step 3: Source Configuration
+.validation-section {
+  margin-top: var(--rag-primitive-spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-md);
+}
+
+.validation-message {
+  font-size: var(--rag-primitive-fontSize-sm);
+
+  &.success {
+    color: var(--rag-semantic-color-success-600);
+  }
+
+  &.error {
+    color: var(--rag-semantic-color-danger-600);
+  }
+}
+
+// Step 4: Pipeline Configuration
+.pipeline-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--rag-semantic-color-border-default);
+  margin-bottom: var(--rag-primitive-spacing-xl);
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: var(--rag-primitive-spacing-md) var(--rag-primitive-spacing-lg);
+  font-size: var(--rag-primitive-fontSize-sm);
+  font-weight: var(--rag-primitive-fontWeight-medium);
+  color: var(--rag-semantic-color-text-subtle);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--rag-semantic-color-text-default);
+  }
+
+  &.active {
+    color: var(--rag-semantic-color-primary-600);
+    border-bottom-color: var(--rag-semantic-color-primary-500);
+  }
+}
+
+.pipeline-selection,
+.new-pipeline-form {
+  h3 {
+    font-size: var(--rag-primitive-fontSize-lg);
+    font-weight: var(--rag-primitive-fontWeight-semibold);
+    color: var(--rag-semantic-color-text-default);
+    margin-bottom: var(--rag-primitive-spacing-lg);
+  }
+}
+
+.pipeline-list,
+.model-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rag-primitive-spacing-md);
+}
+
+.pipeline-card,
+.model-card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(.disabled) {
+    border-color: var(--rag-semantic-color-primary-300);
+  }
+
+  &.selected {
+    border-color: var(--rag-semantic-color-primary-500);
+    background-color: var(--rag-semantic-color-primary-50);
+  }
+
+  &.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.pipeline-info,
+.model-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  div:first-child {
+    flex: 1;
+  }
+
+  h4 {
+    font-size: var(--rag-primitive-fontSize-md);
+    font-weight: var(--rag-primitive-fontWeight-medium);
+    color: var(--rag-semantic-color-text-default);
+    margin-bottom: var(--rag-primitive-spacing-xs);
+  }
+
+  p {
+    font-size: var(--rag-primitive-fontSize-sm);
+    color: var(--rag-semantic-color-text-subtle);
+  }
+}
+
+.status-badge {
+  font-size: var(--rag-primitive-fontSize-xs);
+  font-weight: var(--rag-primitive-fontWeight-medium);
+  padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+  border-radius: var(--rag-primitive-radius-sm);
+
+  &.available {
+    background-color: var(--rag-semantic-color-success-100);
+    color: var(--rag-semantic-color-success-700);
+  }
+
+  &.busy {
+    background-color: var(--rag-semantic-color-warning-100);
+    color: var(--rag-semantic-color-warning-700);
+  }
+
+  &.not-supported {
+    background-color: var(--rag-semantic-color-danger-100);
+    color: var(--rag-semantic-color-danger-700);
+  }
+}
+
+.pipeline-designer-preview {
+  margin-top: var(--rag-primitive-spacing-xl);
+  padding: var(--rag-primitive-spacing-xl);
+  border: 2px dashed var(--rag-semantic-color-border-subtle);
+  border-radius: var(--rag-primitive-radius-md);
+  text-align: center;
+  color: var(--rag-semantic-color-text-subtle);
+}
+
+// Create Pipeline Section
+.create-pipeline-section {
+  text-align: center;
+  padding: var(--rag-primitive-spacing-xl);
+  border: 1px solid var(--rag-semantic-color-border-default);
+  border-radius: var(--rag-primitive-radius-md);
+  background-color: var(--rag-semantic-color-background-subtle);
+
+  h3 {
+    font-size: var(--rag-primitive-fontSize-lg);
+    font-weight: var(--rag-primitive-fontWeight-semibold);
+    color: var(--rag-semantic-color-text-default);
+    margin-bottom: var(--rag-primitive-spacing-sm);
+  }
+
+  p {
+    font-size: var(--rag-primitive-fontSize-sm);
+    color: var(--rag-semantic-color-text-subtle);
+    margin-bottom: var(--rag-primitive-spacing-xl);
+  }
+}
+
+.pipeline-creation-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-lg);
+}
+
+.created-pipeline-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-md);
+  padding: var(--rag-primitive-spacing-lg);
+  background-color: var(--rag-semantic-color-success-50);
+  border: 1px solid var(--rag-semantic-color-success-200);
+  border-radius: var(--rag-primitive-radius-md);
+
+  .success-message {
+    display: flex;
+    align-items: center;
+    gap: var(--rag-primitive-spacing-sm);
+    font-size: var(--rag-primitive-fontSize-sm);
+    font-weight: var(--rag-primitive-fontWeight-medium);
+    color: var(--rag-semantic-color-success-700);
+  }
+}
+
+// Step 5: Model Selection & Preview
+.model-selection {
+  margin-bottom: var(--rag-primitive-spacing-xl);
+}
+
+.pipeline-preview {
+  h3 {
+    font-size: var(--rag-primitive-fontSize-lg);
+    font-weight: var(--rag-primitive-fontWeight-semibold);
+    color: var(--rag-semantic-color-text-default);
+    margin-bottom: var(--rag-primitive-spacing-lg);
+  }
+}
+
+.preview-visualization {
+  padding: var(--rag-primitive-spacing-xl);
+  border: 2px dashed var(--rag-semantic-color-border-subtle);
+  border-radius: var(--rag-primitive-radius-md);
+  text-align: center;
+  color: var(--rag-semantic-color-text-subtle);
+}
+
+// Step 6: Review & Create
+.review-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.review-section {
+  margin-bottom: var(--rag-primitive-spacing-xl);
+  padding-bottom: var(--rag-primitive-spacing-xl);
+  border-bottom: 1px solid var(--rag-semantic-color-border-default);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  h3 {
+    font-size: var(--rag-primitive-fontSize-lg);
+    font-weight: var(--rag-primitive-fontWeight-semibold);
+    color: var(--rag-semantic-color-text-default);
+    margin-bottom: var(--rag-primitive-spacing-lg);
+  }
+}
+
+.review-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--rag-primitive-spacing-md);
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+}
+
+.review-item {
+  display: flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-sm);
+
+  label {
+    font-weight: var(--rag-primitive-fontWeight-medium);
+    color: var(--rag-semantic-color-text-subtle);
+    min-width: 80px;
+  }
+
+  span {
+    color: var(--rag-semantic-color-text-default);
+  }
+}
+
+// Footer Actions
+.footer-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--rag-primitive-spacing-lg) var(--rag-primitive-spacing-xl);
+  border-top: 1px solid var(--rag-semantic-color-border-default);
+  background-color: var(--rag-semantic-color-background-default);
+}
+
+.primary-actions {
+  display: flex;
+  gap: var(--rag-primitive-spacing-md);
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .create-kb-page {
+    .create-kb-content {
+      padding: var(--rag-primitive-spacing-lg);
+    }
+
+    .sticky-header {
+      padding: 0 var(--rag-primitive-spacing-lg);
+    }
+  }
+
+  .template-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .review-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-steps {
+    .step-connector {
+      width: 40px;
+    }
+  }
+
+  .footer-actions {
+    flex-direction: column;
+    gap: var(--rag-primitive-spacing-md);
+    align-items: stretch;
+    padding: var(--rag-primitive-spacing-lg);
+
+    .primary-actions {
+      justify-content: center;
+    }
+  }
+}

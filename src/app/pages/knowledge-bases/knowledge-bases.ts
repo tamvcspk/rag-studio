@@ -1,20 +1,18 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { BookOpen, Plus, Upload, Search, CheckCircle, AlertTriangle, Clock, Pause } from 'lucide-angular';
 import { Observable, map } from 'rxjs';
-import { 
-  KnowledgeBase, 
+import {
+  KnowledgeBase,
   CreateKBFormData,
-  KnowledgeBaseStatus 
+  KnowledgeBaseStatus
 } from '../../shared/types';
 import { KnowledgeBasesStore } from '../../shared/store/knowledge-bases.store';
 import { KnowledgeBaseCard } from '../../shared/components/composite/knowledge-base-card/knowledge-base-card';
-import { CreateKBWizard } from '../../shared/components/composite/create-kb-wizard/create-kb-wizard';
-import { KBPipelineCreator } from '../../shared/components/composite/kb-pipeline-creator/kb-pipeline-creator';
 import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
 import { RagPageHeader } from '../../shared/components/semantic/navigation/rag-page-header/rag-page-header';
 import { RagStatsOverview, StatItem } from '../../shared/components/semantic/data-display/rag-stats-overview';
-import { RagDialogService } from '../../shared/components/semantic/overlay/rag-dialog/rag-dialog.service';
 import { RagToastService } from '../../shared/components/atomic/feedback/rag-toast/rag-toast.service';
 
 type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
@@ -34,7 +32,7 @@ type FilterType = 'all' | 'indexed' | 'indexing' | 'failed';
 })
 export class KnowledgeBases implements OnInit {
   private readonly store = inject(KnowledgeBasesStore);
-  private readonly dialogService = inject(RagDialogService);
+  private readonly router = inject(Router);
   private readonly toastService = inject(RagToastService);
   
   // Icon components
@@ -185,7 +183,7 @@ export class KnowledgeBases implements OnInit {
       label: 'Create KB',
       icon: Plus,
       variant: 'solid' as const,
-      action: () => this.openCreateWizard()
+      action: () => this.navigateToCreateKB()
     }
   ]);
 
@@ -213,24 +211,12 @@ export class KnowledgeBases implements OnInit {
     this.selectedFilters.set(selectedFilters);
   }
 
-  openCreateWizard(): void {
-    // Use the new Pipeline-based KB creator instead of the old wizard
-    const dialogRef = this.dialogService.open(KBPipelineCreator, {
-      title: 'Create Knowledge Base via Pipeline',
-      description: 'Create a new knowledge base using Pipeline templates',
-      size: 'lg',
-      showCloseButton: true
-    });
+  navigateToCreateKB(): void {
+    this.router.navigate(['/create-kb']);
+  }
 
-    dialogRef.closed.subscribe((result: any) => {
-      if (result && result.type === 'pipeline-execution') {
-        this.toastService.show({
-          variant: 'success',
-          title: 'Knowledge base creation started',
-          message: `Pipeline execution initiated for "${result.kbParameters.name}". Check the Pipelines page for progress.`
-        });
-      }
-    });
+  openCreateWizard(): void {
+    this.router.navigate(['/create-kb']);
   }
 
   async onCreateKB(formData: CreateKBFormData): Promise<void> {

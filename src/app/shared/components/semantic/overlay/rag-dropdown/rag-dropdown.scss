@@ -267,16 +267,7 @@
 }
 
 // Animation
-@keyframes dropdownShow {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+// Animation now centralized in project-specific mixins
 
 // Responsive behavior
 @media (max-width: 768px) {

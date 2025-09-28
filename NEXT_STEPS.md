@@ -31,7 +31,6 @@ Model Management → Pipelines → KB → Flows
 - [x] **Design System Compliance**: Full integration with design tokens and existing components
 - [x] **Model Details**: RagModelDetails component with metadata, performance metrics, cache statistics
 - [x] **Model Import**: ModelImportWizard with drag-drop interface and validation
-- [x] **Model Selector Components**: RagModelSelector (3 variants) for Pipeline and KB creation
 - [x] **KB Integration**: KB creation wizard updated to use dynamic model selection
 - [x] **Form Integration**: Full ControlValueAccessor support for reactive forms
 

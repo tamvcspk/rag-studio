@@ -3,7 +3,9 @@ import { Dashboard } from "./pages/dashboard/dashboard";
 import { Tools } from "./pages/tools/tools";
 import { Models } from "./pages/models/models";
 import { KnowledgeBases } from "./pages/knowledge-bases/knowledge-bases";
+import { CreateKB } from "./pages/create-kb/create-kb";
 import { Pipelines } from "./pages/pipelines/pipelines";
+import { CreatePipeline } from "./pages/create-pipeline/create-pipeline";
 import { Flows } from "./pages/flows/flows";
 import { Settings } from "./pages/settings/settings";
 import { MainLayout, TabsLayout } from "./shared/layout";
@@ -57,6 +59,14 @@ export const routes: Routes = [
       {
         path: 'settings',
         component: Settings
+      },
+      {
+        path: 'create-kb',
+        component: CreateKB
+      },
+      {
+        path: 'create-pipeline',
+        component: CreatePipeline
       }
     ]
   },

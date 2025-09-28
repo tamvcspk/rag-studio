@@ -1,0 +1,376 @@
+<div class="create-kb-page">
+  <div class="sticky-header">
+    <!-- Page Header -->
+    <rag-page-header
+      [title]="getStepTitle()"
+      [actions]="headerActions()">
+      <ng-container slot="nav">
+        <rag-button variant="ghost" size="sm" (click)="goBack()">
+          <rag-icon [img]="iconComponents.ArrowLeft" size="sm" />
+          Back to Knowledge Bases
+        </rag-button>
+      </ng-container>
+    </rag-page-header>
+
+    <!-- Progress Indicator -->
+    <div class="progress-section">
+      <rag-stepper
+        [currentStep]="currentStep()"
+        [totalSteps]="totalSteps"
+        size="md"
+        variant="default"
+        (stepClick)="onStepClick($event)"
+        (currentStepChange)="onStepChange($event)">
+
+        <!-- Step 1: Template Selection -->
+        <div ragStepPanel="template" label="Choose Template" [stepNumber]="1" class="step-content">
+          <div class="step-1">
+            <div class="step-header">
+              <h2>Choose a Template</h2>
+              <p>Select the type of content you want to index in your Knowledge Base</p>
+            </div>
+
+            <div class="template-grid">
+              @for (template of templates; track template.id) {
+                <rag-card
+                  class="template-card"
+                  [class.selected]="selectedTemplate()?.id === template.id"
+                  [class.recommended]="template.recommended"
+                  (click)="selectTemplate(template)">
+                  <div class="template-content">
+                    @if (template.recommended) {
+                      <div class="recommended-badge">Recommended</div>
+                    }
+                    <div class="template-icon">
+                      @if (template.icon) {
+                        <rag-icon [img]="template.icon" size="lg" />
+                      }
+                    </div>
+                    <h3>{{ template.name }}</h3>
+                    <p>{{ template.description }}</p>
+                  </div>
+                </rag-card>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Basic Information -->
+        <div ragStepPanel="basic" label="Basic Information" [stepNumber]="2" class="step-content">
+          <div class="step-2">
+            <div class="step-header">
+              <h2>Basic Information</h2>
+              <p>Provide details about your Knowledge Base</p>
+            </div>
+
+            <form [formGroup]="step2Form" class="form-container">
+              <div class="form-grid">
+                <rag-form-field label="Knowledge Base Name" [required]="true">
+                  <rag-input
+                    formControlName="name"
+                    placeholder="Enter a descriptive name"
+                    [error]="!!getFieldError(step2Form, 'name')" />
+                </rag-form-field>
+
+                <rag-form-field label="Product" [required]="true">
+                  <rag-input
+                    formControlName="product"
+                    placeholder="Product or project name"
+                    [error]="!!getFieldError(step2Form, 'product')" />
+                </rag-form-field>
+
+                <rag-form-field label="Version" [required]="true">
+                  <rag-input
+                    formControlName="version"
+                    placeholder="1.0.0"
+                    [error]="!!getFieldError(step2Form, 'version')" />
+                </rag-form-field>
+
+                <rag-form-field label="Description" class="full-width">
+                  <rag-textarea
+                    formControlName="description"
+                    placeholder="Optional description of the Knowledge Base content"
+                    [rows]="3" />
+                </rag-form-field>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Step 3: Source Configuration -->
+        <div ragStepPanel="source" label="Source Configuration" [stepNumber]="3" class="step-content">
+          <div class="step-3">
+            <div class="step-header">
+              <h2>Source Configuration</h2>
+              <p>Configure the source location for your {{ selectedTemplate()?.name?.toLowerCase() || 'content' }}</p>
+            </div>
+
+            <form [formGroup]="step3Form" class="form-container">
+              <rag-form-field [label]="getSourceLabel()" [required]="true">
+                <rag-input
+                  formControlName="sourceUrl"
+                  [placeholder]="getSourcePlaceholder()"
+                  [error]="!!getFieldError(step3Form, 'sourceUrl')" />
+
+                <div class="validation-section">
+                  <rag-button
+                    variant="outline"
+                    size="sm"
+                    [disabled]="!step3Form.get('sourceUrl')?.value || sourceValidationState() === 'validating'"
+                    (click)="validateSource()">
+                    @if (sourceValidationState() === 'validating') {
+                      Validating...
+                    } @else {
+                      Validate Source
+                    }
+                  </rag-button>
+
+                  @if (sourceValidationState() !== 'idle') {
+                    <div class="validation-message"
+                         [class.success]="sourceValidationState() === 'success'"
+                         [class.error]="sourceValidationState() === 'error'">
+                      {{ sourceValidationMessage() }}
+                    </div>
+                  }
+                </div>
+              </rag-form-field>
+            </form>
+          </div>
+        </div>
+
+        <!-- Step 4: Pipeline Configuration -->
+        <div ragStepPanel="pipeline" label="Pipeline Configuration" [stepNumber]="4" class="step-content">
+          <div class="step-4">
+            <div class="step-header">
+              <h2>Pipeline Configuration</h2>
+              <p>Choose how to process your content</p>
+            </div>
+
+            <form [formGroup]="step4Form" class="form-container">
+              <div class="pipeline-tabs">
+                <button type="button"
+                        class="tab-button"
+                        [class.active]="selectedPipelineMode() === 'existing'"
+                        (click)="step4Form.patchValue({pipelineMode: 'existing'})">
+                  Use Existing Pipeline
+                </button>
+                <button type="button"
+                        class="tab-button"
+                        [class.active]="selectedPipelineMode() === 'new'"
+                        (click)="step4Form.patchValue({pipelineMode: 'new'})">
+                  Create New Pipeline
+                </button>
+              </div>
+
+              @if (selectedPipelineMode() === 'existing') {
+                <div class="pipeline-selection">
+                  <h3>Available Pipelines</h3>
+                  <div class="pipeline-list">
+                    @for (pipeline of availablePipelines(); track pipeline.id) {
+                      <rag-card
+                        class="pipeline-card"
+                        [class.selected]="step4Form.get('selectedPipelineId')?.value === pipeline.id"
+                        [class.disabled]="pipeline.status !== 'available'"
+                        (click)="selectPipeline(pipeline.id)">
+                        <div class="pipeline-info">
+                          <h4>{{ pipeline.name }}</h4>
+                          <p>{{ pipeline.description }}</p>
+                          <div class="status-badge" [class]="pipeline.status">
+                            {{ pipeline.status | titlecase }}
+                          </div>
+                        </div>
+                      </rag-card>
+                    }
+                  </div>
+                </div>
+              }
+
+              @if (selectedPipelineMode() === 'new') {
+                <div class="new-pipeline-form">
+                  <div class="create-pipeline-section">
+                    <h3>Create New Pipeline</h3>
+                    <p>You'll be taken to the pipeline creation wizard to design your custom pipeline.</p>
+
+                    <div class="pipeline-creation-actions">
+                      <rag-button
+                        variant="solid"
+                        (click)="navigateToCreatePipeline()">
+                        <rag-icon [img]="iconComponents.Plus" size="sm" />
+                        Create Pipeline
+                      </rag-button>
+
+                      @if (createdPipelineId()) {
+                        <div class="created-pipeline-info">
+                          <div class="success-message">
+                            <rag-icon [img]="iconComponents.Check" size="sm" />
+                            Pipeline created successfully: {{ createdPipelineName() }}
+                          </div>
+                          <rag-button
+                            variant="outline"
+                            size="sm"
+                            (click)="clearCreatedPipeline()">
+                            Create Different Pipeline
+                          </rag-button>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+            </form>
+          </div>
+        </div>
+
+        <!-- Step 5: Model & Preview -->
+        <div ragStepPanel="model" label="Model & Preview" [stepNumber]="5" class="step-content">
+          <div class="step-5">
+            <div class="step-header">
+              <h2>Model Selection & Preview</h2>
+              <p>Choose the embedding model and preview the pipeline</p>
+            </div>
+
+            <form [formGroup]="step5Form" class="form-container">
+              <div class="model-selection">
+                <h3>Embedding Models</h3>
+                <div class="model-list">
+                  @for (model of modelStatuses(); track model.id) {
+                    <rag-card
+                      class="model-card"
+                      [class.selected]="step5Form.get('selectedModelId')?.value === model.id"
+                      [class.disabled]="model.status !== 'available'"
+                      (click)="selectModel(model.id)">
+                      <div class="model-info">
+                        <h4>{{ model.name }}</h4>
+                        <p>{{ model.performance }}</p>
+                        <div class="status-badge" [class]="model.status">
+                          {{ model.status | titlecase }}
+                        </div>
+                      </div>
+                    </rag-card>
+                  }
+                </div>
+              </div>
+
+              <div class="pipeline-preview">
+                <h3>Pipeline Preview</h3>
+                <div class="preview-visualization">
+                  <p>Pipeline step visualization will be shown here</p>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Step 6: Review & Create -->
+        <div ragStepPanel="review" label="Review & Create" [stepNumber]="6" class="step-content">
+          <div class="step-6">
+            <div class="step-header">
+              <h2>Review & Create</h2>
+              <p>Review your configuration and create the Knowledge Base</p>
+            </div>
+
+            <div class="review-container">
+              <div class="review-section">
+                <h3>Template</h3>
+                <div class="review-item">
+                  @if (selectedTemplate()?.icon) {
+                    <rag-icon [img]="selectedTemplate()!.icon" size="sm" />
+                  }
+                  <span>{{ selectedTemplate()?.name }}</span>
+                </div>
+              </div>
+
+              <div class="review-section">
+                <h3>Basic Information</h3>
+                <div class="review-grid">
+                  <div class="review-item">
+                    <label>Name:</label>
+                    <span>{{ step2Form.get('name')?.value }}</span>
+                  </div>
+                  <div class="review-item">
+                    <label>Product:</label>
+                    <span>{{ step2Form.get('product')?.value }}</span>
+                  </div>
+                  <div class="review-item">
+                    <label>Version:</label>
+                    <span>{{ step2Form.get('version')?.value }}</span>
+                  </div>
+                  @if (step2Form.get('description')?.value) {
+                    <div class="review-item full-width">
+                      <label>Description:</label>
+                      <span>{{ step2Form.get('description')?.value }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <div class="review-section">
+                <h3>Source</h3>
+                <div class="review-item">
+                  <label>URL:</label>
+                  <span>{{ step3Form.get('sourceUrl')?.value }}</span>
+                </div>
+              </div>
+
+              <div class="review-section">
+                <h3>Pipeline</h3>
+                <div class="review-item">
+                  @if (selectedPipelineMode() === 'existing') {
+                    <label>Using Existing:</label>
+                    <span>{{ getSelectedPipelineName() }}</span>
+                  } @else {
+                    <label>New Pipeline:</label>
+                    <span>{{ step4Form.get('newPipelineName')?.value }}</span>
+                  }
+                </div>
+              </div>
+
+              <div class="review-section">
+                <h3>Model</h3>
+                <div class="review-item">
+                  <span>{{ getSelectedModelName() }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </rag-stepper>
+    </div>
+  </div>
+
+  <!-- Footer Actions -->
+  <div class="footer-actions">
+  <rag-button
+    variant="ghost"
+    [disabled]="!canGoBack() || isSubmitting()"
+    (click)="previousStep()">
+    <rag-icon [img]="iconComponents.ChevronLeft" size="sm" />
+    Back
+  </rag-button>
+
+  <div class="primary-actions">
+    @if (currentStep() < totalSteps) {
+      <rag-button
+        variant="solid"
+        [disabled]="!canGoNext()"
+        (click)="nextStep()">
+        Next
+        <rag-icon [img]="iconComponents.ChevronRight" size="sm" />
+      </rag-button>
+    } @else {
+      <rag-button
+        variant="solid"
+        [disabled]="!canGoNext() || isSubmitting()"
+        [loading]="isSubmitting()"
+        (click)="createKB()">
+        @if (isSubmitting()) {
+          Creating...
+        } @else {
+          Create Knowledge Base
+        }
+      </rag-button>
+    }
+  </div>
+</div>
+</div>

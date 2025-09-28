@@ -1,0 +1,66 @@
+<div [class]="stepperClasses()" role="navigation" aria-label="Progress Steps">
+  <!-- Step Indicators -->
+  <div class="rt-StepperContainer">
+    @for (step of processedSteps(); track step.id; let isLast = $last) {
+      <div [class]="getStepClasses(step)">
+        <!-- Step Circle (clickable) -->
+        <div
+          [class]="getStepCircleClasses(step)"
+          [attr.role]="!step.disabled ? 'button' : null"
+          [attr.tabindex]="!step.disabled ? 0 : null"
+          [attr.aria-label]="!step.disabled ? 'Go to step ' + step.number : null"
+          (click)="!step.disabled ? onStepClick(step) : null"
+          (keydown.enter)="!step.disabled ? onStepClick(step) : null"
+          (keydown.space)="!step.disabled ? onStepClick(step) : null">
+          @if (step.completed) {
+            <rag-icon
+              [img]="CheckIcon"
+              size="sm"
+              class="rt-StepperIcon"
+              aria-hidden="true" />
+          } @else {
+            <span class="rt-StepperNumber" aria-hidden="true">
+              {{ step.number }}
+            </span>
+          }
+        </div>
+
+        <!-- Step Label (only show in default variant) -->
+        @if (variant() === 'default') {
+          <div class="rt-StepperLabel">
+            <span class="rt-StepperLabelText">
+              {{ step.label }}
+            </span>
+          </div>
+        }
+
+        <!-- Connector Line -->
+        @if (!isLast) {
+          <div [class]="getConnectorClasses(step)" aria-hidden="true"></div>
+        }
+      </div>
+    } @empty {
+      <div class="rt-StepperEmpty">
+        <span>No steps defined</span>
+      </div>
+    }
+  </div>
+
+  <!-- Step Panels Container -->
+  <div class="rt-StepPanels" #stepPanelsContainer>
+    <ng-content></ng-content>
+  </div>
+
+
+  <!-- Progress Information for Screen Readers -->
+  <div class="sr-only" aria-live="polite">
+    Step {{ currentStepNumber() }} of {{ totalSteps() }}
+    @if (processedSteps().length > 0) {
+      @for (step of processedSteps(); track step.id) {
+        @if (step.current) {
+          : {{ step.label }}
+        }
+      }
+    }
+  </div>
+</div>

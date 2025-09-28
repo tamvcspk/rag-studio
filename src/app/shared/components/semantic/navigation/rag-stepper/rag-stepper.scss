@@ -1,0 +1,349 @@
+// rag-stepper.scss
+// RAG Studio Stepper Component - Progress indicator for multi-step flows
+
+.rt-Stepper {
+  --stepper-circle-size: 2rem;
+  --stepper-circle-size-sm: 1.75rem;
+  --stepper-circle-size-lg: 2.5rem;
+  --stepper-connector-thickness: 2px;
+  --stepper-spacing: 1rem;
+
+  width: 100%;
+
+  // Container for all steps
+  .rt-StepperContainer {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    position: relative;
+  }
+
+  // Individual step wrapper
+  .rt-StepperStep {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+    min-width: 0; // Allow text truncation
+  }
+
+  // Step circle/indicator
+  .rt-StepperCircle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--stepper-circle-size);
+    height: var(--stepper-circle-size);
+    border-radius: 50%;
+    border: 2px solid var(--rag-semantic-color-border-default);
+    background-color: var(--rag-semantic-color-background-default);
+    color: var(--rag-semantic-color-text-muted);
+    font-weight: 600;
+    font-size: var(--rag-primitive-font-size-sm);
+    transition: all 0.2s ease-in-out;
+    z-index: 2;
+    position: relative;
+    cursor: default;
+
+    // Interactive styling when used with content
+    .rt-Stepper.rt-with-content &[role="button"] {
+      cursor: pointer;
+
+      &:hover:not(.rt-disabled) {
+        background-color: var(--rag-semantic-color-background-hover);
+        border-color: var(--rag-semantic-color-border-hover);
+        transform: scale(1.05);
+      }
+
+      &:focus {
+        outline: 2px solid var(--rag-semantic-color-primary-500);
+        outline-offset: 2px;
+      }
+
+      &:active:not(.rt-disabled) {
+        transform: scale(0.98);
+      }
+    }
+
+    .rt-StepperNumber {
+      line-height: 1;
+    }
+
+    .rt-StepperIcon {
+      color: currentColor;
+    }
+
+    // Completed state
+    &.rt-completed {
+      background-color: var(--rag-semantic-color-success-500);
+      border-color: var(--rag-semantic-color-success-500);
+      color: white;
+    }
+
+    // Current state
+    &.rt-current {
+      background-color: var(--rag-semantic-color-primary-500);
+      border-color: var(--rag-semantic-color-primary-500);
+      color: white;
+      box-shadow: 0 0 0 4px var(--rag-semantic-color-primary-100);
+    }
+
+    // Disabled state
+    &.rt-disabled {
+      background-color: var(--rag-semantic-color-background-muted);
+      border-color: var(--rag-semantic-color-border-muted);
+      color: var(--rag-semantic-color-text-disabled);
+    }
+  }
+
+  // Step label
+  .rt-StepperLabel {
+    margin-top: var(--rag-primitive-spacing-xs);
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .rt-StepperLabelText {
+    font-size: var(--rag-primitive-font-size-sm);
+    font-weight: 500;
+    color: var(--rag-semantic-color-text-default);
+    line-height: var(--rag-primitive-line-height-tight);
+    word-wrap: break-word;
+    hyphens: auto;
+
+    .rt-StepperStep.rt-current & {
+      color: var(--rag-semantic-color-primary-700);
+      font-weight: 600;
+    }
+
+    .rt-StepperStep.rt-completed & {
+      color: var(--rag-semantic-color-success-700);
+    }
+
+    .rt-StepperStep.rt-disabled & {
+      color: var(--rag-semantic-color-text-disabled);
+    }
+  }
+
+  // Connector line between steps
+  .rt-StepperConnector {
+    position: absolute;
+    top: calc(var(--stepper-circle-size) / 2 - var(--stepper-connector-thickness) / 2);
+    left: calc(50% + var(--stepper-circle-size) / 2);
+    right: calc(-50% + var(--stepper-circle-size) / 2);
+    height: var(--stepper-connector-thickness);
+    background-color: var(--rag-semantic-color-border-default);
+    z-index: 1;
+    transition: background-color 0.2s ease-in-out;
+
+    &.rt-completed {
+      background-color: var(--rag-semantic-color-success-500);
+    }
+  }
+
+  // Empty state
+  .rt-StepperEmpty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--rag-primitive-spacing-md);
+    color: var(--rag-semantic-color-text-muted);
+    font-size: var(--rag-primitive-font-size-sm);
+  }
+
+  // Step Panels Container (similar to rag-tabs)
+  .rt-StepPanels {
+    position: relative;
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+    margin-top: var(--rag-primitive-spacing-lg);
+  }
+
+  .rt-StepPanel {
+    width: 100%;
+    transition: opacity 0.2s ease-in-out;
+
+    &--visible {
+      position: relative;
+      opacity: 1;
+      visibility: visible;
+      z-index: var(--rag-primitive-zIndex-raised);
+    }
+
+    &--hidden {
+      position: fixed;
+      top: 0;
+      left: 100%;
+      opacity: 0;
+      visibility: hidden;
+      z-index: var(--rag-primitive-zIndex-hidden);
+    }
+  }
+
+  // Fallback content styling when no panels are provided
+  .rt-StepContent {
+    margin-top: var(--rag-primitive-spacing-lg);
+    padding: var(--rag-primitive-spacing-lg);
+    background: var(--rag-semantic-color-background-default);
+    border-radius: var(--rag-primitive-radius-md);
+    border: 1px solid var(--rag-semantic-color-border-subtle);
+  }
+
+  // Size variants
+  &.rt-size-sm {
+    --stepper-circle-size: var(--stepper-circle-size-sm);
+    --stepper-spacing: 0.75rem;
+
+    .rt-StepperCircle {
+      font-size: var(--rag-primitive-font-size-xs);
+    }
+
+    .rt-StepperLabelText {
+      font-size: var(--rag-primitive-font-size-xs);
+    }
+  }
+
+  &.rt-size-lg {
+    --stepper-circle-size: var(--stepper-circle-size-lg);
+    --stepper-spacing: 1.25rem;
+
+    .rt-StepperCircle {
+      font-size: var(--rag-primitive-font-size-base);
+    }
+
+    .rt-StepperLabelText {
+      font-size: var(--rag-primitive-font-size-base);
+    }
+  }
+
+  // Compact variant (no labels)
+  &.rt-variant-compact {
+    .rt-StepperLabel {
+      display: none;
+    }
+
+    .rt-StepperStep {
+      flex: none;
+      margin-right: var(--stepper-spacing);
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    .rt-StepperConnector {
+      left: calc(100% + var(--stepper-spacing) / 2 - var(--stepper-circle-size) / 2);
+      right: calc(-100% - var(--stepper-spacing) / 2 + var(--stepper-circle-size) / 2);
+      width: var(--stepper-spacing);
+      height: var(--stepper-connector-thickness);
+    }
+  }
+
+  // Vertical orientation
+  &.rt-orientation-vertical {
+    .rt-StepperContainer {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .rt-StepperStep {
+      flex-direction: row;
+      align-items: center;
+      width: 100%;
+      margin-bottom: var(--stepper-spacing);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .rt-StepperLabel {
+      margin-top: 0;
+      margin-left: var(--rag-primitive-spacing-sm);
+      text-align: left;
+      flex: 1;
+    }
+
+    .rt-StepperConnector {
+      position: absolute;
+      top: calc(var(--stepper-circle-size) + var(--stepper-spacing) / 2);
+      left: calc(var(--stepper-circle-size) / 2 - var(--stepper-connector-thickness) / 2);
+      right: auto;
+      bottom: calc(-100% + var(--stepper-circle-size) / 2);
+      width: var(--stepper-connector-thickness);
+      height: auto;
+    }
+  }
+
+  // Content integration styling
+  &.rt-with-content {
+    .rt-StepperStep {
+      .rt-StepperCircle {
+        &:not(.rt-disabled) {
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+
+    .rt-StepPanels {
+      border-top: 1px solid var(--rag-semantic-color-border-subtle);
+      padding-top: var(--rag-primitive-spacing-lg);
+    }
+  }
+
+  // Responsive design
+  @media (max-width: 640px) {
+    &.rt-variant-default {
+      .rt-StepperLabelText {
+        font-size: var(--rag-primitive-font-size-xs);
+      }
+    }
+
+    &.rt-size-lg {
+      --stepper-circle-size: var(--stepper-circle-size);
+    }
+
+    &.rt-with-content {
+      .rt-StepPanels {
+        min-height: 150px;
+      }
+
+      .rt-StepPanel {
+        padding: var(--rag-primitive-spacing-sm);
+      }
+
+      .rt-StepContent {
+        padding: var(--rag-primitive-spacing-md);
+      }
+    }
+  }
+}
+
+// Screen reader only styles
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Dark mode support
+:global(.dark) .rt-Stepper {
+  .rt-StepperCircle {
+    &.rt-current {
+      box-shadow: 0 0 0 4px var(--rag-semantic-color-primary-900);
+    }
+
+    // Enhanced focus styles for dark mode
+    &[role="button"]:focus {
+      outline-color: var(--rag-semantic-color-primary-400);
+    }
+  }
+}

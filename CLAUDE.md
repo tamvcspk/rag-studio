@@ -12,6 +12,7 @@ For detailed project information, refer to the `docs/` folder:
 - **MVP Implementation**: `docs/MVP_PLAN.md` - Implementation roadmap and current state
 - **Component Documentation**: `docs/docs/ATOMIC_COMPONENTS.md`, `docs/docs/SEMANTIC_COMPONENTS.md` - Component library guides
 - **Design Tokens**: `docs/docs/DESIGN_TOKENS_GUIDE.md`, `docs/docs/DESIGN_TOKENS_API.md` - Design system documentation
+- **UI Library Mixins**: `docs/docs/UI_LIBRARY_MIXINS.md` - SCSS mixins and utilities for UI library separation
 - **Installation Guides**: `docs/installation/` - Setup and installation documentation
 
 ### Development Best Practices
@@ -119,6 +120,9 @@ For comprehensive command reference including development, testing, Tauri comman
   - `src/app/shared/store/`: NgRx Signal Stores for centralized state management
   - `src/app/shared/tokens/`: Design token system with CSS custom properties
   - `src/app/shared/layout/`: Layout components (main-layout with sidebar)
+  - `src/app/shared/ui-library/`: Generic UI library components and styles (future package separation)
+    - `styles/`: Modular SCSS mixins and utilities for generic UI patterns
+  - `src/app/shared/styles/`: Project-specific mixins and style patterns
 - `src-tauri/`: Rust backend and Tauri configuration
   - `src-tauri/src/lib.rs`: Main library with Tauri commands and Python integration
   - `src-tauri/src/python_integration.rs`: PyO3 integration layer

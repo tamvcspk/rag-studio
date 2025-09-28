@@ -235,12 +235,69 @@ core/tests/
 - **User Guides**: `Title_Case.md` (e.g., `Quick_Start.md`)
 - **Specifications**: `version_spec_name.md` (e.g., `1.1.1_SQLite_Setup_Specification.md`)
 
+## Standalone Page Architecture Conventions
+
+### Full-Screen Creation Wizards
+
+For complex multi-step workflows, prefer standalone pages over modal dialogs:
+
+#### 1. Page Structure Pattern
+```
+src/app/pages/create-[entity]/
+├── create-[entity].ts        # Main component with wizard logic
+├── create-[entity].html      # Template with step-based content
+├── create-[entity].scss      # Component-specific styles
+```
+
+#### 2. Wizard Implementation Standards
+- **Progress Indicators**: Visual step progression with completed/current/pending states
+- **Form Validation**: Per-step validation with clear error messaging
+- **State Persistence**: Session storage for cross-page navigation (create-kb ↔ create-pipeline)
+- **Return Flow**: Query parameter handling for navigation context
+- **Responsive Design**: Mobile-friendly with adaptive layouts
+
+#### 3. Integration Flow Patterns
+```typescript
+// Example: Create KB → Create Pipeline → Return to KB
+// 1. Save state before navigation
+sessionStorage.setItem('createKbState', JSON.stringify(state));
+
+// 2. Navigate with context
+this.router.navigate(['/create-pipeline'], {
+  queryParams: { returnTo: 'create-kb', context: 'kb-creation' }
+});
+
+// 3. Handle return with results
+this.router.navigate(['/create-kb'], {
+  queryParams: { pipelineCreated: true, pipelineId: id, pipelineName: name }
+});
+```
+
+#### 4. Routing Configuration
+- Place standalone creation pages outside TabsLayout for full-screen experience
+- Use descriptive route names: `/create-kb`, `/create-pipeline`, `/create-flow`
+- Support query parameters for context and return values
+
+#### 5. Navigation Standards
+- **Back Button**: Context-aware (e.g., "Back to KB Creation" vs "Back to Pipelines")
+- **Save Draft**: Persistent draft functionality with session restoration
+- **Cancel/Exit**: Safe navigation with unsaved changes confirmation
+
 ## Project Structure Conventions
 
 ### Frontend Structure
 ```
 src/app/
 ├── pages/                  # Main application pages
+│   ├── dashboard/         # Main dashboard page
+│   ├── tools/             # Tools management page
+│   ├── models/            # Models management page
+│   ├── knowledge-bases/   # Knowledge bases listing page
+│   ├── create-kb/         # ✨ NEW: Standalone KB creation wizard
+│   ├── pipelines/         # Pipelines management page
+│   ├── create-pipeline/   # ✨ NEW: Standalone pipeline creation wizard
+│   ├── flows/             # Flows management page
+│   └── settings/          # Application settings page
 ├── shared/
 │   ├── components/         # 3-tier component architecture
 │   │   ├── atomic/        # Basic UI primitives

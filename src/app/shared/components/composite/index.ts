@@ -6,8 +6,6 @@ export * from './mcp-server-status/mcp-server-status';
 export * from './tool-card/tool-card';
 export * from './create-tool-wizard/create-tool-wizard';
 export * from './knowledge-base-card/knowledge-base-card';
-export * from './create-kb-wizard/create-kb-wizard';
-export * from './kb-pipeline-creator/kb-pipeline-creator';
 export * from './empty-state-panel/empty-state-panel';
 export * from './pipeline-card/pipeline-card';
 export * from './pipeline-flow-visualization/pipeline-flow-visualization';

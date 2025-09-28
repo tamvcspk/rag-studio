@@ -27,10 +27,10 @@ import {
 // Services
 import { ToastService } from './shared/services/toast.service';
 
-// Semantic components  
+// Semantic components
 import {
   RagCard, RagStatCard, RagFormField, RagTabs,
-  RagDialog, RagDropdown, RagBreadcrumb,
+  RagDialog, RagDropdown, RagBreadcrumb, RagStepper,
   RagSettingsItem, RagSettingsTabs, RagSettingsSection
 } from './shared/components/semantic';
 
@@ -262,6 +262,14 @@ export class FormComponent {
   { label: 'Projects', url: '/projects' },
   { label: currentProject.name, current: true }
 ]" />
+
+<!-- Progress stepper for multi-step wizards -->
+<rag-stepper
+  [steps]="wizardSteps()"
+  [currentStep]="currentStep()"
+  [totalSteps]="6"
+  size="md">
+</rag-stepper>
 
 <!-- App-level navigation (with router links) -->
 <rag-tab-navigation
@@ -556,6 +564,7 @@ export class ActionsComponent {
 | `<rag-tabs>` | `<rag-tabs [(selectedIndex)]="index">` | `selectedIndex`, `variant` |
 | `<rag-tab-navigation>` | `<rag-tab-navigation [items]="navItems">` | `items`, `variant`, `activeItem` |
 | `<rag-page-header>` | `<rag-page-header [title]="'Page'" [actions]="acts">` | `title`, `description`, `actions` |
+| `<rag-stepper>` | `<rag-stepper [steps]="wizardSteps()" [currentStep]="step">` | `steps`, `currentStep`, `totalSteps` |
 | `<rag-dialog>` | `<rag-dialog [open]="show" title="Edit">` | `open`, `title`, `size` |
 | `<rag-breadcrumb>` | `<rag-breadcrumb [items]="path">` | `items`, `separator`, `maxItems` |
 | `<rag-settings-item>` | `<rag-settings-item label="Theme" [icon]="icon">` | `label`, `description`, `icon`, `layout` |
@@ -1192,4 +1201,4 @@ it('should have no accessibility violations', async () => {
 ---
 
 **Last Updated**: September 28, 2025
-**Components Covered**: 22 atomic + 19 semantic + composite components
+**Components Covered**: 22 atomic + 20 semantic + composite components

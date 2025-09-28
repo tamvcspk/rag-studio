@@ -1,0 +1,44 @@
+// Create Flow Wizard - Navigation Styles
+@use '../../../../styles/index' as styles;
+
+.wizard-progress {
+  @include styles.rag-wizard-progress;
+
+  .progress-text {
+    font-size: var(--rag-primitive-fontSize-sm);
+    color: var(--rag-semantic-color-text-muted);
+    white-space: nowrap;
+  }
+}
+
+.step-navigation {
+  display: flex;
+  gap: var(--rag-primitive-spacing-sm);
+  margin-bottom: calc(var(--rag-primitive-spacing-xl) * 2);
+  overflow-x: auto;
+
+  .step-item {
+    @include styles.rag-wizard-step;
+
+    .step-icon {
+      @include styles.wizard-step-icon;
+    }
+
+    .step-info {
+      flex: 1;
+
+      .step-title {
+        font-size: var(--rag-primitive-fontSize-md);
+        font-weight: 600;
+        color: var(--rag-semantic-color-text-subtle);
+        margin-bottom: var(--rag-primitive-spacing-xs);
+      }
+
+      .step-description {
+        font-size: var(--rag-primitive-fontSize-sm);
+        color: var(--rag-semantic-color-text-muted);
+        line-height: var(--rag-primitive-lineHeight-md);
+      }
+    }
+  }
+}

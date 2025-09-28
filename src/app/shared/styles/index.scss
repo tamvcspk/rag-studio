@@ -1,0 +1,13 @@
+// RAG Studio Shared Styles - Main entry point for all shared styling
+// This file combines UI library styles with project-specific mixins
+
+// UI Library styles (generic, reusable across projects)
+@use '../ui-library/styles/index' as ui-lib;
+
+// Project-specific mixins (RAG Studio specific patterns)
+@use 'project-mixins';
+
+// Forward all mixins and utilities for easy access
+@forward '../ui-library/styles/mixins';
+@forward '../ui-library/styles/utilities';
+@forward 'project-mixins';

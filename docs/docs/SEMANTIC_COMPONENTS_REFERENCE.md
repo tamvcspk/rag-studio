@@ -24,13 +24,14 @@ Quick lookup reference for all RAG Studio semantic components with essential inf
 | `<rag-settings-item>` | Settings field layout | `label`, `description`, `icon`, `layout` | Settings pages, configuration |
 | `<rag-settings-section>` | Settings section grouping | `title`, `description`, `icon`, `variant` | Settings organization |
 
-### 🧭 Navigation (5 components)
+### 🧭 Navigation (6 components)
 | Component | Purpose | Key Props | Use Case |
 |-----------|---------|-----------|----------|
 | `<rag-tabs>` | Advanced tab navigation with auto-discovered directive panels | `selectedIndex`, `variant` | Content organization with single source of truth |
 | `<rag-tab-navigation>` | Router navigation | `items: TabNavItem[]`, `variant` | App navigation tabs |
 | `<rag-breadcrumb>` | Path navigation | `items: BreadcrumbItem[]` | Hierarchical navigation |
 | `<rag-page-header>` | Page headers | `title`, `description`, `actions` | Page title sections |
+| `<rag-stepper>` | Multi-step progress indicator | `steps: StepperStep[]`, `currentStep`, `totalSteps` | Wizard workflows, progress tracking |
 | `<rag-sidebar-item>` | Sidebar links | `label`, `icon`, `chip` | App navigation |
 
 ### 🎭 Overlay (3 components)
@@ -146,6 +147,16 @@ interface PageHeaderAction {
   loading?: boolean;
   action: () => void;
 }
+
+// RagStepper
+interface StepperStep {
+  id: string;
+  label: string;
+  number: number;
+  completed?: boolean;
+  current?: boolean;
+  disabled?: boolean;
+}
 ```
 
 ---
@@ -246,6 +257,14 @@ interface PageHeaderAction {
       action: () => openCreateWizard()
     }
   ]" />
+
+<!-- Progress stepper for wizards -->
+<rag-stepper
+  [steps]="wizardSteps()"
+  [currentStep]="currentStep()"
+  [totalSteps]="6"
+  size="md">
+</rag-stepper>
 ```
 
 ### 4. Service-Based Dialogs
@@ -543,5 +562,5 @@ export class FormDialogComponent {
 
 ---
 
-**Last Updated**: September 2, 2025  
-**Total Components**: 19 semantic components
+**Last Updated**: September 28, 2025
+**Total Components**: 20 semantic components

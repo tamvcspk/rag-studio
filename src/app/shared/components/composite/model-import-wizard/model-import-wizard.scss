@@ -293,15 +293,7 @@
   }
 }
 
-// Animations
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+// Animations now centralized in UI library utilities
 
 // Responsive Design
 @media (max-width: var(--rag-primitive-breakpoint-md)) {

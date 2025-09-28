@@ -98,28 +98,11 @@
   transition: color 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* Pulse animation keyframes */
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
+/* Animations now centralized in UI library utilities */
 
 /* Loading spinner rotation for loader icon */
 .rt-status-loading .rt-status-icon :global(svg) {
   animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 /* Dark mode support */

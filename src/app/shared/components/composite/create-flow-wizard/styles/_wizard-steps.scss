@@ -1,0 +1,245 @@
+// Create Flow Wizard - Step Content Styles
+@use '../../../../styles/index' as styles;
+
+.step-content {
+  min-height: 400px;
+  margin-bottom: var(--rag-primitive-spacing-xl);
+
+  h3 {
+    font-size: var(--rag-primitive-fontSize-lg);
+    font-weight: 600;
+    color: var(--rag-semantic-color-text-default);
+    margin-bottom: var(--rag-primitive-spacing-sm);
+  }
+
+  .step-intro {
+    color: var(--rag-semantic-color-text-subtle);
+    margin-bottom: var(--rag-primitive-spacing-xl);
+  }
+
+  // Basic Info Step
+  .basic-info-step {
+    .form-group {
+      @include styles.form-group;
+
+      .tag-input {
+        display: flex;
+        gap: var(--rag-primitive-spacing-sm);
+        align-items: flex-end;
+      }
+
+      .tags-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--rag-primitive-spacing-sm);
+        margin-top: var(--rag-primitive-spacing-md);
+
+        .tag-item {
+          display: flex;
+          align-items: center;
+          gap: var(--rag-primitive-spacing-sm);
+
+          .remove-tag {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            color: var(--rag-semantic-color-text-disabled);
+            transition: color 0.2s;
+
+            &:hover {
+              color: var(--rag-semantic-color-text-muted);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Components Step
+  .components-step {
+    .components-grid {
+      @include styles.rag-component-selector-grid;
+
+      .component-card {
+        @include styles.rag-pipeline-step-card;
+
+        .component-header {
+          display: flex;
+          align-items: center;
+          gap: var(--rag-primitive-spacing-md);
+          margin-bottom: var(--rag-primitive-spacing-sm);
+
+          .component-icon {
+            @include styles.centered-icon(2.5rem);
+            background: var(--rag-semantic-color-background-muted);
+            color: var(--rag-semantic-color-text-muted);
+          }
+
+          .component-info {
+            flex: 1;
+
+            .component-name {
+              font-weight: 600;
+              color: var(--rag-semantic-color-text-default);
+              margin-bottom: var(--rag-primitive-spacing-xs);
+            }
+
+            .component-type {
+              font-size: var(--rag-primitive-fontSize-xs);
+              color: var(--rag-semantic-color-text-muted);
+              text-transform: uppercase;
+              font-weight: 500;
+            }
+          }
+
+          .selection-indicator {
+            .add-icon {
+              color: var(--rag-semantic-color-text-disabled);
+            }
+
+            .selected-icon {
+              color: var(--rag-semantic-color-success-600);
+            }
+          }
+        }
+
+        .component-description {
+          font-size: var(--rag-primitive-fontSize-sm);
+          color: var(--rag-semantic-color-text-subtle);
+          line-height: var(--rag-primitive-lineHeight-md);
+        }
+
+        &.selected {
+          .component-header .selection-indicator .selected-icon {
+            color: var(--rag-semantic-color-primary-600);
+          }
+        }
+      }
+    }
+
+    .selected-summary {
+      @include styles.card-base;
+      background: var(--rag-semantic-color-background-muted);
+
+      h4 {
+        margin: 0 0 var(--rag-primitive-spacing-md) 0;
+        font-size: var(--rag-primitive-fontSize-md);
+        color: var(--rag-semantic-color-text-default);
+      }
+
+      .selected-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--rag-primitive-spacing-sm);
+      }
+    }
+  }
+
+  // Connections Step
+  .connections-step {
+    .flow-preview {
+      margin-bottom: var(--rag-primitive-spacing-xl);
+
+      .flow-visualization {
+        @include styles.flow-visualization;
+
+        .flow-node {
+          @include styles.flow-node;
+        }
+
+        .flow-connector {
+          @include styles.flow-connector;
+        }
+      }
+    }
+
+    .connection-note {
+      @include styles.notification-info;
+
+      strong {
+        font-weight: 600;
+      }
+    }
+  }
+
+  // Review Step
+  .review-step {
+    .review-card {
+      .review-section {
+        @include styles.rag-review-section;
+
+        .review-item {
+          display: flex;
+          align-items: flex-start;
+          gap: var(--rag-primitive-spacing-lg);
+          margin-bottom: var(--rag-primitive-spacing-md);
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          .label {
+            font-weight: 500;
+            color: var(--rag-semantic-color-text-subtle);
+            min-width: 80px;
+          }
+
+          .value {
+            color: var(--rag-semantic-color-text-default);
+            flex: 1;
+          }
+
+          .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--rag-primitive-spacing-sm);
+          }
+        }
+
+        .component-review-item {
+          display: flex;
+          align-items: center;
+          gap: var(--rag-primitive-spacing-md);
+          padding: var(--rag-primitive-spacing-md);
+          background: var(--rag-semantic-color-background-subtle);
+          border-radius: var(--rag-primitive-radius-md);
+          margin-bottom: var(--rag-primitive-spacing-sm);
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          .component-order {
+            @include styles.centered-icon(var(--rag-primitive-spacing-lg));
+            background: var(--rag-semantic-color-primary-600);
+            color: white;
+            font-size: var(--rag-primitive-fontSize-xs);
+            font-weight: 600;
+          }
+
+          .component-icon {
+            color: var(--rag-semantic-color-text-muted);
+          }
+
+          .component-details {
+            flex: 1;
+
+            .component-name {
+              font-weight: 500;
+              color: var(--rag-semantic-color-text-default);
+              margin-bottom: var(--rag-primitive-spacing-xs);
+            }
+
+            .component-type {
+              font-size: var(--rag-primitive-fontSize-xs);
+              color: var(--rag-semantic-color-text-muted);
+            }
+          }
+        }
+      }
+    }
+  }
+}

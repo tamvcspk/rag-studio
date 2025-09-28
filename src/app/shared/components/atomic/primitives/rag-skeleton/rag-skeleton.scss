@@ -35,7 +35,4 @@
   height: 120px;
 }
 
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+// Animation now centralized in UI library utilities

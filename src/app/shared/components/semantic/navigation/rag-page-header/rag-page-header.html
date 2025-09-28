@@ -1,6 +1,11 @@
 <div [class]="headerClasses()">
   <div #headerContent class="rag-page-header__content">
     <div class="rag-page-header__info">
+      <!-- Navigation Section (Back Button) -->
+      <div class="rag-page-header__nav">
+        <ng-content select="[slot=nav]"></ng-content>
+      </div>
+
       @if (icon()) {
         <div class="rag-page-header__icon">
           <rag-icon [img]="icon()" size="xl"></rag-icon>

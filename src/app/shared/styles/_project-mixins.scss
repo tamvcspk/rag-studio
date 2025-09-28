@@ -1,0 +1,255 @@
+// Project-Specific Mixins for RAG Studio
+// These mixins are specific to RAG Studio and should NOT be included in the UI library
+
+// =============================================================================
+// RAG STUDIO SPECIFIC GRID PATTERNS
+// =============================================================================
+
+@mixin component-grid($min-width: 280px) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
+  gap: var(--rag-primitive-spacing-lg);
+}
+
+@mixin dashboard-grid {
+  @include component-grid(320px);
+  margin-bottom: var(--rag-primitive-spacing-xl);
+}
+
+@mixin settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--rag-primitive-spacing-xl);
+  align-items: start;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// =============================================================================
+// FLOW VISUALIZATION MIXINS - RAG Studio specific flow diagrams
+// =============================================================================
+
+@mixin flow-visualization {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rag-primitive-spacing-lg);
+  padding: var(--rag-primitive-spacing-xl);
+  background: var(--rag-semantic-color-background-muted);
+  border-radius: var(--rag-primitive-radius-md);
+  overflow-x: auto;
+}
+
+@mixin flow-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-sm);
+  min-width: 100px;
+
+  .node-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    background: var(--rag-semantic-color-background-default);
+    border: 2px solid var(--rag-semantic-color-border-default);
+    border-radius: 50%;
+    color: var(--rag-semantic-color-text-muted);
+  }
+
+  .node-label {
+    font-size: var(--rag-primitive-fontSize-sm);
+    font-weight: 500;
+    color: var(--rag-semantic-color-text-subtle);
+    text-align: center;
+  }
+}
+
+@mixin flow-connector {
+  color: var(--rag-semantic-color-text-disabled);
+  flex-shrink: 0;
+}
+
+// =============================================================================
+// RAG STUDIO WIZARD PATTERNS
+// =============================================================================
+
+@mixin rag-wizard-step {
+  display: flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-md);
+  padding: var(--rag-primitive-spacing-lg);
+  background: var(--rag-semantic-color-background-default);
+  border: 1px solid var(--rag-semantic-color-border-default);
+  border-radius: var(--rag-primitive-radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 200px;
+  flex-shrink: 0;
+
+  &:hover {
+    background: var(--rag-semantic-color-background-subtle);
+    border-color: var(--rag-semantic-color-border-muted);
+  }
+
+  &.active {
+    background: var(--rag-semantic-color-primary-50);
+    border-color: var(--rag-semantic-color-primary-200);
+  }
+
+  &.completed {
+    .step-icon {
+      background: var(--rag-semantic-color-success-600);
+      color: white;
+    }
+  }
+}
+
+@mixin rag-wizard-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--rag-primitive-spacing-lg);
+  margin-bottom: calc(var(--rag-primitive-spacing-xl) * 2);
+  min-width: 200px;
+}
+
+// =============================================================================
+// RAG STUDIO COMPONENT PATTERNS
+// =============================================================================
+
+@mixin rag-component-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--rag-primitive-spacing-lg);
+  margin-bottom: var(--rag-primitive-spacing-xl);
+}
+
+@mixin rag-pipeline-step-card {
+  padding: var(--rag-primitive-spacing-lg);
+  border: 1px solid var(--rag-semantic-color-border-default);
+  border-radius: var(--rag-primitive-radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--rag-semantic-color-border-subtle);
+    box-shadow: var(--rag-primitive-shadow-xs);
+  }
+
+  &.selected {
+    border-color: var(--rag-semantic-color-primary-300);
+    background: var(--rag-semantic-color-primary-25);
+  }
+}
+
+@mixin rag-review-section {
+  margin-bottom: var(--rag-primitive-spacing-xl);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  h4 {
+    font-size: var(--rag-primitive-fontSize-lg);
+    font-weight: 600;
+    color: var(--rag-semantic-color-text-default);
+    margin-bottom: var(--rag-primitive-spacing-lg);
+  }
+}
+
+// =============================================================================
+// RAG STUDIO SPECIFIC ANIMATIONS
+// =============================================================================
+
+// Dropdown animations (specific timing for rag-dropdown)
+@keyframes dropdownShow {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Context menu animations (specific behavior)
+@keyframes contextMenuShow {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes submenuShow {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Progress bar indeterminate animation (project-specific pattern)
+@keyframes indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+// Toast animations (specific slide patterns)
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+// RAG Studio Animation Utility Classes
+.rag-dropdown-show {
+  animation: dropdownShow 0.15s ease-out;
+}
+
+.rag-context-menu-show {
+  animation: contextMenuShow 0.15s ease-out;
+}
+
+.rag-submenu-show {
+  animation: submenuShow 0.12s ease-out;
+}
+
+.rag-progress-indeterminate {
+  animation: indeterminate 2s infinite linear;
+}
+
+.rag-toast-slideInRight {
+  animation: slideInRight 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.rag-toast-slideOutRight {
+  animation: slideOutRight 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}

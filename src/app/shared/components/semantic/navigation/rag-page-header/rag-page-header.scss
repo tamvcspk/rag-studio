@@ -56,6 +56,13 @@
     gap: var(--rag-primitive-spacing-md);
   }
 
+  &__nav {
+    display: flex;
+    align-items: center;
+    margin-right: var(--rag-primitive-spacing-sm);
+    flex-shrink: 0;
+  }
+
   &__spacer {
     flex: 1;
   }
@@ -259,14 +266,4 @@
 // Dark mode considerations (handled by design tokens automatically)
 // The component will automatically adapt when design tokens are updated
 
-// Animations
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+// Animations now centralized in UI library utilities

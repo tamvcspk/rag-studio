@@ -1,0 +1,28 @@
+// Create Flow Wizard - Responsive Styles
+@use '../../../../styles/index' as styles;
+
+// Dialog footer actions styles
+.wizard-actions {
+  @include styles.form-actions;
+}
+
+@include styles.mobile-wizard-adjustments;
+
+@include styles.mobile-only {
+  .create-flow-wizard {
+    .step-content {
+      .components-step .components-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .connections-step .flow-preview .flow-visualization {
+        flex-direction: column;
+        gap: var(--rag-primitive-spacing-sm);
+
+        .flow-connector {
+          transform: rotate(90deg);
+        }
+      }
+    }
+  }
+}

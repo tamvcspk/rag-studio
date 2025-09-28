@@ -1,5 +1,6 @@
 import { Component, signal, computed, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { Dialog } from '@angular/cdk/dialog';
 import { Plus, Workflow, Search, CheckCircle, AlertTriangle, Clock, Pause, Edit, Play } from 'lucide-angular';
 import { EmptyStatePanel } from '../../shared/components/composite/empty-state-panel/empty-state-panel';
@@ -26,6 +27,7 @@ import { PipelineDesigner } from '../../shared/components/composite/pipeline-des
 })
 export class Pipelines implements OnInit, OnDestroy {
   private readonly toastService = inject(RagToastService);
+  private readonly router = inject(Router);
   private readonly dialog = inject(Dialog);
   private readonly pipelinesStore = inject(PipelinesStore);
   
@@ -51,7 +53,7 @@ export class Pipelines implements OnInit, OnDestroy {
       label: 'Design Pipeline',
       icon: this.PlusIcon,
       variant: 'solid' as const,
-      action: () => this.openPipelineDesigner()
+      action: () => this.navigateToCreatePipeline()
     }
   ]);
 
@@ -192,6 +194,10 @@ export class Pipelines implements OnInit, OnDestroy {
   onFilterChange(selectedFilters: string[]): void {
     console.log('Filter change received:', selectedFilters);
     this.selectedFilters.set(selectedFilters);
+  }
+
+  navigateToCreatePipeline(): void {
+    this.router.navigate(['/create-pipeline']);
   }
 
   async openPipelineDesigner(pipeline?: Pipeline): Promise<void> {

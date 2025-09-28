@@ -1,0 +1,355 @@
+<div class="create-pipeline-page">
+  <div class="sticky-header">
+    <!-- Page Header -->
+    <rag-page-header
+      [title]="getStepTitle()"
+      [actions]="headerActions()">
+      <ng-container slot="nav">
+        <rag-button variant="ghost" size="sm" (click)="goBack()">
+          <rag-icon [img]="iconComponents.ArrowLeft" size="sm" />
+          {{ backButtonText() }}
+        </rag-button>
+      </ng-container>
+    </rag-page-header>
+
+    <!-- Progress Indicator -->
+    <div class="progress-section">
+      <rag-stepper
+        [currentStep]="currentStep()"
+        [totalSteps]="totalSteps"
+        size="md"
+        variant="default"
+        (stepClick)="onStepClick($event)"
+        (currentStepChange)="onStepChange($event)">
+
+        <!-- Step 1: Template Selection -->
+        <div ragStepPanel="template" label="Choose Template" [stepNumber]="1" class="step-content">
+          <div class="step-1">
+            <div class="step-header">
+              <h2>Choose a Template</h2>
+              <p>Select a template to get started with your pipeline</p>
+            </div>
+
+            <div class="template-grid">
+              @for (template of templates; track template.id) {
+                <rag-card
+                  class="template-card"
+                  [class.selected]="selectedTemplate()?.id === template.id"
+                  [class.recommended]="template.recommended"
+                  (click)="selectTemplate(template)">
+                  <div class="template-content">
+                    @if (template.recommended) {
+                      <div class="recommended-badge">Recommended</div>
+                    }
+                    <div class="template-icon">
+                      @if (template.icon) {
+                        <rag-icon [img]="template.icon" size="lg" />
+                      }
+                    </div>
+                    <h3>{{ template.name }}</h3>
+                    <p>{{ template.description }}</p>
+                    @if (template.steps.length > 0) {
+                      <div class="template-steps">
+                        <span class="steps-label">Steps:</span>
+                        <div class="steps-list">
+                          @for (step of template.steps; track step) {
+                            <span class="step-tag">{{ step }}</span>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </rag-card>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Basic Information -->
+        <div ragStepPanel="basic" label="Basic Information" [stepNumber]="2" class="step-content">
+          <div class="step-2">
+            <div class="step-header">
+              <h2>Basic Information</h2>
+              <p>Provide details about your pipeline</p>
+            </div>
+
+            <form [formGroup]="step2Form" class="form-container">
+              <div class="form-grid">
+                <rag-form-field label="Pipeline Name" [required]="true">
+                  <rag-input
+                    formControlName="name"
+                    placeholder="Enter a descriptive name"
+                    [error]="!!getFieldError(step2Form, 'name')" />
+                </rag-form-field>
+
+                <rag-form-field label="Category" [required]="true">
+                  <rag-select
+                    formControlName="category"
+                    [options]="getCategoryOptions()"
+                    placeholder="Select category" />
+                </rag-form-field>
+
+                <rag-form-field label="Description" class="full-width">
+                  <rag-textarea
+                    formControlName="description"
+                    placeholder="Optional description of the pipeline purpose and functionality"
+                    [rows]="3" />
+                </rag-form-field>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Step 3: Configuration -->
+        <div ragStepPanel="config" label="Configuration" [stepNumber]="3" class="step-content">
+          <div class="step-3">
+            <div class="step-header">
+              <h2>Pipeline Configuration</h2>
+              <p>Configure how and when your pipeline runs</p>
+            </div>
+
+            <form [formGroup]="step3Form" class="form-container">
+              <div class="config-sections">
+
+                <!-- Trigger Configuration -->
+                <div class="config-section">
+                  <h3>Trigger Settings</h3>
+                  <div class="form-row">
+                    <rag-form-field label="Trigger Type" [required]="true">
+                      <rag-select
+                        formControlName="triggerType"
+                        [options]="[
+                          { value: 'manual', label: 'Manual' },
+                          { value: 'scheduled', label: 'Scheduled' },
+                          { value: 'event', label: 'Event-driven' }
+                        ]"
+                        placeholder="Select trigger type" />
+                    </rag-form-field>
+
+                    @if (selectedTriggerType() === 'scheduled') {
+                      <rag-form-field label="Schedule" [required]="true">
+                        <rag-select
+                          formControlName="schedule"
+                          [options]="scheduleSelectOptions"
+                          placeholder="Select schedule" />
+                      </rag-form-field>
+                    }
+                  </div>
+                </div>
+
+                <!-- Execution Settings -->
+                <div class="config-section">
+                  <h3>Execution Settings</h3>
+                  <div class="form-row">
+                    <rag-form-field label="Retry Attempts">
+                      <rag-input
+                        type="number"
+                        formControlName="retryAttempts"
+                        placeholder="3"
+                        [error]="!!getFieldError(step3Form, 'retryAttempts')" />
+                    </rag-form-field>
+
+                    <rag-form-field label="Timeout (minutes)">
+                      <rag-input
+                        type="number"
+                        formControlName="timeout"
+                        placeholder="30"
+                        [error]="!!getFieldError(step3Form, 'timeout')" />
+                    </rag-form-field>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Step 4: Design Pipeline -->
+        <div ragStepPanel="design" label="Design Pipeline" [stepNumber]="4" class="step-content">
+          <div class="step-4">
+            <div class="step-header">
+              <h2>Design Pipeline</h2>
+              <p>Configure the steps and flow of your pipeline</p>
+            </div>
+
+            <div class="pipeline-designer-container">
+              @if (selectedTemplate()?.id === 'custom') {
+                <!-- Full pipeline designer for custom pipelines -->
+                <div class="designer-wrapper">
+                  <p class="designer-placeholder">Full Pipeline Designer will be integrated here</p>
+                  <p class="designer-note">
+                    This will embed the existing PipelineDesigner component for custom pipeline creation
+                  </p>
+                </div>
+              } @else {
+                <!-- Template-based pipeline with customization options -->
+                <div class="template-pipeline">
+                  <h3>{{ selectedTemplate()?.name }} Pipeline</h3>
+                  <p>Based on the {{ selectedTemplate()?.name }} template with the following steps:</p>
+
+                  <div class="pipeline-steps">
+                    @for (step of selectedTemplate()?.steps || []; track step; let i = $index) {
+                      <div class="pipeline-step">
+                        <div class="step-number">{{ i + 1 }}</div>
+                        <div class="step-name">{{ step }}</div>
+                        <div class="step-actions">
+                          <rag-button variant="ghost" size="sm">
+                            <rag-icon [img]="iconComponents.Settings" size="sm" />
+                          </rag-button>
+                        </div>
+                      </div>
+                      @if (i < (selectedTemplate()?.steps?.length || 0) - 1) {
+                        <div class="step-arrow">→</div>
+                      }
+                    }
+                  </div>
+
+                  <div class="customization-options">
+                    <h4>Customization Options</h4>
+                    <p>You can customize individual steps or use the default configuration.</p>
+                    <rag-button variant="outline" size="sm">
+                      Customize Steps
+                    </rag-button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5: Review & Create -->
+        <div ragStepPanel="review" label="Review & Create" [stepNumber]="5" class="step-content">
+          <div class="step-5">
+            <div class="step-header">
+              <h2>Review & Create</h2>
+              <p>Review your pipeline configuration and create it</p>
+            </div>
+
+            <form [formGroup]="step5Form" class="form-container">
+              <!-- Additional Settings -->
+              <div class="settings-section">
+                <h3>Pipeline Settings</h3>
+                <div class="form-row">
+                  <rag-form-field label="Error Handling" [required]="true">
+                    <rag-select
+                      formControlName="errorHandling"
+                      [options]="getErrorHandlingOptions()"
+                      placeholder="Select error handling" />
+                  </rag-form-field>
+
+                  <rag-form-field label="Logging Level" [required]="true">
+                    <rag-select
+                      formControlName="logging"
+                      [options]="getLoggingOptions()"
+                      placeholder="Select logging level" />
+                  </rag-form-field>
+                </div>
+              </div>
+
+              <!-- Configuration Review -->
+              <div class="review-container">
+                <div class="review-section">
+                  <h3>Template</h3>
+                  <div class="review-item">
+                    @if (selectedTemplate()?.icon) {
+                      <rag-icon [img]="selectedTemplate()!.icon" size="sm" />
+                    }
+                    <span>{{ selectedTemplate()?.name }}</span>
+                  </div>
+                </div>
+
+                <div class="review-section">
+                  <h3>Basic Information</h3>
+                  <div class="review-grid">
+                    <div class="review-item">
+                      <label>Name:</label>
+                      <span>{{ step2Form.get('name')?.value }}</span>
+                    </div>
+                    <div class="review-item">
+                      <label>Category:</label>
+                      <span>{{ step2Form.get('category')?.value | titlecase }}</span>
+                    </div>
+                    @if (step2Form.get('description')?.value) {
+                      <div class="review-item full-width">
+                        <label>Description:</label>
+                        <span>{{ step2Form.get('description')?.value }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <div class="review-section">
+                  <h3>Configuration</h3>
+                  <div class="review-grid">
+                    <div class="review-item">
+                      <label>Trigger:</label>
+                      <span>{{ step3Form.get('triggerType')?.value | titlecase }}</span>
+                    </div>
+                    @if (selectedTriggerType() === 'scheduled') {
+                      <div class="review-item">
+                        <label>Schedule:</label>
+                        <span>{{ getSelectedScheduleLabel() }}</span>
+                      </div>
+                    }
+                    <div class="review-item">
+                      <label>Retry Attempts:</label>
+                      <span>{{ step3Form.get('retryAttempts')?.value }}</span>
+                    </div>
+                    <div class="review-item">
+                      <label>Timeout:</label>
+                      <span>{{ step3Form.get('timeout')?.value }} minutes</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="review-section">
+                  <h3>Pipeline Steps</h3>
+                  <div class="steps-preview">
+                    @for (step of selectedTemplate()?.steps || []; track step; let i = $index) {
+                      <span class="step-preview">{{ i + 1 }}. {{ step }}</span>
+                    }
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </rag-stepper>
+    </div>
+  </div>
+
+  <!-- Footer Actions -->
+  <div class="footer-actions">
+  <rag-button
+    variant="ghost"
+    [disabled]="!canGoBack() || isSubmitting()"
+    (click)="previousStep()">
+    <rag-icon [img]="iconComponents.ChevronLeft" size="sm" />
+    Back
+  </rag-button>
+
+  <div class="primary-actions">
+    @if (currentStep() < totalSteps) {
+      <rag-button
+        variant="solid"
+        [disabled]="!canGoNext()"
+        (click)="nextStep()">
+        Next
+        <rag-icon [img]="iconComponents.ChevronRight" size="sm" />
+      </rag-button>
+    } @else {
+      <rag-button
+        variant="solid"
+        [disabled]="!canGoNext() || isSubmitting()"
+        [loading]="isSubmitting()"
+        (click)="createPipeline()">
+        @if (isSubmitting()) {
+          Creating...
+        } @else {
+          Create Pipeline
+        }
+      </rag-button>
+    }
+  </div>
+</div>
+</div>
