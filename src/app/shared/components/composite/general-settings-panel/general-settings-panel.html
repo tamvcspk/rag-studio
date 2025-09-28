@@ -60,11 +60,12 @@
           </rag-form-field>
 
           <rag-form-field label="Max Backup Files">
-            <rag-input
-              type="number"
+            <rag-number-input
               formControlName="maxBackups"
-              min="1"
-              max="50" />
+              [min]="1"
+              [max]="50"
+              [showButtons]="true"
+              suffix="files" />
           </rag-form-field>
         }
       </div>
@@ -115,19 +116,21 @@
         </rag-form-field>
 
         <rag-form-field label="Server Port">
-          <rag-input
-            type="number"
+          <rag-number-input
             formControlName="mcpServerPort"
-            min="1024"
-            max="65535" />
+            [min]="1024"
+            [max]="65535"
+            [showButtons]="true"
+            [useGrouping]="false" />
         </rag-form-field>
 
         <rag-form-field label="Max Connections">
-          <rag-input
-            type="number"
+          <rag-number-input
             formControlName="maxConnections"
-            min="1"
-            max="1000" />
+            [min]="1"
+            [max]="1000"
+            [showButtons]="true"
+            suffix="conn" />
         </rag-form-field>
       </div>
 
@@ -160,19 +163,22 @@
 
       <div class="form-grid">
         <rag-form-field label="Chunk Size (tokens)">
-          <rag-input
-            type="number"
+          <rag-number-input
             formControlName="chunkSize"
-            min="128"
-            max="2048" />
+            [min]="128"
+            [max]="2048"
+            [step]="64"
+            [showButtons]="true"
+            suffix="tokens" />
         </rag-form-field>
 
         <rag-form-field label="Search Top-K Results">
-          <rag-input
-            type="number"
+          <rag-number-input
             formControlName="searchTopK"
-            min="1"
-            max="50" />
+            [min]="1"
+            [max]="50"
+            [showButtons]="true"
+            suffix="results" />
         </rag-form-field>
 
         <rag-form-field label="Search Options">

@@ -19,6 +19,7 @@ import {
   RagButton,
   RagIcon,
   RagInput,
+  RagNumberInput,
   RagSelect,
   RagCheckbox,
   RagAlert
@@ -51,6 +52,7 @@ interface ResourceSettingsForm {
     RagButton,
     RagIcon,
     RagInput,
+    RagNumberInput,
     RagSelect,
     RagCheckbox,
     RagAlert,

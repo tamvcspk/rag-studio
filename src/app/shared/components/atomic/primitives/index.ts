@@ -13,6 +13,8 @@ export { RagCheckbox } from './rag-checkbox/rag-checkbox';
 export { RagRadio } from './rag-radio/rag-radio';
 export { RagSwitch } from './rag-switch/rag-switch';
 export { RagInput } from './rag-input/rag-input';
+export { RagNumberInput } from './rag-number-input/rag-number-input';
+export type { NumberInputSize, NumberInputButtonLayout } from './rag-number-input/rag-number-input';
 export { RagTextarea } from './rag-textarea/rag-textarea';
 export { RagSelect } from './rag-select/rag-select';
 export type { RagSelectOption } from './rag-select/rag-select';

@@ -26,6 +26,7 @@ All atomic components leverage the **RAG Studio Design Token System** with three
   - [RagCheckbox](#ragcheckbox)
   - [RagIcon](#ragicon)
   - [RagInput](#raginput)
+  - [RagNumberInput](#ragnumberinput)
   - [RagFileInput](#ragfileinput)
   - [RagProgress](#ragprogress)
   - [RagRadio](#ragradio)
@@ -518,6 +519,235 @@ export class PathExampleComponent {
 - **Tauri Integration**: Uses Tauri commands (`select_file`, `select_folder`) for native dialogs
 - **Visual Feedback**: Browse button shows appropriate icon (folder/file) based on `browseMode`
 - **Disabled State**: Browse button is disabled when input is disabled
+
+---
+
+### RagNumberInput
+
+A localized numeric input component with spinner buttons, custom formatting, and comprehensive form integration.
+
+**Selector:** `rag-number-input`
+
+#### Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `placeholder` | `string` | `''` | Placeholder text |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the input |
+| `disabled` | `boolean` | `false` | Disabled state |
+| `readonly` | `boolean` | `false` | Read-only state |
+| `error` | `boolean` | `false` | Error state styling |
+| `min` | `number \| undefined` | `undefined` | Minimum value |
+| `max` | `number \| undefined` | `undefined` | Maximum value |
+| `step` | `number` | `1` | Step increment for buttons |
+| `locale` | `string` | `'en-US'` | Locale for number formatting |
+| `prefix` | `string` | `''` | Text displayed before the input |
+| `suffix` | `string` | `''` | Text displayed after the input |
+| `showButtons` | `boolean` | `false` | Show increment/decrement buttons |
+| `buttonLayout` | `'stacked' \| 'horizontal'` | `'stacked'` | Layout of spinner buttons |
+| `precision` | `number \| undefined` | `undefined` | Number of decimal places |
+| `useGrouping` | `boolean` | `true` | Use locale-specific grouping separators |
+| `allowEmpty` | `boolean` | `false` | Allow null/empty values |
+
+#### Events
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `valueChange` | `EventEmitter<number \| null>` | Emitted when value changes |
+| `onFocus` | `EventEmitter<FocusEvent>` | Emitted on focus |
+| `onBlur` | `EventEmitter<FocusEvent>` | Emitted on blur |
+| `onIncrement` | `EventEmitter<number \| null>` | Emitted when increment button is clicked |
+| `onDecrement` | `EventEmitter<number \| null>` | Emitted when decrement button is clicked |
+
+#### Usage Examples
+
+```html
+<!-- Basic number input -->
+<rag-number-input
+  [placeholder]="'Enter amount'"
+  [min]="0"
+  [max]="1000"
+  (valueChange)="onAmountChange($event)">
+</rag-number-input>
+
+<!-- Currency input with localization -->
+<rag-number-input
+  [min]="0"
+  [max]="1000000"
+  [step]="0.01"
+  [precision]="2"
+  [useGrouping]="true"
+  [locale]="'en-US'"
+  prefix="$"
+  [showButtons]="true"
+  [buttonLayout]="'stacked'"
+  (valueChange)="onPriceChange($event)">
+</rag-number-input>
+
+<!-- Percentage input -->
+<rag-number-input
+  [min]="0"
+  [max]="100"
+  [step]="1"
+  [showButtons]="true"
+  suffix="%"
+  [precision]="1"
+  [size]="'lg'"
+  (onIncrement)="onPercentIncrement($event)"
+  (onDecrement)="onPercentDecrement($event)">
+</rag-number-input>
+
+<!-- Form control integration -->
+<rag-number-input
+  [formControl]="quantityControl"
+  [min]="1"
+  [max]="100"
+  [error]="quantityControl.invalid && quantityControl.touched"
+  [showButtons]="true"
+  suffix="items">
+</rag-number-input>
+
+<!-- Horizontal button layout -->
+<rag-number-input
+  [min]="1"
+  [max]="10"
+  [showButtons]="true"
+  [buttonLayout]="'horizontal'"
+  [size]="'sm'">
+</rag-number-input>
+
+<!-- European locale formatting -->
+<rag-number-input
+  [min]="0"
+  [max]="10000"
+  [useGrouping]="true"
+  [locale]="'de-DE'"
+  suffix="€"
+  [precision]="2"
+  [showButtons]="true">
+</rag-number-input>
+```
+
+```typescript
+// Component using number input with localization
+import { Component, signal } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { RagNumberInput } from './shared/components/atomic';
+
+@Component({
+  selector: 'app-price-input',
+  imports: [RagNumberInput],
+  template: `
+    <rag-number-input
+      [formControl]="priceControl"
+      [min]="0"
+      [max]="999999"
+      [step]="0.01"
+      [precision]="2"
+      [useGrouping]="true"
+      [locale]="currentLocale"
+      prefix="$"
+      [showButtons]="true"
+      [buttonLayout]="'stacked'"
+      [size]="'lg'"
+      (valueChange)="onPriceChange($event)"
+      (onIncrement)="onPriceIncrement($event)"
+      (onDecrement)="onPriceDecrement($event)">
+    </rag-number-input>
+  `
+})
+export class PriceInputComponent {
+  priceControl = new FormControl(0, [
+    Validators.required,
+    Validators.min(0),
+    Validators.max(999999)
+  ]);
+
+  currentLocale = 'en-US';
+
+  onPriceChange(value: number | null) {
+    console.log('Price changed to:', value);
+    this.validatePrice(value);
+  }
+
+  onPriceIncrement(value: number | null) {
+    console.log('Price incremented to:', value);
+  }
+
+  onPriceDecrement(value: number | null) {
+    console.log('Price decremented to:', value);
+  }
+
+  private validatePrice(value: number | null) {
+    if (value !== null && value > 0) {
+      // Valid price logic
+    }
+  }
+}
+```
+
+#### Key Features
+
+- **Localization Support**: Automatic number formatting based on locale settings
+- **Custom Prefix/Suffix**: Display currency symbols, units, or labels
+- **Spinner Buttons**: Optional increment/decrement buttons with customizable layout
+- **Precision Control**: Specify decimal places for floating-point numbers
+- **Grouping Separators**: Locale-aware thousand separators (e.g., 1,000 or 1.000)
+- **Keyboard Navigation**: Arrow keys for increment/decrement, Enter to confirm
+- **Form Integration**: Full `ControlValueAccessor` support for reactive forms
+- **Value Clamping**: Automatic enforcement of min/max constraints
+- **Accessibility**: Proper ARIA attributes and screen reader support
+
+#### Localization Examples
+
+```typescript
+// Different locale examples
+readonly localeExamples = [
+  { locale: 'en-US', value: 1234.56, formatted: '1,234.56' },
+  { locale: 'de-DE', value: 1234.56, formatted: '1.234,56' },
+  { locale: 'fr-FR', value: 1234.56, formatted: '1 234,56' },
+  { locale: 'ja-JP', value: 1234.56, formatted: '1,234.56' }
+];
+```
+
+```html
+<!-- US Dollar formatting -->
+<rag-number-input
+  [locale]="'en-US'"
+  [useGrouping]="true"
+  prefix="$"
+  [precision]="2">
+</rag-number-input>
+
+<!-- Euro formatting (German) -->
+<rag-number-input
+  [locale]="'de-DE'"
+  [useGrouping]="true"
+  suffix=" €"
+  [precision]="2">
+</rag-number-input>
+
+<!-- Japanese Yen (no decimals) -->
+<rag-number-input
+  [locale]="'ja-JP'"
+  [useGrouping]="true"
+  prefix="¥"
+  [precision]="0">
+</rag-number-input>
+```
+
+#### Button Layout Options
+
+- **Stacked Layout**: Buttons positioned vertically on the right side (default)
+- **Horizontal Layout**: Buttons positioned horizontally after the input
+
+#### Accessibility Features
+
+- **Screen Reader Support**: Proper ARIA labels and descriptions
+- **Keyboard Navigation**: Full keyboard accessibility with arrow keys
+- **Focus Management**: Proper focus states and navigation
+- **Value Announcements**: Screen readers announce value changes
+- **Button States**: Increment/decrement buttons show appropriate disabled states
 
 ---
 

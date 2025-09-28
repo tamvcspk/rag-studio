@@ -27,11 +27,12 @@ This change provides better tree-shaking and type safety by only importing icons
 
 ## 📋 Component Index
 
-### 🎯 Primitive Components (15 components)
+### 🎯 Primitive Components (16 components)
 | Component | Purpose | Key Props | Use Case |
 |-----------|---------|-----------|----------|
 | `<rag-button>` | Action triggers | `variant`, `size`, `loading`, `disabled` | Forms, CTAs, navigation |
 | `<rag-input>` | Text input with path browsing | `type`, `placeholder`, `leftIcon`, `browseMode` | Forms, search, data entry, path selection |
+| `<rag-number-input>` | Numeric input with localization | `min`, `max`, `showButtons`, `prefix`, `suffix`, `locale` | Number entry, amounts, quantities |
 | `<rag-textarea>` | Multi-line text | `rows`, `resize`, `maxlength` | Comments, descriptions |
 | `<rag-select>` | Dropdown selection | `options`, `searchable`, `clearable` | Forms, filters |
 | `<rag-file-input>` | File selection | `accept`, `multiple`, `maxFiles`, `maxFileSize` | File uploads, attachments |
@@ -75,6 +76,10 @@ type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 type InputType = 'text' | 'email' | 'password' | 'number' | 'search' | 'path';
 type InputSize = 'sm' | 'md' | 'lg';
 type BrowseMode = 'file' | 'folder';
+
+// RagNumberInput
+type NumberInputSize = 'sm' | 'md' | 'lg';
+type NumberInputButtonLayout = 'stacked' | 'horizontal';
 
 // RagSelect
 interface RagSelectOption<T = any> {
@@ -196,7 +201,134 @@ type StatusVariant = 'dot' | 'chip' | 'text';
   (onBrowse)="selectFile()" />
 ```
 
-### 2. File Input Patterns
+### 2. Number Input Patterns
+```html
+<!-- Basic number input -->
+<rag-number-input
+  [placeholder]="'Enter quantity'"
+  [min]="0"
+  [max]="100"
+  (valueChange)="onQuantityChange($event)">
+</rag-number-input>
+
+<!-- Number input with spinner buttons -->
+<rag-number-input
+  [min]="0"
+  [max]="1000"
+  [step]="10"
+  [showButtons]="true"
+  [buttonLayout]="'stacked'"
+  (onIncrement)="onIncrement($event)"
+  (onDecrement)="onDecrement($event)">
+</rag-number-input>
+
+<!-- Currency input with localization -->
+<rag-number-input
+  [min]="0"
+  [max]="1000000"
+  [step]="0.01"
+  [precision]="2"
+  [useGrouping]="true"
+  [locale]="'en-US'"
+  prefix="$"
+  [showButtons]="true"
+  (valueChange)="onPriceChange($event)">
+</rag-number-input>
+
+<!-- Percentage input -->
+<rag-number-input
+  [min]="0"
+  [max]="100"
+  [step]="1"
+  [showButtons]="true"
+  suffix="%"
+  [precision]="1"
+  [size]="'lg'">
+</rag-number-input>
+
+<!-- Form control integration -->
+<rag-number-input
+  [formControl]="budgetControl"
+  [min]="0"
+  [max]="50000"
+  [error]="budgetControl.invalid && budgetControl.touched"
+  [useGrouping]="true"
+  prefix="$"
+  [showButtons]="true">
+</rag-number-input>
+
+<!-- Horizontal button layout -->
+<rag-number-input
+  [min]="1"
+  [max]="10"
+  [showButtons]="true"
+  [buttonLayout]="'horizontal'"
+  [size]="'sm'">
+</rag-number-input>
+
+<!-- Read-only number display -->
+<rag-number-input
+  [readonly]="true"
+  [value]="calculatedTotal"
+  [useGrouping]="true"
+  prefix="Total: $"
+  [precision]="2">
+</rag-number-input>
+```
+
+```typescript
+// Component using number input with comprehensive features
+import { Component, signal } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { RagNumberInput } from './shared/components/atomic';
+
+@Component({
+  selector: 'app-number-example',
+  imports: [RagNumberInput],
+  template: `
+    <rag-number-input
+      [formControl]="budgetControl"
+      [min]="0"
+      [max]="1000000"
+      [step]="100"
+      [precision]="2"
+      [useGrouping]="true"
+      [locale]="currentLocale"
+      prefix="$"
+      [showButtons]="true"
+      [buttonLayout]="'stacked'"
+      (valueChange)="onBudgetChange($event)"
+      (onIncrement)="onBudgetIncrement($event)"
+      (onDecrement)="onBudgetDecrement($event)">
+    </rag-number-input>
+  `
+})
+export class NumberExampleComponent {
+  budgetControl = new FormControl(5000, [Validators.required, Validators.min(0)]);
+  currentLocale = 'en-US';
+  calculatedTotal = signal(0);
+
+  onBudgetChange(value: number | null) {
+    console.log('Budget changed to:', value);
+    this.calculateTotal();
+  }
+
+  onBudgetIncrement(value: number | null) {
+    console.log('Budget incremented to:', value);
+  }
+
+  onBudgetDecrement(value: number | null) {
+    console.log('Budget decremented to:', value);
+  }
+
+  private calculateTotal() {
+    // Calculate and update total
+    this.calculatedTotal.set(this.budgetControl.value || 0);
+  }
+}
+```
+
+### 3. File Input Patterns
 ```html
 <!-- Basic file input -->
 <rag-file-input
@@ -905,5 +1037,5 @@ Design Tokens (Consistent styling)
 
 ---
 
-**Last Updated**: September 27, 2025
-**Total Components**: 22 atomic components
+**Last Updated**: September 28, 2025
+**Total Components**: 23 atomic components

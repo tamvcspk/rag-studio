@@ -1,0 +1,44 @@
+<div [class]="containerClasses()">
+  <div class="rt-input-wrapper">
+    <input
+      type="text"
+      [class]="inputClasses()"
+      [value]="displayValue()"
+      [placeholder]="placeholder()"
+      [disabled]="disabled()"
+      [readonly]="readonly()"
+      [attr.aria-invalid]="error()"
+      [attr.aria-describedby]="error() ? 'error-message' : null"
+      [attr.min]="min()"
+      [attr.max]="max()"
+      [attr.step]="step()"
+      (input)="onInputChange($event)"
+      (focus)="onInputFocus($event)"
+      (blur)="onInputBlur($event)"
+      (keydown)="onKeyDown($event)"
+      autocomplete="off"
+      inputmode="decimal" />
+
+    @if (showButtons()) {
+      <div class="rt-input-buttons" [attr.data-layout]="buttonLayout()">
+        <button
+          type="button"
+          class="rt-input-button rt-input-button--increment"
+          [disabled]="disabled() || readonly() || !canIncrement()"
+          (click)="increment()"
+          [attr.aria-label]="'Increment value'">
+          <rag-icon [img]="ChevronUpIcon" size="xs"></rag-icon>
+        </button>
+
+        <button
+          type="button"
+          class="rt-input-button rt-input-button--decrement"
+          [disabled]="disabled() || readonly() || !canDecrement()"
+          (click)="decrement()"
+          [attr.aria-label]="'Decrement value'">
+          <rag-icon [img]="ChevronDownIcon" size="xs"></rag-icon>
+        </button>
+      </div>
+    }
+  </div>
+</div>

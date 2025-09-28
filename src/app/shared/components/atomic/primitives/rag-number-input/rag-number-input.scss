@@ -1,0 +1,303 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.rt-TextField {
+  width: 100%;
+  position: relative;
+}
+
+.rt-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.rt-TextFieldInput {
+  width: 100%;
+  padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+  font-size: var(--rag-primitive-fontSize-md);
+  line-height: var(--rag-primitive-lineHeight-md);
+  color: var(--rag-archetypes-input-default-color);
+  background: var(--rag-archetypes-input-default-background);
+  border: var(--rag-archetypes-input-default-border);
+  border-radius: var(--rag-primitive-radius-md);
+  outline: none;
+  transition: all 0.15s;
+  font-family: inherit;
+
+  &:hover:not(:disabled):not(:focus) {
+    border-color: var(--rag-semantic-color-border-muted);
+  }
+
+  &:focus {
+    background: var(--rag-archetypes-input-focus-background);
+    border: var(--rag-archetypes-input-focus-border);
+    box-shadow: var(--rag-archetypes-input-focus-boxShadow);
+    color: var(--rag-archetypes-input-focus-color);
+  }
+
+  &::placeholder {
+    color: var(--rag-semantic-color-text-muted);
+  }
+
+  &:disabled {
+    background: var(--rag-archetypes-input-disabled-background);
+    border: var(--rag-archetypes-input-disabled-border);
+    color: var(--rag-archetypes-input-disabled-color);
+    cursor: var(--rag-archetypes-input-disabled-cursor);
+
+    &::placeholder {
+      color: var(--rag-semantic-color-text-disabled);
+    }
+  }
+
+  &:read-only {
+    background-color: var(--rag-primitive-color-gray-50);
+  }
+
+  &.rt-error {
+    background: var(--rag-archetypes-input-error-background);
+    border: var(--rag-archetypes-input-error-border);
+    color: var(--rag-archetypes-input-error-color);
+
+    &:focus {
+      box-shadow: var(--rag-archetypes-input-error-boxShadow);
+    }
+  }
+
+  &.rt-has-left-addon {
+    padding-left: 2rem !important;
+  }
+
+  &.rt-has-right-addon {
+    padding-right: 2rem !important;
+  }
+
+  &.rt-has-buttons {
+    &.rt-buttons-stacked {
+      padding-right: 2.5rem !important;
+    }
+
+    &.rt-buttons-horizontal {
+      padding-right: 4rem !important;
+    }
+  }
+}
+
+// Size variants
+.rt-TextFieldInput.rt-size-sm {
+  height: 32px;
+  padding: var(--rag-primitive-spacing-xs) var(--rag-primitive-spacing-sm);
+  font-size: var(--rag-primitive-fontSize-sm);
+  border-radius: var(--rag-primitive-radius-sm);
+
+  &.rt-has-left-addon {
+    padding-left: 1.5rem !important;
+  }
+
+  &.rt-has-right-addon {
+    padding-right: 1.5rem !important;
+  }
+
+  &.rt-has-buttons {
+    &.rt-buttons-stacked {
+      padding-right: 2rem !important;
+    }
+
+    &.rt-buttons-horizontal {
+      padding-right: 3rem !important;
+    }
+  }
+}
+
+.rt-TextFieldInput.rt-size-md {
+  height: 36px;
+  padding: var(--rag-primitive-spacing-sm) var(--rag-primitive-spacing-md);
+  font-size: var(--rag-primitive-fontSize-md);
+  border-radius: var(--rag-primitive-radius-md);
+}
+
+.rt-TextFieldInput.rt-size-lg {
+  height: 44px;
+  padding: var(--rag-primitive-spacing-md) var(--rag-primitive-spacing-lg);
+  font-size: var(--rag-primitive-fontSize-lg);
+  border-radius: var(--rag-primitive-radius-md);
+
+  &.rt-has-left-addon {
+    padding-left: 3rem !important;
+  }
+
+  &.rt-has-right-addon {
+    padding-right: 3rem !important;
+  }
+
+  &.rt-has-buttons {
+    &.rt-buttons-stacked {
+      padding-right: 3.5rem !important;
+    }
+
+    &.rt-buttons-horizontal {
+      padding-right: 5rem !important;
+    }
+  }
+}
+
+// Addon styling (prefix/suffix)
+.rt-input-left-addon,
+.rt-input-right-addon {
+  position: absolute;
+  z-index: 1;
+  color: var(--rag-semantic-color-text-muted);
+  font-size: var(--rag-primitive-fontSize-sm);
+  font-weight: var(--rag-primitive-fontWeight-medium);
+  pointer-events: none;
+  user-select: none;
+}
+
+.rt-input-left-addon {
+  left: var(--rag-primitive-spacing-md);
+}
+
+.rt-input-right-addon {
+  right: var(--rag-primitive-spacing-md);
+}
+
+// Button styling for number input
+.rt-input-buttons {
+  position: absolute;
+  right: 2px;
+  z-index: 2;
+  display: flex;
+
+  &[data-layout="stacked"] {
+    top: 2px;
+    bottom: 2px;
+    width: 1.5rem;
+    flex-direction: column;
+
+    .rt-input-button {
+      flex: 1;
+      border-radius: 0;
+
+      &.rt-input-button--increment {
+        border-top-right-radius: calc(var(--rag-primitive-radius-md) - 2px);
+        border-bottom: 1px solid var(--rag-semantic-color-border-muted);
+      }
+
+      &.rt-input-button--decrement {
+        border-bottom-right-radius: calc(var(--rag-primitive-radius-md) - 2px);
+      }
+    }
+  }
+
+  &[data-layout="horizontal"] {
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: row;
+    gap: var(--rag-primitive-spacing-xs);
+
+    .rt-input-button {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: var(--rag-primitive-radius-sm);
+    }
+  }
+}
+
+.rt-input-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--rag-semantic-color-background-subtle);
+  border: 1px solid var(--rag-semantic-color-border-muted);
+  color: var(--rag-semantic-color-text-default);
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover:not(:disabled) {
+    background: var(--rag-semantic-color-background-hover);
+    border-color: var(--rag-semantic-color-border-default);
+  }
+
+  &:active:not(:disabled) {
+    background: var(--rag-semantic-color-background-pressed);
+  }
+
+  &:disabled {
+    background: var(--rag-semantic-color-background-muted);
+    color: var(--rag-semantic-color-text-disabled);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--rag-semantic-color-primary-500);
+    outline-offset: -2px;
+  }
+}
+
+// Size-specific adjustments for addons and buttons
+.rt-TextField .rt-size-sm {
+  .rt-input-left-addon {
+    left: var(--rag-primitive-spacing-sm);
+    font-size: var(--rag-primitive-fontSize-xs);
+  }
+
+  .rt-input-right-addon {
+    right: var(--rag-primitive-spacing-sm);
+    font-size: var(--rag-primitive-fontSize-xs);
+  }
+
+  .rt-input-buttons {
+    &[data-layout="stacked"] {
+      width: 1.25rem;
+    }
+
+    &[data-layout="horizontal"] {
+      .rt-input-button {
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+    }
+  }
+}
+
+.rt-TextField .rt-size-lg {
+  .rt-input-left-addon {
+    left: var(--rag-primitive-spacing-lg);
+    font-size: var(--rag-primitive-fontSize-md);
+  }
+
+  .rt-input-right-addon {
+    right: var(--rag-primitive-spacing-lg);
+    font-size: var(--rag-primitive-fontSize-md);
+  }
+
+  .rt-input-buttons {
+    &[data-layout="stacked"] {
+      width: 2rem;
+    }
+
+    &[data-layout="horizontal"] {
+      .rt-input-button {
+        width: 2rem;
+        height: 2rem;
+      }
+    }
+  }
+}
+
+// Disabled state
+.rt-TextField.rt-disabled {
+  .rt-input-left-addon,
+  .rt-input-right-addon {
+    color: var(--rag-semantic-color-text-disabled);
+  }
+
+  .rt-input-buttons {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+}

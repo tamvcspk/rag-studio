@@ -8,6 +8,7 @@ import {
   RagCheckbox,
   RagAlert,
   RagInput,
+  RagNumberInput,
   RagSelect
 } from '../../atomic';
 import {
@@ -53,6 +54,7 @@ interface GeneralSettingsForm {
     RagCheckbox,
     RagAlert,
     RagInput,
+    RagNumberInput,
     RagSelect,
     RagFormField,
     RagSettingsSection

@@ -49,11 +49,12 @@
       <rag-form-field
         label="Storage Quota"
         description="Maximum storage space for knowledge bases and cache">
-        <rag-input
-          type="number"
+        <rag-number-input
           formControlName="storageQuotaGb"
-          min="1"
-          max="50" />
+          [min]="1"
+          [max]="50"
+          [showButtons]="true"
+          suffix="GB" />
       </rag-form-field>
 
       <!-- Data Directory -->
@@ -84,22 +85,24 @@
         <rag-form-field
           label="Backup Interval (hours)"
           description="How often to create automatic backups">
-          <rag-input
-            type="number"
+          <rag-number-input
             formControlName="backupIntervalHours"
-            min="1"
-            max="168" />
+            [min]="1"
+            [max]="168"
+            [showButtons]="true"
+            suffix="hours" />
         </rag-form-field>
 
         <!-- Max Backups -->
         <rag-form-field
           label="Maximum Backups"
           description="Number of backup files to keep (older backups are deleted)">
-          <rag-input
-            type="number"
+          <rag-number-input
             formControlName="maxBackups"
-            min="1"
-            max="30" />
+            [min]="1"
+            [max]="30"
+            [showButtons]="true"
+            suffix="files" />
         </rag-form-field>
       }
       </div>
@@ -116,24 +119,26 @@
       <rag-form-field
         label="Cache Size (MB)"
         description="Memory allocated for caching search results and embeddings">
-        <rag-input
-          type="number"
+        <rag-number-input
           formControlName="cacheSizeMb"
-          min="64"
-          max="2048"
-          step="64" />
+          [min]="64"
+          [max]="2048"
+          [step]="64"
+          [showButtons]="true"
+          suffix="MB" />
       </rag-form-field>
 
       <!-- Cache TTL -->
       <rag-form-field
         label="Cache TTL (seconds)"
         description="How long to keep cached items before expiration">
-        <rag-input
-          type="number"
+        <rag-number-input
           formControlName="cacheTtlSeconds"
-          min="300"
-          max="86400"
-          step="300" />
+          [min]="300"
+          [max]="86400"
+          [step]="300"
+          [showButtons]="true"
+          suffix="sec" />
       </rag-form-field>
 
       <!-- Clear Cache Button -->
@@ -173,11 +178,12 @@
       <rag-form-field
         label="Log Retention (days)"
         description="How long to keep log files before automatic deletion">
-        <rag-input
-          type="number"
+        <rag-number-input
           formControlName="logRetentionDays"
-          min="1"
-          max="365" />
+          [min]="1"
+          [max]="365"
+          [showButtons]="true"
+          suffix="days" />
       </rag-form-field>
       </div>
     </rag-settings-section>

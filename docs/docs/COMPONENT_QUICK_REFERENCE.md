@@ -19,7 +19,7 @@ Complete quick reference for all RAG Studio components - both atomic and semanti
 ```typescript
 // Atomic components
 import {
-  RagButton, RagInput, RagSelect, RagFileInput, RagChip, RagAlert, RagBadge,
+  RagButton, RagInput, RagNumberInput, RagSelect, RagFileInput, RagChip, RagAlert, RagBadge,
   RagIcon, RagSpinner, RagProgress, RagSkeleton, RagOverflowBar,
   RagDivider, RagToggleGroup, RagToggle, RagSlider
 } from './shared/components/atomic';
@@ -45,10 +45,11 @@ import {
 ```typescript
 @Component({
   selector: 'app-example',
-  imports: [RagButton, RagInput, RagFileInput, RagCard, RagIcon, RagBadge, RagToggle, RagSlider], // Standalone components
+  imports: [RagButton, RagInput, RagNumberInput, RagFileInput, RagCard, RagIcon, RagBadge, RagToggle, RagSlider], // Standalone components
   template: `
     <rag-card>
       <rag-input [placeholder]="'Enter text'" />
+      <rag-number-input [min]="0" [max]="100" [showButtons]="true" suffix="%" />
       <rag-file-input [accept]="'.pdf,.doc'" [multiple]="true" />
       <rag-button (onClick)="submit()" [ragBadge]="notificationCount() > 0 ? notificationCount() : null">
         Submit
@@ -97,11 +98,25 @@ export class ExampleComponent {
 
     <!-- Select with search -->
     <rag-form-field label="Project">
-      <rag-select 
+      <rag-select
         formControlName="project"
         [options]="projects"
         [searchable]="true"
         [placeholder]="'Select project...'" />
+    </rag-form-field>
+
+    <!-- Number input with localization -->
+    <rag-form-field label="Budget Amount">
+      <rag-number-input
+        formControlName="budget"
+        [min]="0"
+        [max]="1000000"
+        [step]="100"
+        [showButtons]="true"
+        [useGrouping]="true"
+        [locale]="'en-US'"
+        prefix="$"
+        [precision]="2" />
     </rag-form-field>
 
     <!-- Action buttons -->
@@ -519,6 +534,7 @@ export class ActionsComponent {
 | `<rag-button>` | `<rag-button variant="solid">Save</rag-button>` | `variant`, `loading`, `disabled` |
 | `[ragBadge]` | `<button [ragBadge]="count()">Notifications</button>` | `ragBadge`, `badgeVariant`, `badgeColor` |
 | `<rag-input>` | `<rag-input [placeholder]="'Email'" [leftIcon]="'mail'">` | `type`, `error`, `leftIcon`, `browseMode` |
+| `<rag-number-input>` | `<rag-number-input [min]="0" [max]="100" [showButtons]="true" suffix="%">` | `min`, `max`, `showButtons`, `suffix`, `locale` |
 | `<rag-select>` | `<rag-select [options]="items" [searchable]="true">` | `options`, `searchable`, `clearable` |
 | `<rag-file-input>` | `<rag-file-input [accept]="'.pdf,.doc'" [multiple]="true">` | `accept`, `multiple`, `maxFiles`, `maxFileSize` |
 | `<rag-chip>` | `<rag-chip color="green">Active</rag-chip>` | `variant`, `color`, `icon` |
@@ -1175,5 +1191,5 @@ it('should have no accessibility violations', async () => {
 
 ---
 
-**Last Updated**: September 2, 2025  
-**Components Covered**: 21 atomic + 19 semantic + composite components
+**Last Updated**: September 28, 2025
+**Components Covered**: 22 atomic + 19 semantic + composite components
