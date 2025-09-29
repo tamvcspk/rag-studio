@@ -8,6 +8,7 @@
 use tauri::{State, Emitter};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::sync::Arc;
 use uuid::Uuid;
 use chrono::{DateTime, Utc};
 use anyhow::Result;
@@ -257,7 +258,7 @@ pub struct BulkExportResult {
 // Tauri Commands
 
 #[tauri::command]
-pub async fn get_tools(manager: State<'_, Manager>) -> Result<GetToolsResponse, String> {
+pub async fn get_tools(manager: State<'_, Arc<Manager>>) -> Result<GetToolsResponse, String> {
     info!("Getting tools list");
 
     let state = manager.state_manager.read_state();
@@ -378,7 +379,7 @@ pub async fn get_tools(manager: State<'_, Manager>) -> Result<GetToolsResponse, 
 #[tauri::command]
 pub async fn create_tool(
     tool_data: CreateToolRequest,
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
     app_handle: tauri::AppHandle,
 ) -> Result<Tool, String> {
     info!("Creating tool: {}", tool_data.name);
@@ -447,7 +448,7 @@ pub async fn create_tool(
 #[tauri::command]
 pub async fn update_tool(
     update_data: UpdateToolRequest,
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
     app_handle: tauri::AppHandle,
 ) -> Result<Tool, String> {
     println!("🔧 update_tool command called: {}", update_data.id);
@@ -487,7 +488,7 @@ pub async fn update_tool(
 #[tauri::command]
 pub async fn delete_tool(
     tool_id: String,
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
     app_handle: tauri::AppHandle,
 ) -> Result<(), String> {
     println!("🔧 delete_tool command called: {}", tool_id);
@@ -509,7 +510,7 @@ pub async fn delete_tool(
 pub async fn update_tool_status(
     tool_id: String,
     status: String,
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
     app_handle: tauri::AppHandle,
 ) -> Result<(), String> {
     println!("🔧 update_tool_status command called: {} -> {}", tool_id, status);
@@ -536,7 +537,7 @@ pub async fn update_tool_status(
 #[tauri::command]
 pub async fn test_tool(
     test_request: ToolTestRequest,
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
 ) -> Result<ToolTestResult, String> {
     println!("🔧 test_tool command called: {}", test_request.tool_id);
 
@@ -588,7 +589,7 @@ pub async fn export_tool(
     tool_id: String,
     format: String,
     include_dependencies: Option<bool>,
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
 ) -> Result<RagPackExportResult, String> {
     println!("🔧 export_tool command called: {} ({})", tool_id, format);
 
@@ -635,7 +636,7 @@ pub async fn export_tool(
 #[tauri::command]
 pub async fn import_tool(
     export_data: ToolExportData,
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
     app_handle: tauri::AppHandle,
 ) -> Result<Tool, String> {
     println!("🔧 import_tool command called");
@@ -659,7 +660,7 @@ pub async fn import_tool(
 #[tauri::command]
 pub async fn import_tool_from_ragpack(
     import_request: ImportToolRequest,
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
     app_handle: tauri::AppHandle,
 ) -> Result<Tool, String> {
     println!("🔧 import_tool_from_ragpack command called");
@@ -699,7 +700,7 @@ pub async fn import_tool_from_ragpack(
 #[tauri::command]
 pub async fn validate_tool_import(
     ragpack_content: Vec<u8>,
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
 ) -> Result<ImportValidationResult, String> {
     println!("🔧 validate_tool_import command called");
 
@@ -1017,7 +1018,7 @@ async fn resolve_tool_dependencies(
 #[tauri::command]
 pub async fn bulk_export_tools(
     export_request: BulkExportRequest,
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
 ) -> Result<BulkExportResult, String> {
     println!("🔧 bulk_export_tools command called: {} tools", export_request.tool_ids.len());
 
@@ -1063,7 +1064,7 @@ pub async fn bulk_import_tools(
     ragpack_content: Vec<u8>,
     validate_dependencies: Option<bool>,
     resolve_dependencies: Option<bool>,
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
     app_handle: tauri::AppHandle,
 ) -> Result<Vec<Tool>, String> {
     println!("🔧 bulk_import_tools command called");
@@ -1276,7 +1277,7 @@ pub struct ToolTemplateLibrary {
 #[tauri::command]
 pub async fn get_tool_templates(
     category: Option<String>,
-    _manager: State<'_, Manager>,
+    _manager: State<'_, Arc<Manager>>,
 ) -> Result<ToolTemplateLibrary, String> {
     println!("🔧 get_tool_templates command called");
 
@@ -1437,7 +1438,7 @@ pub async fn create_tool_from_template(
     tool_name: String,
     knowledge_base: KnowledgeBaseRef,
     custom_config: Option<ToolConfig>,
-    _manager: State<'_, Manager>,
+    _manager: State<'_, Arc<Manager>>,
     app_handle: tauri::AppHandle,
 ) -> Result<Tool, String> {
     println!("🔧 create_tool_from_template command called: {}", template_id);
@@ -1496,7 +1497,7 @@ pub async fn save_tool_as_template(
     template_name: String,
     template_description: String,
     category: String,
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
 ) -> Result<ToolTemplate, String> {
     println!("🔧 save_tool_as_template command called: {}", tool_id);
 

@@ -76,9 +76,9 @@ export class KnowledgeBases implements OnInit {
     if (selectedFilters.length > 0) {
       // Map stat IDs to KB statuses
       const statusMapping: Record<string, KnowledgeBaseStatus> = {
-        'indexed': 'indexed',
-        'indexing': 'indexing',
-        'failed': 'failed'
+        'indexed': 'Active',
+        'indexing': 'Building',
+        'failed': 'Error'
       };
       
       filteredKBs = filteredKBs.filter(kb => {

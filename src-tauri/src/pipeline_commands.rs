@@ -10,6 +10,7 @@
 use tauri::State;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::sync::Arc;
 use tracing::{info, error};
 
 use crate::manager::Manager;
@@ -84,7 +85,7 @@ pub struct GetPipelinesResponse {
 
 #[tauri::command]
 pub async fn get_pipelines(
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
 ) -> Result<GetPipelinesResponse, String> {
     info!("Getting pipelines list");
     // TODO: Implement actual pipeline retrieval from backend
@@ -192,7 +193,7 @@ pub async fn get_pipelines(
 #[tauri::command]
 pub async fn create_pipeline(
     request: CreatePipelineRequest,
-    _manager: State<'_, Manager>,
+    _manager: State<'_, Arc<Manager>>,
 ) -> Result<Pipeline, String> {
     info!("Creating pipeline: {}", request.name);
     // TODO: Implement actual pipeline creation
@@ -227,7 +228,7 @@ pub async fn create_pipeline(
 #[tauri::command]
 pub async fn update_pipeline(
     request: UpdatePipelineRequest,
-    _manager_state: State<'_, Manager>,
+    _manager_state: State<'_, Arc<Manager>>,
 ) -> Result<Pipeline, String> {
     // TODO: Implement actual pipeline update
     // For now, return a mock updated pipeline
@@ -258,7 +259,7 @@ pub async fn update_pipeline(
 #[tauri::command]
 pub async fn delete_pipeline(
     _pipeline_id: String,
-    _manager_state: State<'_, Manager>,
+    _manager_state: State<'_, Arc<Manager>>,
 ) -> Result<(), String> {
     // TODO: Implement actual pipeline deletion
     // For now, just return success
@@ -272,7 +273,7 @@ pub async fn delete_pipeline(
 #[tauri::command]
 pub async fn execute_pipeline(
     request: ExecutePipelineRequest,
-    _manager_state: State<'_, Manager>,
+    _manager_state: State<'_, Arc<Manager>>,
 ) -> Result<PipelineRun, String> {
     // TODO: Implement actual pipeline execution
     // For now, return a mock pipeline run
@@ -314,7 +315,7 @@ pub async fn execute_pipeline(
 #[tauri::command]
 pub async fn cancel_pipeline_execution(
     _run_id: String,
-    _manager_state: State<'_, Manager>,
+    _manager_state: State<'_, Arc<Manager>>,
 ) -> Result<(), String> {
     // TODO: Implement actual pipeline execution cancellation
     Ok(())
@@ -322,7 +323,7 @@ pub async fn cancel_pipeline_execution(
 
 #[tauri::command]
 pub async fn get_pipeline_templates(
-    _manager: State<'_, Manager>,
+    _manager: State<'_, Arc<Manager>>,
 ) -> Result<Vec<PipelineTemplate>, String> {
     info!("Getting pipeline templates");
 
@@ -333,7 +334,7 @@ pub async fn get_pipeline_templates(
 #[tauri::command]
 pub async fn validate_pipeline(
     _pipeline_id: String,
-    _manager_state: State<'_, Manager>,
+    _manager_state: State<'_, Arc<Manager>>,
 ) -> Result<PipelineValidationResult, String> {
     // TODO: Implement actual pipeline validation
     // For now, return mock validation result

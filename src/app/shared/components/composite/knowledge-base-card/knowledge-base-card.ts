@@ -39,19 +39,19 @@ export class KnowledgeBaseCard {
       chip: { variant: 'solid' | 'soft' | 'outline'; color: 'gray' | 'blue' | 'green' | 'amber' | 'red' | 'orange' | 'purple'; icon?: any }; 
       icon: { component: any; color: string } 
     }> = {
-      'indexed': {
+      'Active': {
         chip: { variant: 'solid' as const, color: 'green' as const },
         icon: { component: Globe, color: 'var(--blue-9)' }
       },
-      'indexing': {
+      'Building': {
         chip: { variant: 'solid' as const, color: 'amber' as const },
         icon: { component: FileText, color: 'var(--amber-9)' }
       },
-      'failed': {
+      'Error': {
         chip: { variant: 'solid' as const, color: 'red' as const },
         icon: { component: FileText, color: 'var(--red-9)' }
       },
-      'pending': {
+      'Inactive': {
         chip: { variant: 'soft' as const, color: 'gray' as const },
         icon: { component: FileText, color: 'var(--gray-9)' }
       }
@@ -59,9 +59,9 @@ export class KnowledgeBaseCard {
     return configs[status];
   });
 
-  readonly isIndexing = computed(() => this.knowledgeBase().status === 'indexing');
-  readonly isFailed = computed(() => this.knowledgeBase().status === 'failed');
-  readonly isIndexed = computed(() => this.knowledgeBase().status === 'indexed');
+  readonly isIndexing = computed(() => this.knowledgeBase().status === 'Building');
+  readonly isFailed = computed(() => this.knowledgeBase().status === 'Error');
+  readonly isIndexed = computed(() => this.knowledgeBase().status === 'Active');
 
   readonly iconComponents = {
     RefreshCw,

@@ -6,6 +6,7 @@
  */
 
 use std::collections::HashMap;
+use std::sync::Arc;
 use tauri::State;
 use serde::{Serialize, Deserialize};
 use tracing::{info, error};
@@ -62,7 +63,7 @@ pub struct CitationInfo {
 /// Get all knowledge bases with current status
 #[tauri::command]
 pub async fn get_knowledge_bases(
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
 ) -> Result<Vec<KnowledgeBaseState>, String> {
     info!("Getting knowledge bases list");
 
@@ -76,7 +77,7 @@ pub async fn get_knowledge_bases(
 /// Create a new knowledge base
 #[tauri::command]
 pub async fn create_knowledge_base(
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
     request: CreateKBRequest,
 ) -> Result<KnowledgeBaseState, String> {
     info!("Creating knowledge base: {}", request.name);
@@ -124,7 +125,7 @@ pub async fn create_knowledge_base(
 /// Search in knowledge base using hybrid search
 #[tauri::command]
 pub async fn search_knowledge_base(
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
     request: SearchRequest,
 ) -> Result<Vec<SearchResult>, String> {
     info!("Searching in collection: {} with query: {}", request.collection, request.query);
@@ -185,7 +186,7 @@ pub async fn search_knowledge_base(
 /// Delete a knowledge base
 #[tauri::command]
 pub async fn delete_knowledge_base(
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
     kb_id: String,
 ) -> Result<(), String> {
     info!("Deleting knowledge base: {}", kb_id);
@@ -216,7 +217,7 @@ pub async fn delete_knowledge_base(
 /// Export knowledge base as .kbpack file
 #[tauri::command]
 pub async fn export_knowledge_base(
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
     kb_id: String,
 ) -> Result<Vec<u8>, String> {
     info!("Exporting knowledge base: {}", kb_id);
@@ -243,7 +244,7 @@ pub async fn export_knowledge_base(
 /// Start reindexing a knowledge base
 #[tauri::command]
 pub async fn reindex_knowledge_base(
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
     kb_id: String,
 ) -> Result<(), String> {
     info!("Starting reindex for knowledge base: {}", kb_id);
@@ -266,7 +267,7 @@ pub async fn reindex_knowledge_base(
 /// Get application state for initial load
 #[tauri::command]
 pub async fn get_app_state(
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
 ) -> Result<serde_json::Value, String> {
     let state = manager.state_manager.get_state_snapshot();
     serde_json::to_value(state)
@@ -276,7 +277,7 @@ pub async fn get_app_state(
 /// Get health status of all services
 #[tauri::command]
 pub async fn get_health_status(
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
 ) -> Result<serde_json::Value, String> {
     manager.health_check().await
         .map_err(|e| format!("Health check failed: {}", e))

@@ -64,6 +64,13 @@ export interface IngestRun {
   updated_at: string;
 }
 
+export interface MetricValue {
+  value: number;
+  timestamp: string;
+  unit: string;
+  tags: { [key: string]: string };
+}
+
 export interface AppMetrics {
   total_kbs: number;
   indexed_kbs: number;
@@ -76,9 +83,9 @@ export interface AppMetrics {
 }
 
 export interface AppStateData {
-  knowledge_bases: KnowledgeBase[];
-  runs: IngestRun[];
-  metrics: AppMetrics;
+  knowledge_bases: { [key: string]: KnowledgeBase };
+  pipeline_runs: { [key: string]: IngestRun };
+  metrics: { [key: string]: MetricValue };
   is_loading: boolean;
   last_error?: string;
 }
@@ -119,13 +126,13 @@ export const KnowledgeBasesStore = signalStore(
     // Statistics computed values
     totalCount: computed(() => store.knowledgeBases().length),
     indexedCount: computed(() =>
-      store.knowledgeBases().filter(kb => kb.status === 'indexed').length
+      store.knowledgeBases().filter(kb => kb.status === 'Active').length
     ),
     indexingCount: computed(() =>
-      store.knowledgeBases().filter(kb => kb.status === 'indexing').length
+      store.knowledgeBases().filter(kb => kb.status === 'Building').length
     ),
     failedCount: computed(() =>
-      store.knowledgeBases().filter(kb => kb.status === 'failed').length
+      store.knowledgeBases().filter(kb => kb.status === 'Error').length
     ),
 
     // Metrics derived from actual data (overrides backend metrics for accuracy)
@@ -134,9 +141,9 @@ export const KnowledgeBasesStore = signalStore(
       return {
         ...store.metrics(),
         total_kbs: kbs.length,
-        indexed_kbs: kbs.filter(kb => kb.status === 'indexed').length,
-        indexing_kbs: kbs.filter(kb => kb.status === 'indexing').length,
-        failed_kbs: kbs.filter(kb => kb.status === 'failed').length,
+        indexed_kbs: kbs.filter(kb => kb.status === 'Active').length,
+        indexing_kbs: kbs.filter(kb => kb.status === 'Building').length,
+        failed_kbs: kbs.filter(kb => kb.status === 'Error').length,
         total_documents: kbs.reduce((sum, kb) => sum + (kb.document_count || 0), 0),
         total_chunks: kbs.reduce((sum, kb) => sum + (kb.chunk_count || 0), 0)
       };
@@ -144,13 +151,13 @@ export const KnowledgeBasesStore = signalStore(
 
     // Filter helpers
     indexedKnowledgeBases: computed(() =>
-      store.knowledgeBases().filter(kb => kb.status === 'indexed')
+      store.knowledgeBases().filter(kb => kb.status === 'Active')
     ),
     indexingKnowledgeBases: computed(() =>
-      store.knowledgeBases().filter(kb => kb.status === 'indexing')
+      store.knowledgeBases().filter(kb => kb.status === 'Building')
     ),
     failedKnowledgeBases: computed(() =>
-      store.knowledgeBases().filter(kb => kb.status === 'failed')
+      store.knowledgeBases().filter(kb => kb.status === 'Error')
     ),
 
     // Helper for getting KB by ID
@@ -160,7 +167,7 @@ export const KnowledgeBasesStore = signalStore(
 
     // Check if any KB is currently indexing
     hasIndexingKBs: computed(() =>
-      store.knowledgeBases().filter(kb => kb.status === 'indexing').length > 0
+      store.knowledgeBases().filter(kb => kb.status === 'Building').length > 0
     ),
 
     // Check if store is ready for operations
@@ -236,18 +243,35 @@ export const KnowledgeBasesStore = signalStore(
         try {
           const appState = await invoke<AppStateData>('get_app_state');
 
-          // Transform and update state
-          const transformedKBs = appState.knowledge_bases.map(kb => transformKnowledgeBase(kb));
+          // Convert HashMap to array and transform
+          const kbsArray = Object.values(appState.knowledge_bases);
+          const transformedKBs = kbsArray.map(kb => transformKnowledgeBase(kb));
+
+          // Convert pipeline_runs HashMap to array
+          const runsArray = Object.values(appState.pipeline_runs || {});
+
+          // Create proper metrics object from backend HashMap<String, MetricValue>
+          const metrics: AppMetrics = {
+            total_kbs: kbsArray.length,
+            indexed_kbs: kbsArray.filter(kb => kb.status === 'Active').length,
+            indexing_kbs: kbsArray.filter(kb => kb.status === 'Building').length,
+            failed_kbs: kbsArray.filter(kb => kb.status === 'Error').length,
+            total_documents: appState.metrics?.['total_documents']?.value || 0,
+            total_chunks: appState.metrics?.['total_chunks']?.value || 0,
+            avg_query_latency_ms: appState.metrics?.['avg_query_latency_ms']?.value || 0,
+            cache_hit_rate: appState.metrics?.['cache_hit_rate']?.value || 0,
+          };
 
           patchState(store, {
             knowledgeBases: transformedKBs,
-            metrics: appState.metrics,
-            runs: appState.runs,
+            metrics,
+            runs: runsArray,
             isLoading: false
           });
 
           console.log('✅ Initial state loaded:', {
-            kbs: appState.knowledge_bases.length,
+            kbs: kbsArray.length,
+            runs: runsArray.length,
             metrics: appState.metrics
           });
         } catch (error) {
@@ -359,7 +383,7 @@ export const KnowledgeBasesStore = signalStore(
           return status;
         } catch (error) {
           console.error('Failed to get health status:', error);
-          return { overall: 'failed', error: error instanceof Error ? error.message : 'Unknown error' };
+          return { overall: 'Error', error: error instanceof Error ? error.message : 'Unknown error' };
         }
       },
 

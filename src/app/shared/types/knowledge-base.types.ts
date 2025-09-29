@@ -1,4 +1,4 @@
-export type KnowledgeBaseStatus = 'indexed' | 'indexing' | 'failed' | 'pending';
+export type KnowledgeBaseStatus = 'Active' | 'Inactive' | 'Building' | 'Error';
 
 export type ContentSourceType = 'local-folder' | 'web-documentation' | 'github-repository' | 'pdf-collection';
 

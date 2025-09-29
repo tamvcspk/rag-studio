@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use serde::{Deserialize, Serialize};
 use tauri::State;
 use tracing::{info, error};
@@ -106,7 +107,7 @@ impl Default for AppSettings {
 /// Get current application settings
 #[tauri::command]
 pub async fn get_app_settings(
-    manager: State<'_, Manager>
+    manager: State<'_, Arc<Manager>>
 ) -> Result<AppSettings, String> {
     info!("Getting application settings");
 
@@ -140,7 +141,7 @@ pub async fn get_app_settings(
 /// Update application settings
 #[tauri::command]
 pub async fn update_app_settings(
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
     settings: AppSettings
 ) -> Result<AppSettings, String> {
     info!("Updating application settings");
@@ -175,7 +176,7 @@ pub async fn update_app_settings(
 /// Start MCP server
 #[tauri::command]
 pub async fn start_mcp_server(
-    manager: State<'_, Manager>
+    manager: State<'_, Arc<Manager>>
 ) -> Result<String, String> {
     info!("Starting MCP server...");
 
@@ -198,7 +199,7 @@ pub async fn start_mcp_server(
 /// Stop MCP server
 #[tauri::command]
 pub async fn stop_mcp_server(
-    manager: State<'_, Manager>
+    manager: State<'_, Arc<Manager>>
 ) -> Result<String, String> {
     info!("Stopping MCP server...");
 
@@ -221,7 +222,7 @@ pub async fn stop_mcp_server(
 /// Get MCP server status
 #[tauri::command]
 pub async fn get_mcp_server_status(
-    manager: State<'_, Manager>
+    manager: State<'_, Arc<Manager>>
 ) -> Result<ServerSettings, String> {
     let state = manager.state_manager.read_state();
 
@@ -274,7 +275,7 @@ pub async fn select_folder(title: Option<String>) -> Result<Option<String>, Stri
 /// Clear application cache
 #[tauri::command]
 pub async fn clear_application_cache(
-    _manager: State<'_, Manager>
+    _manager: State<'_, Arc<Manager>>
 ) -> Result<String, String> {
     println!("Clearing application cache...");
 
@@ -286,7 +287,7 @@ pub async fn clear_application_cache(
 /// Export application settings
 #[tauri::command]
 pub async fn export_settings(
-    manager: State<'_, Manager>
+    manager: State<'_, Arc<Manager>>
 ) -> Result<String, String> {
     let settings = get_app_settings(manager).await?;
 
@@ -300,7 +301,7 @@ pub async fn export_settings(
 /// Import application settings
 #[tauri::command]
 pub async fn import_settings(
-    manager: State<'_, Manager>,
+    manager: State<'_, Arc<Manager>>,
     settings_json: String
 ) -> Result<AppSettings, String> {
     let settings: AppSettings = serde_json::from_str(&settings_json)
